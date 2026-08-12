@@ -1,0 +1,180 @@
+'**************************************************
+'Copyright	    : VMS, MCC, KOLKATA
+'Source	        : Fin_Year_Master_Add.aspx.vb
+'Created Date	: 25-November-2007
+'Created By	    : Arun 
+'Version	    : R02.00.00
+'Description	: Code behind for FinYearMasterAdd Page
+
+'Modified By       Modified On       Version         Reason
+
+'****************************************************************
+
+Imports VMS.Web
+Imports System.Data
+Imports System.Data.SqlTypes
+Partial Class Fin_Year_Master_Add
+    Inherits System.Web.UI.Page
+
+#Region "Page_Load"
+    Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
+
+        AddAttributes()
+        If Not IsPostBack Then
+            If (Not Request.QueryString(Constant.SessionKeys.ID) Is Nothing) Then
+                btnSubmit.Text = Constant.GeneralMessages.btnUpdate
+                PopulateFinYearMaster()
+            Else
+                btnSubmit.Text = Constant.GeneralMessages.Submit
+                rdCFRNo.Checked = True
+            End If
+
+        End If
+    End Sub
+#End Region
+
+#Region "AddAttributes"
+
+    Private Sub AddAttributes()
+
+        txtFinYear.Attributes.Add("OnKeyPress", "KeyPressNumeric()")
+        btnSubmit.Attributes.Add("onClick", "return ValidateYMAControls();")
+        txtFinYear.Attributes.Add("Onblur", "return fnFinYearDetails(this.value)")
+
+    End Sub
+#End Region
+
+#Region "PopulateFinYearMaster"
+    Public Sub PopulateFinYearMaster()
+
+        Dim userInfo As VMSUserEntity = New VMSUserEntity()
+        If (Not (Session(Constant.SessionKeys.UserInfo) Is Nothing)) Then
+            userInfo = CType(Session(Constant.SessionKeys.UserInfo), VMSUserEntity)
+
+        Else
+            Response.Redirect("~/Login.aspx")
+        End If
+
+        Dim PopulateFinYrMstr As New DataSet
+        Dim FinYrMstr As New WeekMaster
+        PopulateFinYrMstr = FinYrMstr.GetFinYearMaster(userInfo.userCompanyEntity, Request.QueryString(Constant.SessionKeys.ID))
+        If (Not (PopulateFinYrMstr Is Nothing) AndAlso PopulateFinYrMstr.Tables.Count > 0 AndAlso Not (PopulateFinYrMstr.Tables(0) Is Nothing) AndAlso PopulateFinYrMstr.Tables(0).Rows.Count > 0) Then
+
+            txtFinYear.Text = IIf(PopulateFinYrMstr.Tables(0).Rows(0)("fin_year").Equals(DBNull.Value), String.Empty, PopulateFinYrMstr.Tables(0).Rows(0)("fin_year"))
+            txtFinYear.Enabled = False
+            txtStartDate.Text = IIf(PopulateFinYrMstr.Tables(0).Rows(0)("fin_start_date").Equals(DBNull.Value), String.Empty, PopulateFinYrMstr.Tables(0).Rows(0)("fin_start_date"))
+            txtEndDate.Text = IIf(PopulateFinYrMstr.Tables(0).Rows(0)("fin_end_date").Equals(DBNull.Value), String.Empty, PopulateFinYrMstr.Tables(0).Rows(0)("fin_end_date"))
+            txtNoWeek.Text = IIf(PopulateFinYrMstr.Tables(0).Rows(0)("fin_no_weeks").Equals(DBNull.Value), String.Empty, PopulateFinYrMstr.Tables(0).Rows(0)("fin_no_weeks"))
+
+            If PopulateFinYrMstr.Tables(0).Rows(0)("fin_current").Equals(DBNull.Value) Then
+                rdCFRNo.Checked = True
+                rdCFRYes.Checked = False
+            ElseIf PopulateFinYrMstr.Tables(0).Rows(0)("fin_current").ToString.Trim = Constant.Common.ActiveStatus Then
+                rdCFRYes.Checked = True
+                rdCFRNo.Checked = False
+            ElseIf PopulateFinYrMstr.Tables(0).Rows(0)("fin_current").ToString.Trim = Constant.Common.InActiveStatus Then
+                rdCFRNo.Checked = True
+                rdCFRYes.Checked = False
+            End If
+
+        End If
+
+    End Sub
+#End Region
+
+#Region "btnSubmit_Click"
+    Protected Sub btnSubmit_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnSubmit.Click
+
+        Dim userInfo As VMSUserEntity = New VMSUserEntity()
+        If (Not (Session(Constant.SessionKeys.UserInfo) Is Nothing)) Then
+            userInfo = CType(Session(Constant.SessionKeys.UserInfo), VMSUserEntity)
+
+        Else
+            Response.Redirect("~/Login.aspx")
+        End If
+
+        Dim FinYear As String
+        FinYear = txtFinYear.Text
+        Dim StartDate As Date
+        StartDate = formatdate(txtStartDate.Text)
+        Dim EndDate As Date
+        EndDate = formatdate(txtEndDate.Text)
+        Dim NoWeek As String
+        NoWeek = txtNoWeek.Text
+
+        Dim Status As String
+        If (rdCFRYes.Checked = True) Then
+            Status = Constant.Common.ActiveStatus
+        Else
+            Status = Constant.Common.InActiveStatus
+        End If
+
+
+
+        Dim Numrowsaffected As Integer
+
+        'UPDATE 
+        If (Not Request.QueryString(Constant.SessionKeys.ID) Is Nothing) Then
+            Dim FinYearUpdate As New WeekMaster()
+            Numrowsaffected = FinYearUpdate.UpdateFinYear(userInfo.userCompanyEntity, FinYear, StartDate, EndDate, NoWeek, Status, userInfo.userIDEntity)
+            'INSERT
+        Else
+            Dim FinYearAdd As New WeekMaster()
+            Numrowsaffected = FinYearAdd.InsertFinYear(userInfo.userCompanyEntity, FinYear, StartDate, EndDate, NoWeek, Status, userInfo.userIDEntity)
+        End If
+
+        If (Numrowsaffected > 0) Then
+            Response.Redirect("~/Fin_Year_Master_List.aspx")
+        End If
+    End Sub
+#End Region
+
+#Region "Date Format"
+
+    Public Function FormatDate(ByVal stringdate As String) As SqlDateTime
+
+        If Not (stringdate = String.Empty) Then
+
+            Dim ddate As String() = stringdate.Split("/")
+            Dim arrlist As New ArrayList
+            Dim index As Integer = 0
+
+            While index <= ddate.Length - 1
+                arrlist.Add(ddate(index))
+                System.Math.Min(System.Threading.Interlocked.Increment(index), index - 1)
+            End While
+            Dim dd As Integer = System.Convert.ToInt32(arrlist.Item(0))
+            Dim mm As Integer = System.Convert.ToInt32(arrlist.Item(1))
+            Dim yyyy As Integer = System.Convert.ToInt32(arrlist.Item(2))
+
+            Dim dt As DateTime = New DateTime(yyyy, mm, dd)
+            dt = FormatDateTime(dt, DateFormat.LongDate)
+
+            Return dt
+        End If
+
+    End Function
+
+#End Region
+
+#Region "btnCancel_Click"
+    Protected Sub btnCancel_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnCancel.Click
+        Response.Redirect("~/Fin_Year_Master_List.aspx")
+    End Sub
+#End Region
+
+#Region "Reset button Click"
+
+    Protected Sub btnReset_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnReset.Click
+        If (Not Request.QueryString(Constant.SessionKeys.ID) Is Nothing) Then
+            PopulateFinYearMaster()
+        Else
+            Response.Redirect("~/Fin_Year_Master_Add.aspx")
+        End If
+
+
+    End Sub
+
+#End Region
+
+End Class

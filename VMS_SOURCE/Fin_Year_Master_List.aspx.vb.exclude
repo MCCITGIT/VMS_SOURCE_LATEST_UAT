@@ -1,0 +1,166 @@
+'**************************************************
+'Copyright	    : VMS, MCC, KOLKATA
+'Source	        : Fin_Year_Master_List.aspx.vb
+'Created Date	: 25-November-2007
+'Created By	    : Arun 
+'Version	    : R02.00.00
+'Description	: Code behind for FinYearMasterList Page
+
+'Modified By       Modified On       Version         Reason
+
+'****************************************************************
+
+Imports VMS.Web
+Imports System.Data
+Imports System.Data.SqlTypes
+Partial Class Fin_Year_Master
+    Inherits System.Web.UI.Page
+
+#Region "Page Load Event Handler"
+    Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
+        If (Not IsPostBack) Then
+
+            PageSizeDropdown()
+            FinYearMasterListLoad()
+
+        End If
+    End Sub
+#End Region
+
+
+#Region "Populate page size dropdown"
+
+    ' Populates the page size dropdown
+    Private Sub PageSizeDropdown()
+        ddlPageSize.Items.Clear()
+        'Gets the page size from the web.config file
+        Dim configPagesize As String = ConfigurationManager.AppSettings.Get("PageSize")
+        Dim numbers As String() = configPagesize.Split(",")
+        Dim index As Integer = 0
+
+        While index <= numbers.Length - 1
+            Try
+                Dim size As Integer = Convert.ToInt32(numbers(index))
+                'Adds the page size to drop down list
+                ddlPageSize.Items.Add(New ListItem(size.ToString, size.ToString))
+            Catch exp As Exception
+                ddlPageSize.Items.Clear()
+                'LoadDefaultPageSize()
+            End Try
+            System.Math.Min(System.Threading.Interlocked.Increment(index), index - 1)
+        End While
+        gvFinYearMaster.PageSize = ddlPageSize.SelectedValue
+    End Sub
+
+#End Region
+
+#Region "Page Size Change Event Handler"
+
+    Protected Sub ddlPageSize_SelectedIndexChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles ddlPageSize.SelectedIndexChanged
+        gvFinYearMaster.PageSize = Convert.ToInt16(ddlPageSize.SelectedValue)
+        FinYearMasterListLoad()
+    End Sub
+
+#End Region
+
+#Region "Load Default Page Size"
+    ' Loads the default page size if the entry is missing in web.config or any incorrect entries are present
+    Private Sub LoadDefaultPageSize()
+        Dim index As Integer = 1
+        While index <= 50
+            ddlPageSize.Items.Add(New ListItem(index.ToString, index.ToString))
+            index = index + 1
+        End While
+    End Sub
+
+#End Region
+
+#Region "FinYearMaster List Load"
+
+    Private Sub FinYearMasterListLoad()
+
+        Dim userInfo As VMSUserEntity = New VMSUserEntity()
+        If (Not (Session(Constant.SessionKeys.UserInfo) Is Nothing)) Then
+            userInfo = CType(Session(Constant.SessionKeys.UserInfo), VMSUserEntity)
+
+        Else
+            Response.Redirect("~/Login.aspx")
+        End If
+
+        Dim FinMasterGet As New WeekMaster
+        Dim FinYearMasterList As DataSet
+
+
+        FinYearMasterList = FinMasterGet.GetFinYearMasterList(userInfo.userCompanyEntity)
+        If (Not (FinYearMasterList Is Nothing) AndAlso FinYearMasterList.Tables.Count > 0) Then
+            If (Not (FinYearMasterList.Tables(0) Is Nothing) AndAlso FinYearMasterList.Tables(0).Rows.Count > 0) Then
+                gvFinYearMaster.DataSource = FinYearMasterList
+                gvFinYearMaster.DataBind()
+                Div_Fin_Year_Master_Grid.Visible = False
+                lblPageSize.Visible = True
+                ddlPageSize.Visible = True
+
+            Else
+                gvFinYearMaster.DataSource = Nothing
+                gvFinYearMaster.DataBind()
+                Div_Fin_Year_Master_Grid.Visible = True
+                lblPageSize.Visible = False
+                ddlPageSize.Visible = False
+
+            End If
+        End If
+
+    End Sub
+
+#End Region
+
+#Region "Date Format"
+
+    Public Function FormatDate(ByVal stringdate As String) As SqlDateTime
+
+        If Not (stringdate = String.Empty) Then
+
+            Dim ddate As String() = stringdate.Split("/")
+            Dim arrlist As New ArrayList
+            Dim index As Integer = 0
+
+            While index <= ddate.Length - 1
+                arrlist.Add(ddate(index))
+                System.Math.Min(System.Threading.Interlocked.Increment(index), index - 1)
+            End While
+            Dim dd As Integer = System.Convert.ToInt32(arrlist.Item(0))
+            Dim mm As Integer = System.Convert.ToInt32(arrlist.Item(1))
+            Dim yyyy As Integer = System.Convert.ToInt32(arrlist.Item(2))
+
+            Dim dt As DateTime = New DateTime(yyyy, mm, dd)
+            dt = FormatDateTime(dt, DateFormat.LongDate)
+
+            Return dt
+        End If
+
+    End Function
+
+#End Region
+
+
+#Region "gvFinYearMaster_RowDataBound"
+    Protected Sub gvFinYearMaster_RowDataBound(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.GridViewRowEventArgs) Handles gvFinYearMaster.RowDataBound
+        If (e.Row.RowType = DataControlRowType.DataRow) Then
+            Dim pageIdx As Integer = gvFinYearMaster.PageIndex * ddlPageSize.SelectedValue
+            e.Row.Cells(0).Text = pageIdx + (e.Row.RowIndex + 1)
+            Dim rowView As DataRowView = CType(e.Row.DataItem, DataRowView)
+            'e.Row.Cells(0).Text = "<a href='Request_Add.aspx?" + Constant.SessionKeys.ID + "=" + rowView("req_id").ToString() + "'>" + e.Row.Cells(0).Text + "</a>"
+
+            e.Row.Cells(1).Text = "<a href='Fin_Year_Master_Add.aspx?" + Constant.SessionKeys.ID + "=" + rowView("fin_year").ToString() + "'>" + e.Row.Cells(1).Text + "</a>"
+
+        End If
+    End Sub
+#End Region
+
+#Region "ImgbtnAdd_Click"
+    Protected Sub ImgbtnAdd_Click(ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles ImgbtnAdd.Click
+        Response.Redirect("~/Fin_Year_Master_Add.aspx?FinYear=New")
+    End Sub
+#End Region
+
+End Class

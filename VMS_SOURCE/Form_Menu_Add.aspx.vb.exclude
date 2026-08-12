@@ -1,0 +1,189 @@
+'**************************************************
+'Copyright	    : VMS, MCC, KOLKATA
+'Source	        : Form_Menu_Add.aspx.vb
+'Created Date	: 29-November-2007
+'Created By	    : Arun 
+'Version	    : R02.00.00
+'Description	: Code behind for FormMenuAdd Page
+
+'Modified By       Modified On       Version         Reason
+
+'****************************************************************
+
+Imports VMS.Web
+Imports System.Data
+Imports System.Data.SqlTypes
+Partial Class Form_Menu_Add
+    Inherits System.Web.UI.Page
+
+#Region "Page_Load"
+    Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
+
+        AddAttributes()
+
+        If Not IsPostBack Then
+            populateFormType()
+            If (Not Request.QueryString(Constant.SessionKeys.ID) Is Nothing) Then
+                btnSubmit.Text = Constant.GeneralMessages.btnUpdate
+                PopulateFormMenu()
+            Else
+                btnSubmit.Text = Constant.GeneralMessages.Submit
+            End If
+
+        End If
+    End Sub
+#End Region
+
+#Region "AddAttributes"
+
+    Private Sub AddAttributes()
+
+        btnSubmit.Attributes.Add("onClick", "return ValidateFMAControls();")
+        'txtGrpCode.Attributes.Add("Onblur", "return fnUsrGrpDetails(this.value)")
+
+    End Sub
+#End Region
+
+#Region "Populate FormType"
+    Public Sub populateFormType()
+
+        Dim userInfo As VMSUserEntity = New VMSUserEntity()
+        If (Not (Session(Constant.SessionKeys.UserInfo) Is Nothing)) Then
+            userInfo = CType(Session(Constant.SessionKeys.UserInfo), VMSUserEntity)
+
+        Else
+            Response.Redirect("~/Login.aspx")
+        End If
+
+        Dim ObjDocumentType As New FormMenu
+        Dim StatusTypeSet As New DataSet
+        StatusTypeSet = ObjDocumentType.GetFormType(userInfo.userCompanyEntity)
+        If (Not (StatusTypeSet Is Nothing) AndAlso StatusTypeSet.Tables.Count > 0 AndAlso Not (StatusTypeSet.Tables(0) Is Nothing) AndAlso StatusTypeSet.Tables(0).Rows.Count > 0) Then
+            ddlFormType.DataSource = StatusTypeSet.Tables(0)
+            ddlFormType.DataTextField = "menu_code"
+            ddlFormType.DataValueField = "menu_code"
+            ddlFormType.DataBind()
+
+            ddlFormType.Items.Insert(0, New ListItem(Constant.Common.Selec, "0", True))
+        End If
+    End Sub
+#End Region
+
+#Region "PopulateFormMenu"
+    Public Sub PopulateFormMenu()
+
+        Dim userInfo As VMSUserEntity = New VMSUserEntity()
+        If (Not (Session(Constant.SessionKeys.UserInfo) Is Nothing)) Then
+            userInfo = CType(Session(Constant.SessionKeys.UserInfo), VMSUserEntity)
+
+        Else
+            Response.Redirect("~/Login.aspx")
+        End If
+
+        Dim PopulateFrmMenu As New DataSet
+        Dim FrmMnu As New FormMenu
+        PopulateFrmMenu = FrmMnu.GetFormMenu(userInfo.userCompanyEntity, Request.QueryString(Constant.SessionKeys.ID), Request.QueryString(Constant.SessionKeys.Code))
+        If (Not (PopulateFrmMenu Is Nothing) AndAlso PopulateFrmMenu.Tables.Count > 0 AndAlso Not (PopulateFrmMenu.Tables(0) Is Nothing) AndAlso PopulateFrmMenu.Tables(0).Rows.Count > 0) Then
+
+            ddlFormType.SelectedValue = IIf(PopulateFrmMenu.Tables(0).Rows(0)("menu_code").Equals(DBNull.Value), String.Empty, PopulateFrmMenu.Tables(0).Rows(0)("menu_code"))
+            hdnType.Value = IIf(PopulateFrmMenu.Tables(0).Rows(0)("menu_code").Equals(DBNull.Value), String.Empty, PopulateFrmMenu.Tables(0).Rows(0)("menu_code"))
+            txtFormName.Text = IIf(PopulateFrmMenu.Tables(0).Rows(0)("form_desc").Equals(DBNull.Value), String.Empty, PopulateFrmMenu.Tables(0).Rows(0)("form_desc"))
+            hdnName.Value = IIf(PopulateFrmMenu.Tables(0).Rows(0)("form_desc").Equals(DBNull.Value), String.Empty, PopulateFrmMenu.Tables(0).Rows(0)("form_desc"))
+            txtFormLink.Text = IIf(PopulateFrmMenu.Tables(0).Rows(0)("form_name").Equals(DBNull.Value), String.Empty, PopulateFrmMenu.Tables(0).Rows(0)("form_name"))
+            txtFormSeq.Text = IIf(PopulateFrmMenu.Tables(0).Rows(0)("form_seq").Equals(DBNull.Value), String.Empty, PopulateFrmMenu.Tables(0).Rows(0)("form_seq"))
+            'txtCreaDate.Text = IIf(PopulateFrmMenu.Tables(0).Rows(0)("create_date").Equals(DBNull.Value), String.Empty, PopulateFrmMenu.Tables(0).Rows(0)("create_date"))
+            'txtModDate.Text = IIf(PopulateFrmMenu.Tables(0).Rows(0)("modifie_date").Equals(DBNull.Value), String.Empty, PopulateFrmMenu.Tables(0).Rows(0)("modifie_date"))
+
+        End If
+
+    End Sub
+#End Region
+
+#Region "Date Format"
+
+    Public Function FormatDate(ByVal stringdate As String) As SqlDateTime
+        If Not (stringdate = String.Empty) Then
+
+            Dim ddate As String() = stringdate.Split("/")
+            Dim arrlist As New ArrayList
+            Dim index As Integer = 0
+
+            While index <= ddate.Length - 1
+                arrlist.Add(ddate(index))
+                System.Math.Min(System.Threading.Interlocked.Increment(index), index - 1)
+            End While
+            Dim dd As Integer = System.Convert.ToInt32(arrlist.Item(0))
+            Dim mm As Integer = System.Convert.ToInt32(arrlist.Item(1))
+            Dim yyyy As Integer = System.Convert.ToInt32(arrlist.Item(2))
+
+            Dim dt As DateTime = New DateTime(yyyy, mm, dd)
+            dt = FormatDateTime(dt, DateFormat.LongDate)
+
+            Return dt
+        End If
+
+    End Function
+
+#End Region
+
+#Region "btnSubmit_Click"
+    Protected Sub btnSubmit_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnSubmit.Click
+
+        Dim userInfo As VMSUserEntity = New VMSUserEntity()
+        If (Not (Session(Constant.SessionKeys.UserInfo) Is Nothing)) Then
+            userInfo = CType(Session(Constant.SessionKeys.UserInfo), VMSUserEntity)
+
+        Else
+            Response.Redirect("~/Login.aspx")
+        End If
+
+        Dim Type As String
+        Type = ddlFormType.SelectedValue
+        Dim HType As String = hdnType.Value
+        Dim Name As String
+        Name = txtFormName.Text
+        Dim HName As String = hdnName.Value
+        Dim Link As String
+        Link = txtFormLink.Text
+        Dim Seq As Integer
+        Seq = txtFormSeq.Text
+
+        Dim Numrowsaffected As Integer
+
+        'UPDATE 
+        If (Not Request.QueryString(Constant.SessionKeys.ID) Is Nothing) Then
+            Dim FrmMnuUpdate As New FormMenu()
+            Numrowsaffected = FrmMnuUpdate.UpdateFrmMnu(userInfo.userCompanyEntity, Type, Name, Link, Seq, userInfo.userIDEntity, HType, HName)
+            'INSERT
+        Else
+            Dim FrmMnuAdd As New FormMenu()
+            Numrowsaffected = FrmMnuAdd.InsertFrmMnu(userInfo.userCompanyEntity, Type, Name, Link, Seq, userInfo.userIDEntity)
+        End If
+
+        If (Numrowsaffected > 0) Then
+            Response.Redirect("~/Form_Menu_List.aspx")
+        End If
+    End Sub
+#End Region
+
+#Region "btnCancel_Click"
+    Protected Sub btnCancel_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnCancel.Click
+        Response.Redirect("~/Form_Menu_List.aspx")
+    End Sub
+#End Region
+
+#Region "Reset button Click"
+
+    Protected Sub btnReset_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnReset.Click
+        If (Not Request.QueryString(Constant.SessionKeys.ID) Is Nothing) Then
+            PopulateFormMenu()
+        Else
+            Response.Redirect("~/Form_Menu_Add.aspx")
+        End If
+
+
+    End Sub
+
+#End Region
+
+End Class

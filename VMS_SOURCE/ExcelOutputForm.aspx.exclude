@@ -1,0 +1,352 @@
+<%@ Page Language="VB" AutoEventWireup="false" CodeFile="ExcelOutputForm.aspx.vb" Inherits="ExcelOutputForm" %>
+<%@ Register TagPrefix="uc1" TagName="Footer" Src="includes/Footer.ascx" %>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head id="Head1" runat="server">
+    <title>::Export to Excel Page::</title>
+   <script type="text/javascript" language="javascript" src="Scripts/ValidationExcelSheet.js"></script>
+   <script type="text/javascript" language="javascript" src="Scripts/MessagesIII.js"></script>
+   <script type="text/javascript" language="javascript" src="Scripts/FunctionValidator.js"></script>
+    <style type="text/css">
+        .style1
+        {
+            width: 350px;
+        }
+        .style2
+        {
+            width: 100px;
+        }
+        .style3
+        {
+            width: 203px;
+        }
+        .style4
+        {
+            width: 273px;
+        }
+        </style>
+        <link href="includes/style.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+    <form id="frmCustomerProflieAdd" runat="server">
+    
+    <div>
+<table width="100%"  border="0" cellspacing="0" cellpadding="0">
+<tr>
+    <td align="left" valign="top">
+        <table width="100%"  border="0" cellspacing="0" cellpadding="0">
+        <tr>
+        <td align="left" valign="top" style="background-color:#ffffff">
+        <!-- Table for Logo Starts -->
+        <table width="100%"  border="0" cellspacing="0" cellpadding="0">
+          <tr>
+            <!--<td style="width:180" align="center">
+                    <asp:Image ID="Image1" ImageUrl="~/images/inner_logo.gif" Width="149px" Height="74px" runat="server" />
+                    </td>-->
+                    <td valign="bottom" style="width:90%">
+                    <asp:Image ID="Image2" ImageUrl="~/images/inner_tag.jpg"  runat="server" />
+                    </td>
+            <td style="width:10%" align="center" valign="bottom">
+                <asp:ImageButton ID="ImageButton1" AlternateText="Home" ImageUrl="~/images/home_but.gif" PostBackUrl="~/Home.aspx" Width="26px" Height="31px" runat="server" />
+            </td>
+          </tr>
+        </table>
+        <!-- Table for Logo Ends -->
+       </td>
+      </tr>
+       
+        <tr>
+            <td>
+            </td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+        </tr>
+        <tr>
+            <td style="height:410" align="center" valign="top">
+                <table width="70%"  border="0" cellpadding="0" cellspacing="0" class="ss">
+                <tr>
+                    <td style="height:24px" align="left">
+                    </td>
+                </tr>
+                <tr>
+                    <td style="height:25px" align="left">
+                        Excel Export Configuration</td>
+                </tr>
+                <tr>
+                    <td style="height:2px;background-color:#339999">
+                    </td>
+                </tr>
+                <tr>
+                    <td>&nbsp;</td>
+                </tr>                
+                <tr>
+                <td align="left">
+                    <asp:Label ID="lblErrMsg" runat="server" Style="color: Red; font-size: small;
+                        font-weight: bold;"></asp:Label>
+                </td>
+                </tr>
+                <tr>
+                    <td align="center" valign="top">
+                        <table width="995px"  border="0" cellspacing="0" cellpadding="0">                                     
+                        <tr>
+                            <td align="center" valign="top">                                
+                                <table width="995px"  border="0" cellpadding="2" cellspacing="1" style="background-color:#92D3ED" class="mt">                                
+                                <tr align="left">
+                                    <td style="background-color:#E6F5FB;text-align:right;">
+                                        Tables List:&nbsp;
+                                    </td>
+                                    <td style="background-color:#FFFFFF; height:20px" class="mt">
+                                    <asp:DropDownList ID="ddlTableList" AutoPostBack="true" CssClass="dropDown" runat="server">
+                                    </asp:DropDownList>
+                                    <span id="Span1" style="color:Red;font-size:Smaller;font-weight:bold;">
+                                    *</span>
+                                    </td>
+                                </tr>
+                                <tr align="left" id="trReportList" visible="false" runat="server">
+                                    <td style="width:200px;text-align:right; background-color:#E6F5FB">
+                                        Report List:</td>
+                                    <td style="background-color:#FFFFFF; height:20px" class="clsTDbg">
+                                    <asp:DropDownList ID="ddlReportList" AutoPostBack="true" CssClass="dropDown" runat="server">
+                                    </asp:DropDownList>
+                                    </td>
+                                </tr> 
+                                <tr align="left">
+                                    <td style="width:200px;text-align:right; background-color:#E6F5FB">
+                                        Report Name:</td>
+                                    <td style="background-color:#FFFFFF; height:20px" class="clsTDbg">
+                                    <asp:TextBox CssClass="txtBox" ID="txtReportName" MaxLength="20" runat="server"></asp:TextBox>
+                                    <span id="Span2" style="color:Red;font-size:Smaller;font-weight:bold;">
+                                        *</span> 
+                                    <asp:Label ID="lblRptNameErrMsg" CssClass="errormsg" runat="server" Text=""></asp:Label>    
+                                    </td>
+                                </tr>                                
+                                <tr align="left">
+                                    <td style="background-color:#E6F5FB;text-align:right;">
+                                        File Type:
+                                    </td>
+                                    <td style="background-color:#FFFFFF; height:20px" class="mt">
+                                    <asp:DropDownList ID="ddlFileType" CssClass="dropDown" runat="server">
+                                    <asp:ListItem Value="Excel" Text="Excel"></asp:ListItem>
+                                    <asp:ListItem Value="Doc" Text="Doc"></asp:ListItem>
+                                    </asp:DropDownList> 
+                                    </td>
+                                </tr>                                                            
+                             </table>
+                        </td>
+                    </tr>                
+                                                         
+                    </table>
+                    <table width="995px"  border="1" cellpadding="0" cellspacing="0" class="mt" style="border-collapse: collapse;">
+          
+                    <tr>
+                    <td style="width:995px;height:10px;background-color:#E6F5FB; text-align:right" colspan="2">
+                        &nbsp;</td>                    
+                    
+                    </tr>                                                            
+                    <tr>
+                    <td style="height:380" align="center" valign="top" colspan="2">
+                    <table width="995px"  border="0" cellpadding="0" cellspacing="0" class="mt" style="border-collapse: collapse; border-color:#111111">
+                  
+                    <tr>
+                    <td style="width:995px;height:10px;background-color:#8DE8FF;" colspan="3">
+                    </td>
+                          
+                    </tr>
+                    <tr>
+                        <td style="background-color:#E6F5FB; text-align:center" class="style1" >
+                                        Selected Fields: </td>
+                        <td style="background-color:#E6F5FB; text-align:center" class="style2" >
+                        Select</td>
+                                    <td style="background-color:#E6F5FB; height:20px" class="clsTDbg">
+                                        Available Fields:</td>
+                    
+                    </tr>
+                    <tr style="width:800px">
+                        <td style="width:350px;height:200px; text-align:center" rowspan="2">
+                            <asp:ListBox ID="LstSelFields" CssClass="txtBox" SelectionMode="Multiple" Height="150px" Width="200px" runat="server"></asp:ListBox>
+                                    </td>
+                        <td style="width:100px;height:10px; text-align:center" align="center">
+                        <asp:Button ID="btnRL" CssClass="but2" runat="server" Text="<<" />
+                                        </td>
+                        
+                        <td style="width:350px;height:200px; text-align:center" rowspan="2">
+                        <asp:ListBox ID="LstAvlbFields" CssClass="txtBox" SelectionMode="Multiple" Height="150px" Width="200px" runat="server"></asp:ListBox>
+                                    </td>
+                    
+                    </tr>
+                    <tr style="width:800px">
+                    <td style="width:100px;height:10px; text-align:center" align="center">
+                        <asp:Button ID="btnLR" CssClass="but2" runat="server" Text=">>" />
+                                    </td>
+                    </tr>
+                    <tr style="width:800px">
+                    <td style="width:800px;height:10px;background-color:#8DE8FF;" colspan="3">
+                    </td>
+                    
+                    </tr>
+                    </table>
+                    </td>
+                    </tr>
+                    
+                  
+                  
+                  </table>
+                  <table width="995px"  border="0" cellpadding="2" cellspacing="1" style="background-color:#92D3ED" class="mt">                                
+                                <tr align="left">
+                                    <td style="background-color:#E6F5FB;text-align:right; color:Black; width:200px;" class="style3">
+                                        Order By:&nbsp;
+                                    </td>
+                                    <td style="background-color:#FFFFFF; height:20px" class="mt">
+                                    <asp:DropDownList ID="ddlOrderBy" CssClass="dropDown" runat="server">
+                                    </asp:DropDownList>
+                                    <asp:Button ID="imgAddOrderBy" CssClass="but2" runat="server" Text=">>" />
+                                       <%--<asp:ImageButton ID="imgAddOrderBy" runat="server" ImageUrl="~/images/right-arr.gif" 
+                                            Width="24px" />--%>
+                                        <asp:TextBox ID="txtOrderBy" CssClass="txtBox" runat="server"></asp:TextBox>
+                                    </td>
+                                    
+                                </tr>
+                                </table>
+                </td>
+            </tr>
+            
+            <tr align="left">
+                <td>
+                    <asp:GridView ID="gvColumnList" AutoGenerateColumns="false" runat="server" 
+                        Width="995px">
+                        <Columns>
+                        <asp:TemplateField ControlStyle-Width="20px" HeaderText = "Srl">
+                                <ItemTemplate>
+                                <asp:Label ID="lblSrlNo" Text="" runat="server" />
+                                </ItemTemplate>
+                            </asp:TemplateField>
+                            <asp:TemplateField ControlStyle-Width="20px" HeaderText = "Selected Field Name">
+                                <ItemTemplate>
+                                <%--<asp:Label ID="lblColumnName" Text="" runat="server" />--%>
+                                <asp:Label ID="lblColumnName" Text='<%# Bind("Column_Name") %>' runat="server" />
+                                </ItemTemplate>
+                            </asp:TemplateField>
+                        <asp:TemplateField ControlStyle-Width="20px" HeaderText = "Field Order">
+                                <ItemTemplate>
+                                <asp:TextBox ID="txtFieldOrder" Text="" runat="server" />
+                                </ItemTemplate>
+                            </asp:TemplateField>
+                            <asp:TemplateField ControlStyle-Width="200px" HeaderText = "Heading">
+                                <ItemTemplate>
+                                <asp:TextBox ID="txtColName" Text='<%# Bind("Column_Heading") %>' runat="server" />
+                                </ItemTemplate>
+                            </asp:TemplateField>
+                            <asp:TemplateField ControlStyle-Width="150px" HeaderText = "Total">
+                                <ItemTemplate>
+                                <asp:DropDownList ID="ddlTotal" runat="server">
+                                    <asp:ListItem Text="No" Value="No"></asp:ListItem>
+                                    <asp:ListItem Text="Yes" Value="Yes"></asp:ListItem>
+                                </asp:DropDownList>
+                                </ItemTemplate>
+                            </asp:TemplateField>
+                            <asp:TemplateField ControlStyle-Width="150px" HeaderText = "Data Type">
+                                <ItemTemplate>
+                                <asp:Label ID="lblDataType" Text='<%# Bind("Data_Type") %>' runat="server" />
+                                </ItemTemplate>
+                            </asp:TemplateField>
+                        </Columns>
+                    </asp:GridView>
+                    
+                    <%--<asp:GridView ID="gvColumnListUpdate" AutoGenerateColumns="false" runat="server" 
+                        Width="801px" Visible="false">
+                        <Columns>
+                        <asp:TemplateField ControlStyle-Width="20px" HeaderText = "Srl">
+                                <ItemTemplate>
+                                <asp:Label ID="lblSrlNo" Text="" runat="server" />
+                                </ItemTemplate>
+                            </asp:TemplateField>
+                            <asp:TemplateField ControlStyle-Width="20px" HeaderText = "Selected Field Name">
+                                <ItemTemplate>
+                                <asp:Label ID="lblColumnName" Text='<%# Bind("Ex_Selected_Field_Name") %>' runat="server" />
+                                </ItemTemplate>
+                            </asp:TemplateField>
+                        <asp:TemplateField ControlStyle-Width="20px" HeaderText = "Field Order">
+                                <ItemTemplate>
+                                <asp:TextBox ID="txtFieldOrder" Text="" runat="server" />
+                                </ItemTemplate>
+                            </asp:TemplateField>
+                            <asp:TemplateField ControlStyle-Width="200px" HeaderText = "Heading">
+                                <ItemTemplate>
+                                <asp:TextBox ID="txtColName" Text='<%# Bind("Ex_Heading") %>' runat="server" />
+                                </ItemTemplate>
+                            </asp:TemplateField>
+                            <asp:TemplateField ControlStyle-Width="150px" HeaderText = "Total">
+                                <ItemTemplate>
+                                <asp:DropDownList ID="ddlTotal" runat="server">
+                                    <asp:ListItem Text="No" Value="No"></asp:ListItem>
+                                    <asp:ListItem Text="Yes" Value="Yes"></asp:ListItem>
+                                </asp:DropDownList>
+                                </ItemTemplate>
+                            </asp:TemplateField>
+                            <asp:TemplateField ControlStyle-Width="150px" HeaderText = "Data Type">
+                                <ItemTemplate>
+                                <asp:Label ID="lblDataType" Text='<%# Bind("Ex_DataType") %>' runat="server" />
+                                </ItemTemplate>
+                            </asp:TemplateField>
+                        </Columns>
+                    </asp:GridView>--%>
+                
+                </td>
+            </tr> 
+            
+            <tr align="left">
+                <td>
+                <table width="995px" border="0" cellpadding="0" cellspacing="0">
+                    <tr>
+                        <td class="style4" style="text-align:center; width:200px;">
+                             
+                            <asp:Button ID="btnGenerateQuery" Enabled="true" runat="server" Text="Generate Query" />
+                        </td>
+                        <td align="left">
+                            <asp:TextBox TextMode="MultiLine" Rows="5" runat="server" Columns="106" 
+                                ID="txtQuery" Width="519px"></asp:TextBox>
+                                
+                        </td>
+                    </tr>
+                </table>
+                </td>
+                
+            </tr> 
+            <tr align="left" ><td><div id="divErrorMessage"></div></td></tr>
+            
+            </table>
+        </td>
+    </tr>       
+    <tr>
+        <td style="height:1px"> 
+        </td>
+    </tr>        
+    <tr>
+        <td align="center">             
+            <asp:Button ID="btnSubmit" Enabled="true" CssClass="but2" TabIndex="31" runat="server" Text="Submit" />
+            &nbsp;&nbsp;<asp:Button ID="btnCancel" CssClass="but2" TabIndex="32" runat="server" Text="Cancel" />
+            &nbsp;&nbsp;<asp:Button ID="btnReset" CssClass="but2" TabIndex="33" runat="server" Text="Reset" />
+        </td>
+    </tr>
+    <tr>
+         <td>&nbsp;</td>
+    </tr>
+    </table>
+</td>
+</tr>
+<tr>
+<td>&nbsp;</td>
+</tr>
+<tr>
+        <td style="height:25" align="center"><span class="mt">
+        <uc1:footer id="Footer1" runat="server"></uc1:footer> </span></td>
+      </tr>
+</table>
+      
+    </div>
+    </form>
+</body>
+</html>

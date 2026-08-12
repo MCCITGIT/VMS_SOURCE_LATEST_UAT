@@ -1,0 +1,52 @@
+﻿/*General Page-Layout*/
+body {background-color:AppWorkspace; }
+#page_content { background-color:#ffffff;}
+/*----------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+
+
+/*Header Details*/
+.header { background-color:#ffffff; height:60px;}
+.header #logo { height:115px; font-weight:bold; font-size:24px; font-weight:bold; }
+.header #since { color:#478af8; font-family : Arial; font-size:40px; }
+
+/*----------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+
+
+/*Sign-In layer Details*/
+#signin { margin-left:15px; margin-right:15px; font-family:Arial, 'Arial Rounded MT Bold'; font-size:10px; color:#000000; text-align:center; }
+#signin h2 { font-size:16px; text-align:left; border-bottom:#478af8 2px solid; padding-bottom:5px; }
+/*----------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+
+
+
+
+/*Registration layer Details*/
+#register { font-family:Arial, 'Arial Rounded MT Bold'; font-size:12px; font-weight:bold;}
+#register h1 { font-size:18px; color:#000000; margin-bottom:5px; }
+
+#register fieldset { border:solid 1px #d7d7d7 ; padding:5px; background-color:#f9f9f9; }
+#register fieldset h2 { font-size:16px; font-weight:bold; color:#6694e2; margin:0px; }
+#register #formsubmit { text-align:center; font-size:10px; }
+
+#register .direction { font-size:10px; font-weight:bold; }
+#register .label { text-align:right; vertical-align:middle; }
+#register .remark { width:130px; font-size:9px; }
+#register .mandatory { color:Red; vertical-align:super; }
+
+/*----------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+
+/*Footer Details*/
+#footer { font-family:Verdana, Geneva, sans-serif; font-size:10px; font-weight:bold; background-color:#ffffff;}
+
+/*----------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+
+
+
+/*Notice Nav*/
+#notice_nav { font-family:Arial; font-size:12px; font-weight:bold; padding:5px; border-bottom: #478af8 1px solid; margin-bottom:0px; text-align:left; margin-left:0px; padding-left:0px; }
+#notice_nav li { display:inline; margin:0px; list-style:none; text-align:left; padding:0px;}
+#notice_nav li a { text-decoration:none; display:inline; padding:5px 10px 5px 10px; border:#478af8 1px solid;}
+#notice_nav li a#current { color:#000000; background-color:#d7d7d7; }
+#notice_nav li a:hover { background-color:#F2B035; border:#F2B035 1px solid;}	
+#notice_nav li a#current:hover { cursor:default;  }
+#notice_content {padding:5px; font-family:Arial; font-size:10px; font-weight:bold; border-bottom: #478af8 1px solid; text-align:left; border-left: #478af8 1px solid; border-right: #478af8 1px solid;}

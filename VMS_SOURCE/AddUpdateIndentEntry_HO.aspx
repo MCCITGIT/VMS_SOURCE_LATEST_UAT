@@ -1,0 +1,618 @@
+<%@ Page Title="Add - Update Indent Entry (HO)" Language="VB" MasterPageFile="~/MasterPage.master" AutoEventWireup="false" CodeFile="AddUpdateIndentEntry_HO.aspx.vb" Inherits="AddUpdateIndentEntry_HO" %>
+
+
+
+<%--<asp:Content ID="Content1" ContentPlaceHolderID="Head1" runat="Server">
+</asp:Content>--%>
+<asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
+    <script type="text/javascript" src="Scripts/FunctionValidator.js"></script>
+    <script type="text/javascript" src="Scripts/ValidationAddUpdateIndentEntry_HO.js?time=<%=  DateTime.Now.ToString("yyyy.MM.dd-HH.mm.ss.fff") %>"></script>
+    <script type="text/javascript">
+        document.onkeydown = checkValue;
+        function checkValue() {
+            if (event.keyCode == 118) { // button Add (F7 keypress)
+                if (document.getElementById('btnSubmit').disabled == true)
+                    return false;
+                else {
+                    // button Add (F7 keypress)
+                    validateSKUList();
+                }
+                //__doPostBack(document.getElementById('btnSubmit').name, '');
+            }
+            else if (event.keyCode == 119) {
+                __doPostBack(document.getElementById('btnCancel').name, '');
+            }
+        }
+
+        function disableBackButton() {
+            window.history.forward(1);
+        }
+        function showmodal() {
+            //debugger;
+            $('#exampleModal').modal('show')
+        }
+        function isNumber(evt, element) {
+            var charCode = (evt.which) ? evt.which : evt.keyCode;
+
+            // Allow: backspace (8), tab (9), delete (46), arrows (37&#8211;40)
+            if (charCode == 8 || charCode == 9 || charCode == 46 || (charCode >= 37 && charCode <= 40)) {
+                return true;
+            }
+
+            // Allow decimal point (.) only once
+            if (charCode == 46) {
+                if (element.value.indexOf('.') === -1) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+
+            // Allow digits 0&#8211;9
+            if (charCode < 48 || charCode > 57) {
+                return false;
+            }
+
+            return true;
+        }
+    </script>
+
+    <div class="breadcrumbs">
+        <div class="leftFung">
+            <a href="Home.aspx" title="Home"><i class="fas fa-home"></i></a>
+            <div class="diveider">/</div>
+            <h3 class="pageTitle">Add - Update Indent Entry (HO)</h3>
+        </div>
+        <div class="rightFung"></div>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <asp:UpdatePanel ID="UpdatePanel5" runat="server">
+                <ContentTemplate>
+                    <asp:Label ID="lblErrorMessage" CssClass="errormsg" Visible="true" runat="server" Text=""></asp:Label>
+                </ContentTemplate>
+                <Triggers>
+                    <asp:AsyncPostBackTrigger ControlID="ddlRegion" EventName="SelectedIndexChanged" />
+                    <asp:AsyncPostBackTrigger ControlID="ddlDepot" EventName="SelectedIndexChanged" />
+                    <asp:AsyncPostBackTrigger ControlID="ddlVendorUnit" EventName="SelectedIndexChanged" />
+                    <asp:AsyncPostBackTrigger ControlID="chkbxListproduct" EventName="SelectedIndexChanged" />
+                </Triggers>
+            </asp:UpdatePanel>
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="form-control-label">Indent No.:</label>
+                        <asp:Label ID="lblIndentNo" runat="server" Text="(Auto-Generated)" CssClass="labelDataPoint"></asp:Label>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="form-control-label">Indent Date:</label>
+                        <asp:Label ID="lblIndentDate" runat="server" CssClass="labelDataPoint"></asp:Label>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="form-control-label">Region:</label>
+                        <asp:DropDownList ID="ddlRegion" runat="server" CssClass="form-control select2" AutoPostBack="True"></asp:DropDownList>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="form-control-label">Depot:<span id="Span1" class="mandatory">*</span></label>
+                        <asp:UpdatePanel ID="UpdatePanel1" runat="server">
+                            <ContentTemplate>
+                                <asp:DropDownList ID="ddlDepot" runat="server" AutoPostBack="True" CssClass="form-control select2">
+                                </asp:DropDownList>
+                            </ContentTemplate>
+                            <Triggers>
+                                <asp:AsyncPostBackTrigger ControlID="ddlDepot"
+                                    EventName="SelectedIndexChanged" />
+                            </Triggers>
+                        </asp:UpdatePanel>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label class="form-control-label">Fin Year:</label>
+                        <asp:Label ID="lblFinYear" runat="server" CssClass="labelDataPoint"></asp:Label>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label class="form-control-label">Fin Month:</label>
+                        <asp:Label ID="lblFinMonth" runat="server" CssClass="labelDataPoint"></asp:Label>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="form-control-label">Vendor Source:<span id="Span2" class="mandatory">*</span></label>
+                        <asp:UpdatePanel ID="UpdatePanel2" runat="server">
+                            <ContentTemplate>
+                                <asp:DropDownList ID="ddlVendorUnit" runat="server" AutoPostBack="True" CssClass="form-control select2"></asp:DropDownList>
+                            </ContentTemplate>
+                            <Triggers>
+                                <asp:AsyncPostBackTrigger ControlID="ddlRegion"
+                                    EventName="SelectedIndexChanged" />
+                                <asp:AsyncPostBackTrigger ControlID="ddlDepot"
+                                    EventName="SelectedIndexChanged" />
+                            </Triggers>
+                        </asp:UpdatePanel>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="form-control-label">Product:<span id="Span3" class="mandatory">*</span></label>
+                        <asp:UpdatePanel ID="UpdatePanel3" runat="server">
+                            <ContentTemplate>
+                                <%-- &nbsp;<asp:DropDownList ID="ddlVendorProduct" runat="server" AutoPostBack="True" Font-Names="Verdana" Font-Size="11px"></asp:DropDownList>&nbsp;--%>
+                                <asp:ListBox ID="chkbxListproduct" runat="server" CssClass="form-control" SelectionMode="Multiple" placeholder="Select" TabIndex="26" AutoPostBack="true" OnSelectedIndexChanged="chkbxListproduct_SelectedIndexChanged"></asp:ListBox>
+                            </ContentTemplate>
+                            <Triggers>
+                                <asp:AsyncPostBackTrigger ControlID="ddlRegion"
+                                    EventName="SelectedIndexChanged" />
+                                <asp:AsyncPostBackTrigger ControlID="ddlDepot"
+                                    EventName="SelectedIndexChanged" />
+                                <asp:AsyncPostBackTrigger ControlID="ddlVendorUnit"
+                                    EventName="SelectedIndexChanged" />
+                            </Triggers>
+                        </asp:UpdatePanel>
+                    </div>
+                </div>
+                <div class="col-md-2 form-btn-mt">
+                    <div class="form-group">
+                        <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" runat="server" id="btnadditional" data-target=".bd-example-modal-lg">
+                            PO Linking Request
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <table style="width: 100%;">
+                <tr>
+                    <td style="text-align: center; border: solid 1px #d7d7d7; padding: 5px; background-color: #f9f9f9; width: 100%; font-family: Verdana; font-size: 10px; font-weight: bold;">
+                        <span>ENTER NOP</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align: center; border: solid 1px #d7d7d7; padding: 5px; background-color: #f9f9f9; width: 100%; font-family: Verdana; font-size: 10px; font-weight: bold;">
+                        <b style='color: red;'>*</b><span> After entering Indent NOP, enter tab to see 
+                                the change in Indent to Estimate (%).</span>
+                    </td>
+                </tr>
+            </table>
+            <div class="table-responsive">
+                <asp:UpdatePanel ID="UpdatePanel4" runat="server">
+                    <ContentTemplate>
+                        <asp:GridView ID="gvIndentSKUList" runat="server" AutoGenerateColumns="False" Width="100%"
+                            BackColor="White" BorderColor="#999999" EmptyDataText="No records found" BorderStyle="None"
+                            BorderWidth="1px" CellPadding="2">
+                            <RowStyle BackColor="#ffffff" Font-Bold="True" Font-Size="8pt" ForeColor="Black"
+                                Font-Names="Verdana" Font-Strikeout="False" />
+                            <SelectedRowStyle BackColor="#f9f9f9" Font-Bold="True" ForeColor="White" />
+                            <AlternatingRowStyle BackColor="#f5f5f5" Font-Bold="True" Font-Size="8pt" ForeColor="Black" />
+                            <HeaderStyle BackColor="#99CCFF" Font-Bold="True" Font-Size="11px" ForeColor="Black"
+                                Height="25px" HorizontalAlign="Center" Font-Names="Verdana" />
+                            <Columns>
+                                <asp:TemplateField HeaderText="#" HeaderStyle-HorizontalAlign="Center">
+                                    <ItemTemplate>
+                                        <asp:Label ID="lblRowNo" runat="server" Width="94%" Text='<%# Container.DataItemIndex + 1 %>'></asp:Label>
+                                    </ItemTemplate>
+                                    <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="4%" />
+                                    <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="4%" />
+                                </asp:TemplateField>
+                                <asp:TemplateField HeaderText="SKU Code">
+                                    <ItemTemplate>
+                                        <asp:Label ID="lblSKUCode" runat="server" Text='<%# Bind("sku_desc") %>'></asp:Label>
+                                        <asp:HiddenField ID="hdnfldSKUCode" runat="server" Value='<%# Bind("v_sku_code") %>' />
+                                        <asp:HiddenField ID="hdnfldSKUUOM" runat="server" Value='<%# Bind("sku_uom") %>' />
+                                        <asp:HiddenField ID="hdnfldSKUVol" runat="server" Value='<%# Bind("sku_volume") %>' />
+                                        <asp:HiddenField ID="hdnfldTSl" runat="server" Value='<%# Bind("tsl") %>' />
+                                        <asp:HiddenField ID="hdnrank" runat="server" Value='<%# Bind("vendor_rank") %>' />
+                                        <%-- <asp:HiddenField ID="hdnrank" runat="server"/>--%>
+                                    </ItemTemplate>
+                                    <HeaderStyle HorizontalAlign="Center" />
+                                    <ItemStyle HorizontalAlign="Center" Width="16%" />
+                                </asp:TemplateField>
+                                <asp:TemplateField HeaderText="Three Months Average">
+                                    <ItemTemplate>
+                                        <asp:Label ID="lblLoadAverage" runat="server" Text='<%# Bind("load_average") %>'></asp:Label>
+                                    </ItemTemplate>
+                                    <HeaderStyle HorizontalAlign="Center" />
+                                    <ItemStyle HorizontalAlign="Center" Width="8%" />
+                                </asp:TemplateField>
+                                <asp:TemplateField HeaderText="Stock as on">
+                                    <ItemTemplate>
+                                        <asp:Label ID="lblCurrentStock" runat="server" Text='<%# Bind("current_stock") %>'></asp:Label>
+                                    </ItemTemplate>
+                                    <HeaderStyle HorizontalAlign="Center" />
+                                    <ItemStyle HorizontalAlign="Center" Width="8%" />
+                                </asp:TemplateField>
+                                <asp:TemplateField HeaderText="Pending<br />Load">
+                                    <ItemTemplate>
+                                        <asp:Label ID="lblPendingLoad" runat="server" Text='<%# Bind("pending_load") %>'></asp:Label>
+                                    </ItemTemplate>
+                                    <HeaderStyle HorizontalAlign="Center" />
+                                    <ItemStyle HorizontalAlign="Center" Width="8%" />
+                                </asp:TemplateField>
+                                <asp:TemplateField HeaderText="Depot Indent-to-Date">
+                                    <ItemTemplate>
+                                        <asp:Label ID="lblIndentToDate" runat="server" Text='<%# Bind("load_depot_indent_nop") %>'></asp:Label>
+                                    </ItemTemplate>
+                                    <HeaderStyle HorizontalAlign="Center" />
+                                    <ItemStyle HorizontalAlign="Center" Width="8%" />
+                                </asp:TemplateField>
+                                <asp:TemplateField HeaderText="Despatch-to-Date">
+                                    <ItemTemplate>
+                                        <asp:Label ID="lblDespatchToDate" runat="server" Text='<%# Bind("load_despatched_nop") %>'></asp:Label>
+                                    </ItemTemplate>
+                                    <HeaderStyle HorizontalAlign="Center" />
+                                    <ItemStyle HorizontalAlign="Center" Width="8%" />
+                                </asp:TemplateField>
+                                <asp:TemplateField HeaderText="Indent to Estimate (%) <b style='color:red;'>*</b>">
+                                    <ItemTemplate>
+                                        <asp:Label ID="lblPercentage" runat="server" Text='<%# Bind("load_percent") %>'></asp:Label>
+                                    </ItemTemplate>
+                                    <HeaderStyle HorizontalAlign="Center" />
+                                    <ItemStyle HorizontalAlign="Center" Width="6%" />
+                                </asp:TemplateField>
+                                <asp:TemplateField HeaderText="Indent NOP" ControlStyle-Width="90%" ControlStyle-Height="90%">
+                                    <ItemTemplate>
+                                        <asp:TextBox ID="txtNewLoad" runat="server" MaxLength="6" CssClass="form-control" onkeypress="return isNumber(event, this)"></asp:TextBox>
+                                    </ItemTemplate>
+                                    <HeaderStyle HorizontalAlign="Center" />
+                                    <ItemStyle HorizontalAlign="Center" Width="6%" />
+                                </asp:TemplateField>
+                                <asp:TemplateField HeaderText="Reason" ControlStyle-Width="90%"
+                                    ControlStyle-Height="90%">
+                                    <ItemTemplate>
+                                        <asp:UpdatePanel ID="UpdatePanel_1" runat="server">
+                                            <ContentTemplate>
+                                                <asp:DropDownList ID="ddlReason" runat="server" CssClass="form-control select2"
+                                                    AutoPostBack="true" OnSelectedIndexChanged="ddlReason_SelectedIndexChanged">
+                                                </asp:DropDownList>
+                                                <br />
+                                                <br />
+                                                <asp:FileUpload ID="upload_attachment" runat="server" />
+                                            </ContentTemplate>
+                                            <Triggers>
+                                                <asp:PostBackTrigger ControlID="ddlReason" />
+                                            </Triggers>
+                                        </asp:UpdatePanel>
+                                        <%-- <asp:TextBox ID="txtRemarks" runat="server" TextMode="MultiLine"></asp:TextBox>--%>
+                                    </ItemTemplate>
+                                    <HeaderStyle HorizontalAlign="Center" />
+                                    <%--<ItemStyle HorizontalAlign="Center" Width="40%" Height="50px" />--%>
+                                    <ItemStyle Width="28%" HorizontalAlign="Center" />
+                                </asp:TemplateField>
+                            </Columns>
+                        </asp:GridView>
+                    </ContentTemplate>
+                    <Triggers>
+                        <asp:AsyncPostBackTrigger ControlID="ddlRegion"
+                            EventName="SelectedIndexChanged" />
+                        <asp:AsyncPostBackTrigger ControlID="ddlDepot"
+                            EventName="SelectedIndexChanged" />
+                        <asp:AsyncPostBackTrigger ControlID="ddlVendorUnit"
+                            EventName="SelectedIndexChanged" />
+                        <asp:AsyncPostBackTrigger ControlID="chkbxListproduct"
+                            EventName="SelectedIndexChanged" />
+                        <asp:PostBackTrigger ControlID="btnSubmit" />
+                    </Triggers>
+                </asp:UpdatePanel>
+            </div>
+            <div class="row mt-3">
+                <div class="col-md-12 text-right indentEntryTotal">
+                    <p>
+                        Total Ltr:
+                        <asp:Label ID="lblTotLtr" runat="server"></asp:Label>
+                    </p>
+                    <p>
+                        Total Kg:
+                        <asp:Label ID="lblTotKg" runat="server"></asp:Label>
+                    </p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    <asp:Button ID="btnSubmit" runat="server" Text="Submit" CssClass="btn btn-success btn-sm" />
+                    <asp:Button ID="btnCancel" runat="server" Text="Cancel" CssClass="btn btn-secondary btn-sm" />
+                    <asp:Button ID="btnReset" runat="server" Text="Reset" CssClass="btn btn-danger btn-sm" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <asp:HiddenField ID="hdnskucode" runat="server" />
+    <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" id="exampleModal">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">PO Linking Request Entry</h5>
+                    <%--  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>--%>
+                </div>
+                <%-- <asp:UpdatePanel ID="updatemodalpopup" runat="server">
+                            <ContentTemplate>--%>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <%--<div class="d-flex align-items-center">
+                                        <small style="width: 65px;">Depot: </small>
+                                        <asp:Label ID="lbldepot" CssClass="p-0 fw600" runat="server"></asp:Label>
+                                    </div>--%>
+                            <%--<div class="d-flex align-items-center mt-3" >
+                                        <small style="width: 65px;">Vendor :<span style="color:red;">*</span> </small>
+                                        <%--<asp:Label ID="lblvendor" CssClass="p-0 fw600" runat="server"></asp:Label>--%>
+                            <%--<asp:UpdatePanel ID="updatevendor" runat="server">
+                                            <ContentTemplate>
+                                                <asp:DropDownList ID="ddlvndor" runat="server" CssClass="form-control" OnSelectedIndexChanged="ddlvndor_SelectedIndexChanged" AutoPostBack="true"></asp:DropDownList>
+                                            </ContentTemplate>
+                                        </asp:UpdatePanel>    --%>
+                            <%--</div>--%>
+                            <label class="form-control-label">Depot:</label>
+                            <asp:Label ID="lbldepot" CssClass="form-control" runat="server"></asp:Label>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-control-label">Vendor:<span style="color: red;">*</span></label>
+                            <%--<asp:Label ID="lblvendor" CssClass="p-0 fw600" runat="server"></asp:Label>--%>
+                            <asp:UpdatePanel ID="UpdatePanel7" runat="server">
+                                <ContentTemplate>
+                                    <asp:DropDownList ID="ddlvndor" runat="server" CssClass="form-control select2"></asp:DropDownList>
+                                </ContentTemplate>
+                            </asp:UpdatePanel>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-control-label">SKU Code:<span style="color: red;">*</span></label>
+                            <asp:TextBox ID="txtsku" CssClass="form-control" runat="server" placeholder="Sku Code" Font-Size="13px"></asp:TextBox>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-control-label">Remarks:</label>
+                            <asp:TextBox ID="txtremarks" CssClass="form-control" runat="server" Font-Size="13px" TextMode="MultiLine" placeholder="Remarks"></asp:TextBox>
+                        </div>
+                        <div class="col-md-12 justify-content-center align-content-center d-flex mt-3">
+                            <asp:LinkButton ID="lnkadd" runat="server" Text="Add" CssClass="btn btn-info btn-sm" OnClick="lnkadd_Click"></asp:LinkButton>
+                        </div>
+                        <asp:UpdatePanel ID="updatemodalpopup" runat="server">
+                            <ContentTemplate>
+                                <asp:HiddenField ID="hdnskucodes" runat="server" />
+                                <asp:HiddenField ID="hdnskutext" runat="server" />
+                                <asp:HiddenField ID="hdnpo" runat="server" />
+                                <asp:HiddenField ID="hdnvendor" runat="server" />
+                                <asp:HiddenField ID="hdndepot" runat="server" />
+                            </ContentTemplate>
+                        </asp:UpdatePanel>
+                        <div class="col-md-12 text-center">
+                            <asp:Label runat="server" ID="lblMsg"></asp:Label>
+                        </div>
+                        <div class="col-md-12 mt-3" runat="server" id="skudetails" visible="false">
+                            <asp:UpdatePanel ID="UpdatePanel6" runat="server">
+                                <ContentTemplate>
+                                    <div class="table-responsive">
+                                        <asp:GridView ID="gvskudtls" runat="server" AutoGenerateColumns="false" EmptyDataText="No records found" BorderWidth="1" CssClass="table table-hover upgradDataGrid" OnRowCommand="gvskudtls_RowCommand" OnRowDataBound="gvskudtls_RowDataBound">
+                                            <RowStyle CssClass="tlrowlight" />
+                                            <PagerStyle CssClass="PagerGrid" HorizontalAlign="Right" />
+                                            <HeaderStyle CssClass="headerGrid" />
+                                            <FooterStyle CssClass="footerGrid" />
+                                            <Columns>
+                                                <asp:TemplateField HeaderText="Depot">
+                                                    <ItemTemplate>
+                                                        <asp:Label ID="lbldepotcode" runat="server" Text='<%# Eval("depotname") %>'></asp:Label>
+                                                    </ItemTemplate>
+                                                    <ItemStyle Width="24%" />
+                                                </asp:TemplateField>
+
+                                                <asp:TemplateField HeaderText="Vendor">
+                                                    <ItemTemplate>
+                                                        <asp:Label ID="lblvendorcode" runat="server" Text='<%# Eval("vendorname") %>'></asp:Label>
+                                                    </ItemTemplate>
+                                                    <ItemStyle Width="24%" />
+                                                </asp:TemplateField>
+
+                                                <asp:TemplateField HeaderText="Product">
+                                                    <ItemTemplate>
+                                                        <asp:Label ID="lblsku" runat="server" Text='<%# Eval("skuname") %>'></asp:Label>
+                                                    </ItemTemplate>
+                                                    <ItemStyle Width="25%" />
+                                                </asp:TemplateField>
+
+                                                <asp:TemplateField HeaderText="Remarks">
+                                                    <ItemTemplate>
+                                                        <asp:Label ID="lblrmks" runat="server" Text='<%# Eval("remarks") %>'></asp:Label>
+                                                    </ItemTemplate>
+                                                    <ItemStyle Width="25%" />
+                                                </asp:TemplateField>
+
+                                                <asp:TemplateField HeaderText="Delete" ItemStyle-HorizontalAlign="Center">
+                                                    <ItemTemplate>
+                                                        <asp:LinkButton ID="lnkdelete" runat="server" Text="Delete" CommandName="itemdelete"><i class="fas fa-trash-alt text-danger text-center fa-lg"></i></asp:LinkButton>
+                                                    </ItemTemplate>
+                                                    <ItemStyle Width="2%" />
+                                                </asp:TemplateField>
+                                            </Columns>
+                                        </asp:GridView>
+                                    </div>
+                                </ContentTemplate>
+                                <%--<Triggers>
+                                            <asp:PostBackTrigger ControlID="gvskudtls" />
+                                        </Triggers>--%>
+                            </asp:UpdatePanel>
+                        </div>
+
+                    </div>
+                </div>
+                <%-- </ContentTemplate>
+                        </asp:UpdatePanel>--%>
+                <div class="modal-footer">
+                    <asp:Button ID="btnaddsku" runat="server" Text="Submit" CssClass="btn btn-success btn-sm" OnClick="btnaddsku_Click" Visible="false" />
+                    <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript" src="Scripts/jquery.sumoselect.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(<%=chkbxListproduct.ClientID%>).SumoSelect({
+                selectAll: true,
+                search: true,
+                csvDispCount: 2,
+                searchText: 'Search...',
+            });
+
+            $("#btnadditional").click(function (e) {
+                //e.preventDefault();
+                //var vendor = $('#ddlVendorUnit option:selected').val();
+                //var depot = $('#ddlDepot option:selected').val();
+                //var product = $('#ddlVendorProduct option:selected').val();
+                //if (vendor == "" || depot == "" || product == "") {
+                //    $('#exampleModal').modal('hide')
+                //    $("#lblErrorMsg").text("Please Select Vendor And Depot.");
+                //    return false;
+                //}
+                //else {
+                //    $("#lblErrorMsg").text("");
+                //    $('#exampleModal').modal('show')
+                //}
+                if ($('#ddlDepot option:selected').val() == "") {
+                    $('#exampleModal').modal('hide')
+                    alert("Please Select Depot.");
+                    return false;
+                }
+                else {
+                    if ($('#exampleModal').hasClass('show')) {
+                        showmodal();
+                    }
+                }
+            });
+
+        });
+        var prm = Sys.WebForms.PageRequestManager.getInstance();
+        prm.add_endRequest(function () {
+
+            $(<%=chkbxListproduct.ClientID%>).SumoSelect({
+                selectAll: true,
+                search: true,
+                csvDispCount: 2,
+                searchText: 'Search...',
+            });
+
+        });
+
+
+        $(document).on('shown.bs.modal', '#exampleModal', function () {
+            $('#hdnvendor').val($('#ddlvndor option:selected').val());
+            $('#hdndepot').val($('#ddlDepot option:selected').val());
+            //var vendor = $('#ddlvndor option:selected').text() + ' (' + $('#ddlvndor option:selected').val() + ')';
+            var depot = $('#ddlDepot option:selected').text();
+            //$('#lblvendor').text(vendor);
+            $('#lbldepot').text(depot);
+            $("#txtsku").keydown(function () {
+
+                $("#txtsku").autocomplete({
+                    source: function (request, response) {
+                        var param = { skucode: $('#txtsku').val(), vendorcode: $('#ddlvndor option:selected').val(), depotcode: $('#ddlDepot option:selected').val() };
+
+                        if (request.term.length >= 3) {
+                            $.ajax({
+                                url: "AddUpdateSTPIndentEntry.aspx/SKUCodeSearch",
+                                data: JSON.stringify(param),
+                                dataType: "json",
+                                type: "POST",
+                                contentType: "application/json; charset=utf-8",
+                                success: function (data) {
+                                    response($.map(data.d, function (item) {
+                                        return { label: item[1], value: item[0] };
+                                    }));
+                                },
+                                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                                    alert("Error: " + textStatus);
+                                }
+                            });
+                        }
+                    },
+                    focus: function (event, ui) {
+                        // You can remove this if you want the field to update while navigating
+                        event.preventDefault();
+                        $("#txtsku").val(ui.item.label);
+                    },
+                    select: function (e, ui) {
+                        setTimeout(function () {
+                            $("#hdnskucodes").val(ui.item.value);
+                            $("#txtsku").val(ui.item.label);
+                        }, 100);
+                    },
+                    minLength: 3
+                });
+            });
+
+
+            $("#btnaddsku").click(function () {
+                if ($('#gvskudtls').length <= 0) {
+                    $("#lblMsg").html("Add atleast one record").css("color", "red");
+                    return false;
+                }
+                else {
+                    if (confirm('Are you sure to submit?')) {
+                    } else {
+                        return false;
+                    }
+                }
+            });
+            $("#lnkadd").click(function () {
+                debugger;
+                firstErrorControl = "";
+                errMsg = "";
+                ValidateRequired("txtsku", "Please enter SKU.");
+
+                if (!ValidateRequired("ddlvndor", "Select Vertical Name.")) {
+                    var select = document.querySelector("ddlvndor")
+                    if (select != null) {
+                        select.style.border = "2px solid #ffe900";
+                    }
+                }
+                else {
+                    var select = document.querySelector("ddlvndor")
+                    if (select != null) {
+                        select.style.border = "2px solid #ffffff6b";
+                    }
+                }
+
+                if (firstErrorControl != "") {
+                    SetControlFocus(firstErrorControl);
+                    errMsg = "<table>" + errMsg + "</table>";
+                    document.getElementById("lblMsg").innerHTML = errMsg;
+                    return false;
+                }
+
+                //debugger;
+                //var vendor = $('#ddlvndor option:selected').val();
+                //if (vendor == "") {
+                //    $("#ddlvndor").css("background-color", "yellow");
+                //    $("#ddlvndor").css("background-color", "yellow");
+                //    $("#lblMsg").html("Select a Vendor.").css("color", "red");
+                //    return false;
+                //}
+                //var skucode = $("#txtsku").val();
+                //if (skucode == "") {
+                //    $("#txtsku").css("background-color", "yellow");
+                //    $("#txtsku").css("background-color", "yellow");
+                //    $("#lblMsg").html("Enter SKU Code.").css("color", "red");
+                //    return false;
+                //}
+
+            });
+        });
+    </script>
+
+</asp:Content>

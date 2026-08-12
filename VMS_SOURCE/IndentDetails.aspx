@@ -1,0 +1,80 @@
+﻿<%@ Page Title="Indent Details" Language="VB" MasterPageFile="~/MasterPage.master" AutoEventWireup="false" CodeFile="IndentDetails.aspx.vb" Inherits="IndentDetails" %>
+
+<%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
+<%--<asp:Content ID="Content1" ContentPlaceHolderID="Head1" runat="Server">
+</asp:Content>--%>
+<asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
+
+    <script type="text/javascript" src="Scripts/ValidationIndentDetails.js"></script>
+
+    <div class="breadcrumbs">
+        <div class="leftFung">
+            <a href="Home.aspx" title="Home"><i class="fas fa-home"></i></a>
+            <div class="diveider">/</div>
+            <h3 class="pageTitle">Indent Details</h3>
+        </div>
+        <div class="rightFung"></div>
+    </div>
+
+    <asp:UpdatePanel ID="UpdatePanel" runat="server">
+        <ContentTemplate>
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label class="form-control-label">Region:</label>
+                                <asp:DropDownList ID="ddlRegion" runat="server" CssClass="form-control select2" AutoPostBack="True"></asp:DropDownList>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label class="form-control-label">Depot:</label>
+                                <asp:DropDownList ID="ddlLocation" runat="server" CssClass="form-control select2" AutoPostBack="True"></asp:DropDownList>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label class="form-control-label">Process Year:<span id="Span3" class="mandatory">* (yyyy)</span></label>
+                                <asp:TextBox ID="txtFinYear" runat="server" Columns="50" CssClass="form-control" MaxLength="4" Rows="4" TabIndex="5"></asp:TextBox>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label class="form-control-label">Process Month:<span id="Span4" class="mandatory">* (mm)</span></label>
+                                <asp:TextBox ID="txtMonth" runat="server" Columns="50" CssClass="form-control" MaxLength="2" Rows="4" TabIndex="5"></asp:TextBox>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label class="form-control-label">Format:</label>
+                                <asp:DropDownList ID="ddlPrntOptn" CssClass="form-control select2" runat="server" AppendDataBoundItems="True">
+                                    <asp:ListItem Value="ExcelFormat" Selected="True">Excel</asp:ListItem>
+                                </asp:DropDownList>
+                            </div>
+                        </div>
+                        <div class="col-md-3 form-btn-mt">
+                            <div class="form-group">
+                                <asp:Button ID="btnSubmit" CssClass="btn btn-success btn-sm" TabIndex="31" runat="server" Text="Submit" />
+                                <asp:Button ID="btnReset" CssClass="btn btn-danger btn-sm" TabIndex="32" runat="server"
+                                    Text="Cancel" />
+                            </div>
+                        </div>
+                    </div>
+                    <div id="divErrMsg1" class="errormsg"></div>
+                    <div id="tblrental" runat="server">
+                        <asp:Label ID="lblErrMsg" CssClass="errormsg" Visible="true" runat="server"></asp:Label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <asp:GridView ID="GridView1" runat="server" BorderWidth="1" CssClass="table table-hover upgradDataGrid"></asp:GridView>
+                    </div>
+                </div>
+            </div>
+        </ContentTemplate>
+    </asp:UpdatePanel>
+</asp:Content>

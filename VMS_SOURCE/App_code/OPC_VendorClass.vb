@@ -1,0 +1,720 @@
+﻿Imports System.Data
+Imports System.Data.SqlClient
+Imports VMS.DataAccess
+Imports System.Data.SqlTypes
+
+Public Class OPC_VendorClass
+#Region "product master"
+    Function InsertUpdateBrandMasterDtls(ByRef BrandMasterEntity As ProductMasterEntity) As Integer
+        Dim sqlConn As SqlConnection = Nothing
+        sqlConn = DBFactory.GetHelper.OpenConnection()
+        'sqlTrans = sqlConn.BeginTransaction
+        Dim MsgID As Integer
+
+        Dim sqlParams(5) As SqlParameter
+        Try
+            sqlParams(0) = New SqlParameter()
+            sqlParams(0).ParameterName = "@brand_name"
+            sqlParams(0).SqlDbType = SqlDbType.VarChar
+            sqlParams(0).Direction = Data.ParameterDirection.Input
+            sqlParams(0).Value = BrandMasterEntity.PName
+
+            sqlParams(1) = New SqlParameter()
+            sqlParams(1).ParameterName = "@brand_id"
+            sqlParams(1).SqlDbType = SqlDbType.Int
+            sqlParams(1).Direction = Data.ParameterDirection.Input
+            sqlParams(1).Value = BrandMasterEntity.PID
+
+            sqlParams(2) = New SqlParameter()
+            sqlParams(2).ParameterName = "@active"
+            sqlParams(2).SqlDbType = SqlDbType.VarChar
+            sqlParams(2).Direction = Data.ParameterDirection.Input
+            sqlParams(2).Value = BrandMasterEntity.ActiveStatus
+
+            sqlParams(3) = New SqlParameter()
+            sqlParams(3).ParameterName = "@user_id"
+            sqlParams(3).SqlDbType = SqlDbType.VarChar
+            sqlParams(3).Direction = Data.ParameterDirection.Input
+            sqlParams(3).Value = BrandMasterEntity.CreatedUser
+
+            sqlParams(4) = New SqlParameter()
+            sqlParams(4).ParameterName = "@trantype"
+            sqlParams(4).SqlDbType = SqlDbType.Int
+            sqlParams(4).Direction = Data.ParameterDirection.Input
+            sqlParams(4).Value = BrandMasterEntity.Trantype
+
+            sqlParams(5) = New SqlParameter()
+            sqlParams(5).ParameterName = "@outputCode"
+            sqlParams(5).DbType = DbType.Int64
+            sqlParams(5).Direction = Data.ParameterDirection.Output
+            sqlParams(5).Size = 100
+
+            Dim sqlCmd As New SqlCommand()
+            sqlCmd.Connection = sqlConn
+            'sqlCmd.Transaction = sqlTrans
+            sqlCmd.CommandType = CommandType.StoredProcedure
+            sqlCmd.CommandText = "[dbo].[opc_product_insertupdate]"
+            sqlCmd.Parameters.AddRange(sqlParams)
+            sqlCmd.ExecuteNonQuery()
+            MsgID = CType(sqlParams(5).Value, Integer)
+            'sqlTrans.Commit()
+        Catch ex As Exception
+            'If (sqlTrans IsNot Nothing) Then
+            '    sqlTrans.Rollback()
+            'End If
+            Throw ex
+        Finally
+            If (sqlConn IsNot Nothing) Then
+                sqlConn.Close()
+            End If
+        End Try
+        Return MsgID
+    End Function
+    Function GetBrandMasterList() As DataSet
+        Dim DS As System.Data.DataSet
+        DS = DBFactory.GetHelper().ExecuteDataSet("[dbo].[opc_get_brand_master_list]", Data.CommandType.StoredProcedure)
+        Return DS
+    End Function
+#End Region
+
+#Region "Raw Material Master"
+    Public Function GetRawMatList(ByVal searchText As String) As DataSet
+        Dim ds As DataSet
+        Dim sqlParams(0) As SqlParameter
+
+        sqlParams(0) = New SqlParameter()
+        sqlParams(0).ParameterName = "@search_key"
+        sqlParams(0).DbType = DbType.String
+        sqlParams(0).Direction = ParameterDirection.Input
+        sqlParams(0).Value = If(Not String.IsNullOrWhiteSpace(searchText), CObj(searchText.Trim()), DBNull.Value)
+
+        ds = DBFactory.GetHelper().ExecuteDataSet("[dbo].[GetRawmaterialData]", CommandType.StoredProcedure, sqlParams)
+        Return ds
+    End Function
+    Function InsertUpdateRawMatMasterDtls(ByRef entity As RawMaterialMasterEntity) As Integer
+        Dim sqlConn As SqlConnection = Nothing
+        sqlConn = DBFactory.GetHelper.OpenConnection()
+        Dim MsgID As Integer
+
+        Dim sqlParams(4) As SqlParameter
+        Try
+            sqlParams(0) = New SqlParameter()
+            sqlParams(0).ParameterName = "@rawmat_code"
+            sqlParams(0).SqlDbType = SqlDbType.VarChar
+            sqlParams(0).Direction = Data.ParameterDirection.Input
+            sqlParams(0).Value = entity.RawMatCode
+
+            sqlParams(1) = New SqlParameter()
+            sqlParams(1).ParameterName = "@active"
+            sqlParams(1).SqlDbType = SqlDbType.VarChar
+            sqlParams(1).Direction = Data.ParameterDirection.Input
+            sqlParams(1).Value = entity.ActiveStatus
+
+            sqlParams(2) = New SqlParameter()
+            sqlParams(2).ParameterName = "@user_id"
+            sqlParams(2).SqlDbType = SqlDbType.VarChar
+            sqlParams(2).Direction = Data.ParameterDirection.Input
+            sqlParams(2).Value = entity.CreatedUser
+
+            sqlParams(3) = New SqlParameter()
+            sqlParams(3).ParameterName = "@trantype"
+            sqlParams(3).SqlDbType = SqlDbType.Int
+            sqlParams(3).Direction = Data.ParameterDirection.Input
+            sqlParams(3).Value = entity.Trantype
+
+            sqlParams(4) = New SqlParameter()
+            sqlParams(4).ParameterName = "@outputCode"
+            sqlParams(4).DbType = DbType.Int64
+            sqlParams(4).Direction = Data.ParameterDirection.Output
+            sqlParams(4).Size = 100
+
+            Dim sqlCmd As New SqlCommand()
+            sqlCmd.Connection = sqlConn
+            sqlCmd.CommandType = CommandType.StoredProcedure
+            sqlCmd.CommandText = "[dbo].[opc_rawmat_insertupdate]"
+            sqlCmd.Parameters.AddRange(sqlParams)
+            sqlCmd.ExecuteNonQuery()
+            MsgID = CType(sqlParams(4).Value, Integer)
+        Catch ex As Exception
+            Throw ex
+        Finally
+            If (sqlConn IsNot Nothing) Then
+                sqlConn.Close()
+            End If
+        End Try
+        Return MsgID
+    End Function
+    Function GetRawmaterialMstrList() As DataSet
+        Dim DS As System.Data.DataSet
+        DS = DBFactory.GetHelper().ExecuteDataSet("[dbo].[GetRawmaterialDataList]", Data.CommandType.StoredProcedure)
+        Return DS
+    End Function
+
+#End Region
+
+#Region "vendor rawmaterial linking"
+    Function GetRawMaterialByVendorId(ByVal vendorid As String) As DataSet
+        Dim DS As System.Data.DataSet
+        Dim sqlParams(0) As SqlParameter
+
+        sqlParams(0) = New SqlParameter()
+        sqlParams(0).ParameterName = "@vendorid"
+        sqlParams(0).DbType = DbType.String
+        sqlParams(0).Direction = Data.ParameterDirection.Input
+        sqlParams(0).Value = vendorid
+
+        DS = DBFactory.GetHelper().ExecuteDataSet("[dbo].[get_rawmat_list_for_vendor_link]", Data.CommandType.StoredProcedure, sqlParams)
+        Return DS
+    End Function
+    Function InsertVendorRawmaterialLink(ByVal user_id As String, ByVal tbl As DataTable) As Integer
+        Dim sqlConn As SqlConnection = Nothing
+        Dim sqlTrans As SqlTransaction = Nothing
+        Dim numRowsAffected As Integer
+        sqlConn = DBFactory.GetHelper.OpenConnection
+        sqlTrans = sqlConn.BeginTransaction
+
+        Dim sqlParams(1) As SqlParameter
+        Try
+            sqlParams(0) = New SqlParameter()
+            sqlParams(0).ParameterName = "@tbl"
+            sqlParams(0).Direction = Data.ParameterDirection.Input
+            sqlParams(0).Value = tbl
+
+            sqlParams(1) = New SqlParameter()
+            sqlParams(1).ParameterName = "@userid"
+            sqlParams(1).SqlDbType = SqlDbType.VarChar
+            sqlParams(1).Direction = Data.ParameterDirection.Input
+            sqlParams(1).Value = user_id
+
+            Dim sqlCmd As New SqlCommand()
+            sqlCmd.Connection = sqlConn
+            sqlCmd.Transaction = sqlTrans
+            sqlCmd.CommandType = CommandType.StoredProcedure
+            sqlCmd.CommandText = "[dbo].[vendor_rawmaterial_link_insert]"
+
+            sqlCmd.Parameters.AddRange(sqlParams)
+            numRowsAffected = sqlCmd.ExecuteNonQuery()
+
+            sqlTrans.Commit()
+        Catch ex As SqlException
+            If (sqlTrans IsNot Nothing) Then
+                sqlTrans.Rollback()
+            End If
+            Throw
+        Catch ex As Exception
+            If (sqlTrans IsNot Nothing) Then
+                sqlTrans.Rollback()
+            End If
+            Throw
+        Finally
+            If (sqlConn IsNot Nothing) Then
+                sqlConn.Close()
+            End If
+        End Try
+        Return numRowsAffected
+    End Function
+    Public Function GetVendorRawMatEditList(ByVal vendorid As String) As DataSet
+        Dim ds As DataSet
+        Dim sqlParams(0) As SqlParameter
+
+        sqlParams(0) = New SqlParameter()
+        sqlParams(0).ParameterName = "@vendor_id"
+        sqlParams(0).DbType = DbType.String
+        sqlParams(0).Direction = ParameterDirection.Input
+        sqlParams(0).Value = vendorid
+
+        ds = DBFactory.GetHelper().ExecuteDataSet("[dbo].[getvendor_rawmateriallink_editdata]", CommandType.StoredProcedure, sqlParams)
+        Return ds
+    End Function
+    Function GetRawmaterialList(ByVal vendorid As String) As DataSet
+        Dim DS As System.Data.DataSet
+        Dim sqlParams(0) As SqlParameter
+
+        sqlParams(0) = New SqlParameter()
+        sqlParams(0).ParameterName = "@vendor_code"
+        sqlParams(0).DbType = DbType.String
+        sqlParams(0).Direction = Data.ParameterDirection.Input
+        sqlParams(0).Value = If(Not String.IsNullOrWhiteSpace(vendorid), CObj(vendorid.Trim()), DBNull.Value)
+
+        DS = DBFactory.GetHelper().ExecuteDataSet("[dbo].[getvendor_rawmateriallist]", Data.CommandType.StoredProcedure, sqlParams)
+        Return DS
+    End Function
+    Function UpdateVendorRawMaterialLink(ByVal linkId As Integer,
+                                     ByVal active As String,
+                                     ByVal userId As String) As Integer
+
+        Dim sqlConn As SqlConnection = Nothing
+        Dim rowsAffected As Integer = 0
+
+        Try
+            sqlConn = DBFactory.GetHelper.OpenConnection()
+
+            Dim sqlCmd As New SqlCommand()
+            sqlCmd.Connection = sqlConn
+            sqlCmd.CommandType = CommandType.StoredProcedure
+            sqlCmd.CommandText = "[dbo].[vendor_rawmaterial_link_update]"
+
+            sqlCmd.Parameters.AddWithValue("@lin_id", linkId)
+            sqlCmd.Parameters.AddWithValue("@active", active)
+            sqlCmd.Parameters.AddWithValue("@user_id", userId)
+
+            rowsAffected = sqlCmd.ExecuteNonQuery()
+
+        Catch ex As Exception
+            Throw ex
+
+        Finally
+            If (sqlConn IsNot Nothing) Then
+                sqlConn.Close()
+            End If
+        End Try
+
+        Return rowsAffected
+
+    End Function
+#End Region
+
+#Region "formulation master"
+    Function GetProduct(ByVal searchText As String) As DataSet
+        'Dim DS As System.Data.DataSet
+        'DS = DBFactory.GetHelper().ExecuteDataSet("[dbo].[GetProduct_List]", Data.CommandType.StoredProcedure)
+        'Return DS
+        Dim ds As DataSet
+        Dim sqlParams(0) As SqlParameter
+
+        sqlParams(0) = New SqlParameter()
+        sqlParams(0).ParameterName = "@search_key"
+        sqlParams(0).DbType = DbType.String
+        sqlParams(0).Direction = ParameterDirection.Input
+        sqlParams(0).Value = If(Not String.IsNullOrWhiteSpace(searchText), CObj(searchText.Trim()), DBNull.Value)
+
+        ds = DBFactory.GetHelper().ExecuteDataSet("[dbo].[GetProduct_List]", Data.CommandType.StoredProcedure, sqlParams)
+        Return ds
+    End Function
+    Function GetShadeCodeList(ByVal productcode As String) As DataSet
+        Dim DS As System.Data.DataSet
+        Dim sqlParams(0) As SqlParameter
+
+        sqlParams(0) = New SqlParameter()
+        sqlParams(0).ParameterName = "@product_code"
+        sqlParams(0).DbType = DbType.String
+        sqlParams(0).Direction = Data.ParameterDirection.Input
+        sqlParams(0).Value = productcode
+
+        DS = DBFactory.GetHelper().ExecuteDataSet("[dbo].[GetShade_List]", Data.CommandType.StoredProcedure, sqlParams)
+        Return DS
+    End Function
+    Function GetRawMaterial() As DataSet
+        Dim DS As System.Data.DataSet
+        DS = DBFactory.GetHelper().ExecuteDataSet("[dbo].[GetRawMaterialDtls]", Data.CommandType.StoredProcedure)
+        Return DS
+    End Function
+    Public Function InsertFormulation(ByVal headerid As Integer, ByVal brandCode As String,
+                                  ByVal rawMatCode As String,
+                                  ByVal productCode As String,
+                                  ByVal user_id As String,
+                                  ByVal tbl As DataTable) As Integer
+
+        Dim sqlConn As SqlConnection = Nothing
+        Dim sqlTrans As SqlTransaction = Nothing
+        Dim numRowsAffected As Integer
+
+        sqlConn = DBFactory.GetHelper.OpenConnection
+        sqlTrans = sqlConn.BeginTransaction
+
+        Dim sqlParams(5) As SqlParameter
+
+        Try
+
+            sqlParams(0) = New SqlParameter()
+            sqlParams(0).ParameterName = "@headerid"
+            sqlParams(0).SqlDbType = SqlDbType.Int
+            sqlParams(0).Direction = ParameterDirection.Input
+            sqlParams(0).Value = headerid
+
+            sqlParams(1) = New SqlParameter()
+            sqlParams(1).ParameterName = "@opc_brand_code"
+            sqlParams(1).SqlDbType = SqlDbType.VarChar
+            sqlParams(1).Direction = ParameterDirection.Input
+            sqlParams(1).Value = brandCode
+
+            sqlParams(2) = New SqlParameter()
+            sqlParams(2).ParameterName = "@opc_rawmat_code"
+            sqlParams(2).SqlDbType = SqlDbType.VarChar
+            sqlParams(2).Direction = ParameterDirection.Input
+            sqlParams(2).Value = rawMatCode
+
+            sqlParams(3) = New SqlParameter()
+            sqlParams(3).ParameterName = "@opc_product_code"
+            sqlParams(3).SqlDbType = SqlDbType.VarChar
+            sqlParams(3).Direction = ParameterDirection.Input
+            sqlParams(3).Value = productCode
+
+            sqlParams(4) = New SqlParameter()
+            sqlParams(4).ParameterName = "@created_user"
+            sqlParams(4).SqlDbType = SqlDbType.VarChar
+            sqlParams(4).Direction = ParameterDirection.Input
+            sqlParams(4).Value = user_id
+
+            sqlParams(5) = New SqlParameter()
+            sqlParams(5).ParameterName = "@FormulationDetails"
+            sqlParams(5).SqlDbType = SqlDbType.Structured
+            sqlParams(5).TypeName = "dbo.tbl_opc_formulation_dtls"
+            sqlParams(5).Direction = ParameterDirection.Input
+            sqlParams(5).Value = tbl
+
+            Dim sqlCmd As New SqlCommand()
+            sqlCmd.Connection = sqlConn
+            sqlCmd.Transaction = sqlTrans
+            sqlCmd.CommandType = CommandType.StoredProcedure
+            sqlCmd.CommandText = "[dbo].[opc_formulation_insert]"
+
+            sqlCmd.Parameters.AddRange(sqlParams)
+            Using dr As SqlDataReader = sqlCmd.ExecuteReader()
+                If dr.Read() AndAlso Not IsDBNull(dr("Status")) Then
+                    numRowsAffected = Convert.ToInt32(dr("Status"))
+                Else
+                    numRowsAffected = 0
+                End If
+            End Using
+            sqlTrans.Commit()
+
+        Catch ex As Exception
+
+            If (sqlTrans IsNot Nothing) Then
+                sqlTrans.Rollback()
+            End If
+
+            Throw ex
+
+        Finally
+
+            If (sqlConn IsNot Nothing) Then
+                sqlConn.Close()
+            End If
+
+        End Try
+
+        Return numRowsAffected
+
+    End Function
+    Function GetFormulationDataList(ByVal brandcode As String, ByVal rawmatcode As String, ByVal productcode As String) As DataSet
+        Dim DS As System.Data.DataSet
+        Dim sqlParams(2) As SqlParameter
+
+        sqlParams(0) = New SqlParameter()
+        sqlParams(0).ParameterName = "@brand_code"
+        sqlParams(0).DbType = DbType.String
+        sqlParams(0).Direction = Data.ParameterDirection.Input
+        sqlParams(0).Value = If(Not String.IsNullOrWhiteSpace(brandcode), CObj(brandcode.Trim()), DBNull.Value)
+
+        sqlParams(1) = New SqlParameter()
+        sqlParams(1).ParameterName = "@rawmat_code"
+        sqlParams(1).DbType = DbType.String
+        sqlParams(1).Direction = Data.ParameterDirection.Input
+        sqlParams(1).Value = If(Not String.IsNullOrWhiteSpace(rawmatcode), CObj(rawmatcode.Trim()), DBNull.Value)
+
+        sqlParams(2) = New SqlParameter()
+        sqlParams(2).ParameterName = "@product_code"
+        sqlParams(2).DbType = DbType.String
+        sqlParams(2).Direction = Data.ParameterDirection.Input
+        sqlParams(2).Value = If(Not String.IsNullOrWhiteSpace(productcode), CObj(productcode.Trim()), DBNull.Value)
+
+        DS = DBFactory.GetHelper().ExecuteDataSet("[dbo].[getformulation_datalist]", Data.CommandType.StoredProcedure, sqlParams)
+        Return DS
+    End Function
+    Function GetFormulationEditList(ByVal brandcode As String, ByVal rawmatcode As String, ByVal productcode As String) As DataSet
+        Dim DS As System.Data.DataSet
+        Dim sqlParams(2) As SqlParameter
+
+        sqlParams(0) = New SqlParameter()
+        sqlParams(0).ParameterName = "@brandcode"
+        sqlParams(0).DbType = DbType.String
+        sqlParams(0).Direction = Data.ParameterDirection.Input
+        sqlParams(0).Value = If(Not String.IsNullOrWhiteSpace(brandcode), CObj(brandcode.Trim()), DBNull.Value)
+
+        sqlParams(1) = New SqlParameter()
+        sqlParams(1).ParameterName = "@rawcode"
+        sqlParams(1).DbType = DbType.String
+        sqlParams(1).Direction = Data.ParameterDirection.Input
+        sqlParams(1).Value = If(Not String.IsNullOrWhiteSpace(rawmatcode), CObj(rawmatcode.Trim()), DBNull.Value)
+
+        sqlParams(2) = New SqlParameter()
+        sqlParams(2).ParameterName = "@producode"
+        sqlParams(2).DbType = DbType.String
+        sqlParams(2).Direction = Data.ParameterDirection.Input
+        sqlParams(2).Value = If(Not String.IsNullOrWhiteSpace(productcode), CObj(productcode.Trim()), DBNull.Value)
+
+        DS = DBFactory.GetHelper().ExecuteDataSet("dbo.opc_get_formulation_for_edit", Data.CommandType.StoredProcedure, sqlParams)
+        Return DS
+    End Function
+#End Region
+
+#Region "Raw Material Vendor Master"
+    Function InsertUpdateRawMaterialVendorMasterDtls(ByRef entity As RawMaterialVendorMasterEntity) As Integer
+        Dim sqlConn As SqlConnection = Nothing
+        sqlConn = DBFactory.GetHelper.OpenConnection()
+        Dim MsgID As Integer
+
+        Dim sqlParams(13) As SqlParameter
+        Try
+            sqlParams(0) = New SqlParameter()
+            sqlParams(0).ParameterName = "@vendor_code"
+            sqlParams(0).SqlDbType = SqlDbType.VarChar
+            sqlParams(0).Direction = Data.ParameterDirection.Input
+            sqlParams(0).Value = entity.VendorCode
+
+            sqlParams(1) = New SqlParameter()
+            sqlParams(1).ParameterName = "@vendor_name"
+            sqlParams(1).SqlDbType = SqlDbType.VarChar
+            sqlParams(1).Direction = Data.ParameterDirection.Input
+            sqlParams(1).Value = entity.VendorName
+
+            sqlParams(2) = New SqlParameter()
+            sqlParams(2).ParameterName = "@gst_registration_number"
+            sqlParams(2).SqlDbType = SqlDbType.VarChar
+            sqlParams(2).Direction = Data.ParameterDirection.Input
+            sqlParams(2).Value = entity.GstRegistrationNumber
+
+            sqlParams(3) = New SqlParameter()
+            sqlParams(3).ParameterName = "@address"
+            sqlParams(3).SqlDbType = SqlDbType.VarChar
+            sqlParams(3).Direction = Data.ParameterDirection.Input
+            sqlParams(3).Value = entity.Address
+
+            sqlParams(4) = New SqlParameter()
+            sqlParams(4).ParameterName = "@city"
+            sqlParams(4).SqlDbType = SqlDbType.VarChar
+            sqlParams(4).Direction = Data.ParameterDirection.Input
+            sqlParams(4).Value = entity.Vendor_City
+
+            sqlParams(5) = New SqlParameter()
+            sqlParams(5).ParameterName = "@state"
+            sqlParams(5).SqlDbType = SqlDbType.VarChar
+            sqlParams(5).Direction = Data.ParameterDirection.Input
+            sqlParams(5).Value = entity.Vendor_State
+
+            sqlParams(6) = New SqlParameter()
+            sqlParams(6).ParameterName = "@pincode"
+            sqlParams(6).SqlDbType = SqlDbType.VarChar
+            sqlParams(6).Direction = Data.ParameterDirection.Input
+            sqlParams(6).Value = entity.Vendor_PinCode
+
+            sqlParams(7) = New SqlParameter()
+            sqlParams(7).ParameterName = "@contact_person"
+            sqlParams(7).SqlDbType = SqlDbType.VarChar
+            sqlParams(7).Direction = Data.ParameterDirection.Input
+            sqlParams(7).Value = entity.ContactPerson
+
+            sqlParams(8) = New SqlParameter()
+            sqlParams(8).ParameterName = "@mobile_number"
+            sqlParams(8).SqlDbType = SqlDbType.VarChar
+            sqlParams(8).Direction = Data.ParameterDirection.Input
+            sqlParams(8).Value = entity.MobileNumber
+
+            sqlParams(9) = New SqlParameter()
+            sqlParams(9).ParameterName = "@email_address"
+            sqlParams(9).SqlDbType = SqlDbType.VarChar
+            sqlParams(9).Direction = Data.ParameterDirection.Input
+            sqlParams(9).Value = entity.EmailAddress
+
+            sqlParams(10) = New SqlParameter()
+            sqlParams(10).ParameterName = "@active"
+            sqlParams(10).SqlDbType = SqlDbType.VarChar
+            sqlParams(10).Direction = Data.ParameterDirection.Input
+            sqlParams(10).Value = entity.ActiveStatus
+
+            sqlParams(11) = New SqlParameter()
+            sqlParams(11).ParameterName = "@user_id"
+            sqlParams(11).SqlDbType = SqlDbType.VarChar
+            sqlParams(11).Direction = Data.ParameterDirection.Input
+            sqlParams(11).Value = entity.CreatedUser
+
+            sqlParams(12) = New SqlParameter()
+            sqlParams(12).ParameterName = "@trantype"
+            sqlParams(12).SqlDbType = SqlDbType.Int
+            sqlParams(12).Direction = Data.ParameterDirection.Input
+            sqlParams(12).Value = entity.Trantype
+
+            sqlParams(13) = New SqlParameter()
+            sqlParams(13).ParameterName = "@outputCode"
+            sqlParams(13).DbType = DbType.Int64
+            sqlParams(13).Direction = Data.ParameterDirection.Output
+            sqlParams(13).Size = 100
+
+            Dim sqlCmd As New SqlCommand()
+            sqlCmd.Connection = sqlConn
+            sqlCmd.CommandType = CommandType.StoredProcedure
+            sqlCmd.CommandText = "[dbo].[opc_rawmaterial_vendor_insertupdate]"
+            sqlCmd.Parameters.AddRange(sqlParams)
+            sqlCmd.ExecuteNonQuery()
+            MsgID = CType(sqlParams(13).Value, Integer)
+        Catch ex As Exception
+            Throw ex
+        Finally
+            If (sqlConn IsNot Nothing) Then
+                sqlConn.Close()
+            End If
+        End Try
+        Return MsgID
+    End Function
+    Function GetRawMaterialVendorMasterList(Optional ByVal vendorName As String = "") As DataSet
+        Dim DS As System.Data.DataSet
+        Dim sqlParams(0) As SqlParameter
+
+        sqlParams(0) = New SqlParameter()
+        sqlParams(0).ParameterName = "@vendor_code"
+        sqlParams(0).DbType = DbType.String
+        sqlParams(0).Direction = Data.ParameterDirection.Input
+        sqlParams(0).Value = If(Not String.IsNullOrWhiteSpace(vendorName), CObj(vendorName.Trim()), DBNull.Value)
+
+        DS = DBFactory.GetHelper().ExecuteDataSet("[dbo].[opc_get_rawmaterial_vendor_list]", Data.CommandType.StoredProcedure, sqlParams)
+        Return DS
+    End Function
+    Function GetRawMaterialVendorMasterEdit(ByVal vendorCode As String) As DataSet
+        Dim DS As System.Data.DataSet
+        Dim sqlParams(0) As SqlParameter
+
+        sqlParams(0) = New SqlParameter()
+        sqlParams(0).ParameterName = "@vendor_code"
+        sqlParams(0).DbType = DbType.String
+        sqlParams(0).Direction = Data.ParameterDirection.Input
+        sqlParams(0).Value = vendorCode
+
+        DS = DBFactory.GetHelper().ExecuteDataSet("[dbo].[opc_get_rawmaterial_vendor_edit]", Data.CommandType.StoredProcedure, sqlParams)
+        Return DS
+    End Function
+    Function GetNextRawMaterialVendorCode() As DataSet
+        Dim DS As System.Data.DataSet
+
+        DS = DBFactory.GetHelper().ExecuteDataSet("[dbo].[opc_get_rawmaterial_vendor_next_code]", CommandType.StoredProcedure)
+
+        'If Not (DS Is Nothing) AndAlso DS.Tables.Count > 0 AndAlso Not (DS.Tables(0) Is Nothing) AndAlso DS.Tables(0).Rows.Count > 0 Then
+        '    Return Convert.ToString(DS.Tables(0).Rows(0)("vendor_code")).Trim()
+        'End If
+
+        'Return String.Empty
+        Return DS
+    End Function
+    Function GetRawMaterialVendorList() As DataSet
+        Dim DS As System.Data.DataSet
+        DS = DBFactory.GetHelper().ExecuteDataSet("[dbo].[getrawmat_vendorlist]", CommandType.StoredProcedure)
+        Return DS
+    End Function
+#End Region
+
+#Region "Raw Material Requisition"
+    Function InsertUpdateRawMaterialRequisition(ByRef entity As RawMaterialRequisitionHeaderEntity, ByVal dtDetails As DataTable) As Integer
+
+        Dim sqlConn As SqlConnection = Nothing
+        sqlConn = DBFactory.GetHelper.OpenConnection()
+        Dim MsgID As Integer
+        Dim sqlParams(6) As SqlParameter
+
+        Try
+
+            sqlParams(0) = New SqlParameter()
+            sqlParams(0).ParameterName = "@orh_Id"
+            sqlParams(0).SqlDbType = SqlDbType.Int
+            sqlParams(0).Direction = Data.ParameterDirection.Input
+            sqlParams(0).Value = entity.RequestId
+
+            sqlParams(1) = New SqlParameter()
+            sqlParams(1).ParameterName = "@vendor_code"
+            sqlParams(1).SqlDbType = SqlDbType.VarChar
+            sqlParams(1).Size = 50
+            sqlParams(1).Direction = Data.ParameterDirection.Input
+            sqlParams(1).Value = entity.VendorCode
+
+            sqlParams(2) = New SqlParameter()
+            sqlParams(2).ParameterName = "@rawmaterial_vender_code"
+            sqlParams(2).SqlDbType = SqlDbType.VarChar
+            sqlParams(2).Size = 50
+            sqlParams(2).Direction = Data.ParameterDirection.Input
+            sqlParams(2).Value = entity.RawMaterialVendorCode
+
+            sqlParams(3) = New SqlParameter()
+            sqlParams(3).ParameterName = "@user_id"
+            sqlParams(3).SqlDbType = SqlDbType.VarChar
+            sqlParams(3).Size = 50
+            sqlParams(3).Direction = Data.ParameterDirection.Input
+            sqlParams(3).Value = entity.CreatedUser
+
+            sqlParams(4) = New SqlParameter()
+            sqlParams(4).ParameterName = "@tran_type"
+            sqlParams(4).SqlDbType = SqlDbType.Int
+            sqlParams(4).Direction = Data.ParameterDirection.Input
+            sqlParams(4).Value = entity.Trantype
+
+            sqlParams(5) = New SqlParameter()
+            sqlParams(5).ParameterName = "@tbl_opc_request_dtls"
+            sqlParams(5).SqlDbType = SqlDbType.Structured
+            sqlParams(5).Direction = Data.ParameterDirection.Input
+            sqlParams(5).TypeName = "dbo.tbl_opc_request_dtls"
+            sqlParams(5).Value = dtDetails
+
+            sqlParams(6) = New SqlParameter()
+            sqlParams(6).ParameterName = "@outputCode"
+            sqlParams(6).SqlDbType = SqlDbType.Int
+            sqlParams(6).Direction = Data.ParameterDirection.Output
+
+            Dim sqlCmd As New SqlCommand()
+            sqlCmd.Connection = sqlConn
+            sqlCmd.CommandType = CommandType.StoredProcedure
+            sqlCmd.CommandText = "[dbo].[opc_rawmaterial_request_insert_update]"
+            sqlCmd.Parameters.AddRange(sqlParams)
+            sqlCmd.ExecuteNonQuery()
+
+            If Not IsDBNull(sqlParams(6).Value) Then
+                MsgID = Convert.ToInt32(sqlParams(6).Value)
+                entity.RequestId = MsgID
+            End If
+        Catch ex As Exception
+            Throw ex
+        Finally
+            If (sqlConn IsNot Nothing) Then
+                sqlConn.Close()
+            End If
+        End Try
+        Return MsgID
+    End Function
+    Function GetRawMaterialRequestList(ByVal vendorCode As String, ByVal rawmat_vendorCode As String, ByVal approval_status As String) As DataSet
+        Dim DS As System.Data.DataSet
+        Dim sqlParams(2) As SqlParameter
+
+        sqlParams(0) = New SqlParameter()
+        sqlParams(0).ParameterName = "@vendor_code"
+        sqlParams(0).DbType = DbType.String
+        sqlParams(0).Direction = Data.ParameterDirection.Input
+        sqlParams(0).Value = If(Not String.IsNullOrWhiteSpace(vendorCode), CObj(vendorCode.Trim()), DBNull.Value)
+
+        sqlParams(1) = New SqlParameter()
+        sqlParams(1).ParameterName = "@rawmat_vendor_code"
+        sqlParams(1).DbType = DbType.String
+        sqlParams(1).Direction = Data.ParameterDirection.Input
+        sqlParams(1).Value = If(Not String.IsNullOrWhiteSpace(rawmat_vendorCode), CObj(rawmat_vendorCode.Trim()), DBNull.Value)
+
+        sqlParams(2) = New SqlParameter()
+        sqlParams(2).ParameterName = "@approval_status"
+        sqlParams(2).DbType = DbType.String
+        sqlParams(2).Direction = Data.ParameterDirection.Input
+        sqlParams(2).Value = If(Not String.IsNullOrWhiteSpace(approval_status), CObj(approval_status.Trim()), DBNull.Value)
+
+        DS = DBFactory.GetHelper().ExecuteDataSet("[dbo].[getrawmaterial_requisitionlist]", Data.CommandType.StoredProcedure, sqlParams)
+        Return DS
+    End Function
+    Function GetRawMaterialRequesteditt(ByVal requestid As Integer) As DataSet
+        Dim DS As System.Data.DataSet
+        Dim sqlParams(0) As SqlParameter
+
+        sqlParams(0) = New SqlParameter()
+        sqlParams(0).ParameterName = "@requestid"
+        sqlParams(0).DbType = DbType.Int32
+        sqlParams(0).Direction = Data.ParameterDirection.Input
+        sqlParams(0).Value = requestid
+
+        DS = DBFactory.GetHelper().ExecuteDataSet("[dbo].[getrawmaterial_requisition_editdata]", Data.CommandType.StoredProcedure, sqlParams)
+        Return DS
+    End Function
+#End Region
+End Class

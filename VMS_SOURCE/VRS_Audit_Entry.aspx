@@ -1,0 +1,351 @@
+﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="VRS_Audit_Entry.aspx.vb" Inherits="VRS_Audit_Entry" %>
+
+<%@ Register TagPrefix="uc1" TagName="Footer" Src="includes/Footer.ascx" %>
+
+<!doctype html>
+<html lang="en">
+<head id="Head1" runat="server">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <title>Vendor Audit Entry</title>
+    <link href="includes/style.css?v=@DateTime.Now.ToString()" rel="stylesheet" type="text/css" />
+    <link href="includes/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="includes/upgrad-style.css?v=@DateTime.Now.ToString()" rel="stylesheet" type="text/css" />
+
+    <link type="text/css" rel="Stylesheet" href="includes/select2.min.css" />
+    <link type="text/css" rel="Stylesheet" href="includes/select2-bootstrap4.min.css" />
+
+    <script type="text/javascript" src="Scripts/anchorposition.js"></script>
+    <script type="text/javascript" src="Scripts/popupwindow.js"></script>
+    <script type="text/javascript" src="Scripts/calendarpopup.js"></script>
+    <script type="text/javascript" src="Scripts/date.js"></script>
+    <script type="text/javascript" src="Scripts/Currency.js"></script>
+    <script type="text/javascript" src="Scripts/FunctionValidator.js"></script>
+    <script type="text/javascript" src="Scripts/Messages.js"></script>
+    <script type="text/javascript" src="Scripts/RegEX.js"></script>
+    <script type="text/javascript" src="Scripts/AjaxServices.js"></script>
+    <script type="text/javascript" src="Scripts/Autocomplete.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script type="text/javascript" src="Scripts/ValidateUnitApplicableVendorAssign.js?key=<%= DateTime.Now.ToString %>"></script>
+
+    <script type="text/javascript">
+        function confirmRemove() {
+            return confirm("Are you sure you want to remove?");
+        }
+    </script>
+
+    <script type="text/javascript">
+        function validateObtainedScore(input) {
+            var maxScore = parseFloat(input.closest('tr').querySelector('[id$="hdnMaxScore"]').value);
+
+            var obtainedScore = input.value;
+            if (obtainedScore === "") {
+                return;
+            }
+            if (isNaN(obtainedScore)) {
+                alert('Please enter a valid number.');
+                input.value = '';
+                return;
+            }
+
+            obtainedScore = parseFloat(obtainedScore);
+
+            if (obtainedScore > maxScore) {
+                alert('Obtained Score cannot be greater than Max Score.');
+                input.value = '';
+            }
+        }
+
+        function Submit() {
+            return confirm("Are you sure you want to submit?");
+        }
+
+        function confirmSubmit() {
+            return confirm("Are you sure to confirm? Once submitted, you cannot modify it.");
+        }
+    </script>
+    <style type="text/css">
+        .Progressoverlay {
+            position: fixed;
+            z-index: 999;
+            height: 100%;
+            width: 100%;
+            top: 0;
+            background-color: Black;
+            filter: alpha(opacity=60);
+            opacity: 0.6;
+            -moz-opacity: 0.8;
+        }
+
+        .modal-popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 10000;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content-custom {
+            background-color: #fff;
+            padding: 0px;
+            border-radius: 6px;
+            width: 80%;
+            max-height: 90%;
+            overflow-y: auto;
+        }
+
+        .modal-header-custom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #408967;
+            padding: 10px 20px;
+        }
+
+            .modal-header-custom h5 {
+                margin: 0px;
+                padding: 0px;
+                color: #FFF;
+                font-size: 16px;
+                line-height: 19px;
+                letter-spacing: 0.3px;
+            }
+
+        .close-btn {
+            background: #FFF;
+            border: none;
+            font-size: 25px;
+            color: #ff0000;
+            font-weight: bold;
+            padding: 0px 0px 5px 0px;
+            line-height: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            margin: 0px;
+        }
+
+        .modal-body-custom {
+            font-size: 12px; /* Smaller font size for content */
+            padding: 20px;
+        }
+
+        .select2-container .select2-selection--single, .select2-container--default .select2-selection--single .select2-selection__arrow {
+            height: 33px;
+        }
+    </style>
+</head>
+<body>
+    <form id="form1" runat="server" submitdisabledcontrols="true">
+        <asp:ScriptManager ID="ScriptManager1" runat="server"></asp:ScriptManager>
+        <asp:UpdateProgress ID="updProgress" runat="server" DisplayAfter="0">
+            <ProgressTemplate>
+                <div class="pageLoader">
+                    <div class="innerLoader">
+                        <img class="loaderImg" alt="progress" src="images/ajax-loader.gif" />
+                        <p class="loaderTx">Processing... Please Wait.</p>
+                    </div>
+                </div>
+            </ProgressTemplate>
+        </asp:UpdateProgress>
+
+        <div class="header">
+            <div class="container">
+                <div class="headerContainer">
+                    <div class="logoSection">
+                        <img class="logo" src="images/berger-paints-logo.png" alt="logo" />
+                        <h3 class="ModuleName">Vendor Management Software</h3>
+                    </div>
+                    <a href="Home.aspx" title="Home">
+                        <img class="homeIcon" src="images/3d-house.png" alt="Home" />
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="breadcrumbs">
+                <div class="leftFung">
+                    <a href="Home.aspx" title="Home"><i class="fas fa-home"></i></a>
+                    <div class="diveider">/</div>
+                    <h3 class="pageTitle">Vendor Audit Entry</h3>
+                </div>
+                <div class="rightFung"></div>
+            </div>
+            
+        </div>
+
+        <div class="container">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label class="form-control-label">Quarter:</label>
+                                <asp:UpdatePanel runat="server" ID="UpdatePanel2">
+                                    <ContentTemplate>
+                                        <asp:DropDownList ID="ddlQuarter" class="form-control form-control-sm select2" runat="server" AutoPostBack="True" />
+                                    </ContentTemplate>
+                                </asp:UpdatePanel>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label class="form-control-label">Vendor:</label>
+                                <asp:UpdatePanel runat="server" ID="UpdatePanel4">
+                                    <ContentTemplate>
+                                        <asp:DropDownList ID="ddlVendor" class="form-control form-control-sm select2" runat="server" />
+                                    </ContentTemplate>
+                                </asp:UpdatePanel>
+                            </div>
+                        </div>
+
+                        <%--                        <div class="col-md-2 d-flex align-items-end">
+                            <div class="form-group w-50">
+                                <asp:UpdatePanel runat="server" ID="UpdatePanel7">
+                                    <ContentTemplate>
+                                        <asp:Button ID="btnSearch" runat="server" ToolTip="Search" Text="Search" class="form-control btn btn-primary btn-sm" OnClientClick="return validateSubmit();" style="display: inline-block;"/>&nbsp;
+                                        <asp:Button ID="btnReset" runat="server" ToolTip="Click to Reset" Text="Reset" CssClass="btn btn-warning btn-sm" style="display: inline-block;"/>
+                                    </ContentTemplate>
+                                </asp:UpdatePanel>
+                            </div>
+                        </div>--%>
+                        <div class="col-md-3 form-btn-mt">
+                            <asp:UpdatePanel runat="server" ID="UpdatePanel3">
+                                <ContentTemplate>
+                                    <asp:Button ID="btnSearch" runat="server" ToolTip="Click to Search" Text="Search" CssClass="btn btn-primary btn-sm"/>&nbsp;
+                                    <asp:Button ID="btnReset" runat="server" ToolTip="Click to Reset" Text="Reset" CssClass="btn btn-warning btn-sm" />
+                                </ContentTemplate>
+                            </asp:UpdatePanel>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <asp:UpdatePanel ID="UpdatePanel1" runat="server">
+                                <ContentTemplate>
+                                    <div style="max-height: 300px; overflow-y: auto;">
+                                        <asp:GridView ID="gvAuditList" runat="server" AutoGenerateColumns="False" EmptyDataText="No records found" CssClass="upgradDataGrid m-0" CellSpacing="0" CellPadding="0">
+                                            <RowStyle CssClass="tlrowlight" />
+                                            <SelectedRowStyle />
+                                            <PagerStyle CssClass="PagerGrid" HorizontalAlign="Right" />
+                                            <HeaderStyle CssClass="headerGrid" />
+                                            <FooterStyle CssClass="footerGrid" />
+                                            <Columns>
+                                                <%--<asp:TemplateField HeaderText="Parameter ID">
+                                                <ItemTemplate>
+                                                    <%--<asp:Label ID="lblPId" Text='<%# Bind("ap_p_id") %>' runat="server"/>--%>
+                                                <%--<asp:HiddenField runat="server" ID="lblPId" Value='<%# Bind("ap_p_id") %>' />
+                                                </ItemTemplate>
+                                                <ControlStyle></ControlStyle>
+                                                <HeaderStyle HorizontalAlign="Center" />
+                                                <ItemStyle HorizontalAlign="Center" Width="4%" />
+                                            </asp:TemplateField>--%>
+                                                <asp:TemplateField HeaderText="Parameter Type">
+                                                    <ItemTemplate>
+                                                        <asp:Label ID="lblParameterType" Text='<%# Bind("ap_parameter_type")%>' runat="server" />
+                                                        <asp:HiddenField runat="server" ID="lblPId" Value='<%# Bind("ap_p_id") %>' />
+                                                    </ItemTemplate>
+                                                    <ControlStyle></ControlStyle>
+                                                    <HeaderStyle HorizontalAlign="Center" />
+                                                    <ItemStyle HorizontalAlign="Center" Width="10%" />
+                                                </asp:TemplateField>
+                                                <asp:TemplateField HeaderText="Parameter Name">
+                                                    <ItemTemplate>
+                                                        <asp:Label ID="lblParameterName" Text='<%# Bind("ap_parameter_name")%>' runat="server" />
+                                                    </ItemTemplate>
+                                                    <ControlStyle></ControlStyle>
+                                                    <HeaderStyle HorizontalAlign="Left" />
+                                                    <ItemStyle HorizontalAlign="Left" Width="35%" />
+                                                </asp:TemplateField>
+                                                <asp:TemplateField HeaderText="Max Score">
+                                                    <ItemTemplate>
+                                                        <asp:Label ID="lblMaxScore" Text='<%# Bind("ap_max_score")%>' runat="server" />
+                                                        <asp:HiddenField runat="server" ID="hdnMaxScore" Value='<%# Bind("ap_max_score") %>' />
+                                                    </ItemTemplate>
+                                                    <ControlStyle></ControlStyle>
+                                                    <HeaderStyle HorizontalAlign="Center" />
+                                                    <ItemStyle HorizontalAlign="Center" Width="10%" />
+                                                </asp:TemplateField>
+                                                <asp:TemplateField HeaderText="Obtained Score">
+                                                    <ItemTemplate>
+                                                        <asp:TextBox ID="txtObtainedScore" runat="server" CssClass="form-control form-control-sm" Text='<%# Eval("ah_obtained_score") %>' oninput="validateObtainedScore(this);" />
+                                                    </ItemTemplate>
+                                                    <ControlStyle></ControlStyle>
+                                                    <HeaderStyle HorizontalAlign="Center" />
+                                                    <ItemStyle HorizontalAlign="Center" Width="10%" />
+                                                </asp:TemplateField>
+                                                <asp:TemplateField HeaderText="Remarks">
+                                                    <ItemTemplate>
+                                                        <asp:TextBox ID="txtAuditRemarks" runat="server" CssClass="form-control form-control-sm" Text='<%# Eval("ah_remarks") %>'/>
+                                                    </ItemTemplate>
+                                                    <ControlStyle></ControlStyle>
+                                                    <HeaderStyle HorizontalAlign="Center" />
+                                                    <ItemStyle HorizontalAlign="Center" Width="35%" />
+                                                </asp:TemplateField>
+                                            </Columns>
+                                        </asp:GridView>
+                                    </div>
+                                </ContentTemplate>
+                                <Triggers>
+                                    <%--<asp:AsyncPostBackTrigger ControlID="btnUpload" EventName="Click" />--%>
+                                    <asp:PostBackTrigger ControlID="gvAuditList" />
+                                </Triggers>
+                            </asp:UpdatePanel>
+                        </div>
+                    </div>
+
+                    <div class="row mt-2">
+                        <div class="col-md-12 text-center">
+                            <asp:UpdatePanel runat="server" ID="UpdatePanel9">
+                                <ContentTemplate>
+                                    <asp:HiddenField ID="hdnId" runat="server" />
+                                    <asp:Button ID="btnSubmit" runat="server" ToolTip="Save" Text="Save" CssClass="btn btn-success btn-sm" OnClientClick="return Submit();" />
+                                    <asp:Button ID="btnConSub" runat="server" ToolTip="Save & Submit" Text="Save & Submit" CssClass="btn btn-warning btn-sm ml-2" OnClientClick="return confirmSubmit();" />
+                                    <asp:Button ID="btnBack" runat="server" Text="Back" CssClass="btn btn-secondary btn-sm ml-2" OnClick="btnBack_Click" />
+                                </ContentTemplate>
+                            </asp:UpdatePanel>
+                        </div>
+                    </div>
+                </div>
+
+                <asp:UpdatePanel runat="server" ID="UpdatePanel10">
+                    <ContentTemplate>
+                        <asp:Label ID="lblErrorMessage" CssClass="errormsg" Visible="true" runat="server"></asp:Label>
+                    </ContentTemplate>
+                </asp:UpdatePanel>
+            </div>
+        </div>
+
+        <div class="footerFix">
+            <uc1:Footer ID="Footer1" runat="server"></uc1:Footer>
+        </div>
+    </form>
+
+    <script type="text/javascript" src="Scripts/select2.full.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            //Initialize Select2 Elements
+            $('.select2').select2();
+        });
+        var prm = Sys.WebForms.PageRequestManager.getInstance();
+        prm.add_endRequest(function () {
+            $('.select2').select2();
+        });
+    </script>
+</body>
+</html>

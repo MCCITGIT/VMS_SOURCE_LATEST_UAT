@@ -1,0 +1,523 @@
+﻿Imports VMS.Web
+Imports System.Data
+Imports System.Data.SqlTypes
+Imports System.IO
+Imports VMS.DataAccess
+Imports System.Data.SqlClient
+
+Partial Class UnitDespatchPlanList
+    Inherits System.Web.UI.Page
+    Dim userInfo As VMSUserEntity = New VMSUserEntity()
+
+#Region "Login Check"
+    Private Sub CheckLogin()
+        If (Not (Session(Constant.SessionKeys.UserInfo) Is Nothing)) Then
+            userInfo = CType(Session(Constant.SessionKeys.UserInfo), VMSUserEntity)
+
+        Else
+            Response.Redirect("~/Login.aspx")
+        End If
+    End Sub
+#End Region
+#Region "Get Screen Details"
+    Private Sub GetScreenDetails()
+        Dim ScreenDS As DataSet
+        Dim StockObj As New UnitDespatchClass
+        ScreenDS = StockObj.GetSCreenDetails(userInfo.userBranchEntity)
+        If (Not (ScreenDS Is Nothing) AndAlso ScreenDS.Tables.Count > 0 AndAlso Not (ScreenDS.Tables(0) Is Nothing) AndAlso ScreenDS.Tables(0).Rows.Count > 0) Then
+            ddlYear.SelectedValue = ScreenDS.Tables(0).Rows(0)("year").ToString
+            ddlMonth.SelectedValue = ScreenDS.Tables(0).Rows(0)("month").ToString
+            'lblUnit.Text = ScreenDS.Tables(0).Rows(0)("unit").ToString
+        End If
+    End Sub
+#End Region
+#Region "Populate Region Dropdown"
+    Public Sub PopulateRegion()
+        CheckLogin()
+        Dim commonObj As New Common
+        Dim RegionDS As New DataSet
+        Dim RegiontypeDS As DataSet = commonObj.GetLovDetails(userInfo.userCompanyEntity, Constant.Common.REGION_TYPE, Constant.Common.ActiveStatus)
+        If Not (RegiontypeDS Is Nothing) Then
+            ddlRegion.DataSource = RegiontypeDS
+            ddlRegion.DataTextField = "Lov_Value"
+            ddlRegion.DataValueField = "Lov_Code"
+            ddlRegion.DataBind()
+            ddlRegion.Items.Insert(0, New ListItem("ALL", "", True))
+        End If
+    End Sub
+#End Region
+#Region "Populate Depot Dropdown"
+    Public Sub PopulateDepotName()
+        CheckLogin()
+        ddlLocation.Items.Clear()
+        Dim commonObj As New Common
+        Dim DepotDS As New DataSet
+
+        DepotDS = commonObj.Getdepotname(ddlRegion.SelectedValue)
+        If (Not (DepotDS Is Nothing) AndAlso DepotDS.Tables.Count > 0 AndAlso Not (DepotDS.Tables(0) Is Nothing) AndAlso DepotDS.Tables(0).Rows.Count > 0) Then
+            ddlLocation.DataSource = DepotDS.Tables(0)
+            ddlLocation.DataTextField = "Depot_Name"
+            ddlLocation.DataValueField = "depot_code"
+            ddlLocation.DataBind()
+            ddlLocation.Items.Insert(0, New ListItem(Constant.Common.Selec, String.Empty, True))
+        End If
+
+    End Sub
+#End Region
+#Region "Populate page size dropdown"
+
+    ' Populates the page size dropdown
+    Private Sub PageSizeDropdown()
+        ddlPageSize.Items.Clear()
+        'Gets the page size from the web.config file
+        Dim configPagesize As String = ConfigurationManager.AppSettings.Get("PageSize")
+        Dim numbers As String() = configPagesize.Split(",")
+        Dim index As Integer = 0
+
+        While index <= numbers.Length - 1
+            Try
+                Dim size As Integer = Convert.ToInt32(numbers(index))
+                'Adds the page size to drop down list
+                ddlPageSize.Items.Add(New ListItem(size.ToString, size.ToString))
+            Catch exp As Exception
+                ddlPageSize.Items.Clear()
+                'LoadDefaultPageSize()
+            End Try
+            System.Math.Min(System.Threading.Interlocked.Increment(index), index - 1)
+        End While
+        ddlPageSize.Items.Insert(0, New ListItem("999", 999, True))
+        gvChallanDetails.PageSize = ddlPageSize.SelectedValue
+    End Sub
+
+#End Region
+#Region "Populate Unit"
+    Private Sub PopulateUnit()
+        CheckLogin()
+
+
+        Dim UnitSet As New DataSet
+        Dim StockObj As New UnitDespatchClass
+        UnitSet = StockObj.GetUnit(ddlRegion.SelectedValue, Constant.Common.ActiveStatus)
+        If (Not (UnitSet Is Nothing) AndAlso UnitSet.Tables.Count > 0 AndAlso Not (UnitSet.Tables(0) Is Nothing) AndAlso UnitSet.Tables(0).Rows.Count > 0) Then
+            ddlUnit.DataSource = UnitSet.Tables(0)
+            ddlUnit.DataTextField = "unit_name"
+            ddlUnit.DataValueField = "unit_code"
+            ddlUnit.DataBind()
+            ddlUnit.Items.Insert(0, New ListItem(Constant.Common.All, String.Empty, True))
+        End If
+        If (userInfo.userGroupCodeEntity = "UNIT") Then
+            ddlUnit.SelectedValue = userInfo.userBranchEntity
+            ddlUnit.Enabled = False
+        End If
+    End Sub
+#End Region
+#Region "Bind Grid"
+    Private Sub BindGrid()
+        Dim DespatchDS As DataSet
+        Dim DespatchObj As New UnitDespatchClass
+        Dim chalanNo As Integer
+        If txtChallanNo.Text.Trim <> "" Then
+            chalanNo = CType(txtChallanNo.Text.Trim, Integer)
+        Else
+            chalanNo = Integer.MinValue
+        End If
+        DespatchDS = DespatchObj.GetChallanDetails(ddlUnit.SelectedValue, ddlLocation.SelectedValue, ddlYear.SelectedValue, ddlMonth.SelectedValue, chalanNo)
+        If (Not (DespatchDS Is Nothing) AndAlso DespatchDS.Tables.Count > 0 AndAlso Not (DespatchDS.Tables(0) Is Nothing) AndAlso DespatchDS.Tables(0).Rows.Count > 0) Then
+            gvChallanDetails.DataSource = DespatchDS
+            gvChallanDetails.DataBind()
+            btnAprove.Enabled = True
+        Else
+            gvChallanDetails.DataSource = DespatchDS
+            gvChallanDetails.DataBind()
+            btnAprove.Enabled = False
+        End If
+    End Sub
+#End Region
+    Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
+        If Not IsPostBack Then
+            btnAprove.Enabled = False
+            CheckLogin()
+            GetScreenDetails()
+            PopulateRegion()
+            PopulateDepotName()
+            PopulateUnit()
+            PageSizeDropdown()
+            BindGrid()
+            txtChallanNo.Attributes.Add("onkeypress", "KeyPressNumeric();")
+        End If
+    End Sub
+
+    Protected Sub ddlRegion_SelectedIndexChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles ddlRegion.SelectedIndexChanged
+        PopulateDepotName()
+    End Sub
+
+    Protected Sub gvChallanDetails_RowCommand(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.GridViewCommandEventArgs) Handles gvChallanDetails.RowCommand
+        If (e.CommandName = "Print") Then
+            'Dim index As Integer = Convert.ToInt32(e.r
+            '
+            Dim gvRow As GridViewRow = CType(CType(e.CommandSource, ImageButton).NamingContainer, GridViewRow)
+
+            Dim index As Integer = gvRow.RowIndex
+            Dim row As GridViewRow = gvChallanDetails.Rows(index)
+            Dim hdn As HiddenField
+            Dim ReportViewer As New ReportViewer_DC
+
+            ReportViewer.ReportFileName = AppDomain.CurrentDomain.BaseDirectory + Constant.ReportView.ReportFileLoc + Constant.ReportView.ReportName.Despatched_Advice_Report
+            ReportViewer.ReportCase = Constant.ReportView.ReportCase.DespatchedAdviceRptCase
+
+
+            hdn = row.FindControl("hdnUnit")
+            ReportViewer.DsptchdAdviceUnit = hdn.Value
+            hdn = row.FindControl("hdnDepot")
+            ReportViewer.DsptchdAdviceDepot = hdn.Value
+            hdn = row.FindControl("hdnyear")
+            ReportViewer.DsptchdAdviceFinYear = hdn.Value
+            hdn = row.FindControl("hdnChallanId")
+            ReportViewer.DsptchdAdviceChlnNo = hdn.Value
+
+            ReportViewer.Active = Constant.Common.ActiveStatus
+
+            ScriptManager.RegisterStartupScript(Me, Me.GetType(), "Show Report", "<script language='javascript'>fnNewWindow('ReportViewer.aspx','_blank')</script>", False)
+
+
+        End If
+
+    End Sub
+
+    Protected Sub gvChallanDetails_RowDataBound(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.GridViewRowEventArgs) Handles gvChallanDetails.RowDataBound
+        If (e.Row.RowType = DataControlRowType.DataRow) Then
+            Dim chk As CheckBox = e.Row.FindControl("chkSelect")
+            Dim pageIdx As Integer = gvChallanDetails.PageIndex * ddlPageSize.SelectedValue
+            e.Row.Cells(0).Text = pageIdx + (e.Row.RowIndex + 1)
+            Dim rowView As DataRowView = CType(e.Row.DataItem, DataRowView)
+            If rowView("desph_approved_yn") = "Y" Then
+                e.Row.Cells(8).Text = "Approved"
+                chk.Visible = False
+                e.Row.BackColor = Drawing.Color.LawnGreen
+            Else
+                e.Row.Cells(8).Text = "Pending"
+            End If
+            e.Row.Cells(5).Text = "<a href='UnitDespatchPlanAddUpdate.aspx?" & Constant.SessionKeys.Challan_No & "=" & rowView("desph_challan_no").ToString & "&" & Constant.SessionKeys.Process_Year & "=" & rowView("desph_challan_fin_year") & "&" & Constant.SessionKeys.UnitCode & "=" & rowView("desph_desp_unit") & "'class='hl'>" & rowView("desph_challan_no") & "</a>"
+        End If
+
+        If (e.Row.RowType = DataControlRowType.Pager) Then
+            Dim row As TableRow = New TableRow
+            'row = e.Row.Controls(0).Controls(0).Controls(0)
+            For Each cell As TableCell In row.Cells
+                Dim lb As Control = cell.Controls(0)
+
+
+                If (TypeOf (lb) Is Label) Then
+
+                    'CType(lb, Label).ForeColor = System.Drawing.Color.Red
+                    CType(lb, Label).CssClass = "lblpager"
+                    CType(lb, Label).Width = 20
+                    CType(lb, Label).Height = 15
+                    'set current pager
+
+                ElseIf (TypeOf (lb) Is LinkButton) Then
+
+                    CType(lb, LinkButton).CssClass = "lnkpager"
+                    CType(lb, LinkButton).Width = 20
+                    CType(lb, LinkButton).Height = 15
+                    CType(lb, LinkButton).ForeColor = Drawing.Color.Black
+                End If
+
+            Next
+        End If
+    End Sub
+
+    Protected Sub btnAprove_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnAprove.Click
+        ChallanAprove()
+        BindGrid()
+    End Sub
+
+
+#Region "Aprove Challan"
+    Private Sub ChallanAprove()
+        CheckLogin()
+        Dim DespatchObj As New UnitDespatchClass
+        Dim hdrEntity As New DespatchHeaderEntity
+        Dim numRowsAffected As Integer
+        Dim sqlConn As New SqlConnection
+        Dim sqlTrans As SqlTransaction
+
+        Try
+            Dim chk As CheckBox
+            Dim hdnUnit, hdnMonth, hdnYr, hdnChallan, hdnDepot As HiddenField
+            For i As Integer = 0 To gvChallanDetails.Rows.Count - 1
+                sqlConn = DBFactory.GetHelper.OpenConnection()
+                sqlTrans = sqlConn.BeginTransaction()
+                Try
+                    chk = gvChallanDetails.Rows(i).FindControl("chkSelect")
+                    hdnChallan = gvChallanDetails.Rows(i).FindControl("hdnChallanId")
+                    Dim challanNo As Integer
+                    challanNo = hdnChallan.Value
+                    hdnUnit = gvChallanDetails.Rows(i).FindControl("hdnUnit")
+                    hdnMonth = gvChallanDetails.Rows(i).FindControl("hdnMOnth")
+                    hdnYr = gvChallanDetails.Rows(i).FindControl("hdnyear")
+                    hdnDepot = gvChallanDetails.Rows(i).FindControl("hdnDepot")
+                    If chk.Checked Then
+                        numRowsAffected = DespatchObj.AproveChallan(sqlConn, sqlTrans, challanNo, hdnUnit.Value, hdnYr.Value, hdnMonth.Value, Constant.Common.ActiveStatus, userInfo.userCompanyEntity)
+                        If Not numRowsAffected > 0 Then
+                            sqlTrans.Rollback()
+                            GoTo z
+                        Else
+                            sqlTrans.Commit()
+
+                            If hdnUnit.Value = "U08" Then
+                                sendMail(hdnDepot.Value, hdnUnit.Value, hdnYr.Value, challanNo, Constant.Common.ActiveStatus)
+                            End If
+
+                        End If
+                    End If
+                Catch ex As Exception
+                    If Not sqlTrans Is Nothing Then
+                        sqlTrans.Rollback()
+                    End If
+                Finally
+                    If Not sqlConn Is Nothing Then
+                        sqlConn.Close()
+                    End If
+                End Try
+            Next
+            'sqlTrans.Commit()
+        Catch ex As Exception
+            'If Not sqlTrans Is Nothing Then
+            '    sqlTrans.Rollback()
+            'End If
+        
+        End Try
+z:
+    End Sub
+#End Region
+
+    Protected Sub ImgbtnSearch_Click(ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles ImgbtnSearch.Click
+        BindGrid()
+    End Sub
+
+    Protected Sub gvChallanDetails_SelectedIndexChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles gvChallanDetails.SelectedIndexChanged
+
+    End Sub
+
+
+    Public Sub sendMail(ByVal Depot As String, ByVal Unit As String, ByVal FinYear As String, ByVal ChallanNo As Int32, ByVal Active As String)
+
+        Dim mstr As New UnitDespatchClass
+        Dim Despatchds As New DataSet
+        Dim filepath As String
+
+        Despatchds = mstr.GetDespatchDetailsForMail(Depot, Unit, FinYear, ChallanNo, Active)
+
+        If (Not (DespatchDS Is Nothing) AndAlso DespatchDS.Tables.Count > 0 AndAlso Not (DespatchDS.Tables(0) Is Nothing) AndAlso DespatchDS.Tables(0).Rows.Count > 0) Then
+            Dim wrt_len As Integer = 70
+            Dim tmp_len As Integer
+
+            Dim SW As StreamWriter
+            Dim file_name As String
+            Dim RecPath As String = Format(DateTime.Now, "dd_MM_yyyy")
+
+            filepath = ConfigurationManager.AppSettings("UPLOAD_DOCS_FOLDER_ABS_PATH") & "DespatchMail\" & RecPath
+            'If Not System.IO.File.Exists(filepath) Then
+            '    System.IO.File.Create(filepath)
+            'End If
+            If Not (Directory.Exists(filepath)) Then
+                Directory.CreateDirectory(filepath)
+            End If
+            file_name = Convert.ToString(Despatchds.Tables(0).Rows(0)("UnitOracleId")) + "_" + Depot.ToString + "_" + DateTime.Now.ToFileTimeUtc.ToString() + ".txt"
+
+            SW = File.CreateText(filepath & "\" & file_name)
+
+
+            'tmp_len = Val(Despatchds.Tables(0).Select("max(len(sku_desc))"))
+            'tmp_len = 60
+            'wrt_len = wrt_len + tmp_len
+
+
+            'For i = 0 To wrt_len
+            '    SW.Write("-")
+            'Next
+            'SW.WriteLine("")
+            'SW.WriteLine(Environment.NewLine)
+            'SW.WriteLine("Vendor Name - " + )
+            'SW.WriteLine("Depot - " + Despatchds.Tables(0).Rows(0)("Depot").ToString())
+            'SW.WriteLine("Challan No - " + Despatchds.Tables(0).Rows(0)("Challan_No").ToString())
+            'SW.WriteLine("Challan Date - " + Despatchds.Tables(0).Rows(0)("despd_challan_date").ToString())
+            'SW.WriteLine("Vendor Challan No - " + Despatchds.Tables(0).Rows(0)("desph_excise_gp_no").ToString())
+            'SW.WriteLine("Vendor Challan Date - " + Despatchds.Tables(0).Rows(0)("desph_excise_gp_dt").ToString())
+            'SW.WriteLine("Transporter Name - " + Despatchds.Tables(0).Rows(0)("desph_transporter_name").ToString())
+            'SW.WriteLine("Loaded in Vehicle No. - " + Despatchds.Tables(0).Rows(0)("desph_truck_no").ToString())
+            'SW.WriteLine("Road Permit No. - " + Despatchds.Tables(0).Rows(0)("desph_road_permit_no").ToString())
+            'For i = 0 To wrt_len
+            '    SW.Write("-")
+            'Next
+            'SW.WriteLine("")
+
+
+            SW.WriteLine("Vendor Code|Depot|Challan No|Challan Date|Vendor Challan No|Vendor Challan Date|Transporter Name|Loaded in Vehicle No|Road Permit No|SKU Code|NOP|VOLUME|")
+
+            For i = 0 To Despatchds.Tables(0).Rows.Count - 1
+
+                SW.WriteLine(Despatchds.Tables(0).Rows(i)("UnitOracleId").ToString() & "|" & Despatchds.Tables(0).Rows(i)("despd_desp_depot").ToString() & "|" & Despatchds.Tables(0).Rows(i)("despd_challan_no").ToString() & "|" & Despatchds.Tables(0).Rows(i)("despd_challan_date").ToString() & "|" & Despatchds.Tables(0).Rows(i)("desph_excise_gp_no").ToString() & "|" & Despatchds.Tables(0).Rows(i)("VendorChallanDate").ToString() & "|" & Despatchds.Tables(0).Rows(i)("desph_transporter_name").ToString() & "|" & Despatchds.Tables(0).Rows(i)("desph_truck_no").ToString() & "|" & Despatchds.Tables(0).Rows(i)("desph_road_permit_no").ToString() & "|" & Despatchds.Tables(0).Rows(i)("despd_sku_code").ToString & "|" & Despatchds.Tables(0).Rows(i)("despd_desp_nop").ToString & "|" & Format((Convert.ToDecimal(Despatchds.Tables(0).Rows(i)("despd_desp_nop")) * Convert.ToDecimal(Despatchds.Tables(0).Rows(i)("despd_sku_vol"))), "#0.00") & "|")
+
+            Next
+            'SW.WriteLine(Environment.NewLine)
+
+            'For i = 0 To wrt_len
+            '    SW.Write("-")
+            'Next
+            'SW.WriteLine("")
+            SW.Close()
+
+
+
+            Dim email_mstr As EmailSMSsender = New EmailSMSsender()
+
+            Try
+                Dim obj As New UnitDespatchClass
+                Dim Ds As DataSet
+
+                Ds = obj.GetMailIds("VendorDespatchMail")
+                Dim result As String = String.Empty
+
+                Dim subject As String = "Vendor Despatch ( " + Despatchds.Tables(0).Rows(0)("desph_excise_gp_no").ToString() + " - " + Despatchds.Tables(0).Rows(0)("desph_excise_gp_dt").ToString() + ")"
+                Dim body As String = "Vendor Despatch to Depot" + Despatchds.Tables(0).Rows(0)("Depot").ToString() _
+                      + Environment.NewLine + Environment.NewLine
+
+
+                result = email_mstr.sendEMail( _
+                Ds.Tables(0).Rows(0)("MailIds_To").ToString, _
+                Ds.Tables(0).Rows(0)("MailIds_CC").ToString, _
+                (filepath & "\" & file_name), _
+                subject, _
+                body)
+
+
+
+            Catch ex As Exception
+                'SW.WriteLine("Exception occurred - " + ex.Message + " - " + DateTime.Now.ToString())
+            End Try
+        End If
+
+    End Sub
+
+
+    'Public Sub sendMail(ByVal Depot As String, ByVal Unit As String, ByVal FinYear As String, ByVal ChallanNo As Int32, ByVal Active As String)
+
+    '    Dim mstr As New UnitDespatchClass
+    '    Dim Despatchds As New DataSet
+    '    Dim filepath As String
+
+    '    Despatchds = mstr.GetDespatchDetailsForMail(Depot, Unit, FinYear, ChallanNo, Active)
+
+    '    If (Not (DespatchDS Is Nothing) AndAlso DespatchDS.Tables.Count > 0 AndAlso Not (DespatchDS.Tables(0) Is Nothing) AndAlso DespatchDS.Tables(0).Rows.Count > 0) Then
+    '        Dim wrt_len As Integer = 70
+    '        Dim tmp_len As Integer
+
+    '        Dim SW As StreamWriter
+    '        Dim file_name As String
+    '        Dim RecPath As String = Format(DateTime.Now, "dd_MM_yyyy")
+
+    '        filepath = ConfigurationManager.AppSettings("UPLOAD_DOCS_FOLDER_ABS_PATH") & "DespatchMail\" & RecPath
+    '        'If Not System.IO.File.Exists(filepath) Then
+    '        '    System.IO.File.Create(filepath)
+    '        'End If
+    '        If Not (Directory.Exists(filepath)) Then
+    '            Directory.CreateDirectory(filepath)
+    '        End If
+    '        file_name = Unit.ToString + "_" + Depot.ToString + "_" + Despatchds.Tables(0).Rows(0)("desph_excise_gp_no").ToString() + "_" + DateTime.Now.ToFileTimeUtc.ToString() + ".txt"
+
+    '        SW = File.CreateText(filepath & "\" & file_name)
+
+
+    '        'tmp_len = Val(Despatchds.Tables(0).Select("max(len(sku_desc))"))
+    '        tmp_len = 60
+    '        wrt_len = wrt_len + tmp_len
+
+
+    '        For i = 0 To wrt_len
+    '            SW.Write("-")
+    '        Next
+    '        SW.WriteLine("")
+    '        'SW.WriteLine(Environment.NewLine)
+    '        SW.WriteLine("Vendor Name - " + Despatchds.Tables(0).Rows(0)("unit_name").ToString())
+    '        SW.WriteLine("Depot - " + Despatchds.Tables(0).Rows(0)("Depot").ToString())
+    '        SW.WriteLine("Challan No - " + Despatchds.Tables(0).Rows(0)("Challan_No").ToString())
+    '        SW.WriteLine("Challan Date - " + Despatchds.Tables(0).Rows(0)("despd_challan_date").ToString())
+    '        SW.WriteLine("Vendor Challan No - " + Despatchds.Tables(0).Rows(0)("desph_excise_gp_no").ToString())
+    '        SW.WriteLine("Vendor Challan Date - " + Despatchds.Tables(0).Rows(0)("desph_excise_gp_dt").ToString())
+    '        SW.WriteLine("Transporter Name - " + Despatchds.Tables(0).Rows(0)("desph_transporter_name").ToString())
+    '        SW.WriteLine("Loaded in Vehicle No. - " + Despatchds.Tables(0).Rows(0)("desph_truck_no").ToString())
+    '        SW.WriteLine("Road Permit No. - " + Despatchds.Tables(0).Rows(0)("desph_road_permit_no").ToString())
+    '        For i = 0 To wrt_len
+    '            SW.Write("-")
+    '        Next
+    '        SW.WriteLine("")
+
+
+    '        SW.WriteLine(RPad("Srl No.", 10) & RPad("SKU Code", 20) & RPad("Sku Description", tmp_len) & RPad("UOM", 8) & RPad("NOP", 10) & LPad("Volume", 20))
+
+    '        For i = 0 To wrt_len
+    '            SW.Write("-")
+    '        Next
+    '        SW.WriteLine("")
+    '        For i = 0 To Despatchds.Tables(0).Rows.Count - 1
+
+    '            SW.WriteLine(RPad((i + 1).ToString, 10) & RPad(Despatchds.Tables(0).Rows(i)("despd_sku_code").ToString, 20) & RPad(Despatchds.Tables(0).Rows(i)("sku_desc").ToString, tmp_len) & RPad(Despatchds.Tables(0).Rows(i)("despd_sku_uom").ToString, 8) & RPad(Despatchds.Tables(0).Rows(i)("despd_desp_nop").ToString, 10) & LPad(Format((Convert.ToDecimal(Despatchds.Tables(0).Rows(i)("despd_desp_nop")) * Convert.ToDecimal(Despatchds.Tables(0).Rows(i)("despd_sku_vol"))), "#0.00"), 20))
+
+    '            'SW.WriteLine("Sku Code. - " + Despatchds.Tables(0).Rows(i)("despd_sku_code"))
+    '            'SW.WriteLine("Sku Desc. - " + Despatchds.Tables(0).Rows(i)("sku_desc"))
+    '            'SW.WriteLine("UOM. - " + Despatchds.Tables(0).Rows(i)("despd_sku_uom"))
+    '            'SW.WriteLine("NOP. - " + Despatchds.Tables(0).Rows(i)("despd_desp_nop"))
+    '            'SW.WriteLine("Volume. - " + (Convert.ToDecimal(Despatchds.Tables(0).Rows(i)("despd_desp_nop")) * Convert.ToDecimal(Despatchds.Tables(0).Rows(i)("despd_sku_vol"))))
+
+    '        Next
+    '        'SW.WriteLine(Environment.NewLine)
+
+    '        For i = 0 To wrt_len
+    '            SW.Write("-")
+    '        Next
+    '        SW.WriteLine("")
+    '        SW.Close()
+
+
+
+    '        Dim email_mstr As EmailSMSsender = New EmailSMSsender()
+
+    '        Try
+    '            Dim obj As New UnitDespatchClass
+    '            Dim Ds As DataSet
+
+    '            Ds = obj.GetMailIds("VendorDespatchMail")
+    '            Dim result As String = String.Empty
+
+    '            Dim subject As String = "Vendor Despatch to Depot" + Despatchds.Tables(0).Rows(0)("Depot").ToString()
+    '            Dim body As String = "Vendor Despatch to Depot" + Despatchds.Tables(0).Rows(0)("Depot").ToString() _
+    '                  + Environment.NewLine + Environment.NewLine
+
+
+    '            result = email_mstr.sendEMail( _
+    '            Ds.Tables(0).Rows(0)("MailIds_To").ToString, _
+    '            Ds.Tables(0).Rows(0)("MailIds_CC").ToString, _
+    '            (filepath & "\" & file_name), _
+    '            subject, _
+    '            body)
+
+
+
+    '        Catch ex As Exception
+    '            'SW.WriteLine("Exception occurred - " + ex.Message + " - " + DateTime.Now.ToString())
+    '        End Try
+    '    End If
+
+    'End Sub
+
+    Private Function LPad(ByVal str As String, ByVal len As Integer) As String
+        Return str.PadLeft(len, " ")
+    End Function
+
+    Private Function RPad(ByVal str As String, ByVal len As Integer) As String
+        Return str.PadRight(len, " ")
+    End Function
+
+End Class

@@ -1,0 +1,183 @@
+<%@ Page Language="VB" AutoEventWireup="false" CodeFile="Fin_Year_Master_Add.aspx.vb" Inherits="Fin_Year_Master_Add" %>
+<%@ Register TagPrefix="uc1" TagName="Footer" Src="includes/Footer.ascx" %>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head runat="server">
+    <title>:: Fin Year Master Add ::</title>
+    <link href="includes/style.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" language="javascript" src="Scripts/FunctionValidator.js"></script>
+    <script type="text/javascript" language="javascript" src="Scripts/ValidationFinMaster.js"></script>
+    <script type="text/javascript" language="javascript" src="Scripts/Messages.js"></script>
+    <script type="text/javascript" language="javascript" src="Scripts/RegEX.js"></script>
+    <script type="text/javascript" language="javascript" src="Scripts/date.js"></script>
+    <script type="text/javascript" language="javascript" src="Scripts/AjaxServices.js"></script>
+    <script type="text/javascript" src="Scripts/anchorposition.js"></script>
+    <script type="text/javascript" src="Scripts/popupwindow.js"></script>
+    <script type="text/javascript" src="Scripts/calendarpopup.js"></script>
+    <script type="text/javascript" src="Scripts/Currency.js"></script>    
+</head>
+<body>
+    <form id="form1" runat="server">
+    <script type="text/javascript" >var cal1 = new CalendarPopup();</script>
+    <table width="100%"  border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td align="left" valign="top"><table width="100%"  border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="left" valign="top" style="background-color:#ffffff">
+        <!-- Table for Logo Starts -->
+        <table width="100%"  border="0" cellspacing="0" cellpadding="0">
+          <tr>
+            <!--<td style="width:180" align="center">
+                <asp:Image ID="Image1" ImageUrl="~/images/inner_logo.gif" Width="149px" Height="74px" runat="server" />
+            </td>-->
+            <td valign="bottom" style="width:90%">
+                <asp:Image ID="Image2" ImageUrl="~/images/inner_tag.jpg"  runat="server" />
+            </td>
+            <td style="width:10%" align="center" valign="bottom">
+                <asp:ImageButton ID="ImageButton1" AlternateText="Home" ImageUrl="~/images/home_new.png" PostBackUrl="~/Fin_Year_Master_List.aspx" runat="server" />
+            </td>
+          </tr>
+        </table>
+        <!-- Table for Logo Ends -->
+       </td>
+      </tr>
+      <tr>
+        <td style="height:1"></td>
+      </tr>
+      
+      <tr>
+        <td>&nbsp;</td>
+      </tr>
+      <tr>
+        <td style="height:380" align="center" valign="top">
+        <table width="800px"  border="0" cellpadding="0" cellspacing="0" class="ss" style="border-collapse: collapse; border-color:#111111">
+          <tr>
+            <td style="height:25" align="left"  colspan="2">
+            Financial Year Master - Add</td>
+          </tr>
+          <tr>
+				<td style="height:1; background-color:#339999"></td>
+			</tr>
+			<%--<tr>
+				<td style="height:35" >
+					&nbsp;
+				</td>
+			</tr>--%>
+          
+          
+          
+		  <tr>
+		    <td colspan="0">&nbsp;
+		    </td>
+		  </tr>
+		  
+		  <tr>
+            <td style="height:380" align="center" valign="top">
+            <table width="400px"  border="1" cellpadding="0" cellspacing="0" class="mt" style="border-collapse: collapse; border-color:#111111">
+          
+            <tr style="width:400px">
+            <td style="width:200px;height:10px;background-color:#8DE8FF;" colspan="2">
+            
+            </td>
+            
+            </tr>
+            <tr align="left" style="width:400px">
+            <td style="width:200px;height:30px;background-color:#E6F5FB;text-align:right">
+            Financial Year
+            </td>
+            <td style="width:200px"align="left">
+            &nbsp;<asp:TextBox ID="txtFinYear" CssClass="txtBox" MaxLength="4" Width="150px" runat="server"></asp:TextBox>
+            <span class="mandatory" id="spanFYr">*</span>
+            <asp:Label ID="lblFinYearErrMsg" runat="server" Style="color: Red; font-size: small;
+                    font-weight: bold;"></asp:Label>
+            </td>
+            </tr>
+            <tr align="left" style="width:400px">
+            <td style="width:200px;height:30px;background-color:#E6F5FB;text-align:right">
+            Start Date
+            </td>
+            <td style="width:200px"align="left">
+            &nbsp;<asp:TextBox ID="txtStartDate" CssClass="txtBox" MaxLength="10" runat="server"></asp:TextBox>
+            <a href="javascript:cal1.select(document.forms[0].txtStartDate,'StartDate','dd/MM/yyyy');"><img src="images/date_icon.gif" id="StartDate" alt="Calender" style="border:0"/> </a> 
+            <span class="mandatory" id="span1">*</span>
+            </td>
+            </tr>
+            <tr align="left" style="width:400px">
+            <td style="width:200px;height:30px;background-color:#E6F5FB;text-align:right">
+            End Date
+            </td>
+            <td style="width:200px"align="left">
+            &nbsp;<asp:TextBox ID="txtEndDate" CssClass="txtBox" MaxLength="10" runat="server"></asp:TextBox>
+            <a href="javascript:cal1.select(document.forms[0].txtEndDate,'EndDate','dd/MM/yyyy');"><img src="images/date_icon.gif" id="EndDate" alt="Calender" style="border:0"/> </a> 
+            <span class="mandatory" id="span2">*</span>
+            </td>
+            </tr>
+            <tr align="left" style="width:400px">
+            <td style="width:200px;height:30px;background-color:#E6F5FB;text-align:right">
+            No of Weeks
+            </td>
+            <td style="width:200px"align="left">
+            &nbsp;<asp:TextBox ID="txtNoWeek" CssClass="txtBox" MaxLength="2" Width="100px" runat="server"></asp:TextBox>
+            <span class="mandatory" id="span3">*</span>
+            </td>
+            </tr>
+            <tr align="left" style="width:400px">
+            <td style="width:200px;height:30px;background-color:#E6F5FB;text-align:right">
+            Current Financial Year
+            </td>
+            <td style="width:200px"align="left">
+            &nbsp;<asp:RadioButton ID="rdCFRYes" runat="server" GroupName="CFY" Text="Yes" />
+            &nbsp;<asp:RadioButton ID="rdCFRNo" runat="server" GroupName="CFY" Text="No" />
+            </td>
+            </tr>
+            
+            <tr style="width:400px">
+            <td style="width:200px;height:10px;background-color:#8DE8FF;" colspan="2">
+            
+            </td>
+            
+            </tr>
+            <tr align="left">
+            <td colspan="2">
+            <asp:label id="lblErrorMessage" cssclass="errormsg" visible="true" runat="server"></asp:label>
+            <div id="divErrorMessage">
+            </div>
+            </td>
+            </tr>  
+          
+          
+          </table>
+          </td>
+          </tr>
+          </table>
+                  
+          
+          </td>
+      </tr>
+      <tr>
+            <td >&nbsp;</td>
+       </tr>
+       <tr>
+            <td align="center"  >
+                <asp:Button ID="btnSubmit" CssClass="but2" runat="server" Text="Submit" />
+                <asp:Button ID="btnCancel" CssClass="but2" runat="server" Text="Cancel"  />
+                <asp:Button ID="btnReset" CssClass="but2" runat="server" Text="Reset" /> 
+            </td>
+        </tr>
+        <tr>
+            <td >&nbsp;</td>
+       </tr>
+      <tr>
+        <td style="height:25" align="center">
+            <span class="mt">
+                <uc1:footer id="Footer1" runat="server"></uc1:footer> </span>
+          </td>
+      </tr>
+    </table></td>
+  </tr>
+</table>
+    </form>
+</body>
+</html>

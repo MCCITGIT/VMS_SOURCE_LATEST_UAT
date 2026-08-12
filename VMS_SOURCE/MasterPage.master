@@ -1,0 +1,204 @@
+﻿<%@ Master Language="VB" AutoEventWireup="false" CodeFile="MasterPage.master.vb" Inherits="MasterPage" %>
+
+<%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
+<!doctype html>
+<html lang="en">
+<head runat="server" id="head">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <title>Welcome to Berger Color Bank Inventory Management</title>
+    <link href="includes/style.css?v=@DateTime.Now.ToString()" rel="stylesheet" type="text/css" />
+    <link href="includes/bootstrap.min.css" rel="stylesheet" type="text/css" />
+
+    <script type="text/javascript" src="Scripts/anchorposition.js"></script>
+    <script type="text/javascript" src="Scripts/csspopup.js"></script>
+    <script type="text/javascript" src="Scripts/popupwindow.js"></script>
+    <script type="text/javascript" src="Scripts/calendarpopup.js"></script>
+    <script type="text/javascript" src="Scripts/date.js"></script>
+    <script type="text/javascript" src="Scripts/Currency.js"></script>
+    <%--    <script type="text/javascript" src="Scripts/FunctionValidator.js"></script>--%>
+    <script type="text/javascript" src="Scripts/Messages.js"></script>
+    <script type="text/javascript" src="Scripts/RegEX.js"></script>
+    <script type="text/javascript" src="Scripts/AjaxServices.js"></script>
+    <script type="text/javascript" src="Scripts/Autocomplete.js"></script>
+
+    <link type="text/css" rel="Stylesheet" href="includes/select2.min.css" />
+    <link type="text/css" rel="Stylesheet" href="includes/select2-bootstrap4.min.css" />
+    <link href="includes/sumoselect.css" rel="stylesheet" />
+
+    <!-- JS -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <link href="includes/upgrad-style.css?v=@DateTime.Now.ToString()" rel="stylesheet" type="text/css" />
+</head>
+<body>
+    <form id="form1" runat="server">
+        <asp:ToolkitScriptManager runat="server"></asp:ToolkitScriptManager>
+        <!-- Navbar -->
+        <nav class="navbar navbar-light custBgLight">
+            <div class="headSection">
+                <div class="leftDtls">
+                    <div class="bLogoBIconBg">
+                        <a href="Home.aspx" title="Home">
+                            <img id="logo" class="bLogo" src="images/h-logo.png" alt="Best Wall Paint Colors, House Painting Colors" title="Berger Paints" />
+                        </a>
+                        <button type="button" id="sidebarCollapse" class="btn btn-light humMenuIcon">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                    </div>
+                    <div class="nameDtlsList">
+                        <h4 class="vmsName">Vendor Management System</h4>
+                        <ul class="userDtls">
+                            <li>Company:<asp:Label ID="lblCompany" runat="server"></asp:Label></li>
+                            <li>Region:<asp:Label ID="lblRegion" runat="server"></asp:Label></li>
+                            <li>Depot:<asp:Label ID="lblDepot" runat="server"></asp:Label></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="rightDtls">
+                    <div class="userNamePic dropdown">
+                        <img class="userPic" src="images/avatar-no-img.png" alt="Img" />
+                        <div class="userNameCatg dropdown-toggle" data-toggle="dropdown">
+                            <h3 class="userName">
+                                <asp:Label ID="lblUserName" runat="server"></asp:Label></h3>
+                            <p class="userCatg">
+                                <asp:Label ID="lblUserGroup" runat="server"></asp:Label>
+                            </p>
+                        </div>
+                        <div class="dropdown-menu">
+                            <%--<a class="dropdown-item" id="tblComplainRegistrationLink" runat="server" href="https://bpilsharepoint1.bergerindia.com:97" target="_blank" title="For Product Complaint Click Here">Complain/BTC</a>--%>
+                            <a class="dropdown-item" href="User_help.html" target="_blank" title="Click to view System Help Guide">User Guide</a>
+                            <a class="dropdown-item" href="Contacts.html" target="_blank" title="Contact Us">Contact Us</a>
+                            <a class="dropdown-item" href="Faqs_info.html" target="_blank" title="FAQ">FAQ's</a>
+                            <a class="dropdown-item SignoutLink" href="Logout_New.aspx" title="Sign Out">Sign Out</a>
+                        </div>
+                        <span id="reg_marquee_scroll" runat="server" style="display: none;">&nbsp;</span>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Sidebar -->
+        <nav id="sidebar" class="sideNavBarView <%= If(HideSidebar, "active", "") %>">
+            <div class="sidebar-header">
+                <h4 class="menuTx">Menu</h4>
+            </div>
+            <%--<div id="table1">--%>
+            <%--<div id="table2">--%>
+
+
+     <%--       <script type="text/javascript" src="Scripts/MENU_OCF_New.js">
+				    //function IMG1_onclick() {
+            </script>--%>
+
+            <asp:Literal ID="_clientScript" runat="server"></asp:Literal>
+
+
+
+            <%--</div>--%>
+            <%--<ul class="components">
+                <li>
+                    <a href="#" title="Dashboard"><i class="fa fa-home"></i>Dashboard</a>
+                </li>
+                <li>
+                    <a href="#submenu1" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle" title="">
+                        <i class="fa fa-cogs"></i>System Administration
+                    </a>
+                    <ul class="collapse list-unstyled" id="submenu1">
+                        <li><a href="#" title=""><i class="fa fa-dot-circle"></i>Flash News</a></li>
+                        <li><a href="#" title=""><i class="fa fa-dot-circle"></i>Menu Master</a></li>
+                        <li><a href="#" title=""><i class="fa fa-dot-circle"></i>Form master</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#submenu2" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle" title="">
+                        <i class="fa fa-file"></i>Distribution & Logistics
+                    </a>
+                    <ul class="collapse list-unstyled" id="submenu2">
+                        <li><a href="#" title=""><i class="fa fa-dot-circle"></i>Sub Menu List</a></li>
+                        <li><a href="#" title=""><i class="fa fa-dot-circle"></i>Sub Menu List</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#submenu3" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle" title="">
+                        <i class="fa fa-file"></i>Depot
+                    </a>
+                    <ul class="collapse list-unstyled" id="submenu3">
+                        <li><a href="#" title=""><i class="fa fa-dot-circle"></i>Sub Menu List</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#submenu4" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle" title="">
+                        <i class="fa fa-file"></i>Despatch Unit
+                    </a>
+                    <ul class="collapse list-unstyled" id="submenu4">
+                        <li><a href="#" title=""><i class="fa fa-dot-circle"></i>Sub Menu List</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#submenu5" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle" title="">
+                        <i class="fa fa-file"></i>Token Requisition
+                    </a>
+                    <ul class="collapse list-unstyled" id="submenu5">
+                        <li><a href="#" title=""><i class="fa fa-dot-circle"></i>Sub Menu List</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#submenu6" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle" title="">
+                        <i class="fa fa-file"></i>Quality Control
+                    </a>
+                    <ul class="collapse list-unstyled" id="submenu6">
+                        <li><a href="#" title=""><i class="fa fa-dot-circle"></i>Sub Menu List</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#submenu7" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle" title="">
+                        <i class="fa fa-file"></i>Vendor Rating
+                    </a>
+                    <ul class="collapse list-unstyled" id="submenu7">
+                        <li><a href="#" title=""><i class="fa fa-dot-circle"></i>Sub Menu List</a></li>
+                    </ul>
+                </li>
+            </ul>--%>
+            <%--</div>--%>
+        </nav>
+
+        <!-- Page Content -->
+        <div id="content" class="contentMainBody">
+            <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server"></asp:ContentPlaceHolder>
+
+            <asp:UpdateProgress ID="updProgress" runat="server" DisplayAfter="0">
+                <ProgressTemplate>
+                    <div class="pageLoader">
+                        <div class="innerLoader">
+                            <img class="loaderImg" alt="progress" src="images/ajax-loader.gif" />
+                            <p class="loaderTx">Processing... Please Wait.</p>
+                        </div>
+                    </div>
+                </ProgressTemplate>
+            </asp:UpdateProgress>
+        </div>
+    </form>
+
+    <script type="text/javascript" src="Scripts/select2.full.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            //Initialize Select2 Elements
+            $('.select2').select2();
+        });
+        var prm = Sys.WebForms.PageRequestManager.getInstance();
+        prm.add_endRequest(function () {
+            $('.select2').select2();
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            $('#sidebarCollapse').on('click', function () {
+                $('#sidebar').toggleClass('active');
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,568 @@
+﻿Imports System.Data
+Imports VMS.Web
+Imports System.Data.SqlClient
+Imports System.Data.SqlTypes
+
+Partial Class ExcelOutputForm
+    Inherits System.Web.UI.Page
+    Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
+        If Not (Page.IsPostBack) Then
+            Dim userInfo As VMSUserEntity = New VMSUserEntity()
+            If (Not (Session(Constant.SessionKeys.UserInfo) Is Nothing)) Then
+                userInfo = CType(Session(Constant.SessionKeys.UserInfo), VMSUserEntity)
+
+            Else
+                Response.Redirect("~/Login.aspx")
+            End If
+            Addattribute()
+            PopulateTables()
+            btnCancel.PostBackUrl = Me.Request.UrlReferrer.AbsoluteUri
+            If Not (userInfo.userGroupCodeEntity = Constant.UserFormAccess.SYSADMIN Or userInfo.userGroupCodeEntity = Constant.UserFormAccess.HOMARKETING) Then
+                btnGenerateQuery.Visible = False
+            End If
+        End If
+    End Sub
+    Private Sub Addattribute()
+        Dim userInfo As VMSUserEntity = New VMSUserEntity()
+        If (Not (Session(Constant.SessionKeys.UserInfo) Is Nothing)) Then
+            userInfo = CType(Session(Constant.SessionKeys.UserInfo), VMSUserEntity)
+
+        Else
+            Response.Redirect("~/Login.aspx")
+        End If
+        If Not userInfo.userGroupCodeEntity = Constant.UserFormAccess.SYSADMIN Then
+            txtQuery.Attributes.Add("onKeyPress", " return fnQryChk();")
+            'txtQuery.Attributes.Add("onBlur", "validQry();")
+            btnSubmit.Attributes.Add("onClick", " return ValidateExcelQry();")
+        End If
+
+    End Sub
+    Public Shared columnList As New DataSet
+    Private ReadOnly Property Data(ByVal TableName As String) As DataSet
+        Get
+            Dim RefTable As New TablesExport()
+            columnList = RefTable.GetColumnNames(TableName)
+            Return columnList
+        End Get
+    End Property
+    Private Sub PopulateTables()
+        Dim userInfo As VMSUserEntity = New VMSUserEntity()
+        If (Not (Session(Constant.SessionKeys.UserInfo) Is Nothing)) Then
+            userInfo = CType(Session(Constant.SessionKeys.UserInfo), VMSUserEntity)
+
+        Else
+            Response.Redirect("~/Login.aspx")
+        End If
+
+
+        Dim RefTable As New TablesExport()
+        Dim tableList As New DataSet
+        tableList = RefTable.GetTableNames()
+        If (Not (tableList Is Nothing) AndAlso tableList.Tables.Count > 0) Then
+            If (Not (tableList.Tables(0) Is Nothing) AndAlso tableList.Tables(0).Rows.Count > 0) Then
+                ddlTableList.DataSource = tableList
+                ddlTableList.DataTextField = "name"
+                ddlTableList.DataValueField = "name"
+                ddlTableList.DataBind()
+
+            End If
+        End If
+        If Not (Request.QueryString("TableName") = String.Empty) Then
+            ddlTableList.SelectedValue = Request.QueryString("TableName")
+        End If
+        PopulateFunction()
+    End Sub
+    Private Sub PopulateFunction()
+        Dim tableName As String = ddlTableList.SelectedItem.Value
+        Dim reportList As New TablesExport
+        Dim ds As DataSet
+        Dim i As Integer
+        trReportList.Visible = False
+        ds = reportList.GetReportNames(tableName)
+        ddlReportList.Items.Clear()
+        ddlOrderBy.Items.Clear()
+        If (Not (ds Is Nothing) AndAlso ds.Tables.Count > 0) Then
+            If (Not (ds.Tables(0) Is Nothing) AndAlso ds.Tables(0).Rows.Count > 0) Then
+
+                trReportList.Visible = True
+                ddlReportList.DataSource = ds
+                ddlReportList.DataValueField = "Ex_Report_Name"
+                ddlReportList.DataTextField = "Ex_Report_Name"
+                ddlReportList.DataBind()
+                ddlReportList.Items.Insert(0, New ListItem("Select", "0", True))
+            End If
+        End If
+        ds = Me.Data(tableName)
+        If (Not (ds Is Nothing) AndAlso ds.Tables.Count > 0) Then
+            If (Not (ds.Tables(0) Is Nothing) AndAlso ds.Tables(0).Rows.Count > 0) Then
+                LstAvlbFields.DataSource = ds
+                LstAvlbFields.DataValueField = "Column_Name"
+                LstAvlbFields.DataTextField = "Column_Name"
+                LstAvlbFields.DataBind()
+                txtReportName.Text = tableName + "_" + Convert.ToString(Date.Today.Day) + "_" + Convert.ToString(Date.Today.Month) + "_" + Convert.ToString(Date.Today.Year)
+            End If
+        End If
+        Dim col As New Collection
+        For i = 0 To LstSelFields.Items.Count - 1
+            col.Add(LstSelFields.Items(i))
+        Next
+        If col.Count > 0 Then
+            For k As Integer = 1 To col.Count
+                LstSelFields.Items.Remove(CType(col(k), ListItem))
+            Next
+        End If
+        txtReportName.Enabled = True
+        'txtReportName.Text = String.Empty
+        gvColumnList.DataSource = Nothing
+        gvColumnList.DataBind()
+        txtQuery.Text = String.Empty
+        txtOrderBy.Text = String.Empty
+    End Sub
+    Protected Sub ddlTableList_SelectedIndexChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles ddlTableList.SelectedIndexChanged
+        PopulateFunction()
+    End Sub
+
+    
+    Protected Sub btnExport_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnSubmit.Click
+        
+        Dim i As Integer
+        Dim excelEntity As New ExportExcelEntity
+        Dim excelInsertDel As New TablesExport
+        Dim InsertRelVal As Integer
+
+        Dim lblFieldName As New Label
+        Dim txtHeading As New TextBox
+        Dim txtFieldOrder As TextBox
+        Dim ddlTotal As DropDownList
+        Dim lblDataType As New Label
+        Dim ds As DataSet
+        ds = excelInsertDel.GetReportItemforUpdate(txtReportName.Text)
+
+        If (InsUpdate = 0) Then
+            If (Not (ds Is Nothing) AndAlso ds.Tables.Count > 0) Then
+                If (Not (ds.Tables(0) Is Nothing) AndAlso ds.Tables(0).Rows.Count > 0) Then
+                    lblRptNameErrMsg.Text = "Report Name Already Exist"
+                    Return
+                End If
+            End If
+        End If
+
+        excelEntity.ExTableName = ddlTableList.SelectedValue
+        excelEntity.ExReportName = txtReportName.Text
+        excelEntity.ExGeneratedQuery = txtQuery.Text
+        excelEntity.ExOrderBy = txtOrderBy.Text
+        excelEntity.createduser = 1
+
+        InsertRelVal = excelInsertDel.DeleteExportExcelDetails(excelEntity)
+
+        For i = 0 To gvColumnList.Rows.Count - 1
+            lblFieldName = gvColumnList.Rows(i).FindControl("lblColumnName")
+            txtHeading = gvColumnList.Rows(i).FindControl("txtColName")
+            txtFieldOrder = gvColumnList.Rows(i).FindControl("txtFieldOrder")
+            ddlTotal = gvColumnList.Rows(i).FindControl("ddlTotal")
+            lblDataType = gvColumnList.Rows(i).FindControl("lblDataType")
+
+            excelEntity.ExSelectedFieldName = lblFieldName.Text
+            excelEntity.ExHeading = txtHeading.Text
+            excelEntity.ExFieldOrder = txtFieldOrder.Text
+            excelEntity.ExTotalYN = ddlTotal.SelectedValue
+            excelEntity.ExDataType = lblDataType.Text
+            InsertRelVal = excelInsertDel.InsertExportExcelDetails(excelEntity)
+        Next
+        If (InsertRelVal > 0) Then
+            Dim strScript As String
+            strScript = "<script language=JavaScript>alert('Data Inserted Successfully')</script>"
+            If (InsUpdate = 0) Then
+
+                ClientScript.RegisterStartupScript(Me.GetType(), "ShowInsertSuccessScript", strScript)
+            Else
+                ClientScript.RegisterStartupScript(Me.GetType(), "ShowInsertSuccessScript", strScript)
+            End If
+        Else
+            ClientScript.RegisterStartupScript(Me.GetType(), "ShowInsertSuccessScript", "<script language='javascript'>alert('There was an error inserting Data')</script>")
+        End If
+        Dim ExportSet As DataSet
+        Dim tableRef As New TablesExport()
+        Dim FileNme As String = txtReportName.Text
+        ExportSet = tableRef.ExportExcel(txtQuery.Text)
+
+        If (Not (ExportSet Is Nothing) AndAlso ExportSet.Tables.Count > 0) Then
+            If (Not (ExportSet.Tables(0) Is Nothing) AndAlso ExportSet.Tables(0).Rows.Count > 0) Then
+                ExportToExcel(ExportSet, FileNme)
+            End If
+        End If
+
+        
+
+
+
+
+    End Sub
+
+
+    Protected Sub ExportToExcel(ByVal dset As DataSet, ByVal filename As String)
+
+        Try
+            
+            Dim response As HttpResponse = HttpContext.Current.Response
+            ' first clean up the response.object
+            response.Clear()
+            response.Charset = ""
+            ' set the response mime type for excel
+            If (ddlFileType.SelectedValue = "Excel") Then
+                response.ContentType = "application/ms-excel"
+                response.AddHeader("Content-Disposition", "attachment;filename=" + filename + ".xls")
+            Else
+                response.ContentType = "application/ms-word"
+                response.AddHeader("Content-Disposition", "attachment;filename=" + filename + ".doc")
+            End If
+
+
+            'Response.Write("<b>" + "Company Name : " + userInfo.userCompanyEntity + "</b><BR>")
+            'Response.Write("<b>" + "Report Date : " + Convert.ToString(System.DateTime.Today.Day) + "/" + Convert.ToString(System.DateTime.Today.Month) + "/" + Convert.ToString(System.DateTime.Today.Year) + "</b><BR>")
+            'response.Write("<BR>")
+            'response.AppendHeader("content-disposition", "attachment; filename=" + filename + ".xls")
+            'response.Cache.SetCacheability(HttpCacheability.NoCache)
+            Using sw As New System.IO.StringWriter()
+                Using htw As New HtmlTextWriter(sw)
+                    Dim dg As New DataGrid
+                    'Dim dr As DataRow
+                    'Dim k As Integer
+                    'Dim sum As Integer
+                    'dr = dset.Tables(0).NewRow()
+                    'For k = 0 To dset.Tables(0).Rows.Count - 1
+                    '    sum += Convert.ToInt32(dset.Tables(0).Rows(k).Item("Id"))
+                    '    dr("ID") = sum
+
+                    'Next
+
+
+                    '    dr["Property_ID"] = "0";
+                    'dset.Tables(0).Rows.InsertAt(dr, 3)
+
+                    dg.DataSource = dset.Tables(0)
+                    dg.DataBind()
+                    dg.RenderControl(htw)
+                    response.Write(sw.ToString)
+                    response.End()
+
+                End Using
+            End Using
+
+            'Dim stringwrite As New System.IO.StringWriter
+            'Dim htmlwrite As New System.Web.UI.HtmlTextWriter(stringwrite)
+
+        Catch ex As Exception
+
+            'Dim returnUrl As String = "~/ExceptionPage.aspx"
+            'Session(Constant.SessionKeys.ErrMessage) = Constant.ErrorMessages.ErrorExporttoExcel
+            'Server.Transfer(returnUrl)
+        End Try
+
+
+    End Sub
+    Public Shared InsUpdate As Integer = 0
+
+    Protected Sub btnRL_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnRL.Click
+
+        Dim i As Integer
+        Dim col As New Collection
+        For i = 0 To LstAvlbFields.Items.Count - 1
+            If LstAvlbFields.Items(i).Selected = True Then
+                LstSelFields.Items.Insert(0, New ListItem(LstAvlbFields.Items(i).Text, LstAvlbFields.Items(i).Value))
+                col.Add(LstAvlbFields.Items(i))
+                ddlOrderBy.Items.Insert(0, New ListItem(LstAvlbFields.Items(i).Text, LstAvlbFields.Items(i).Value))
+            End If
+        Next
+        If col.Count > 0 Then
+            For k As Integer = 1 To col.Count
+                LstAvlbFields.Items.Remove(CType(col(k), ListItem))
+            Next
+        End If
+
+
+        Dim ds As DataSet
+        Dim tblExport As New TablesExport
+        Dim dt As New DataTable
+        Dim newdt As New DataTable
+        dt = columnList.Tables(0)
+        Dim dv As New DataView(dt)
+
+        Dim arr As New ArrayList()
+        Dim j As Integer
+        For j = 0 To LstSelFields.Items.Count - 1
+            'If (InsUpdate = 1) Then
+            ds = tblExport.GetReportItemforGrid(txtReportName.Text, LstSelFields.Items(j).Value)
+            If (Not (ds Is Nothing) AndAlso ds.Tables.Count > 0) Then
+                If (Not (ds.Tables(0) Is Nothing) AndAlso ds.Tables(0).Rows.Count > 0) Then
+                    newdt = ds.Tables(0)
+                    Dim newdv As New DataView(newdt)
+                    newdv = New DataView(newdt)
+                    arr.Add(newdv.Item(0))
+                Else
+                    dv = New DataView(dt, "Column_Name='" & LstSelFields.Items(j).Value & "'", "Column_Name", DataViewRowState.Unchanged)
+                    arr.Add(dv.Item(0))
+                End If
+                'End If
+            End If
+
+        Next
+        If (arr.Count > 0) Then
+            gvColumnList.DataSource = arr
+            gvColumnList.DataBind()
+        End If
+        
+    End Sub
+
+    Protected Sub btnLR_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnLR.Click
+        Dim i As Integer
+        Dim col_LRList As New Collection
+        For i = 0 To LstSelFields.Items.Count - 1
+            If LstSelFields.Items(i).Selected = True Then
+                LstAvlbFields.Items.Insert(0, New ListItem(LstSelFields.Items(i).Text, LstSelFields.Items(i).Value))
+                col_LRList.Add(LstSelFields.Items(i))
+            End If
+        Next
+
+        If col_LRList.Count > 0 Then
+            For k As Integer = 1 To col_LRList.Count
+                LstSelFields.Items.Remove(CType(col_LRList(k), ListItem))
+                ddlOrderBy.Items.Remove(CType(col_LRList(k), ListItem))
+            Next
+        End If
+
+        Dim ds As DataSet
+        Dim tblExport As New TablesExport
+        Dim dt As New DataTable
+        Dim newdt As New DataTable
+        dt = columnList.Tables(0)
+        Dim dv As New DataView(dt)
+
+        Dim arr As New ArrayList()
+        Dim j As Integer
+        For j = 0 To LstSelFields.Items.Count - 1
+            If (InsUpdate = 1) Then
+                ds = tblExport.GetReportItemforGrid(txtReportName.Text, LstSelFields.Items(j).Value)
+                If (Not (ds Is Nothing) AndAlso ds.Tables.Count > 0) Then
+                    If (Not (ds.Tables(0) Is Nothing) AndAlso ds.Tables(0).Rows.Count > 0) Then
+                        newdt = ds.Tables(0)
+                        Dim newdv As New DataView(newdt)
+                        newdv = New DataView(newdt)
+                        arr.Add(newdv.Item(0))
+                    Else
+                        dv = New DataView(dt, "Column_Name='" & LstSelFields.Items(j).Value & "'", "Column_Name", DataViewRowState.Unchanged)
+                        arr.Add(dv.Item(0))
+                    End If
+                End If
+            End If
+
+        Next
+
+        If (arr.Count > 0) Then
+            gvColumnList.DataSource = arr
+            gvColumnList.DataBind()
+
+        Else
+            gvColumnList.DataSource = Nothing
+            gvColumnList.DataBind()
+        End If
+
+    End Sub
+
+    Public srlNo As Integer = 1
+
+    Protected Sub gvColumnList_RowDataBound(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.GridViewRowEventArgs) Handles gvColumnList.RowDataBound
+
+        If (e.Row.RowType = DataControlRowType.DataRow) Then
+            Dim txtFieldOrder As New TextBox
+            Dim lblDataType As New Label
+
+            Dim rowView As DataRowView = CType(e.Row.DataItem, DataRowView)
+            txtFieldOrder = e.Row.FindControl("txtFieldOrder")
+            If Not (rowView("Field_Order").Equals("0")) Then
+                txtFieldOrder.Text = rowView("Field_Order").ToString()
+            Else
+                txtFieldOrder.Text = (srlNo * 10).ToString()
+            End If
+
+            Dim lblSrl As Label
+
+            lblSrl = e.Row.FindControl("lblSrlNo")
+            lblSrl.Text = srlNo.ToString()
+
+            srlNo += 1
+            Dim ddlType As DropDownList
+            ddlType = e.Row.FindControl("ddlTotal")
+            lblDataType = e.Row.FindControl("lblDataType")
+            If (lblDataType.Text = "int") Then
+                ddlType.Enabled = True
+            Else
+                ddlType.Enabled = False
+            End If
+
+        End If
+
+    End Sub
+
+    Protected Sub btnGenerateQuery_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnGenerateQuery.Click
+        Dim query As New StringBuilder
+        
+        Dim i As Integer
+        Dim lblFieldName As New Label
+        Dim txtHeading As New TextBox
+        Dim sa As New SortedList
+        Dim txtFieldOrder As TextBox
+        Dim sortedHead As New SortedList
+        Dim totalList As New SortedList
+        Dim ddlTotal As New DropDownList
+
+        query.Append("SELECT" + System.Environment.NewLine)
+        For i = 0 To gvColumnList.Rows.Count - 1
+
+            lblFieldName = gvColumnList.Rows(i).FindControl("lblColumnName")
+            txtHeading = gvColumnList.Rows(i).FindControl("txtColName")
+        
+            txtFieldOrder = gvColumnList.Rows(i).FindControl("txtFieldOrder")
+            sa(Convert.ToInt32(txtFieldOrder.Text)) = lblFieldName.Text
+            sortedHead(Convert.ToInt32(txtFieldOrder.Text)) = txtHeading.Text
+
+            ddlTotal = gvColumnList.Rows(i).FindControl("ddlTotal")
+            If (ddlTotal.SelectedValue = "Yes") Then
+                totalList(Convert.ToInt32(txtFieldOrder.Text)) = lblFieldName.Text
+            Else
+                totalList(Convert.ToInt32(txtFieldOrder.Text)) = ""
+            End If
+        
+        Next
+
+        For Each entry As DictionaryEntry In sa
+            If Not (totalList(entry.Key) = String.Empty) Then
+                query.Append("cast(" + entry.Value + " as varchar(10))")
+            Else
+                query.Append(entry.Value)
+            End If
+
+            query.Append(" as ")
+            query.Append("""" + sortedHead.Item(entry.Key) + """")
+            If Not (sortedHead.IndexOfKey(entry.Key) = sortedHead.Count - 1) Then
+                query.Append("," + System.Environment.NewLine)
+            Else
+                query.Append(System.Environment.NewLine)
+            End If
+        Next
+
+        query.Append("FROM" + System.Environment.NewLine)
+        query.Append(ddlTableList.SelectedItem.Value + System.Environment.NewLine)
+
+        query.Append("UNION" + System.Environment.NewLine)
+        query.Append("SELECT" + System.Environment.NewLine)
+
+
+        For Each totalEntry As DictionaryEntry In totalList
+            If Not (totalEntry.Value = String.Empty) Then
+                query.Append("'Total:' + cast(sum(" + totalEntry.Value + ") as varchar(10))")
+            Else
+                query.Append("''")
+            End If
+            If Not (totalList.IndexOfKey(totalEntry.Key) = totalList.Count - 1) Then
+                query.Append("," + System.Environment.NewLine)
+            Else
+                query.Append(System.Environment.NewLine)
+            End If
+        Next
+
+        query.Append("FROM" + System.Environment.NewLine)
+        query.Append(ddlTableList.SelectedItem.Value + System.Environment.NewLine)
+
+        If Not (txtOrderBy.Text = String.Empty) Then
+            query.Append("ORDER BY" + System.Environment.NewLine)
+            query.Append(txtOrderBy.Text)
+        End If
+        txtQuery.Text = query.ToString()
+
+        
+    End Sub
+
+    Protected Sub ddlReportList_SelectedIndexChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles ddlReportList.SelectedIndexChanged
+
+        Dim reportName As String
+        InsUpdate = 1
+        reportName = ddlReportList.SelectedValue
+        Dim reportList As New TablesExport
+        Dim ds As DataSet
+        Dim col As New Collection
+        Dim i As Integer
+        ddlOrderBy.Items.Clear()
+        ds = reportList.GetReportItemforUpdate(reportName)
+        If (Not (ds Is Nothing) AndAlso ds.Tables.Count > 0) Then
+            If (Not (ds.Tables(0) Is Nothing) AndAlso ds.Tables(0).Rows.Count > 0) Then
+                'btnGenerateQuery.Enabled = True
+
+                LstSelFields.DataSource = ds
+                LstSelFields.DataTextField = "Ex_Selected_Field_Name"
+                LstSelFields.DataValueField = "Ex_Selected_Field_Name"
+                LstSelFields.DataBind()
+                txtReportName.Text = ds.Tables(0).Rows(0)("Ex_Report_Name")
+                txtReportName.Enabled = False
+                gvColumnList.DataSource = ds
+                gvColumnList.DataBind()
+                txtQuery.Text = ds.Tables(0).Rows(0)("Ex_GeneratedQuery")
+                For i = 0 To LstSelFields.Items.Count - 1
+                    ddlOrderBy.Items.Insert(0, New ListItem(LstSelFields.Items(i).Text, LstSelFields.Items(i).Value))
+                Next
+
+                txtOrderBy.Text = ds.Tables(0).Rows(0)("Ex_OrderBy")
+            Else
+                InsUpdate = 0
+
+                For i = 0 To LstSelFields.Items.Count - 1
+                    col.Add(LstSelFields.Items(i))
+                Next
+                If col.Count > 0 Then
+                    For k As Integer = 1 To col.Count
+                        LstSelFields.Items.Remove(CType(col(k), ListItem))
+                    Next
+                End If
+
+                txtReportName.Text = String.Empty
+                txtReportName.Enabled = True
+                gvColumnList.DataSource = Nothing
+                gvColumnList.DataBind()
+                txtQuery.Text = String.Empty
+                txtOrderBy.Text = String.Empty
+            End If
+
+
+        End If
+        
+
+        For i = 0 To LstSelFields.Items.Count - 1
+            col.Add(LstSelFields.Items(i))
+        Next
+        If col.Count > 0 Then
+            For k As Integer = 1 To col.Count
+                LstAvlbFields.Items.Remove(CType(col(k), ListItem))
+            Next
+        End If
+    End Sub
+
+    Protected Sub imgAddOrderBy_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles imgAddOrderBy.Click
+        If Not (ddlOrderBy.SelectedItem.Value = String.Empty) Then
+            If Not (txtOrderBy.Text.Contains(ddlOrderBy.SelectedItem.Value)) Then
+                If (txtOrderBy.Text = String.Empty) Then
+                    txtOrderBy.Text = ddlOrderBy.SelectedItem.Value
+                Else
+                    txtOrderBy.Text += "," + ddlOrderBy.SelectedItem.Value
+                End If
+            End If
+        End If
+    End Sub
+
+    'Protected Sub btnCancel_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnCancel.Click
+    '    'Response.Redirect("~/Home.aspx")
+    'End Sub
+
+    Protected Sub btnReset_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnReset.Click
+        Response.Redirect("~/ExcelOutputForm.aspx")
+    End Sub
+End Class

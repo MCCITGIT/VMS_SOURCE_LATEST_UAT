@@ -1,0 +1,17 @@
+Dear sir,
+
+The command is to install 
+
+ 
+
+C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727\Aspnet_regiis -i
+
+ 
+
+In Command prompt.
+
+ 
+
+Thanks & Regards
+
+Jaydeep

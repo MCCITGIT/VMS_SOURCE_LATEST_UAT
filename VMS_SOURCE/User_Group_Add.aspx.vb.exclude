@@ -1,0 +1,205 @@
+'**************************************************
+'Copyright	    : VMS, MCC, KOLKATA
+'Source	        : User_Group_Add.aspx.vb
+'Created Date	: 24-November-2007
+'Created By	    : Arun 
+'Version	    : R02.00.00
+'Description	: Code behind for UserGroupAdd Page
+
+'Modified By       Modified On       Version         Reason
+
+'****************************************************************
+
+Imports VMS.Web
+Imports System.Data
+Imports System.Data.SqlTypes
+Partial Class User_Group_Add
+    Inherits System.Web.UI.Page
+
+#Region "Page_Load"
+    Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
+
+        AddAttributes()
+        If Not IsPostBack Then
+            If (Not Request.QueryString(Constant.SessionKeys.ID) Is Nothing) Then
+                btnSubmit.Text = Constant.GeneralMessages.btnUpdate
+                PopulateUserGroup()
+            Else
+                btnSubmit.Text = Constant.GeneralMessages.Submit
+                rdActiveBttn.Checked = True
+            End If
+
+        End If
+    End Sub
+#End Region
+
+
+#Region "AddAttributes"
+
+    Private Sub AddAttributes()
+
+        btnSubmit.Attributes.Add("onClick", "return ValidateUGAControls();")
+        txtGrpCode.Attributes.Add("Onblur", "return fnUsrGrpDetails(this.value)")
+
+    End Sub
+#End Region
+
+#Region "PopulateUserGroup"
+    Public Sub PopulateUserGroup()
+
+        Dim userInfo As VMSUserEntity = New VMSUserEntity()
+        If (Not (Session(Constant.SessionKeys.UserInfo) Is Nothing)) Then
+            userInfo = CType(Session(Constant.SessionKeys.UserInfo), VMSUserEntity)
+
+        Else
+            Response.Redirect("~/Login.aspx")
+        End If
+
+        Dim PopulateUsrGrp As New DataSet
+        Dim UsrGrp As New UserGroup
+        PopulateUsrGrp = UsrGrp.GetUserGroup(userInfo.userCompanyEntity, Request.QueryString(Constant.SessionKeys.ID))
+        If (Not (PopulateUsrGrp Is Nothing) AndAlso PopulateUsrGrp.Tables.Count > 0 AndAlso Not (PopulateUsrGrp.Tables(0) Is Nothing) AndAlso PopulateUsrGrp.Tables(0).Rows.Count > 0) Then
+
+            txtGrpCode.Text = IIf(PopulateUsrGrp.Tables(0).Rows(0)("grp_user_group_code").Equals(DBNull.Value), String.Empty, PopulateUsrGrp.Tables(0).Rows(0)("grp_user_group_code"))
+            txtGrpCode.Enabled = False
+            txtGrpDesc.Text = IIf(PopulateUsrGrp.Tables(0).Rows(0)("grp_user_group_desc").Equals(DBNull.Value), String.Empty, PopulateUsrGrp.Tables(0).Rows(0)("grp_user_group_desc"))
+            ddlUsrType.SelectedValue = IIf(PopulateUsrGrp.Tables(0).Rows(0)("grp_user_group_type").Equals(DBNull.Value), String.Empty, PopulateUsrGrp.Tables(0).Rows(0)("grp_user_group_type"))
+            ddlAppLevel.SelectedValue = IIf(PopulateUsrGrp.Tables(0).Rows(0)("grp_approv_level").Equals(DBNull.Value), String.Empty, PopulateUsrGrp.Tables(0).Rows(0)("grp_approv_level"))
+
+            If PopulateUsrGrp.Tables(0).Rows(0)("active").Equals(DBNull.Value) Then
+                rdActiveBttn.Checked = True
+                rdInActiveBttn.Checked = False
+            ElseIf PopulateUsrGrp.Tables(0).Rows(0)("active").ToString.Trim = Constant.Common.ActiveStatus Then
+                rdActiveBttn.Checked = True
+                rdInActiveBttn.Checked = False
+            ElseIf PopulateUsrGrp.Tables(0).Rows(0)("active").ToString.Trim = Constant.Common.InActiveStatus Then
+                rdInActiveBttn.Checked = True
+                rdActiveBttn.Checked = False
+            End If
+
+            If PopulateUsrGrp.Tables(0).Rows(0)("grp_userid_flag").Equals(DBNull.Value) Then
+                ChkUsrID.Checked = False
+            ElseIf PopulateUsrGrp.Tables(0).Rows(0)("grp_userid_flag").ToString.Trim = Constant.Common.ActiveStatus Then
+                ChkUsrID.Checked = True
+            ElseIf PopulateUsrGrp.Tables(0).Rows(0)("grp_userid_flag").ToString.Trim = Constant.Common.InActiveStatus Then
+                ChkUsrID.Checked = False
+            End If
+
+            If PopulateUsrGrp.Tables(0).Rows(0)("grp_branch_flag").Equals(DBNull.Value) Then
+                ChkBranch.Checked = False
+            ElseIf PopulateUsrGrp.Tables(0).Rows(0)("grp_branch_flag").ToString.Trim = Constant.Common.ActiveStatus Then
+                ChkBranch.Checked = True
+            ElseIf PopulateUsrGrp.Tables(0).Rows(0)("grp_branch_flag").ToString.Trim = Constant.Common.InActiveStatus Then
+                ChkBranch.Checked = False
+            End If
+
+            If PopulateUsrGrp.Tables(0).Rows(0)("grp_company_flag").Equals(DBNull.Value) Then
+                ChkCompany.Checked = False
+            ElseIf PopulateUsrGrp.Tables(0).Rows(0)("grp_company_flag").ToString.Trim = Constant.Common.ActiveStatus Then
+                ChkCompany.Checked = True
+            ElseIf PopulateUsrGrp.Tables(0).Rows(0)("grp_company_flag").ToString.Trim = Constant.Common.InActiveStatus Then
+                ChkCompany.Checked = False
+            End If
+
+            If PopulateUsrGrp.Tables(0).Rows(0)("grp_dept_flag").Equals(DBNull.Value) Then
+                ChkDept.Checked = False
+            ElseIf PopulateUsrGrp.Tables(0).Rows(0)("grp_dept_flag").ToString.Trim = Constant.Common.ActiveStatus Then
+                ChkDept.Checked = True
+            ElseIf PopulateUsrGrp.Tables(0).Rows(0)("grp_dept_flag").ToString.Trim = Constant.Common.InActiveStatus Then
+                ChkDept.Checked = False
+            End If
+
+        End If
+
+    End Sub
+#End Region
+
+#Region "btnSubmit_Click"
+    Protected Sub btnSubmit_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnSubmit.Click
+
+        Dim userInfo As VMSUserEntity = New VMSUserEntity()
+        If (Not (Session(Constant.SessionKeys.UserInfo) Is Nothing)) Then
+            userInfo = CType(Session(Constant.SessionKeys.UserInfo), VMSUserEntity)
+
+        Else
+            Response.Redirect("~/Login.aspx")
+        End If
+
+        Dim UsrCode As String
+        UsrCode = txtGrpCode.Text
+        Dim UsrDesc As String
+        UsrDesc = txtGrpDesc.Text
+        Dim UsrType As String
+        UsrType = ddlUsrType.SelectedValue
+        Dim UsrLevel As String
+        UsrLevel = ddlAppLevel.SelectedValue
+        Dim Status As String
+        If (rdActiveBttn.Checked = True) Then
+            Status = Constant.Common.ActiveStatus
+        Else
+            Status = Constant.Common.InActiveStatus
+        End If
+        Dim IDFlag As String
+        If (ChkUsrID.Checked = True) Then
+            IDFlag = Constant.Common.ActiveStatus
+        Else
+            IDFlag = Constant.Common.InActiveStatus
+        End If
+        Dim BrFlag As String
+        If (ChkBranch.Checked = True) Then
+            BrFlag = Constant.Common.ActiveStatus
+        Else
+            BrFlag = Constant.Common.InActiveStatus
+        End If
+        Dim ComFlag As String
+        If (ChkCompany.Checked = True) Then
+            ComFlag = Constant.Common.ActiveStatus
+        Else
+            ComFlag = Constant.Common.InActiveStatus
+        End If
+        Dim DeptFlag As String
+        If (ChkDept.Checked = True) Then
+            DeptFlag = Constant.Common.ActiveStatus
+        Else
+            DeptFlag = Constant.Common.InActiveStatus
+        End If
+
+        Dim Numrowsaffected As Integer
+
+        'UPDATE 
+        If (Not Request.QueryString(Constant.SessionKeys.ID) Is Nothing) Then
+            Dim UsrGrpUpdate As New UserGroup()
+            Numrowsaffected = UsrGrpUpdate.UpdateUsrGrp(userInfo.userCompanyEntity, UsrCode, UsrDesc, UsrType, UsrLevel, Status, IDFlag, BrFlag, ComFlag, DeptFlag, userInfo.userIDEntity)
+            'INSERT
+        Else
+            Dim UsrGrpAdd As New UserGroup()
+            Numrowsaffected = UsrGrpAdd.InsertUsrGrp(userInfo.userCompanyEntity, UsrCode, UsrDesc, UsrType, UsrLevel, Status, IDFlag, BrFlag, ComFlag, DeptFlag, userInfo.userIDEntity)
+        End If
+
+        If (Numrowsaffected > 0) Then
+            Response.Redirect("~/User_Group_List.aspx")
+        End If
+    End Sub
+#End Region
+
+#Region "btnCancel_Click"
+    Protected Sub btnCancel_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnCancel.Click
+        Response.Redirect("~/User_Group_List.aspx")
+    End Sub
+#End Region
+
+#Region "Reset button Click"
+
+    Protected Sub btnReset_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnReset.Click
+        If (Not Request.QueryString(Constant.SessionKeys.ID) Is Nothing) Then
+            PopulateUserGroup()
+        Else
+            Response.Redirect("~/User_Group_Add.aspx")
+        End If
+
+
+    End Sub
+
+#End Region
+
+End Class

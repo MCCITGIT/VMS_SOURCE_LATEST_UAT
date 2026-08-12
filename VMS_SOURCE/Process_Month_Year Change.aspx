@@ -1,0 +1,59 @@
+﻿<%@ Page Title="Process Year and Month Change" Language="VB" MasterPageFile="~/MasterPage.master" AutoEventWireup="false" CodeFile="Process_Month_Year Change.aspx.vb" Inherits="Process_Month_Year_Change" %>
+
+<%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="ajaxtoolkit" %>
+<%--<asp:Content ID="Content1" ContentPlaceHolderID="Head1" runat="Server">
+</asp:Content>--%>
+<asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
+    <script type="text/javascript" src="Scripts/FunctionValidator.js"></script>
+    <script type="text/javascript" src="Scripts/Validation_Process_Month_Change.js"></script>
+    <script type="text/javascript">
+        document.onkeydown = checkValue;
+        function checkValue() {
+            if (event.keyCode == 118) {  // button Add (F7 keypress)
+                document.getElementById('btnSubmit').click();
+                //	            __doPostBack(document.getElementById('btnSubmit').name, '');
+            }
+            else if (event.keyCode == 119) { // button Search (F8 keypress)
+                document.getElementById('btnCancel').click();
+                //	            __doPostBack(document.getElementById('btnCancel').name, '');
+            }
+        }
+        //-->
+    </script>
+
+    <div class="breadcrumbs">
+        <div class="leftFung">
+            <a href="Home.aspx" title="Home"><i class="fas fa-home"></i></a>
+            <div class="diveider">/</div>
+            <h3 class="pageTitle">Process Month Change</h3>
+        </div>
+        <div class="rightFung"></div>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="form-control-label">Process Year:<span class="mandatory" id="span1">*</span></label>
+                        <asp:TextBox ID="txtProcessYear" ClientIDMode="Static" CssClass="form-control" MaxLength="4" runat="server"></asp:TextBox>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="form-control-label">Process Month:<span class="mandatory" id="spanTDate">*</span></label>
+                        <asp:TextBox ID="txtProcessMonth" ClientIDMode="Static" CssClass="form-control" MaxLength="2" runat="server"></asp:TextBox>
+                    </div>
+                </div>
+                <div class="col-md-3 form-btn-mt">
+                    <div class="form-group">
+                        <asp:Button ID="btnSubmit" ClientIDMode="Static" CssClass="btn btn-success btn-sm" runat="server" Text="Submit" />&nbsp;&nbsp;
+                <asp:Button ID="btnCancel" CssClass="btn btn-secondary btn-sm" runat="server" Text="Cancel" />
+                    </div>
+                </div>
+            </div>
+            <asp:Label ID="lblErrMsg" CssClass="errormsg" ClientIDMode="Static" Visible="true" runat="server"></asp:Label>
+            <div id="divErrorMessage"></div>
+        </div>
+    </div>
+</asp:Content>

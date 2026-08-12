@@ -1,0 +1,131 @@
+﻿/*GridViewCSS Glass Black Style*/
+.GridViewStyle
+{
+   
+    table-layout: auto;
+    border-collapse: collapse;
+    
+}
+/*Header and Pager styles*/
+.HeaderStyle, .PagerStyle /*Common Styles*/
+{
+    background-image: url('..images/gridheader.JPEG');
+    background-position:center;
+    background-repeat:repeat-x;
+   background-color:#8E1104;
+}
+.HeaderStyle th
+{
+  
+    color: #ffffff;
+      border-right: #999999 1px solid;
+}
+.HeaderStyle a
+{
+    text-decoration:none;
+    color:#ffffff;
+    display:block;
+    text-align:left;
+    font-weight:normal;
+}
+.PagerStyle table
+{
+    text-align:center;
+    margin:auto;
+}
+.PagerStyle table td
+{
+    border:0px;
+  
+}
+.PagerStyle td
+{
+    border-top: #1d1d1d 1px solid;
+    
+}
+.PagerStyle a
+{
+    color:#ffffff;
+    text-decoration:none;
+    border-top:solid 1px #777777;
+    border-right:solid 1px #333333;
+    border-bottom:solid 1px #333333;
+    border-left:solid 1px #777777;
+}
+.PagerStyle span
+{
+    font-weight:bold;
+    color:#FFFFFF;
+    text-decoration:none;
+    
+}
+/*RowStyles*/
+.RowStyle td, .AltRowStyle td, .SelectedRowStyle td, .EditRowStyle td /*Common Styles*/
+{
+  
+   
+}
+.RowStyle td
+{
+    background-color: #c9c9c9;
+     border-right: #999999 1px solid;
+}
+.AltRowStyle td
+{
+    background-color: #f0f0f0;
+     border-right: #999999 1px solid;
+}
+.SelectedRowStyle td
+{
+    background-color: #ffff66;
+}
+.Info_left
+{
+	
+	width: 15px;
+	height: 30px;
+	background: url('../images/tableft.JPG') no-repeat;
+	float: left;
+	margin-left: 1%;
+	position: static;
+	
+}
+.Info_right
+{
+	
+	width: 15px;
+	height: 30px;
+	background: url('../images/tabright.JPG') no-repeat;
+	float: right;
+	position: static;
+}
+
+.Info
+{
+  width:auto;
+  height:30px;
+   background-color: #8E1104;
+  float:left;
+  position:static;
+  font-family:Arial ;
+  font-size:12px;
+  text-align:center;
+  padding-top:0px;
+   
+ margin:auto;
+}
+
+.dropDownDash
+{
+    BORDER-RIGHT: #818384 1px solid;
+    BORDER-TOP: #818384 1px solid;
+    FONT-SIZE: 9pt;
+    BORDER-LEFT: #818384 1px solid;
+    COLOR: #8E1104;
+    BORDER-BOTTOM: #818384 1px solid;
+    BACKGROUND-REPEAT: repeat;
+    FONT-FAMILY: Verdana, Arial, Tahoma, Helvetica, Sans-Serif;
+    BACKGROUND-COLOR: #FFFFFF;
+    TEXT-DECORATION: none;
+    font-weight:bold;
+}

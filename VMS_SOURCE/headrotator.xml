@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" ?> 
+<Advertisements>
+<Ad>
+<ImageUrl>
+images/kalam_image.gif
+</ImageUrl>
+<NavigateUrl>
+http://localhost/VMS/Images/APJ_NAGAR.jpg
+</NavigateUrl>
+<AlternateText>
+kalam_image
+</AlternateText>
+</Ad>
+
+<Ad>
+<ImageUrl>
+  images/APJ_NAGAR.jpg
+</ImageUrl>
+<NavigateUrl>
+  http://localhost/VMS/images/APJ_NAGAR.jpg
+</NavigateUrl>
+<AlternateText>
+  pepys_building
+</AlternateText>
+</Ad>
+
+<Ad>
+<ImageUrl>
+  images/APJ_NAGAR.jpg
+</ImageUrl>
+<NavigateUrl>
+  http://localhost/VMS/Images/APJ_NAGAR.jpg
+</NavigateUrl>
+<AlternateText>
+building-long
+</AlternateText>
+</Ad>
+
+</Advertisements>

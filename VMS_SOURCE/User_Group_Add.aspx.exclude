@@ -1,0 +1,226 @@
+<%@ Page Language="VB" AutoEventWireup="false" CodeFile="User_Group_Add.aspx.vb" Inherits="User_Group_Add" %>
+<%@ Register TagPrefix="uc1" TagName="Footer" Src="includes/Footer.ascx" %>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head runat="server">
+    <title>:: User Group Add ::</title>
+    <link href="includes/style.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" language="javascript" src="Scripts/FunctionValidator.js"></script>
+    <script type="text/javascript" language="javascript" src="Scripts/ValidationUserGroup.js"></script>
+    <script type="text/javascript" language="javascript" src="Scripts/Messages.js"></script>
+    <script type="text/javascript" language="javascript" src="Scripts/RegEX.js"></script>
+    <script type="text/javascript" language="javascript" src="Scripts/date.js"></script>
+    <script type="text/javascript" language="javascript" src="Scripts/AjaxServices.js"></script>
+      <script language="javascript" type="text/javascript">
+ 
+    document.onkeydown = checkValue; 
+    function checkValue(){
+	  
+		if(event.keyCode == 118){  // button Add (F7 keypress)
+		if (document.getElementById('btnSubmit').disabled==false)	    		    
+		   ValidateUGAControls();
+		   else
+		   return false;
+	    }
+	    else if(event.keyCode == 119){ // button Search (F8 keypress)    		    	        
+		    __doPostBack(document.getElementById('btnCancel').name,'');
+	    }
+	    else if(event.keyCode == 120){ // button Reset (F9 keypress)
+	         __doPostBack(document.getElementById('btnReset').name,'');
+	    }
+//	    else if(event.keyCode == 123){// button Pending (F12 keypress)
+//		    __doPostBack(document.getElementById('btnPending').name,'');
+//		    //alert("Pending");
+//	    }
+    }
+    //-->
+    </script>
+</head>
+<body>
+    <form id="form1" runat="server">
+    
+    <table width="100%"  border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td align="left" valign="top"><table width="100%"  border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="left" valign="top" style="background-color:#ffffff">
+        <!-- Table for Logo Starts -->
+        <table width="100%"  border="0" cellspacing="0" cellpadding="0">
+          <tr>
+            <!--<td style="width:180" align="center">
+                <asp:Image ID="Image1" ImageUrl="~/images/inner_logo.gif" Width="149px" Height="74px" runat="server" />
+            </td>-->
+            <td valign="bottom" style="width:90%">
+                <asp:Image ID="Image2" ImageUrl="~/images/inner_tag.jpg"  runat="server" />
+            </td>
+            <td style="width:10%" align="center" valign="bottom">
+                <asp:ImageButton ID="ImageButton1" AlternateText="Home" ImageUrl="~/images/home_new.png" PostBackUrl="~/User_Group_List.aspx" runat="server" />
+            </td>
+          </tr>
+        </table>
+        <!-- Table for Logo Ends -->
+       </td>
+      </tr>
+      <tr>
+        <td style="height:1"></td>
+      </tr>
+      
+      <tr>
+        <td>&nbsp;</td>
+      </tr>
+      <tr>
+        <td style="height:303px" align="center" valign="top">
+        <table width="70%"  border="0" cellpadding="0" cellspacing="0" class="ss" style="border-collapse: collapse; border-color:#111111">
+          <tr>
+            <td style="height:25" align="left"  colspan="2">
+            User Group - Add</td>
+          </tr>
+          <tr>
+            <td style="height:25" align="center"  colspan="2">
+            [F7 = Submit]&nbsp; [F8=Cancel] &nbsp; [F9=Reset] </td>
+          </tr>
+          <tr>
+				<td style="height:2px; background-color:#339999"></td>
+			</tr>
+			<%--<tr>
+				<td style="height:35" >
+					&nbsp;
+				</td>
+			</tr>--%>
+          
+          
+          
+		  <tr>
+		    <td colspan="0">&nbsp;
+		    </td>
+		  </tr>
+		  
+		  <tr>
+            <td style="height:380" align="center" valign="top">
+            <table width="500px"  border="1" cellpadding="0" cellspacing="0" class="mt" style="border-collapse: collapse; border-color:#111111">
+          
+            <tr align="left" style="width:400px">
+            <td style="width:500px;height:10px;background-color:#8DE8FF;" colspan="2">
+            
+            </td>
+            </tr>
+            <tr align="left" style="width:500px">
+            <td style="width:150px;height:30px;background-color:#E6F5FB;text-align:right">
+            Group Code
+            </td>
+            <td style="width:350px; height: 30px;"align="left">
+            &nbsp;<asp:TextBox ID="txtGrpCode" CssClass="txtBox" Width="150px" runat="server"></asp:TextBox>
+            <span class="mandatory" id="spanGrpCode">*</span>
+            <asp:Label ID="lblUsrGrpErrMsg" runat="server" Style="color: Red; font-size: small;
+                    font-weight: bold;"></asp:Label>
+            </td>
+            </tr>
+            <tr align="left" style="width:500px">
+            <td style="width:150px;height:30px;background-color:#E6F5FB;text-align:right">
+            Group Description
+            </td>
+            <td style="width:350px"align="left">
+            &nbsp;<asp:TextBox ID="txtGrpDesc" CssClass="txtBox" Width="150px" runat="server"></asp:TextBox>
+            <span class="mandatory" id="spanGrpDesc">*</span>
+            </td>
+            </tr>
+            <tr align="left" style="width:500px">
+            <td style="width:150px;height:30px;background-color:#E6F5FB;text-align:right">
+            UserType
+            </td>
+            <td style="width:350px"align="left">
+            &nbsp;<asp:DropDownList ID="ddlUsrType" CssClass="dropDown" Width="150px" runat="server">
+            <asp:ListItem Text="Internal" Value="I"></asp:ListItem>
+            <asp:ListItem Text="Prospect" Value="P"></asp:ListItem>
+            <asp:ListItem Text="Client" Value="C"></asp:ListItem>
+            <asp:ListItem Text="Vendor" Value="V"></asp:ListItem>
+            </asp:DropDownList>
+            </td>
+            </tr>
+            <tr align="left" style="width:500px">
+            <td style="width:150px;height:30px;background-color:#E6F5FB;text-align:right">
+            Approval Level
+            </td>
+            <td style="width:350px"align="left">
+            &nbsp;<asp:DropDownList ID="ddlAppLevel" CssClass="dropDown" Width="100px" runat="server">
+            <asp:ListItem Text="0" Value="0"></asp:ListItem>
+            <asp:ListItem Text="1" Value="1"></asp:ListItem>
+            <asp:ListItem Text="2" Value="2"></asp:ListItem>
+            <asp:ListItem Text="3" Value="3"></asp:ListItem>
+            <asp:ListItem Text="4" Value="4"></asp:ListItem>
+            <asp:ListItem Text="5" Value="5"></asp:ListItem>
+            <asp:ListItem Text="6" Value="6"></asp:ListItem>
+            <asp:ListItem Text="7" Value="7"></asp:ListItem>
+            <asp:ListItem Text="8" Value="8"></asp:ListItem>
+            <asp:ListItem Text="9" Value="9"></asp:ListItem>
+            </asp:DropDownList>
+            </td>
+            </tr>
+            <tr align="left" style="width:500px">
+            <td style="width:150px;height:20px;background-color:#E6F5FB;text-align:right">
+            Status
+            </td>
+            <td style="width:350px;height:30px"align="left">
+            &nbsp;<asp:RadioButton ID="rdActiveBttn" runat="server" GroupName="Act" Text="Active" />
+            &nbsp;<asp:RadioButton ID="rdInActiveBttn" runat="server" GroupName="Act" Text="InActive" />
+            </td>
+            </tr>
+            <tr align="left" style="width:500px">
+            <td style="width:150px;height:20px;background-color:#E6F5FB;text-align:right">
+            Features
+            </td>
+            <td style="width:350px;height:30px"align="left">
+            &nbsp;<asp:CheckBox ID="ChkUsrID" Text="UserID" runat="server" />
+            &nbsp;<asp:CheckBox ID="ChkBranch" Text="Branch" runat="server" />
+            &nbsp;<asp:CheckBox ID="ChkCompany" Text="Company" runat="server" />
+            &nbsp;<asp:CheckBox ID="ChkDept" Text="Department" runat="server" />
+            
+            
+            </td>
+            </tr>
+            <tr align="left" style="width:500px">
+            <td style="width:400px;height:10px;background-color:#8DE8FF;" colspan="2">
+            
+            </td>
+            </tr>
+            <tr align="left">
+            <td colspan="2">
+                <asp:label id="lblErrMsg" cssclass="errormsg" visible="true" runat="server"></asp:label>
+                <div id="divErrorMessage">
+                </div>
+            </td>
+        </tr>
+          
+          
+          </table>
+          </td>
+          </tr>
+          </table>
+                  
+          
+          </td>
+      </tr>
+      <tr>
+            <td >&nbsp;</td>
+       </tr>
+       <tr>
+            <td align="center"  >
+                <asp:Button ID="btnSubmit" CssClass="but2" runat="server" Text="Submit" />
+                <asp:Button ID="btnCancel" CssClass="but2" runat="server" Text="Cancel"  />
+                <asp:Button ID="btnReset" CssClass="but2" runat="server" Text="Reset" /> 
+            </td>
+        </tr>
+        <tr>
+            <td >&nbsp;</td>
+       </tr>
+      <tr>
+        <td style="height:25" align="center"><span class="mt">
+        <uc1:footer id="Footer1" runat="server"></uc1:footer> </span></td>
+      </tr>
+    </table></td>
+  </tr>
+</table>
+    </form>
+</body>
+</html>

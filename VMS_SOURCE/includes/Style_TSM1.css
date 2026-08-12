@@ -1,0 +1,164 @@
+BODY {
+	BACKGROUND-COLOR: #CCE1FF;
+	COLOR: #46BBF9;
+	FONT-FAMILY: 'Arial Narrow';
+	FONT-SIZE: 12px;
+	FONT-WEIGHT: normal;
+	SCROLLBAR-BASE-COLOR: #ADD3FF
+}
+.clsHideCntl
+{
+	COLOR: #F0F8FF;
+}
+
+.clsTRbg
+{
+    	BACKGROUND-COLOR: #DFECFF;
+    	COLOR: #000080;
+    	FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif, "MS sans serif";
+    	FONT-SIZE: 11px;
+    	FONT-WEIGHT: Bold
+}
+
+.clsTDbg
+{
+    	BACKGROUND-COLOR: #F0F8FF;
+    	COLOR: #000080;
+    	FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif, "MS sans serif";
+    	FONT-SIZE: 11px;
+    	FONT-WEIGHT: Normal
+}
+
+.clsTDbg1
+{
+    	BACKGROUND-COLOR: #F0F8FF;
+    	COLOR: #E89005;
+    	FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif, "MS sans serif";
+    	FONT-SIZE: 11px;
+    	FONT-WEIGHT: Normal
+    	/*#FF6600*/
+}
+
+.clsTDbgAlternative
+{
+    	/*BACKGROUND-COLOR: #F0F8FF;*/
+    	COLOR: #000080;
+    	FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif, "MS sans serif";
+    	FONT-SIZE: 11px;
+    	FONT-WEIGHT: Normal
+}
+/* used to show td bg color as white*/ 
+.clsTDbgwhite
+{
+    	BACKGROUND-COLOR: #FFFFFF;    	
+    	FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif, "MS sans serif";
+    	FONT-SIZE: 11px;
+    	FONT-WEIGHT: Normal
+}
+/* Used to show inactive Records in Red Color*/
+.clsRedTDbg
+{
+    	BACKGROUND-COLOR: #F0F8FF;
+    	COLOR: Red;
+    	FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif, "MS sans serif";
+    	FONT-SIZE: 11px;
+    	FONT-WEIGHT: Normal
+}
+
+.clsRedTDbg1
+{
+    	/*BACKGROUND-COLOR: #F0F8FF;*/
+    	COLOR: Red;
+    	FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif, "MS sans serif";
+    	FONT-SIZE: 11px;
+    	FONT-WEIGHT: Normal
+}
+
+.clsPagetitle
+{
+    	BACKGROUND-COLOR: #FFFFFF;
+    	COLOR: #C61010;
+    	FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif, "MS sans serif";
+    	FONT-SIZE: 11px;
+    	FONT-WEIGHT: Bold
+}
+
+.clslinks
+{
+    	BACKGROUND-COLOR: #EBEBEB;
+    	COLOR: #000080;
+    	FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif, "MS sans serif";
+    	FONT-SIZE: 10px;
+    	FONT-WEIGHT: normal
+}
+
+	
+.clsBodyText
+{
+    	COLOR: black;
+    	FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif, "MS sans serif";
+    	FONT-SIZE: 11px;
+    	FONT-WEIGHT: normal
+}
+
+.clsBoldText
+{
+    	COLOR: black;
+    	FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif, "MS sans serif";
+    	FONT-SIZE: 11px;
+    	FONT-WEIGHT: bold
+}
+.clsinputlabel
+{
+
+		FONT-SIZE: 10px;
+		COLOR: blue;
+		FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif, "MS sans serif";
+		TEXT-DECORATION: none
+
+}
+.clsRed
+{
+    	BACKGROUND-COLOR: #F0F8FF;
+    	COLOR: red;
+    	FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif, "MS sans serif";
+    	FONT-SIZE: 11px;
+    	FONT-WEIGHT: Normal
+
+}
+
+/* Used to show success Messages */
+.clsMsgSuccess
+{
+	color:Green;
+	font-size:smaller;
+	font-family:Verdana;
+	font-weight:bold
+}
+/* Used to show Failed Messages */
+.clsMsgFail
+{
+	color:Red;
+	font-size:smaller;
+	font-family:Verdana;
+	font-weight:bold
+}
+/* Show error Message in Error Page*/
+.clsErrMsg
+{
+	color:Red;
+	BACKGROUND-COLOR: #F0F8FF;
+	FONT-SIZE: 12pt;
+	font-family:Verdana;
+    FONT-WEIGHT: Normal
+    
+ 
+}
+
+
+.clsNoLink
+{
+	COLOR: blue;
+	Text-decoration :none;
+}
+

@@ -1,0 +1,176 @@
+<%@ Page Language="VB" AutoEventWireup="false" CodeFile="User_Group_List.aspx.vb" Inherits="User_Group_List" %>
+<%@ Register TagPrefix="uc1" TagName="Footer" Src="includes/Footer.ascx" %>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head runat="server">
+    <title>:: User Group List ::</title>
+    <link href="includes/style.css" rel="stylesheet" type="text/css" />
+    <script language="javascript" type="text/javascript">
+    
+    document.onkeydown = checkValue; 
+    function checkValue(){   
+	    if(event.keyCode == 118){  // button Add (F7 keypress)	    		    
+		    __doPostBack(document.getElementById('ImgbtnAdd').name,'');
+	    }
+	   
+
+    }
+    //-->
+    </script>
+</head>
+<body>
+    <form id="form1" runat="server">
+    <table width="100%"  border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td align="left" valign="top"><table width="100%"  border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="left" valign="top" style="background-color:#ffffff">
+        <!-- Table for Logo Starts -->
+        <table width="100%"  border="0" cellspacing="0" cellpadding="0">
+          <tr>
+            <!--<td style="width:180" align="center">
+                <asp:Image ID="Image1" ImageUrl="~/images/inner_logo.gif" Width="149px" Height="74px" runat="server" />
+            </td>-->
+            <td valign="bottom" style="width:90%">
+                <asp:Image ID="Image2" ImageUrl="~/images/inner_tag.jpg"  runat="server" />
+            </td>
+            <td style="width:10%" align="center" valign="bottom">
+                <asp:ImageButton ID="ImageButton1" AlternateText="Home" ImageUrl="~/images/home_new.png" PostBackUrl="~/Home.aspx" runat="server" />
+            </td>
+          </tr>
+        </table>
+        <!-- Table for Logo Ends -->
+       </td>
+      </tr>
+      <tr>
+        <td style="height:1"></td>
+      </tr>
+      
+      <tr>
+        <td>&nbsp;</td>
+      </tr>
+      <tr>
+        <td style="height:380" align="center" valign="top">
+        <table width="70%"  border="0" cellpadding="0" cellspacing="0" class="ss" style="border-collapse: collapse; border-color:#111111">
+          <tr>
+            <td style="height:25" align="left"  colspan="2">
+            User Group </td>
+          </tr>
+          <tr>
+            <td style="height:25" align="center"  colspan="2">
+            [F7 = Add]&nbsp; </td>
+          </tr>
+          <tr>
+				<td style="height:2px; background-color:#339999"></td>
+			</tr>
+			<%--<tr>
+				<td style="height:35" >
+					&nbsp;
+				</td>
+			</tr>--%>
+          
+          
+          
+		  <tr>
+		    <td colspan="0">&nbsp;
+		    </td>
+		  </tr>
+		  <tr>
+		  <td style="width:790px;" align="right" >                                                        
+                    <asp:ImageButton  ImageUrl="images/ic_add.gif"  ID="ImgbtnAdd"  PostBackUrl="~/User_Group_Add.aspx" runat="server" />
+                </td> 
+                </tr>
+                <tr>
+		    <td colspan="0">&nbsp;
+		    </td>
+		  </tr> 
+		  <tr>
+        <td style="height:380" align="center" valign="top">
+        <table width="800px"  border="0" cellpadding="0" cellspacing="0" class="mt" style="border-collapse: collapse; border-color:#111111">
+          
+		  <tr>
+        
+              <td colspan="3" style="width:800px;" align="right">
+               <asp:label id="lblPageSize" runat="server" text="Results Per Page:"></asp:label>
+               <asp:DropDownList ID="ddlPageSize" runat="server" CssClass="dropDown" Autopostback="true"></asp:DropDownList>
+              </td>
+          </tr>
+          </table>
+          </td>
+          </tr>
+          
+          <tr>
+            <td align="center" valign="top" colspan="2">
+            
+            
+            <asp:gridview id="gvUserGroup" runat="server" autogeneratecolumns="false" allowpaging="True"
+                     visible="true" width="800px"  backcolor="White" bordercolor="#999999" OnPageIndexChanging="gvUserGroup_PageIndexChanging"
+                      borderstyle="None" borderwidth="1px" cellpadding="2" gridlines="both">
+                     <RowStyle CssClass="tlrowlight" />
+                     <SelectedRowStyle BackColor="#008A8C" Font-Bold="True" ForeColor="White" />
+                     <AlternatingRowStyle CssClass="tlrowdark" />         
+                     <PagerStyle BackColor="#66CCFF" Font-Bold="True" ForeColor="White" Height="20px" HorizontalAlign="Right" />
+                     <HeaderStyle BackColor="#66CCFF"  Font-Bold="True" Font-Size="9pt"  ForeColor="Gray" Height="25px" HorizontalAlign="Center" />                
+                     <FooterStyle BackColor="#0D267A" ForeColor="Black" HorizontalAlign="Center" />
+                      <Columns>    
+                      
+                        <asp:BoundField  HeaderStyle-HorizontalAlign ="Center"  HeaderText ="Select">
+                        </asp:BoundField>
+                        <asp:BoundField  HeaderStyle-HorizontalAlign ="Center" ItemStyle-HorizontalAlign="Left" HeaderText ="Group Code" DataField="grp_user_group_code">
+                        </asp:BoundField>
+                        <asp:BoundField  HeaderStyle-HorizontalAlign ="Center" ItemStyle-HorizontalAlign="Left" HeaderText ="Group Description" DataField="grp_user_group_desc">
+                        </asp:BoundField>
+                        <asp:BoundField  HeaderStyle-HorizontalAlign ="Center" ItemStyle-HorizontalAlign="Left" HeaderText ="Group Type" DataField="grp_user_group_type">
+                        </asp:BoundField>
+                        <asp:BoundField  HeaderStyle-HorizontalAlign ="Center"  ItemStyle-HorizontalAlign="Left" HeaderText ="Created Date" DataField="created_date">
+                        </asp:BoundField>
+                        <asp:BoundField  HeaderStyle-HorizontalAlign ="Center"  ItemStyle-HorizontalAlign="Left" HeaderText ="Modified Date" DataField="modified_date">
+                        </asp:BoundField>
+                      </Columns>
+             </asp:gridview>
+             </td>
+                             
+          </tr>
+          </table>
+           <div id="Div_User_Group_Grid" runat="server" visible="false">
+                <table border="1" cellpadding="0" cellspacing="0" style="border-collapse: collapse;border-color:#7BD1FC" width="800px">
+                    <tr style="height:20px" class="gridList_Norecord">
+                        <td style="width:114px; height: 20px;" align="center">
+                        Select</td>
+                        <td style="width:114px; height: 20px;" align="center">
+                        Group Code</td>
+                        <td style="width:114px; height: 20px;" align="center">
+                        Group Description</td>
+                        <td style="width:114px; height: 20px;" align="center">
+                        Group Type</td>
+                        <td style="width:114px; height: 20px;" align="center">
+                        Created Date</td>
+                        <td style="width:114px; height: 20px;" align="center">
+                        Modified Date</td>
+                        
+                        
+                    </tr>
+                    <tr style="height:20px">
+                         <td colspan="6">No Records Found</td>
+                    </tr>         
+                 </table>
+             </div>
+          
+          
+          </td>
+      </tr>
+      <tr>
+            <td >&nbsp;</td>
+       </tr>
+       
+      <tr>
+        <td style="height:25" align="center"><span class="mt">
+        <uc1:footer id="Footer1" runat="server"></uc1:footer> </span></td>
+      </tr>
+    </table></td>
+  </tr>
+</table>
+    </form>
+</body>
+</html>
