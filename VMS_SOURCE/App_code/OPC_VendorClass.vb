@@ -716,5 +716,57 @@ Public Class OPC_VendorClass
         DS = DBFactory.GetHelper().ExecuteDataSet("[dbo].[getrawmaterial_requisition_editdata]", Data.CommandType.StoredProcedure, sqlParams)
         Return DS
     End Function
+
+    Function ApproveRawMaterialRequest(ByVal userId As String, ByVal dtApprove As DataTable) As Integer
+        Dim sqlConn As SqlConnection = Nothing
+        Dim outputCode As Integer = 0
+        Dim sqlParams(2) As SqlParameter
+
+        Try
+            If dtApprove Is Nothing OrElse dtApprove.Rows.Count = 0 Then
+                Return 0
+            End If
+
+            sqlConn = DBFactory.GetHelper.OpenConnection()
+
+            sqlParams(0) = New SqlParameter()
+            sqlParams(0).ParameterName = "@user_id"
+            sqlParams(0).SqlDbType = SqlDbType.VarChar
+            sqlParams(0).Size = 50
+            sqlParams(0).Direction = Data.ParameterDirection.Input
+            sqlParams(0).Value = userId
+
+            sqlParams(1) = New SqlParameter()
+            sqlParams(1).ParameterName = "@tbl_opc_request_approve"
+            sqlParams(1).SqlDbType = SqlDbType.Structured
+            sqlParams(1).Direction = Data.ParameterDirection.Input
+            sqlParams(1).TypeName = "dbo.tbl_opc_request_approve"
+            sqlParams(1).Value = dtApprove
+
+            sqlParams(2) = New SqlParameter()
+            sqlParams(2).ParameterName = "@outputCode"
+            sqlParams(2).SqlDbType = SqlDbType.Int
+            sqlParams(2).Direction = Data.ParameterDirection.Output
+
+            Dim sqlCmd As New SqlCommand()
+            sqlCmd.Connection = sqlConn
+            sqlCmd.CommandType = CommandType.StoredProcedure
+            sqlCmd.CommandText = "[dbo].[opc_rawmaterial_request_approve]"
+            sqlCmd.Parameters.AddRange(sqlParams)
+            sqlCmd.ExecuteNonQuery()
+
+            If Not IsDBNull(sqlParams(2).Value) Then
+                outputCode = Convert.ToInt32(sqlParams(2).Value)
+            End If
+        Catch ex As Exception
+            Throw ex
+        Finally
+            If (sqlConn IsNot Nothing) Then
+                sqlConn.Close()
+            End If
+        End Try
+
+        Return outputCode
+    End Function
 #End Region
 End Class
