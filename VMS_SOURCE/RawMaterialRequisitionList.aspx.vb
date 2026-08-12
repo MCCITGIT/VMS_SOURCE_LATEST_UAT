@@ -18,6 +18,7 @@ Partial Class RawMaterialRequisitionList
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
         CheckLogin()
         If Not IsPostBack Then
+            btnApprove.Attributes.Add("onclick", "return validateRawMaterialRequisitionApprove();")
             BindDropDown()
             BindData()
         End If
@@ -29,6 +30,7 @@ Partial Class RawMaterialRequisitionList
     End Sub
 
     Protected Sub imgbtnSearch_Click(sender As Object, e As EventArgs)
+        lblErrorMessage.Text = ""
         BindData()
     End Sub
 
@@ -68,6 +70,63 @@ Partial Class RawMaterialRequisitionList
                 Context.ApplicationInstance.CompleteRequest()
             End If
         Catch ex As System.Threading.ThreadAbortException
+        Catch ex As Exception
+            Dim returnUrl As String = "~/ExceptionPage.aspx"
+            Session(Constant.SessionKeys.ErrMessage) = ex.ToString()
+            Response.Redirect(returnUrl)
+        End Try
+    End Sub
+
+    Protected Sub gvRequisition_RowDataBound(sender As Object, e As GridViewRowEventArgs)
+        If e.Row.RowType = DataControlRowType.DataRow Then
+            Dim chkSelect As CheckBox = CType(e.Row.FindControl("chkSelect"), CheckBox)
+            Dim lblApprovalStatus As Label = CType(e.Row.FindControl("lblApprovalStatus"), Label)
+            If chkSelect IsNot Nothing AndAlso lblApprovalStatus IsNot Nothing Then
+                If String.Equals(lblApprovalStatus.Text.Trim(), "Approved", StringComparison.OrdinalIgnoreCase) Then
+                    chkSelect.Enabled = False
+                End If
+            End If
+        End If
+    End Sub
+
+    Protected Sub btnApprove_Click(sender As Object, e As EventArgs)
+        Try
+            CheckLogin()
+            lblErrorMessage.Text = String.Empty
+
+            Dim dtApprove As New DataTable()
+            dtApprove.Columns.Add("request_id", GetType(Integer))
+            dtApprove.Columns.Add("approval_status", GetType(String))
+
+            For Each row As GridViewRow In gvRequisition.Rows
+                Dim chkSelect As CheckBox = CType(row.FindControl("chkSelect"), CheckBox)
+                Dim hdnRequestId As HiddenField = CType(row.FindControl("hdnRequestId"), HiddenField)
+
+                If chkSelect IsNot Nothing AndAlso chkSelect.Enabled AndAlso chkSelect.Checked Then
+                    Dim requestId As Integer
+                    If hdnRequestId IsNot Nothing AndAlso Integer.TryParse(hdnRequestId.Value, requestId) Then
+                        dtApprove.Rows.Add(requestId, "A")
+                    End If
+                End If
+            Next
+
+            If dtApprove.Rows.Count = 0 Then
+                lblErrorMessage.ForeColor = Drawing.Color.Red
+                lblErrorMessage.Text = "Please select at least one pending requisition to approve."
+                Return
+            End If
+
+            Dim obj As New OPC_VendorClass()
+            Dim approvedCount As Integer = obj.ApproveRawMaterialRequest(userInfo.userIDEntity, dtApprove)
+
+            If approvedCount > 0 Then
+                lblErrorMessage.ForeColor = Drawing.Color.Green
+                lblErrorMessage.Text = approvedCount.ToString() & " requisition(s) approved successfully."
+                BindData()
+            Else
+                lblErrorMessage.ForeColor = Drawing.Color.Red
+                lblErrorMessage.Text = "Unable to approve the selected requisition(s)."
+            End If
         Catch ex As Exception
             Dim returnUrl As String = "~/ExceptionPage.aspx"
             Session(Constant.SessionKeys.ErrMessage) = ex.ToString()
