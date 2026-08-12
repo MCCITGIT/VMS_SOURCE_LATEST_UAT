@@ -156,3 +156,40 @@ function validateRawMaterialRequisitionSubmit() {
 
     return false;
 }
+
+function validateRawMaterialRequisitionApprove() {
+    firstErrorControl = "";
+    errMsg = "";
+
+    var grid = document.getElementById("gvRequisition");
+    if (!grid) {
+        grid = document.querySelector("[id$='gvRequisition']");
+    }
+
+    var hasSelected = false;
+    if (grid) {
+        var checkboxes = grid.querySelectorAll("input[type='checkbox'][id$='chkSelect']");
+        for (var i = 0; i < checkboxes.length; i++) {
+            if (!checkboxes[i].disabled && checkboxes[i].checked) {
+                hasSelected = true;
+                break;
+            }
+        }
+    }
+
+    if (!hasSelected) {
+        firstErrorControl = "gvRequisition";
+        errMsg += GetErrorRow("gvRequisition", "Please select at least one pending requisition to approve.");
+        SetControlFocus(firstErrorControl);
+        errMsg = "<table>" + errMsg + "</table>";
+        document.getElementById("lblErrorMessage").innerHTML = errMsg;
+        return false;
+    }
+
+    document.getElementById("lblErrorMessage").innerHTML = "";
+    if (confirm("Are you sure you want to approve the selected requisition(s)?")) {
+        return true;
+    }
+
+    return false;
+}
