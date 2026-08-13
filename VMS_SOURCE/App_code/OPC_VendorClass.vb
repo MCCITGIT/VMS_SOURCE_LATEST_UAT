@@ -769,4 +769,32 @@ Public Class OPC_VendorClass
         Return outputCode
     End Function
 #End Region
+#Region "Receipt Raw Material"
+    Function GetRawMaterialReceiptList(ByVal status As String) As DataSet
+        Dim DS As System.Data.DataSet
+        Dim sqlParams(0) As SqlParameter
+
+        sqlParams(0) = New SqlParameter()
+        sqlParams(0).ParameterName = "@status"
+        sqlParams(0).DbType = DbType.String
+        sqlParams(0).Direction = Data.ParameterDirection.Input
+        sqlParams(0).Value = If(Not String.IsNullOrWhiteSpace(status), CObj(status.Trim()), DBNull.Value)
+
+        DS = DBFactory.GetHelper().ExecuteDataSet("[dbo].[opc_bulkreceiptlist]", Data.CommandType.StoredProcedure, sqlParams)
+        Return DS
+    End Function
+    Function GetRawMaterial_DespatchHdrList(ByVal despatchid As String) As DataSet
+        Dim DS As System.Data.DataSet
+        Dim sqlParams(0) As SqlParameter
+
+        sqlParams(0) = New SqlParameter()
+        sqlParams(0).ParameterName = "@despatchid"
+        sqlParams(0).DbType = DbType.Int32
+        sqlParams(0).Direction = Data.ParameterDirection.Input
+        sqlParams(0).Value = despatchid
+
+        DS = DBFactory.GetHelper().ExecuteDataSet("[dbo].[opc_getdespatch_headerdtls]", Data.CommandType.StoredProcedure, sqlParams)
+        Return DS
+    End Function
+#End Region
 End Class
