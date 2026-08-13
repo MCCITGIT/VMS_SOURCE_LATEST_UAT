@@ -106,6 +106,8 @@
                                     <ItemTemplate>
                                         <asp:Label ID="lblRawMatVendorName" runat="server" Text='<%# Bind("rawmat_vendor_name") %>'></asp:Label>
                                         <asp:HiddenField ID="hdnrmVendorcode" runat="server" Value='<%# Bind("rawmat_vendor_code") %>' />
+                                        <asp:HiddenField ID="hdnrmVendoremail" runat="server" Value='<%# Bind("rawmat_vendor_email") %>' />
+                                        <asp:HiddenField ID="hdnccemail" runat="server" Value='<%# Bind("CCAddress") %>' />
                                     </ItemTemplate>
                                     <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="16%" />
                                     <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="16%" />
@@ -140,15 +142,18 @@
                         </asp:GridView>
                         <div class="row mt-2">
                             <div class="col-md-12 text-center">
-                                <asp:Button ID="btnApprove" runat="server" Text="Approve" CssClass="btn btn-success btn-sm" OnClick="btnApprove_Click"  />
+                                <asp:Button ID="btnApprove" runat="server" Text="Approve" CssClass="btn btn-success btn-sm"
+                                    OnClientClick="return validateRawMaterialRequisitionApprove();"
+                                    CausesValidation="false" UseSubmitBehavior="true" />
                                  <asp:Label ID="lblErrorMessage" ClientIDMode="Static" CssClass="errormsg" Visible="true" runat="server" Style="text-align: left; font-size: 13px; font-weight: bold;" Text=""></asp:Label>
                             </div>
                         </div>
                     </ContentTemplate>
                     <Triggers>
                         <asp:AsyncPostBackTrigger ControlID="imgbtnSearch" EventName="Click" />
+                        <asp:AsyncPostBackTrigger ControlID="btnReset" EventName="Click" />
                         <asp:PostBackTrigger ControlID="gvRequisition" />
-                        <asp:PostBackTrigger ControlID="btnApprove" />
+                        <asp:AsyncPostBackTrigger ControlID="btnApprove" EventName="Click" />
                     </Triggers>
                 </asp:UpdatePanel>
             </div>

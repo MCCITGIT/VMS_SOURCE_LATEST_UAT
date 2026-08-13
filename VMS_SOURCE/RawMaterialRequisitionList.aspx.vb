@@ -3,6 +3,7 @@ Imports VMS.Web
 Imports System.Data.SqlClient
 Imports System.Data.SqlTypes
 Imports System.Collections.Generic
+Imports System.Text
 
 Partial Class RawMaterialRequisitionList
     Inherits System.Web.UI.Page
@@ -17,8 +18,8 @@ Partial Class RawMaterialRequisitionList
     End Sub
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
         CheckLogin()
+        btnApprove.OnClientClick = "return validateRawMaterialRequisitionApprove();"
         If Not IsPostBack Then
-            btnApprove.Attributes.Add("onclick", "return validateRawMaterialRequisitionApprove();")
             BindDropDown()
             BindData()
         End If
@@ -89,14 +90,15 @@ Partial Class RawMaterialRequisitionList
         End If
     End Sub
 
-    Protected Sub btnApprove_Click(sender As Object, e As EventArgs)
+    Protected Sub btnApprove_Click(sender As Object, e As EventArgs) Handles btnApprove.Click
         Try
-            CheckLogin()
             lblErrorMessage.Text = String.Empty
 
             Dim dtApprove As New DataTable()
             dtApprove.Columns.Add("request_id", GetType(Integer))
             dtApprove.Columns.Add("approval_status", GetType(String))
+
+            Dim mailRows As New List(Of Dictionary(Of String, String))()
 
             For Each row As GridViewRow In gvRequisition.Rows
                 Dim chkSelect As CheckBox = CType(row.FindControl("chkSelect"), CheckBox)
@@ -106,6 +108,23 @@ Partial Class RawMaterialRequisitionList
                     Dim requestId As Integer
                     If hdnRequestId IsNot Nothing AndAlso Integer.TryParse(hdnRequestId.Value, requestId) Then
                         dtApprove.Rows.Add(requestId, "A")
+
+                        Dim hdnrmVendorcode As HiddenField = CType(row.FindControl("hdnrmVendorcode"), HiddenField)
+                        Dim hdnrmVendoremail As HiddenField = CType(row.FindControl("hdnrmVendoremail"), HiddenField)
+                        Dim lblVendorName As Label = CType(row.FindControl("lblVendorName"), Label)
+                        Dim lblRawMatVendorName As Label = CType(row.FindControl("lblRawMatVendorName"), Label)
+                        Dim lblRawmaterialList As Label = CType(row.FindControl("lblRawmaterialList"), Label)
+                        Dim hdnccemail As HiddenField = CType(row.FindControl("hdnccemail"), HiddenField)
+
+                        Dim mailInfo As New Dictionary(Of String, String)()
+                        mailInfo("request_id") = requestId.ToString()
+                        mailInfo("rm_vendor_code") = If(hdnrmVendorcode IsNot Nothing, Convert.ToString(hdnrmVendorcode.Value).Trim(), String.Empty)
+                        mailInfo("rm_vendor_email") = If(hdnrmVendoremail IsNot Nothing, Convert.ToString(hdnrmVendoremail.Value).Trim(), String.Empty)
+                        mailInfo("vendor_name") = If(lblVendorName IsNot Nothing, Convert.ToString(lblVendorName.Text).Trim(), String.Empty)
+                        mailInfo("rm_vendor_name") = If(lblRawMatVendorName IsNot Nothing, Convert.ToString(lblRawMatVendorName.Text).Trim(), String.Empty)
+                        mailInfo("raw_material_list") = If(lblRawmaterialList IsNot Nothing, Convert.ToString(lblRawmaterialList.Text).Trim(), String.Empty)
+                        mailInfo("hdnccemail") = If(hdnccemail IsNot Nothing, Convert.ToString(hdnccemail.Value).Trim(), String.Empty)
+                        mailRows.Add(mailInfo)
                     End If
                 End If
             Next
@@ -120,8 +139,32 @@ Partial Class RawMaterialRequisitionList
             Dim approvedCount As Integer = obj.ApproveRawMaterialRequest(userInfo.userIDEntity, dtApprove)
 
             If approvedCount > 0 Then
+                Dim mailSentCount As Integer = 0
+                Dim mailFailedCount As Integer = 0
+                Dim mailMissingCount As Integer = 0
+
+                For Each mailInfo As Dictionary(Of String, String) In mailRows
+                    Dim mailResult As String = SendRawMaterialApprovalMail(mailInfo)
+                    If mailResult = "Email Sent Successfully" Then
+                        mailSentCount += 1
+                    ElseIf mailResult = "Mail ID not found" Then
+                        mailMissingCount += 1
+                    Else
+                        mailFailedCount += 1
+                    End If
+                Next
+
                 lblErrorMessage.ForeColor = Drawing.Color.Green
                 lblErrorMessage.Text = approvedCount.ToString() & " requisition(s) approved successfully."
+                If mailSentCount > 0 OrElse mailFailedCount > 0 OrElse mailMissingCount > 0 Then
+                    lblErrorMessage.Text &= " Mail sent: " & mailSentCount.ToString() & "."
+                    If mailMissingCount > 0 Then
+                        lblErrorMessage.Text &= " Mail ID not found: " & mailMissingCount.ToString() & "."
+                    End If
+                    If mailFailedCount > 0 Then
+                        lblErrorMessage.Text &= " Mail failed: " & mailFailedCount.ToString() & "."
+                    End If
+                End If
                 BindData()
             Else
                 lblErrorMessage.ForeColor = Drawing.Color.Red
@@ -133,6 +176,102 @@ Partial Class RawMaterialRequisitionList
             Response.Redirect(returnUrl)
         End Try
     End Sub
+
+    Private Function BuildDispatchListUrl(ByVal rmVendorCode As String) As String
+        Dim redirectUrl As String = "Dispatch_List.aspx?rmvendor_code=" & Server.UrlEncode(rmVendorCode)
+        Dim baseUrl As String = "https://bpilweb.bergerindia.com/vms/"
+        Return New Uri(New Uri(baseUrl), redirectUrl).ToString()
+    End Function
+
+    Private Function SendRawMaterialApprovalMail(ByVal mailInfo As Dictionary(Of String, String)) As String
+        Try
+            Dim toAddress As String = String.Empty
+            If mailInfo IsNot Nothing AndAlso mailInfo.ContainsKey("rm_vendor_email") Then
+                toAddress = Convert.ToString(mailInfo("rm_vendor_email")).Trim()
+            End If
+            Dim ccAddress As String = String.Empty
+            If mailInfo IsNot Nothing AndAlso mailInfo.ContainsKey("hdnccemail") Then
+                ccAddress = Convert.ToString(mailInfo("hdnccemail")).Trim()
+            End If
+
+            If String.IsNullOrWhiteSpace(toAddress) Then
+                Return "Mail ID not found"
+            End If
+
+            Dim requestId As String = If(mailInfo.ContainsKey("request_id"), Convert.ToString(mailInfo("request_id")), String.Empty)
+            Dim rmVendorCode As String = If(mailInfo.ContainsKey("rm_vendor_code"), Convert.ToString(mailInfo("rm_vendor_code")), String.Empty)
+            Dim vendorName As String = If(mailInfo.ContainsKey("vendor_name"), Convert.ToString(mailInfo("vendor_name")), String.Empty)
+            Dim rmVendorName As String = If(mailInfo.ContainsKey("rm_vendor_name"), Convert.ToString(mailInfo("rm_vendor_name")), String.Empty)
+            Dim rawMaterialList As String = If(mailInfo.ContainsKey("raw_material_list"), Convert.ToString(mailInfo("raw_material_list")), String.Empty)
+
+            If String.IsNullOrWhiteSpace(rmVendorCode) Then
+                Return "Mail ID not found"
+            End If
+
+            Dim dispatchUrl As String = BuildDispatchListUrl(rmVendorCode)
+
+            Dim mailobj As New EmailSMSsender()
+            Dim mailEntity As New MailEntity()
+            Dim mailBody As New StringBuilder()
+
+            mailEntity.ToAddress = toAddress
+            mailEntity.CCAddress = ccAddress
+            mailEntity.MailSubject = "Raw Material Requisition Approved - " & requestId
+
+            mailBody.Append("<div style='font-family:Arial;font-size:13px;'>")
+            mailBody.Append("<p>Dear Sir/Madam,</p>")
+            mailBody.Append("<p>A raw material requisition has been approved. Please find the details below.</p>")
+            mailBody.Append("<h3 style='color:#009933;'>Raw Material Requisition Details</h3>")
+
+            mailBody.Append("<table style='border-collapse:collapse;width:100%;'>")
+            mailBody.Append("<tr style='background:#009933;color:#fff;'>")
+            mailBody.Append("<th style='border:1px solid #ccc;padding:8px;'>Request ID</th>")
+            mailBody.Append("<th style='border:1px solid #ccc;padding:8px;'>Vendor Name</th>")
+            'mailBody.Append("<th style='border:1px solid #ccc;padding:8px;'>RM Vendor Code</th>")
+            mailBody.Append("<th style='border:1px solid #ccc;padding:8px;'>RM Vendor Name</th>")
+            mailBody.Append("<th style='border:1px solid #ccc;padding:8px;'>Raw Material List</th>")
+            mailBody.Append("<th style='border:1px solid #ccc;padding:8px;'>Status</th>")
+            mailBody.Append("</tr>")
+
+            mailBody.Append("<tr>")
+            mailBody.Append("<td style='border:1px solid #ccc;padding:6px;text-align:center;'>" & Server.HtmlEncode(requestId) & "</td>")
+            mailBody.Append("<td style='border:1px solid #ccc;padding:6px;'>" & Server.HtmlEncode(vendorName) & "</td>")
+            'mailBody.Append("<td style='border:1px solid #ccc;padding:6px;text-align:center;'>" & Server.HtmlEncode(rmVendorCode) & "</td>")
+            mailBody.Append("<td style='border:1px solid #ccc;padding:6px;'>" & Server.HtmlEncode(rmVendorName) & "</td>")
+            mailBody.Append("<td style='border:1px solid #ccc;padding:6px;'>" & Server.HtmlEncode(rawMaterialList) & "</td>")
+            mailBody.Append("<td style='border:1px solid #ccc;padding:6px;text-align:center;'>Approved</td>")
+            mailBody.Append("</tr>")
+            mailBody.Append("</table>")
+
+            If Not String.IsNullOrWhiteSpace(dispatchUrl) Then
+                mailBody.Append("<br/><br/>")
+                mailBody.Append("<div style='text-align:center;'>")
+                mailBody.Append("<a href='" & dispatchUrl & "' target='_blank' ")
+                mailBody.Append("style='background:#007BFF;color:#FFFFFF;padding:10px 20px;")
+                mailBody.Append("text-decoration:none;border-radius:5px;font-weight:bold;'>")
+                mailBody.Append("View Dispatch List")
+                mailBody.Append("</a>")
+                mailBody.Append("</div>")
+            End If
+
+            mailBody.Append("<br/><hr/>")
+            mailBody.Append("<div style='font-size:12px;color:#666;'>")
+            mailBody.Append("<b>Note:</b> This is a system generated email. Please do not reply.")
+            mailBody.Append("</div>")
+            mailBody.Append("</div>")
+
+            mailEntity.MailBody = mailBody.ToString()
+            mailEntity.Sender_Task = "RawMaterialRequisition_ApprovalMail"
+
+            If mailobj.sendMail(mailEntity) <= 0 Then
+                Return "Email Sent Failed"
+            End If
+
+            Return "Email Sent Successfully"
+        Catch ex As Exception
+            Return "Email Sent Failed"
+        End Try
+    End Function
 
     Private Sub BindData()
         Try
