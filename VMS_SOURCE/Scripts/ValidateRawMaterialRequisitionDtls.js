@@ -158,38 +158,57 @@ function validateRawMaterialRequisitionSubmit() {
 }
 
 function validateRawMaterialRequisitionApprove() {
-    firstErrorControl = "";
-    errMsg = "";
+    try {
+        firstErrorControl = "";
+        errMsg = "";
 
-    var grid = document.getElementById("gvRequisition");
-    if (!grid) {
-        grid = document.querySelector("[id$='gvRequisition']");
-    }
+        var grid = document.getElementById("gvRequisition");
+        if (!grid) {
+            grid = document.querySelector("[id$='gvRequisition']");
+        }
 
-    var hasSelected = false;
-    if (grid) {
-        var checkboxes = grid.querySelectorAll("input[type='checkbox'][id$='chkSelect']");
-        for (var i = 0; i < checkboxes.length; i++) {
-            if (!checkboxes[i].disabled && checkboxes[i].checked) {
-                hasSelected = true;
-                break;
+        var hasSelected = false;
+        if (grid) {
+            var checkboxes = grid.querySelectorAll("input[type='checkbox'][id$='chkSelect']");
+            for (var i = 0; i < checkboxes.length; i++) {
+                if (!checkboxes[i].disabled && checkboxes[i].checked) {
+                    hasSelected = true;
+                    break;
+                }
             }
         }
-    }
 
-    if (!hasSelected) {
-        firstErrorControl = "gvRequisition";
-        errMsg += GetErrorRow("gvRequisition", "Please select at least one pending requisition to approve.");
-        SetControlFocus(firstErrorControl);
-        errMsg = "<table>" + errMsg + "</table>";
-        document.getElementById("lblErrorMessage").innerHTML = errMsg;
-        return false;
-    }
+        var lblError = document.getElementById("lblErrorMessage");
+        if (!lblError) {
+            lblError = document.querySelector("[id$='lblErrorMessage']");
+        }
 
-    document.getElementById("lblErrorMessage").innerHTML = "";
-    if (confirm("Are you sure you want to approve the selected requisition(s)?")) {
-        return true;
-    }
+        if (!hasSelected) {
+            firstErrorControl = "gvRequisition";
+            if (typeof GetErrorRow === "function") {
+                errMsg += GetErrorRow("gvRequisition", "Please select at least one pending requisition to approve.");
+                errMsg = "<table>" + errMsg + "</table>";
+            } else {
+                errMsg = "Please select at least one pending requisition to approve.";
+            }
+            if (typeof SetControlFocus === "function") {
+                SetControlFocus(firstErrorControl);
+            }
+            if (lblError) {
+                lblError.innerHTML = errMsg;
+            } else {
+                alert("Please select at least one pending requisition to approve.");
+            }
+            return false;
+        }
 
-    return false;
+        if (lblError) {
+            lblError.innerHTML = "";
+        }
+
+        return confirm("Are you sure you want to approve the selected requisition(s)?");
+    } catch (ex) {
+        // Do not block server click if client validation script fails.
+        return confirm("Are you sure you want to approve the selected requisition(s)?");
+    }
 }
