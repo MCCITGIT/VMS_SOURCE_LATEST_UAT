@@ -276,6 +276,11 @@ Partial Class RawMaterialRequisitionList
     Private Sub BindData()
         Try
             Dim obj As New OPC_VendorClass()
+            If ddlApprovalstatus.SelectedValue = "A" Then
+                btnApprove.Visible = False
+            Else
+                btnApprove.Visible = True
+            End If
             Dim ds As DataSet = obj.GetRawMaterialRequestList(ddlvendor.SelectedValue, ddlRawMatvendor.SelectedValue, ddlApprovalstatus.SelectedValue)
 
             If (Not (ds Is Nothing) AndAlso ds.Tables.Count > 0) Then
