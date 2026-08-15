@@ -121,12 +121,13 @@
                                             <ItemTemplate>
                                                 <asp:Label ID="lblbrand" Text='<%# Bind("Brand_Name") %>' runat="server" />
                                                 <asp:HiddenField runat="server" ID="hdnbrandcode" Value='<%# Bind("Brand_Code") %>' />
+                                                <asp:HiddenField runat="server" ID="hdnid" Value='<%# Bind("fh_id") %>' />
                                             </ItemTemplate>
                                             <ControlStyle Height="90%" Width="90%"></ControlStyle>
                                             <HeaderStyle HorizontalAlign="Center" />
                                             <ItemStyle HorizontalAlign="Center" Width="8%" />
                                         </asp:TemplateField>
-                                        <asp:TemplateField HeaderText="Raw Material" ControlStyle-Width="90%">
+                                        <%--<asp:TemplateField HeaderText="Raw Material" ControlStyle-Width="90%">
                                             <ItemTemplate>
                                                 <asp:Label ID="lblraw" Text='<%# Bind("Raw_Mat_Name")%>' runat="server" />
                                                 <asp:HiddenField runat="server" ID="hdnRawCode" Value='<%# Bind("Raw_Mat_Code") %>' />
@@ -134,7 +135,7 @@
                                             <ControlStyle Height="90%" Width="90%"></ControlStyle>
                                             <HeaderStyle HorizontalAlign="Center" />
                                             <ItemStyle HorizontalAlign="Center" Width="6%" />
-                                        </asp:TemplateField>
+                                        </asp:TemplateField>--%>
                                         <asp:TemplateField HeaderText="Sku" ControlStyle-Width="90%">
                                             <ItemTemplate>
                                                 <asp:Label ID="lblSku" Text='<%# Bind("Sku_Desc")%>' runat="server" />

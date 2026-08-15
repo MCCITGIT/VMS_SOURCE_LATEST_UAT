@@ -55,7 +55,18 @@ Partial Class BulkRawMaterialReceiptList
                 End If
 
                 Dim hdnDespatchId As HiddenField = CType(row.FindControl("hdnDespatchId"), HiddenField)
-                Dim redirectUrl = "~/BulkRawMaterialReceiptDtls.aspx?despatch_id=" & Server.UrlEncode(hdnDespatchId.Value)
+                Dim hdnReceivedId As HiddenField = CType(row.FindControl("hdnReceivedId"), HiddenField)
+                Dim receiveId As String = String.Empty
+                If hdnReceivedId IsNot Nothing Then
+                    receiveId = Convert.ToString(hdnReceivedId.Value)
+                End If
+
+                Dim redirectUrl As String
+                If ddlStatus.SelectedValue = "R" AndAlso Not String.IsNullOrWhiteSpace(receiveId) Then
+                    redirectUrl = "~/BulkRawMaterialReceiptDtls.aspx?receive_id=" & Server.UrlEncode(receiveId) & "&despatch_id=" & Server.UrlEncode(hdnDespatchId.Value)
+                Else
+                    redirectUrl = "~/BulkRawMaterialReceiptDtls.aspx?despatch_id=" & Server.UrlEncode(hdnDespatchId.Value)
+                End If
                 Response.Redirect(redirectUrl, False)
                 Context.ApplicationInstance.CompleteRequest()
             End If
