@@ -81,6 +81,12 @@ Partial Class RawMaterialRequisitionDtls
 
         Dim sourceTable As DataTable = ds.Tables(0)
         Dim firstRow As DataRow = sourceTable.Rows(0)
+        Dim status As String = String.Empty
+        If ds.Tables(0).Rows(0)("approval_status") = "A" Then
+            btnSubmit.Visible = False
+        Else
+            btnSubmit.Visible = True
+        End If
 
         txtreqVendor.Text = Convert.ToString(firstRow("vendor_name")).Trim()
 
@@ -96,7 +102,7 @@ Partial Class RawMaterialRequisitionDtls
         gvVendorRawMat.DataSource = dtGrid
         gvVendorRawMat.DataBind()
 
-        btnSubmit.Visible = True
+        'btnSubmit.Visible = True
         btnSubmit.Text = Constant.GeneralMessages.btnUpdate
     End Sub
 
