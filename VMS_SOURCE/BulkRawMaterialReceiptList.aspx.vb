@@ -17,9 +17,26 @@ Partial Class BulkRawMaterialReceiptList
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
         CheckLogin()
         If Not IsPostBack Then
-            PopulateStatus()
+            BindDropDown()
             BindData()
         End If
+    End Sub
+    Private Sub BindDropDown()
+        PopulateRawMatVendor()
+        PopulateStatus()
+    End Sub
+    Private Sub PopulateRawMatVendor()
+        Dim obj As New OPC_VendorClass()
+        Dim ds As DataSet = obj.GetRawMaterialVendorList()
+
+        ddlRawMatvendor.Items.Clear()
+        If (Not (ds Is Nothing) AndAlso ds.Tables.Count > 0 AndAlso Not (ds.Tables(0) Is Nothing) AndAlso ds.Tables(0).Rows.Count > 0) Then
+            ddlRawMatvendor.DataSource = ds.Tables(0)
+            ddlRawMatvendor.DataTextField = "vendor_name"
+            ddlRawMatvendor.DataValueField = "vendor_code"
+            ddlRawMatvendor.DataBind()
+        End If
+        ddlRawMatvendor.Items.Insert(0, New ListItem(Constant.Common.Selec, String.Empty, True))
     End Sub
 
     Private Sub PopulateStatus()
@@ -81,7 +98,7 @@ Partial Class BulkRawMaterialReceiptList
     Private Sub BindData()
         Try
             Dim obj As New OPC_VendorClass()
-            Dim ds As DataSet = obj.GetRawMaterialReceiptList(ddlStatus.SelectedValue)
+            Dim ds As DataSet = obj.GetRawMaterialReceiptList(ddlRawMatvendor.SelectedValue, ddlStatus.SelectedValue)
 
             If (Not (ds Is Nothing) AndAlso ds.Tables.Count > 0 AndAlso Not (ds.Tables(0) Is Nothing) AndAlso ds.Tables(0).Rows.Count > 0) Then
                 gvReceipt.DataSource = ds.Tables(0)

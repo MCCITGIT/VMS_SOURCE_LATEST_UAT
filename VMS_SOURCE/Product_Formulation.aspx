@@ -24,6 +24,7 @@
             }
     </style>
     <script type="text/javascript" src="Scripts/FunctionValidator.js"></script>
+    <script type="text/javascript" src="Scripts/ValidateFormulationMstr.js?time=<%= DateTime.Now.ToString("yyyy.MM.dd-HH.mm.ss.fff") %>"></script>
     <script type="text/javascript">
         document.onkeydown = checkValue;
         function checkValue() {
@@ -127,7 +128,7 @@
                     <div class="form-group">
                         <label class="form-control-label">Brand:<span id="Span1" class="mandatory">*</span></label>
                         <asp:DropDownList ID="ddlBrand" ClientIDMode="Static" CssClass="form-control select2" TabIndex="1" runat="server" AutoPostBack="true" OnSelectedIndexChanged="ddlBrand_SelectedIndexChanged"></asp:DropDownList>
-                        <asp:HiddenField ID="hdnId" runat="server" />
+                        <asp:HiddenField ID="hdnId" runat="server" ClientIDMode="Static"/>
                     </div>
                 </div>
                 <div class="col-md-4">
@@ -211,6 +212,7 @@
                                 </asp:TemplateField>
 
                                 <asp:BoundField DataField="product_name" HeaderText="Product Name" ReadOnly="true" />
+
                                 <asp:TemplateField HeaderText="Raw Material Name">
                                     <ItemTemplate>
                                         <asp:Label ID="lblRawMatName" runat="server" Text='<%# Bind("rawmat_name") %>'></asp:Label>
@@ -255,8 +257,9 @@
                     </div>
                     <div class="row">
                         <div class="col-md-12 text-center">
-                            <asp:Button ID="btnSubmit" runat="server" Text="Submit" CssClass="btn btn-primary btn-sm" ClientIDMode="Static" Visible="false" />
-                            <asp:Button ID="btnCancel" runat="server" Text="Back" CssClass="btn btn-secondary btn-sm" />
+                            <asp:Button ID="btnSubmit" runat="server" Text="Submit" CssClass="btn btn-primary btn-sm" ClientIDMode="Static" Visible="false"
+                                OnClientClick="return confirm('Are you sure you want to submit this record?');" />
+                            <asp:Button ID="btnCancel" runat="server" Text="Back" CssClass="btn btn-secondary btn-sm" OnClick="btnCancel_Click1"/>
                         </div>
                     </div>
                 </div>

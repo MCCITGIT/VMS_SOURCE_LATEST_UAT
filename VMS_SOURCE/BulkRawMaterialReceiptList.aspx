@@ -34,6 +34,12 @@
                     <div class="row">
                         <div class="col-md-3">
                             <div class="form-group pb-0">
+                                <label class="form-control-label">Raw Material Vendor:</label>
+                                <asp:DropDownList ID="ddlRawMatvendor" ClientIDMode="Static" CssClass="form-control select2" TabIndex="2" runat="server"></asp:DropDownList>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group pb-0">
                                 <label class="form-control-label">Status:</label>
                                 <asp:DropDownList ID="ddlStatus" ClientIDMode="Static" CssClass="form-control select2" TabIndex="1" runat="server"></asp:DropDownList>
                             </div>
@@ -67,16 +73,16 @@
                                     <ItemTemplate>
                                         <asp:Label ID="lblSlNo" runat="server" Text='<%# Container.DataItemIndex + 1 %>'></asp:Label>
                                     </ItemTemplate>
-                                    <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="5%" />
-                                    <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="5%" />
+                                    <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="4%" />
+                                    <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="4%" />
                                 </asp:TemplateField>
 
                                 <asp:TemplateField HeaderText="Request Id">
                                     <ItemTemplate>
-                                        <asp:Label ID="lblRequestId" runat="server" Text='<%# Bind("requisition_id") %>'></asp:Label>                                        
+                                        <asp:Label ID="lblRequestId" runat="server" Text='<%# Bind("requisition_id") %>'></asp:Label>
                                     </ItemTemplate>
-                                    <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="10%" />
-                                    <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="10%" />
+                                    <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="7%" />
+                                    <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="7%" />
                                 </asp:TemplateField>
 
                                 <asp:TemplateField HeaderText="Despatch Id">
@@ -84,8 +90,8 @@
                                         <asp:Label ID="lblDespatchId" runat="server" Text='<%# Bind("despatch_id") %>'></asp:Label>
                                         <asp:HiddenField ID="hdnDespatchId" runat="server" Value='<%# Bind("despatch_id") %>' />
                                     </ItemTemplate>
-                                    <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="10%" />
-                                    <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="10%" />
+                                    <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="8%" />
+                                    <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="8%" />
                                 </asp:TemplateField>
 
                                 <asp:TemplateField HeaderText="Despatch Date">
@@ -93,73 +99,83 @@
                                         <asp:Label ID="lblDespatchDate" runat="server" Text='<%# Bind("despatch_date", "{0:dd-MM-yyyy}") %>'></asp:Label>
                                         <asp:HiddenField ID="hdnRequisitionId" runat="server" Value='<%# Bind("requisition_id") %>' />
                                     </ItemTemplate>
-                                    <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="12%" />
-                                    <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="12%" />
+                                    <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="9%" />
+                                    <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="9%" />
+                                </asp:TemplateField>
+
+                                <asp:TemplateField HeaderText="RM Vendor">
+                                    <ItemTemplate>
+                                        <asp:Label ID="lblRmVendor" runat="server" Text='<%# Bind("rawmat_vendor_name") %>'></asp:Label>
+                                        <asp:HiddenField ID="hdnRmVendorId" runat="server" Value='<%# Bind("rawmat_vendor_code") %>' />
+                                    </ItemTemplate>
+                                    <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="13%" />
+                                    <ItemStyle HorizontalAlign="Left" VerticalAlign="Middle" Width="13%" />
                                 </asp:TemplateField>
 
                                 <asp:TemplateField HeaderText="Courier Id">
                                     <ItemTemplate>
                                         <asp:Label ID="lblCourierId" runat="server" Text='<%# Bind("courier_id") %>'></asp:Label>
                                     </ItemTemplate>
-                                    <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="12%" />
-                                    <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="12%" />
-                                </asp:TemplateField>                                
+                                    <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="9%" />
+                                    <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="9%" />
+                                </asp:TemplateField>
 
                                 <asp:TemplateField HeaderText="Request Qty">
                                     <ItemTemplate>
                                         <asp:Label ID="lblRequestQty" runat="server" Text='<%# Bind("request_qty") %>'></asp:Label>
                                     </ItemTemplate>
-                                    <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="12%" />
-                                    <ItemStyle HorizontalAlign="Right" VerticalAlign="Middle" Width="12%" />
+                                    <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="8%" />
+                                    <ItemStyle HorizontalAlign="Right" VerticalAlign="Middle" Width="8%" />
                                 </asp:TemplateField>
 
                                 <asp:TemplateField HeaderText="Despatch Qty">
                                     <ItemTemplate>
                                         <asp:Label ID="lblDespatchQty" runat="server" Text='<%# Bind("despatch_qty") %>'></asp:Label>
                                     </ItemTemplate>
-                                    <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="12%" />
-                                    <ItemStyle HorizontalAlign="Right" VerticalAlign="Middle" Width="12%" />
+                                    <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="8%" />
+                                    <ItemStyle HorizontalAlign="Right" VerticalAlign="Middle" Width="8%" />
+
                                 </asp:TemplateField>
 
                                 <asp:TemplateField HeaderText="Receive ID">
                                     <ItemTemplate>
                                         <asp:Label ID="lblReceivedId" runat="server" Text='<%# Bind("received_id") %>'></asp:Label>
-                                        <asp:HiddenField ID="hdnReceivedId" runat="server" Value='<%# Bind("received_id") %>' /> 
+                                        <asp:HiddenField ID="hdnReceivedId" runat="server" Value='<%# Bind("received_id") %>' />
                                     </ItemTemplate>
-                                    <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="10%" />
-                                    <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="10%" />
+                                    <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="7%" />
+                                    <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="7%" />
                                 </asp:TemplateField>
 
                                 <asp:TemplateField HeaderText="Receive Qty">
                                     <ItemTemplate>
                                         <asp:Label ID="lblReceiveQty" runat="server" Text='<%# Bind("received_qty") %>'></asp:Label>
                                     </ItemTemplate>
-                                    <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="12%" />
-                                    <ItemStyle HorizontalAlign="Right" VerticalAlign="Middle" Width="12%" />
+                                    <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="8%" />
+                                    <ItemStyle HorizontalAlign="Right" VerticalAlign="Middle" Width="8%" />
                                 </asp:TemplateField>
 
                                 <asp:TemplateField HeaderText="Pending Qty">
                                     <ItemTemplate>
                                         <asp:Label ID="lblPendingQty" runat="server" Text='<%# Bind("pending_qty") %>'></asp:Label>
                                     </ItemTemplate>
-                                    <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="12%" />
-                                    <ItemStyle HorizontalAlign="Right" VerticalAlign="Middle" Width="12%" />
+                                    <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="8%" />
+                                    <ItemStyle HorizontalAlign="Right" VerticalAlign="Middle" Width="8%" />
                                 </asp:TemplateField>
 
-                                 <asp:TemplateField HeaderText="Invoice No">
+                                <asp:TemplateField HeaderText="Invoice No">
                                     <ItemTemplate>
                                         <asp:Label ID="lblinvno" runat="server" Text='<%# Bind("invoice_no") %>'></asp:Label>
                                     </ItemTemplate>
-                                    <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="12%" />
-                                    <ItemStyle HorizontalAlign="Right" VerticalAlign="Middle" Width="12%" />
+                                    <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="6%" />
+                                    <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="6%" />
                                 </asp:TemplateField>
 
                                 <asp:TemplateField HeaderText="Invoice Date">
                                     <ItemTemplate>
                                         <asp:Label ID="lblinvdate" runat="server" Text='<%# Bind("invoice_date") %>'></asp:Label>
                                     </ItemTemplate>
-                                    <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="12%" />
-                                    <ItemStyle HorizontalAlign="Right" VerticalAlign="Middle" Width="12%" />
+                                    <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="7%" />
+                                    <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="7%" />
                                 </asp:TemplateField>
 
                                 <asp:TemplateField HeaderText="Action">
@@ -169,8 +185,8 @@
                                                 CommandArgument='<%# Container.DataItemIndex %>' ToolTip="View"><i class="fa fa-eye"></i></asp:LinkButton>
                                         </div>
                                     </ItemTemplate>
-                                    <HeaderStyle HorizontalAlign="Center" Width="5%" />
-                                    <ItemStyle HorizontalAlign="Center" Width="5%" />
+                                    <HeaderStyle HorizontalAlign="Center" Width="3%" />
+                                    <ItemStyle HorizontalAlign="Center" Width="3%" />
                                 </asp:TemplateField>
                             </Columns>
                         </asp:GridView>

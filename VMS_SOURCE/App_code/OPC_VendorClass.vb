@@ -843,15 +843,21 @@ Public Class OPC_VendorClass
     End Function
 #End Region
 #Region "Receipt Raw Material"
-    Function GetRawMaterialReceiptList(ByVal status As String) As DataSet
+    Function GetRawMaterialReceiptList(ByVal rmvendorcode As String, ByVal status As String) As DataSet
         Dim DS As System.Data.DataSet
-        Dim sqlParams(0) As SqlParameter
+        Dim sqlParams(1) As SqlParameter
 
         sqlParams(0) = New SqlParameter()
-        sqlParams(0).ParameterName = "@status"
+        sqlParams(0).ParameterName = "@rmVendor_code"
         sqlParams(0).DbType = DbType.String
         sqlParams(0).Direction = Data.ParameterDirection.Input
-        sqlParams(0).Value = If(Not String.IsNullOrWhiteSpace(status), CObj(status.Trim()), DBNull.Value)
+        sqlParams(0).Value = If(Not String.IsNullOrWhiteSpace(rmvendorcode), CObj(rmvendorcode.Trim()), DBNull.Value)
+
+        sqlParams(1) = New SqlParameter()
+        sqlParams(1).ParameterName = "@status"
+        sqlParams(1).DbType = DbType.String
+        sqlParams(1).Direction = Data.ParameterDirection.Input
+        sqlParams(1).Value = If(Not String.IsNullOrWhiteSpace(status), CObj(status.Trim()), DBNull.Value)
 
         DS = DBFactory.GetHelper().ExecuteDataSet("[dbo].[opc_bulkreceiptlist]", Data.CommandType.StoredProcedure, sqlParams)
         Return DS
