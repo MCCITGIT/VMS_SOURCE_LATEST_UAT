@@ -61,7 +61,7 @@
                                 <asp:DropDownList ID="ddlBrand" ClientIDMode="Static" CssClass="form-control select2" TabIndex="1" runat="server"></asp:DropDownList>
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-3" runat="server" visible="false">
                             <div class="form-group">
                                 <label class="form-control-label">Raw Material:</label>
                                 <asp:DropDownList ID="ddlRawMat" ClientIDMode="Static" CssClass="form-control select2" TabIndex="4" runat="server"></asp:DropDownList>

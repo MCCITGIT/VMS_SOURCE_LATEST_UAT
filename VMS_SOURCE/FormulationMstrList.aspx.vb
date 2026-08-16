@@ -152,7 +152,8 @@ Partial Class FormulationMstrList
         End Try
     End Sub
     Protected Sub ImgbtnAdd_Click(sender As Object, e As EventArgs) Handles ImgbtnAdd.Click
-        Response.Redirect("~/FormulationMaster.aspx")
+        'Response.Redirect("~/FormulationMaster.aspx")
+        Response.Redirect("~/Product_Formulation.aspx")
     End Sub
     Protected Sub imgbtnSearch_Click(sender As Object, e As EventArgs) Handles imgbtnSearch.Click
         Binddata()
