@@ -146,3 +146,68 @@ function validateInputs() {
 document.addEventListener("DOMContentLoaded", function () {
     updateConsumptionRatioTotal();
 });
+function validateAddRawMaterial() {
+    debugger;
+
+    var errors = [];
+
+    var lblErrorMessage = document.getElementById("lblErrorMessage");
+    var ddlBrand = document.getElementById("ddlBrand");
+    var hdnProductCode = document.getElementById("hdnProductCode");
+    var txtrawmatid = document.getElementById("txtrawmatid");
+    var txtRatio = document.getElementById("txtRatio");
+    var txtmeasurement = document.getElementById("txtmeasurement");
+
+    // Clear previous error
+    if (lblErrorMessage) {
+        lblErrorMessage.innerHTML = "";
+    }
+
+    // Brand
+    if (!ddlBrand || ddlBrand.value === "" || ddlBrand.selectedIndex <= 0) {
+        errors.push("Please select Brand.");
+    }
+
+    // Product
+    if (!hdnProductCode || hdnProductCode.value.trim() === "") {
+        errors.push("Please enter Product.");
+    }
+
+    // Raw Material
+    if (!txtrawmatid || txtrawmatid.value.trim() === "") {
+        errors.push("Please enter Raw Material.");
+    }
+
+    // Consumption Ratio
+    if (!txtRatio || txtRatio.value.trim() === "") {
+        errors.push("Please enter Consumption Ratio.");
+    }
+    else {
+        var ratio = parseFloat(txtRatio.value.trim());
+
+        if (isNaN(ratio)) {
+            errors.push("Please enter a valid Consumption Ratio.");
+        }
+        else if (ratio <= 0) {
+            errors.push("Consumption Ratio must be greater than 0.");
+        }
+    }
+
+    // Unit
+    if (!txtmeasurement || txtmeasurement.value.trim() === "") {
+        errors.push("Please enter Unit of Measurement.");
+    }
+
+    // Show all errors
+    if (errors.length > 0) {
+
+        if (lblErrorMessage) {
+            lblErrorMessage.innerHTML = errors.join("<br>");
+        }
+
+        return false;
+    }
+
+    // Confirmation
+    return confirm("Are you sure you want to add this record?");
+}

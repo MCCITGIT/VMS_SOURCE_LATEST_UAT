@@ -141,7 +141,7 @@
             <div class="row mt-3">
                 <div class="col-md-12 text-center">
                     <asp:Button ID="btnSubmit" ClientIDMode="Static" TabIndex="31" runat="server" Text="Submit" CssClass="btn btn-success btn-sm" OnClientClick="return validateRawMaterialVendorInputs();" />
-                    <asp:LinkButton ID="btnCancel" TabIndex="32" runat="server" CssClass="btn btn-secondary btn-sm">Cancel</asp:LinkButton>
+                    <asp:LinkButton ID="btnCancel" TabIndex="32" runat="server" CssClass="btn btn-secondary btn-sm">Back</asp:LinkButton>
                     <asp:LinkButton ID="btnReset" TabIndex="33" runat="server" CssClass="btn btn-danger btn-sm">Reset</asp:LinkButton>
                 </div>
             </div>

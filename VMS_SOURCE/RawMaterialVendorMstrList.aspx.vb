@@ -15,11 +15,6 @@ Partial Class RawMaterialVendorMstrList
             BindData()
         End If
     End Sub
-
-    Protected Sub btnCancel_Click(sender As Object, e As EventArgs)
-        Response.Redirect("~/Home.aspx")
-    End Sub
-
     Protected Sub btnReset_Click(sender As Object, e As EventArgs)
         ddlVendor.SelectedIndex = 0
         BindData()

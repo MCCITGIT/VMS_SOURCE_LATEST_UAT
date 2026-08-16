@@ -9,6 +9,7 @@ Partial Class Product_Formulation
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
         CheckLogin()
         'btnSubmit.Attributes.Add("onclick", "return validateInputs();")
+        btnAdd.Attributes.Add("onclick", "return validateAddRawMaterial();")
 
         If Not IsPostBack Then
             BrandDetailsListLoad()
@@ -389,30 +390,48 @@ Partial Class Product_Formulation
             txtProductSearch.Text = hdrProductDesc & " (" & hdrProductCode & ")"
 
             ddlBrand.Enabled = False
-            txtSearchText.ReadOnly = False
+            txtProductSearch.Enabled = False
+            'btnSubmit.Visible = True
+            'btnSubmit.Text = "Update"
         End If
 
-        'If ds.Tables.Count > 1 AndAlso Not (ds.Tables(1) Is Nothing) AndAlso ds.Tables(1).Rows.Count > 0 Then
-        '    Dim dtShade As DataTable = New DataTable()
-        '    dtShade.Columns.Add(New DataColumn("Shade_Code", GetType(String)))
-        '    dtShade.Columns.Add(New DataColumn("Shade_Desc", GetType(String)))
-        '    dtShade.Columns.Add(New DataColumn("opcd_ratio", GetType(Integer)))
-        '    dtShade.Columns.Add(New DataColumn("opcd_unit", GetType(String)))
+        If ds.Tables.Count > 1 AndAlso Not (ds.Tables(1) Is Nothing) AndAlso ds.Tables(1).Rows.Count > 0 Then
+            gvVendorRawMat.DataSource = ds.Tables(1)
+            gvVendorRawMat.DataBind()
 
-        '    For Each srcRow As DataRow In ds.Tables(1).Rows
-        '        Dim dr As DataRow = dtShade.NewRow()
-        '        dr("Shade_Code") = Convert.ToString(srcRow("opcd_shade_code"))
-        '        dr("Shade_Desc") = Convert.ToString(srcRow("Shade_Desc"))
-        '        dr("opcd_ratio") = If(IsDBNull(srcRow("opcd_ratio")), 0, Convert.ToInt32(srcRow("opcd_ratio")))
-        '        dr("opcd_unit") = Convert.ToString(srcRow("opcd_unit"))
-        '        dtShade.Rows.Add(dr)
-        '    Next
+            'Calculate Ratio Total
+            Dim totalRatio As Decimal = 0D
+            For Each row As DataRow In ds.Tables(1).Rows
+                If Not IsDBNull(row("ratio")) AndAlso
+                   Not String.IsNullOrWhiteSpace(Convert.ToString(row("ratio"))) Then
+                    totalRatio += Convert.ToDecimal(row("ratio"))
+                End If
+            Next
+            'Find footer controls
+            Dim lblRatioTotal As Label =
+                TryCast(gvVendorRawMat.FooterRow.FindControl("lblRatioTotal"), Label)
+            Dim lblRatioStatus As Label =
+                TryCast(gvVendorRawMat.FooterRow.FindControl("lblRatioStatus"), Label)
+            If lblRatioTotal IsNot Nothing Then
+                lblRatioTotal.Text = totalRatio.ToString("0.00") & "%"
+            End If
 
-        '    gdShadedtls.DataSource = dtShade
-        '    gdShadedtls.DataBind()
-        'Else
-        '    gdShadedtls.DataSource = Nothing
-        '    gdShadedtls.DataBind()
-        'End If
+            If lblRatioStatus IsNot Nothing Then
+                If totalRatio = 100D Then
+                    lblRatioStatus.Text = "Within 100%"
+                ElseIf totalRatio < 100D Then
+                    lblRatioStatus.Text = "Below 100%"
+                Else
+                    lblRatioStatus.Text = "Exceeds 100%"
+                End If
+            End If
+        Else
+            gvVendorRawMat.DataSource = Nothing
+            gvVendorRawMat.DataBind()
+        End If
     End Sub
+    Protected Sub btnCancel_Click1(sender As Object, e As EventArgs)
+        Response.Redirect("~/FormulationMstrList.aspx")
+    End Sub
+
 End Class
