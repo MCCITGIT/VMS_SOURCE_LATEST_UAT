@@ -63,7 +63,7 @@
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label class="form-control-label">Receipt No. (Autogenerate):</label>
+                                <label class="form-control-label">Receipt No:</label>
                                 <asp:TextBox ID="txtreceiptNo" ClientIDMode="Static" CssClass="form-control" runat="server" ReadOnly="true"></asp:TextBox>
                             </div>
                         </div>
@@ -153,8 +153,8 @@
                                                         <asp:Label ID="lblRawMatName" runat="server" Text='<%# Eval("rawmaterial_name") %>'></asp:Label>
                                                         <asp:HiddenField ID="hdnRawMatCode" runat="server" Value='<%# Eval("rawmaterial_code") %>' />
                                                     </ItemTemplate>
-                                                    <HeaderStyle HorizontalAlign="Center" Width="30%" />
-                                                    <ItemStyle HorizontalAlign="Left" Width="30%" />
+                                                    <HeaderStyle HorizontalAlign="Center" Width="28%" />
+                                                    <ItemStyle HorizontalAlign="Left" Width="28%" />
                                                 </asp:TemplateField>
                                                 <asp:TemplateField HeaderText="Qty. to be received">
                                                     <ItemTemplate>
@@ -228,37 +228,37 @@
                                                 <asp:Label ID="lblitem" runat="server" Text='<%# Bind("item_description") %>'></asp:Label>
                                                 <asp:HiddenField ID="hdnitem" runat="server" Value='<%# Bind("item_code") %>' />
                                             </ItemTemplate>
-                                            <HeaderStyle HorizontalAlign="Center" Width="50%" />
-                                            <ItemStyle HorizontalAlign="Left" Width="50%" />
+                                            <HeaderStyle HorizontalAlign="Center" Width="35%" />
+                                            <ItemStyle HorizontalAlign="Left" Width="35%" />
                                         </asp:TemplateField>
                                         <asp:TemplateField HeaderText="Despatch Quantity">
                                             <ItemTemplate>
                                                 <asp:Label ID="lbldespQty" runat="server" Text='<%# Bind("despatch_quant", "{0:0.##}") %>'></asp:Label>
                                             </ItemTemplate>
-                                            <HeaderStyle HorizontalAlign="Center" Width="25%" />
-                                            <ItemStyle HorizontalAlign="Right" Width="25%" />
+                                            <HeaderStyle HorizontalAlign="Center" Width="15%" />
+                                            <ItemStyle HorizontalAlign="Right" Width="15%" />
                                         </asp:TemplateField>
                                         <asp:TemplateField HeaderText="Receive Quantity">
                                             <ItemTemplate>
                                                 <asp:Label ID="lblrecpQty" runat="server" Text='<%# Bind("receive_quant", "{0:0.##}") %>'></asp:Label>
                                             </ItemTemplate>
-                                            <HeaderStyle HorizontalAlign="Center" Width="25%" />
-                                            <ItemStyle HorizontalAlign="Right" Width="25%" />
+                                            <HeaderStyle HorizontalAlign="Center" Width="15%" />
+                                            <ItemStyle HorizontalAlign="Right" Width="15%" />
                                         </asp:TemplateField>
                                         <asp:TemplateField HeaderText="Good">
                                             <ItemTemplate>
                                                 <asp:Label ID="lblGood" runat="server" Text='<%# Eval("Good_Qty", "{0:0.##}") %>'></asp:Label>
                                             </ItemTemplate>
-                                            <HeaderStyle HorizontalAlign="Center" Width="10%" />
-                                            <ItemStyle HorizontalAlign="Right" Width="10%" />
+                                            <HeaderStyle HorizontalAlign="Center" Width="12%" />
+                                            <ItemStyle HorizontalAlign="Right" Width="12%" />
                                         </asp:TemplateField>
 
                                         <asp:TemplateField HeaderText="Short">
                                             <ItemTemplate>
                                                 <asp:Label ID="lblShort" runat="server" Text='<%# Eval("Short_Qty", "{0:0.##}") %>'></asp:Label>
                                             </ItemTemplate>
-                                            <HeaderStyle HorizontalAlign="Center" Width="10%" />
-                                            <ItemStyle HorizontalAlign="Right" Width="10%" />
+                                            <HeaderStyle HorizontalAlign="Center" Width="11.5%" />
+                                            <ItemStyle HorizontalAlign="Right" Width="11.5%" />
                                         </asp:TemplateField>
 
                                         <asp:TemplateField HeaderText="Damage">
