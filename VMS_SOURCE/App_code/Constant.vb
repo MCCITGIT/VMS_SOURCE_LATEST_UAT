@@ -94,6 +94,9 @@ Public Class Constant
         Public Const PasswordChangeDateDiff As Integer = 60
         Public Const VENDOR_REASON_TYPE As String = "VENDOR_REASON_TYPE"
 
+        Public Const LRDoc = "LRDoc"
+        Public Const InvoiceDoc = "InvoiceDoc"
+
     End Class
 
     Public Class SessionKeys
