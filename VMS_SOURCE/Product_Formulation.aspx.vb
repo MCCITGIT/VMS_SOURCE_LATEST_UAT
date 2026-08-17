@@ -46,9 +46,10 @@ Partial Class Product_Formulation
                 For Each dr As DataRow In ds.Tables(0).Rows
                     Dim productCode As String = Convert.ToString(dr("product_code")).Trim()
                     Dim productName As String = Convert.ToString(dr("product_name")).Trim()
+                    Dim sku_code As String = Convert.ToString(dr("sku_code")).Trim()
 
                     If productName <> "" AndAlso productCode <> "" Then
-                        productDetails.Add(AjaxControlToolkit.AutoCompleteExtender.CreateAutoCompleteItem(productName, productCode))
+                        productDetails.Add(AjaxControlToolkit.AutoCompleteExtender.CreateAutoCompleteItem(productName, productCode & "|" & sku_code))
                     End If
                 Next
             End If
@@ -396,9 +397,9 @@ Partial Class Product_Formulation
         End If
 
         If ds.Tables.Count > 1 AndAlso Not (ds.Tables(1) Is Nothing) AndAlso ds.Tables(1).Rows.Count > 0 Then
+
             gvVendorRawMat.DataSource = ds.Tables(1)
             gvVendorRawMat.DataBind()
-
             'Calculate Ratio Total
             Dim totalRatio As Decimal = 0D
             For Each row As DataRow In ds.Tables(1).Rows
@@ -413,6 +414,7 @@ Partial Class Product_Formulation
             Dim lblRatioStatus As Label =
                 TryCast(gvVendorRawMat.FooterRow.FindControl("lblRatioStatus"), Label)
             If lblRatioTotal IsNot Nothing Then
+                'lblRatioTotal.Text = totalRatio.ToString("0.00") & "%"
                 lblRatioTotal.Text = totalRatio.ToString("0.00") & "%"
             End If
 
@@ -425,6 +427,8 @@ Partial Class Product_Formulation
                     lblRatioStatus.Text = "Exceeds 100%"
                 End If
             End If
+
+
         Else
             gvVendorRawMat.DataSource = Nothing
             gvVendorRawMat.DataBind()
@@ -434,4 +438,53 @@ Partial Class Product_Formulation
         Response.Redirect("~/FormulationMstrList.aspx")
     End Sub
 
+    Private Sub populateRecipe()
+        Dim apiUrl As String = "https://oic-dev-axbw0xev3jux-hy.integration.ap-hyderabad-1.ocp.oraclecloud.com/ic/api/integration/v1/flows/rest/BPIL_IMPORT_RECIPE_DETAIL_V1/1.0/bpil/recipe/import"
+        Dim postData = New With {Key .SKU = hdnSkucode.Value
+    }
+        Dim ApiHelper As New OPC_VendorClass()
+        Dim ds As DataSet = ApiHelper.PostApiWithHeadersToDataSet(apiUrl, postData).Result
+        Dim filteredTable As DataTable
+
+        If (ds IsNot Nothing) AndAlso (ds.Tables.Count > 0) AndAlso (ds.Tables(0) IsNot Nothing) AndAlso (ds.Tables(0).Rows.Count > 0) Then
+            'Dim filteredTable As DataTable = ds.Tables(0).Clone()
+
+            'For Each row As DataRow In ds.Tables(0).Rows
+            '    Dim version As String = row("VERSION").ToString().Trim()
+            '    If version = hdnSpecVersion.Value.Trim() Then filteredTable.ImportRow(row)
+            '    If version <> hdnSpecVersion.Value.Trim() Then filteredTable.ImportRow(row)
+            'Next
+
+            'filteredTable.Columns.Add("RecipeWithUnit", GetType(String))
+            filteredTable.Columns.Add("RecipeWithVersion", GetType(String))
+
+            For Each row As DataRow In filteredTable.Rows
+                Dim recipe As String = If(row("RECIPE NUMBER") IsNot Nothing, row("RECIPE NUMBER").ToString(), "")
+                'Dim unit As String = If(row("MFG UNIT") IsNot Nothing, row("MFG UNIT").ToString(), "")
+                Dim version As String = If(row("VERSION") IsNot Nothing, row("VERSION").ToString(), "")
+                'row("RecipeWithUnit") = recipe & " (" & unit & ") -> Ver." & version
+                row("RecipeWithVersion") = BuildRecipeDropDownValue(recipe, version)
+            Next
+
+            ddlRecipe.DataSource = ds
+            ddlRecipe.DataTextField = "RecipeWithVersion"
+            ddlRecipe.DataValueField = "RecipeWithVersion"
+            ddlRecipe.DataBind()
+            ddlRecipe.Items.Insert(0, New ListItem With {
+                .Text = String.Concat(Constant.Common.Selec.ToString()),
+                .Value = String.Empty
+            })
+            'SelectSavedProjectRecipeInDropDown()
+        End If
+    End Sub
+    Private Shared Function BuildRecipeDropDownValue(ByVal recipe As String, ByVal version As String) As String
+        Return String.Join("|", recipe.Trim(), version.Trim())
+    End Function
+    Protected Sub txtProductSearch_TextChanged(sender As Object, e As EventArgs)
+        txtProductSearch.Attributes("readonly") = "readonly"
+        populateRecipe()
+    End Sub
+    Protected Sub ddlRecipe_SelectedIndexChanged(sender As Object, e As EventArgs)
+
+    End Sub
 End Class
