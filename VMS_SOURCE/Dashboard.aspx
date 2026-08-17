@@ -832,7 +832,7 @@
                     <div class="card">
                         <div class="card-body">
                             <div class="table-responsive">
-                                <table style="width: 100%; text-align: center;">
+                                <table class="table table-hover upgradDataGrid">
                                     <tr>
                                         <td>
                                             <ChartDirector:WebChartViewer ID="cv_unit1" runat="server" />
