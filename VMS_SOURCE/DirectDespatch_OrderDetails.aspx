@@ -10,10 +10,15 @@
     <script type="text/javascript">
         var cal1 = new CalendarPopup();
 
-        document.getElementById("fromDateBtn").addEventListener("click", function (e) {
-            e.preventDefault();
-            cal1.select(document.forms[0].txtFromDate, 'FromDate', 'dd/MM/yyyy');
-        });
+        // "fromDateBtn" only exists when the calendar icon markup below is
+        // uncommented; without this guard the script threw on every page load.
+        var fromDateBtn = document.getElementById("fromDateBtn");
+        if (fromDateBtn) {
+            fromDateBtn.addEventListener("click", function (e) {
+                e.preventDefault();
+                cal1.select(document.forms[0].txtFromDate, 'FromDate', 'dd/MM/yyyy');
+            });
+        }
     </script>
 
 
@@ -21,7 +26,10 @@
         <div class="leftFung">
             <a href="Home.aspx" title="Home"><i class="fas fa-home"></i></a>
             <div class="diveider">/</div>
-            <h3 class="pageTitle">Direct Despatch Order Details</h3>
+            <div class="pageTitleWrap">
+                <h3 class="pageTitle">Direct Despatch Order Details</h3>
+                <p class="pageSubTitle">Order level details for direct despatches</p>
+            </div>
         </div>
         <div class="rightFung"></div>
     </div>

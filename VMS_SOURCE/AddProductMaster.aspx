@@ -28,7 +28,10 @@
         <div class="leftFung">
             <a href="Home.aspx" title="Home"><i class="fas fa-home"></i></a>
             <div class="diveider">/</div>
-            <h3 class="pageTitle">Brand Master</h3>
+            <div class="pageTitleWrap">
+                <h3 class="pageTitle">Brand Master</h3>
+                <p class="pageSubTitle">Maintain brand and product details</p>
+            </div>
         </div>
         <div class="rightFung"></div>
     </div>
@@ -43,8 +46,8 @@
                         <asp:HiddenField ID="txtBrandId" ClientIDMode="Static" runat="server" />
                     </div>
                 </div>
-                <div class="col-md-12 form-btn-mt text-center">
-                    <asp:Button ID="btnSubmit" ClientIDMode="Static" runat="server" Text="Submit" CssClass="btn btn-primary btn-sm" OnClick="btnSubmit_Click" />                    
+                <div class="col-md-4 form-btn-mt">
+                    <asp:Button ID="btnSubmit" ClientIDMode="Static" runat="server" Text="Submit" CssClass="btn btn-primary btn-sm" OnClick="btnSubmit_Click" />
                     <asp:Button ID="btnReset" runat="server" Text="Reset" CssClass="btn btn-warning btn-sm" OnClick="btnReset_Click" />
                 </div>
             </div>
@@ -53,11 +56,7 @@
                     <asp:Label ID="lblErrorMessage" ClientIDMode="Static" CssClass="errormsg" Visible="true" runat="server" Style="text-align: left; font-size: 13px; font-weight: bold;" Text=""></asp:Label>
                 </ContentTemplate>
             </asp:UpdatePanel>
-        </div>
-    </div>
 
-    <div class="card">
-        <div class="card-body">
             <div class="table-responsive">
                 <asp:GridView BorderWidth="1" CssClass="table table-hover upgradDataGrid" CellSpacing="0" CellPadding="0"
                     ID="gvbrandDetails" runat="server" AutoGenerateColumns="false" AllowPaging="false" Visible="true"
@@ -109,7 +108,9 @@
                     </Columns>
                 </asp:GridView>
             </div>
+
         </div>
     </div>
+
 </asp:Content>
 

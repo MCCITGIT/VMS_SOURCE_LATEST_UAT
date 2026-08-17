@@ -140,7 +140,10 @@
         <div class="leftFung">
             <a href="Home.aspx" title="Home"><i class="fas fa-home"></i></a>
             <div class="diveider">/</div>
-            <h3 class="pageTitle">Vendor Raw Material Linking</h3>
+            <div class="pageTitleWrap">
+                <h3 class="pageTitle">Vendor Raw Material Linking</h3>
+                <p class="pageSubTitle">Link raw materials to their vendors</p>
+            </div>
         </div>
         <div class="rightFung"></div>
     </div>

@@ -69,7 +69,10 @@
         <div class="leftFung">
             <a href="Home.aspx" title="Home"><i class="fas fa-home"></i></a>
             <div class="diveider">/</div>
-            <h3 class="pageTitle">Legal Score Approval</h3>
+            <div class="pageTitleWrap">
+                <h3 class="pageTitle">Legal Score Approval</h3>
+                <p class="pageSubTitle">Approve or reject submitted legal scores</p>
+            </div>
         </div>
         <div class="rightFung"></div>
     </div>

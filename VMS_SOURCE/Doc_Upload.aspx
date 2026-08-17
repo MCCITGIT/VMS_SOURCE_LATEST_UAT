@@ -37,7 +37,10 @@
         <div class="leftFung">
             <a href="Home.aspx" title="Home"><i class="fas fa-home"></i></a>
             <div class="diveider">/</div>
-            <h3 class="pageTitle">Document Upload</h3>
+            <div class="pageTitleWrap">
+                <h3 class="pageTitle">Document Upload</h3>
+                <p class="pageSubTitle">Upload and manage supporting documents</p>
+            </div>
         </div>
         <div class="rightFung">
             <%--<asp:ImageButton ID="ImgbtnAdd" runat="server" CssClass="btn btn-success btn-sm" ImageUrl="images/ic_add.gif" /--%>

@@ -40,7 +40,10 @@
         <div class="leftFung">
             <a href="Home.aspx" title="Home"><i class="fas fa-home"></i></a>
             <div class="diveider">/</div>
-            <h3 class="pageTitle">Product Vendor Linking</h3>
+            <div class="pageTitleWrap">
+                <h3 class="pageTitle">Product Vendor Linking</h3>
+                <p class="pageSubTitle">Map products to the vendors that supply them</p>
+            </div>
         </div>
         <div class="rightFung"></div>
     </div>
