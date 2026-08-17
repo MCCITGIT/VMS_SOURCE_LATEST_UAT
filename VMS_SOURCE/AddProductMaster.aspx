@@ -42,6 +42,15 @@
     </div>
 
     <div class="card">
+        <div class="mst-panel-header">
+            <div class="mst-panel-header-left">
+                <span class="mst-panel-icon"><i class="fas fa-plus"></i></span>
+                <div>
+                    <h5 class="mst-panel-title">Add Brand</h5>
+                    <p class="mst-panel-subtitle">Enter a new brand name to add it to the master list</p>
+                </div>
+            </div>
+        </div>
         <div class="card-body">
             <div class="row">
                 <div class="col-md-4">
@@ -53,19 +62,32 @@
                 </div>
                 <div class="col-md-4 form-btn-mt">
                     <asp:Button ID="btnSubmit" ClientIDMode="Static" runat="server" Text="Submit" CssClass="btn btn-primary btn-sm" OnClick="btnSubmit_Click" />
-                    <asp:Button ID="btnReset" runat="server" Text="Reset" CssClass="btn btn-warning btn-sm" OnClick="btnReset_Click" />
+                    <asp:Button ID="btnReset" runat="server" Text="Reset" CssClass="btn btn-outline-danger btn-sm" OnClick="btnReset_Click" />
                 </div>
             </div>
             <asp:UpdatePanel ID="UpdatePanel5" runat="server">
                 <ContentTemplate>
-                    <asp:Label ID="lblErrorMessage" ClientIDMode="Static" Visible="true" runat="server" Style="text-align: left; font-size: 10px; font-weight: bold;color:red" Text=""></asp:Label>
+                    <asp:Label ID="lblErrorMessage" ClientIDMode="Static" Visible="true" runat="server" Style="text-align: left; font-size: 10px; font-weight: bold; color: red" Text=""></asp:Label>
                 </ContentTemplate>
             </asp:UpdatePanel>
+        </div>
+    </div>
 
+    <div class="card">
+        <div class="mst-panel-header">
+            <div class="mst-panel-header-left">
+                <span class="mst-panel-icon"><i class="fas fa-list"></i></span>
+                <div>
+                    <h5 class="mst-panel-title">Brand List</h5>
+                    <p class="mst-panel-subtitle">All brands currently available for product mapping</p>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
             <div class="table-responsive">
-                <asp:GridView BorderWidth="1" CssClass="table table-hover upgradDataGrid" CellSpacing="0" CellPadding="0"
+                <asp:GridView CssClass="table table-hover upgradDataGrid" CellSpacing="0" CellPadding="0"
                     ID="gvbrandDetails" runat="server" AutoGenerateColumns="false" AllowPaging="false" Visible="true"
-                    ShowFooter="false" GridLines="both">
+                    ShowFooter="false">
                     <RowStyle CssClass="tlrowlight" />
                     <PagerStyle CssClass="PagerGrid" HorizontalAlign="Right" />
                     <HeaderStyle CssClass="headerGrid" />
@@ -113,9 +135,7 @@
                     </Columns>
                 </asp:GridView>
             </div>
-
         </div>
     </div>
-
 </asp:Content>
 
