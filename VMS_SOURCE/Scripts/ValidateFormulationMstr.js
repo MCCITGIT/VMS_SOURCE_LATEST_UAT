@@ -143,8 +143,43 @@ function validateInputs() {
     }
 }
 
+function updateVendorRawMatRatioTotal() {
+    var grid = document.getElementById("gvVendorRawMat");
+    if (!grid) {
+        return;
+    }
+
+    var ratioLabels = grid.querySelectorAll("tbody tr.tlrowlight span[id$='lblRatio']");
+    var total = 0;
+
+    for (var i = 0; i < ratioLabels.length; i++) {
+        var rawValue = (ratioLabels[i].innerText || ratioLabels[i].textContent || "").trim();
+        var numValue = parseFloat(rawValue.replace(/[^0-9.]/g, ""));
+
+        if (!isNaN(numValue)) {
+            total += numValue;
+        }
+    }
+
+    var totalLabel = document.getElementById("lblRatioTotal");
+    var statusLabel = document.getElementById("lblRatioStatus");
+    if (!totalLabel || !statusLabel) {
+        return;
+    }
+
+    totalLabel.innerHTML = total.toFixed(2) + "%";
+    if (total > 100) {
+        statusLabel.innerHTML = "Exceed 100%";
+        statusLabel.style.color = "#dc3545";
+    } else {
+        statusLabel.innerHTML = "Within 100%";
+        statusLabel.style.color = "#28a745";
+    }
+}
+
 document.addEventListener("DOMContentLoaded", function () {
     updateConsumptionRatioTotal();
+    updateVendorRawMatRatioTotal();
 });
 function validateAddRawMaterial() {
     debugger;

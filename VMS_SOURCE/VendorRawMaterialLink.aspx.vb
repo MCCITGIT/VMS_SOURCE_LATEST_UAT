@@ -20,13 +20,13 @@ Partial Class VendorRawMaterialLink
 
         If (Not IsPostBack) Then
             AddAttributes()
-            PopulateVendor()
+            'PopulateVendor()
             InitializeGridTable()
             If Not String.IsNullOrWhiteSpace(Request.QueryString("vendorcode")) Then
                 Dim queryVendorCode As String = Convert.ToString(Request.QueryString("vendorcode")).Trim()
-                If ddlVendor.Items.FindByValue(queryVendorCode) IsNot Nothing Then
-                    ddlVendor.SelectedValue = queryVendorCode
-                End If
+                'If ddlVendor.Items.FindByValue(queryVendorCode) IsNot Nothing Then
+                '    ddlVendor.SelectedValue = queryVendorCode
+                'End If
 
                 Binddata()
             End If
@@ -40,22 +40,22 @@ Partial Class VendorRawMaterialLink
         btnAdd.Attributes.Add("onclick", "return validateAddRawmaterial();")
     End Sub
 #End Region
-#Region "PopulateVendor"
-    Public Sub PopulateVendor()
-        Dim obj As New OPC_VendorClass()
-        Dim ds As New DataSet()
-        ds = obj.GetRawMaterialVendorList()
+    '#Region "PopulateVendor"
+    '    Public Sub PopulateVendor()
+    '        Dim obj As New OPC_VendorClass()
+    '        Dim ds As New DataSet()
+    '        ds = obj.GetRawMaterialVendorList()
 
-        ddlVendor.Items.Clear()
-        If (Not (ds Is Nothing) AndAlso ds.Tables.Count > 0 AndAlso Not (ds.Tables(0) Is Nothing) AndAlso ds.Tables(0).Rows.Count > 0) Then
-            ddlVendor.DataSource = ds.Tables(0)
-            ddlVendor.DataTextField = "vendor_name"
-            ddlVendor.DataValueField = "vendor_code"
-            ddlVendor.DataBind()
-        End If
-        ddlVendor.Items.Insert(0, New ListItem(Constant.Common.Selec, String.Empty, True))
-    End Sub
-#End Region
+    '        ddlVendor.Items.Clear()
+    '        If (Not (ds Is Nothing) AndAlso ds.Tables.Count > 0 AndAlso Not (ds.Tables(0) Is Nothing) AndAlso ds.Tables(0).Rows.Count > 0) Then
+    '            ddlVendor.DataSource = ds.Tables(0)
+    '            ddlVendor.DataTextField = "vendor_name"
+    '            ddlVendor.DataValueField = "vendor_code"
+    '            ddlVendor.DataBind()
+    '        End If
+    '        ddlVendor.Items.Insert(0, New ListItem(Constant.Common.Selec, String.Empty, True))
+    '    End Sub
+    '#End Region
     Private Sub InitializeGridTable()
         Dim dt As DataTable = New DataTable()
         dt.Columns.Add(New DataColumn("id", GetType(String)))
@@ -137,9 +137,14 @@ Partial Class VendorRawMaterialLink
         CaptureGridRates()
         btnSubmit.Visible = True
 
-        If ddlVendor.SelectedIndex <= 0 Then
+        'If ddlVendor.SelectedIndex <= 0 Then
+        '    lblErrorMessage.ForeColor = System.Drawing.Color.Red
+        '    lblErrorMessage.Text = "Please select Vendor."
+        '    Exit Sub
+        'End If
+        If String.IsNullOrWhiteSpace(hdnVendorCode.Value) Then
             lblErrorMessage.ForeColor = System.Drawing.Color.Red
-            lblErrorMessage.Text = "Please select Vendor."
+            lblErrorMessage.Text = "Please enter Vendor."
             Exit Sub
         End If
 
@@ -151,7 +156,8 @@ Partial Class VendorRawMaterialLink
 
         Dim dt As DataTable = GetGridTable()
         Dim selectedRawMatCode As String = txtrawmatid.Value.Trim()
-        Dim selectedVendorCode As String = ddlVendor.SelectedValue.Trim()
+        'Dim selectedVendorCode As String = ddlVendor.SelectedValue.Trim()
+        Dim selectedVendorCode As String = hdnVendorCode.Value
 
         For Each row As DataRow In dt.Rows
             If Convert.ToString(row("vendor_code")).Trim().Equals(selectedVendorCode, StringComparison.OrdinalIgnoreCase) AndAlso
@@ -169,8 +175,10 @@ Partial Class VendorRawMaterialLink
 
         Dim dr As DataRow = dt.NewRow()
         dr("id") = String.Empty
-        dr("vendor_code") = ddlVendor.SelectedValue
-        dr("vendor_name") = ddlVendor.SelectedItem.Text
+        'dr("vendor_code") = ddlVendor.SelectedValue
+        'dr("vendor_name") = ddlVendor.SelectedItem.Text
+        dr("vendor_code") = hdnVendorCode.Value
+        dr("vendor_name") = txtVendorSearch.Text
         dr("rawmat_code") = selectedRawMatCode
         dr("rawmat_name") = rawMatName
         dr("rate") = String.Empty
@@ -180,6 +188,7 @@ Partial Class VendorRawMaterialLink
 
         gvVendorRawMat.EditIndex = -1
         BindRawMatGrid()
+        txtVendorSearch.Text = String.Empty
         txtSearchText.Text = String.Empty
         txtrawmatid.Value = String.Empty
         lblErrorMessage.Text = ""
@@ -301,29 +310,29 @@ Partial Class VendorRawMaterialLink
     Protected Sub btnCancel_Click(sender As Object, e As EventArgs) Handles btnCancel.Click
         Response.Redirect("~/RawmaterialList.aspx", True)
     End Sub
-    Protected Sub btnReset_Click(sender As Object, e As EventArgs) Handles btnReset.Click
-        Dim path = "~/VendorRawMaterialLink.aspx"
+    'Protected Sub btnReset_Click(sender As Object, e As EventArgs) Handles btnReset.Click
+    '    Dim path = "~/VendorRawMaterialLink.aspx"
 
-        If Not (Request.QueryString.Count = 0) Then
-            path += Request.Url.Query
-            Response.Redirect(path)
-        Else
-            Response.Redirect(path)
-        End If
-    End Sub
+    '    If Not (Request.QueryString.Count = 0) Then
+    '        path += Request.Url.Query
+    '        Response.Redirect(path)
+    '    Else
+    '        Response.Redirect(path)
+    '    End If
+    'End Sub
     Protected Sub btnSubmit_Click(sender As Object, e As EventArgs) Handles btnSubmit.Click
         Dim RowsAffectedMstr As Integer
         Dim obj As New OPC_VendorClass
         ''---------------------
         Try
             Dim Vendor As String = String.Empty
-            If ddlVendor.SelectedIndex > 0 Then
-                Vendor = Convert.ToString(ddlVendor.SelectedValue)
-            Else
-                lblErrorMessage.ForeColor = System.Drawing.Color.Red
-                lblErrorMessage.Text = "Please select Vendor."
-                Return
-            End If
+            'If ddlVendor.SelectedIndex > 0 Then
+            '    Vendor = Convert.ToString(ddlVendor.SelectedValue)
+            'Else
+            '    lblErrorMessage.ForeColor = System.Drawing.Color.Red
+            '    lblErrorMessage.Text = "Please select Vendor."
+            '    Return
+            'End If
 
             CaptureGridRates()
             Dim dtGrid As DataTable = GetGridTable()
@@ -356,7 +365,8 @@ Partial Class VendorRawMaterialLink
             If RowsAffectedMstr > 0 Then
                 lblErrorMessage.ForeColor = System.Drawing.Color.Green
                 lblErrorMessage.Text = "Submitted Successfully"
-                ddlVendor.SelectedIndex = -1
+                'ddlVendor.SelectedIndex = -1
+                txtVendorSearch.Text = String.Empty
                 txtSearchText.Text = String.Empty
                 txtrawmatid.Value = String.Empty
                 gvVendorRawMat.DataSource = Nothing
@@ -389,15 +399,16 @@ Partial Class VendorRawMaterialLink
     End Sub
     Private Sub Binddata()
         Dim selectedVendorCode As String = String.Empty
-        If ddlVendor.SelectedIndex > 0 Then
-            selectedVendorCode = Convert.ToString(ddlVendor.SelectedValue).Trim()
-        ElseIf Not String.IsNullOrWhiteSpace(Request.QueryString("vendorcode")) Then
-            selectedVendorCode = Convert.ToString(Request.QueryString("vendorcode")).Trim()
-            If selectedVendorCode <> "" AndAlso ddlVendor.Items.FindByValue(selectedVendorCode) IsNot Nothing Then
-                ddlVendor.SelectedValue = selectedVendorCode
-            End If
-        End If
-        ddlVendor.Enabled = False
+        'If ddlVendor.SelectedIndex > 0 Then
+        '    selectedVendorCode = Convert.ToString(ddlVendor.SelectedValue).Trim()
+        'ElseIf Not String.IsNullOrWhiteSpace(Request.QueryString("vendorcode")) Then
+        '    selectedVendorCode = Convert.ToString(Request.QueryString("vendorcode")).Trim()
+        '    If selectedVendorCode <> "" AndAlso ddlVendor.Items.FindByValue(selectedVendorCode) IsNot Nothing Then
+        '        ddlVendor.SelectedValue = selectedVendorCode
+        '    End If
+        'End If
+        'ddlVendor.Enabled = False
+        selectedVendorCode = Convert.ToString(Request.QueryString("vendorcode")).Trim()
         If selectedVendorCode = "" Then
             InitializeGridTable()
             BindRawMatGrid()
@@ -405,6 +416,7 @@ Partial Class VendorRawMaterialLink
         End If
 
         Dim obj As New OPC_VendorClass()
+        'Dim ds As DataSet = obj.GetVendorRawMatEditList(selectedVendorCode)
         Dim ds As DataSet = obj.GetVendorRawMatEditList(selectedVendorCode)
         Dim dt As DataTable = GetGridTable()
         dt.Rows.Clear()
@@ -441,5 +453,34 @@ Partial Class VendorRawMaterialLink
             Return "Y"
         End If
         Return "N"
+    End Function
+    <System.Web.Script.Services.ScriptMethod(),
+    System.Web.Services.WebMethod()>
+    Public Shared Function VendorSearch(ByVal prefixText As String) As String()
+        Dim vendorDetails As List(Of String) = New List(Of String)()
+
+        If String.IsNullOrWhiteSpace(prefixText) OrElse prefixText.Trim().Length < 3 Then
+            Return vendorDetails.ToArray()
+        End If
+
+        Try
+            Dim obj As New OPC_VendorClass()
+            Dim ds As DataSet = obj.GetVendorList(prefixText.Trim())
+
+            If Not ds Is Nothing AndAlso ds.Tables.Count > 0 AndAlso Not ds.Tables(0) Is Nothing Then
+                For Each dr As DataRow In ds.Tables(0).Rows
+                    Dim vendor_code As String = Convert.ToString(dr("vendor_code")).Trim()
+                    Dim vendor_name As String = Convert.ToString(dr("vendor_name")).Trim()
+
+                    If vendor_code <> "" AndAlso vendor_name <> "" Then
+                        vendorDetails.Add(AjaxControlToolkit.AutoCompleteExtender.CreateAutoCompleteItem(vendor_name, vendor_code))
+                    End If
+                Next
+            End If
+        Catch ex As Exception
+            ' Keep autocomplete resilient; return collected items.
+        End Try
+
+        Return vendorDetails.ToArray()
     End Function
 End Class

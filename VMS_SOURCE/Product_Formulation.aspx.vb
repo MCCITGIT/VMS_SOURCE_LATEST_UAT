@@ -1,4 +1,6 @@
-﻿Imports System.Data
+﻿Imports System.Collections.Generic
+Imports System.Data
+Imports System.Linq
 Imports VMS.Web
 Imports System.Data.SqlClient
 Imports System.Data.SqlTypes
@@ -6,6 +8,7 @@ Partial Class Product_Formulation
     Inherits System.Web.UI.Page
     Dim userInfo As VMSUserEntity = New VMSUserEntity()
     Private Const GridTableKey As String = "VendorRawMatGridTable"
+    Private gridRatioTotal As Decimal = 0D
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
         CheckLogin()
         'btnSubmit.Attributes.Add("onclick", "return validateInputs();")
@@ -120,11 +123,45 @@ Partial Class Product_Formulation
         Return dt
     End Function
     Private Sub BindRawMatGrid()
-        'If gvVendorRawMat.Columns.Count > 4 Then
-        '    gvVendorRawMat.Columns(4).Visible = (gvVendorRawMat.EditIndex >= 0)
-        'End If
+        gridRatioTotal = 0D
         gvVendorRawMat.DataSource = GetGridTable()
         gvVendorRawMat.DataBind()
+    End Sub
+
+    Protected Sub gvVendorRawMat_RowDataBound(sender As Object, e As GridViewRowEventArgs)
+        If e.Row.RowType = DataControlRowType.Header Then
+            e.Row.TableSection = TableRowSection.TableHeader
+        ElseIf e.Row.RowType = DataControlRowType.DataRow Then
+            Dim lblRatio As Label = TryCast(e.Row.FindControl("lblRatio"), Label)
+            If lblRatio IsNot Nothing Then
+                Dim ratio As Decimal
+                If Decimal.TryParse(lblRatio.Text.Trim(), ratio) Then
+                    gridRatioTotal += ratio
+                End If
+            End If
+        ElseIf e.Row.RowType = DataControlRowType.Footer Then
+            e.Row.TableSection = TableRowSection.TableFooter
+            SetRatioFooterLabels(e.Row, gridRatioTotal)
+        End If
+    End Sub
+
+    Private Sub SetRatioFooterLabels(ByVal footerRow As GridViewRow, ByVal totalRatio As Decimal)
+        Dim lblRatioTotal As Label = TryCast(footerRow.FindControl("lblRatioTotal"), Label)
+        Dim lblRatioStatus As Label = TryCast(footerRow.FindControl("lblRatioStatus"), Label)
+
+        If lblRatioTotal IsNot Nothing Then
+            lblRatioTotal.Text = totalRatio.ToString("0.00") & "%"
+        End If
+
+        If lblRatioStatus IsNot Nothing Then
+            If totalRatio > 100D Then
+                lblRatioStatus.Text = "Exceed 100%"
+                lblRatioStatus.ForeColor = Drawing.Color.Red
+            Else
+                lblRatioStatus.Text = "Within 100%"
+                lblRatioStatus.ForeColor = Drawing.Color.Green
+            End If
+        End If
     End Sub
     Protected Sub btnAdd_Click(sender As Object, e As EventArgs)
         If gvVendorRawMat.EditIndex >= 0 Then
@@ -211,7 +248,6 @@ Partial Class Product_Formulation
 
         gvVendorRawMat.EditIndex = -1
         BindRawMatGrid()
-        UpdateRatioTotal()
         ClearControl()
 
         Dim productCodeToKeep As String = hdnProductCode.Value.Trim()
@@ -228,42 +264,6 @@ Partial Class Product_Formulation
         txtRatio.Text = String.Empty
         txtmeasurement.Text = String.Empty
         lblErrorMessage.Text = ""
-    End Sub
-    Private Sub UpdateRatioTotal()
-        Dim dt As DataTable = GetGridTable()
-
-        Dim totalRatio As Decimal = 0D
-
-        If dt IsNot Nothing AndAlso dt.Rows.Count > 0 Then
-            For Each row As DataRow In dt.Rows
-                Dim ratio As Decimal
-
-                If Decimal.TryParse(Convert.ToString(row("ratio")), ratio) Then
-                    totalRatio += ratio
-                End If
-            Next
-        End If
-
-        Dim footerRow As GridViewRow = gvVendorRawMat.FooterRow
-
-        If footerRow IsNot Nothing Then
-            Dim lblRatioTotal As Label = TryCast(footerRow.FindControl("lblRatioTotal"), Label)
-            Dim lblRatioStatus As Label = TryCast(footerRow.FindControl("lblRatioStatus"), Label)
-
-            If lblRatioTotal IsNot Nothing Then
-                lblRatioTotal.Text = totalRatio.ToString("0.00") & "%"
-            End If
-
-            If lblRatioStatus IsNot Nothing Then
-                If totalRatio > 100D Then
-                    lblRatioStatus.Text = "Exceed 100%"
-                    lblRatioStatus.ForeColor = System.Drawing.Color.Red
-                Else
-                    lblRatioStatus.Text = "Within 100%"
-                    lblRatioStatus.ForeColor = System.Drawing.Color.Green
-                End If
-            End If
-        End If
     End Sub
     Private Sub BrandDetailsListLoad()
         Dim ds As DataSet
@@ -397,38 +397,8 @@ Partial Class Product_Formulation
         End If
 
         If ds.Tables.Count > 1 AndAlso Not (ds.Tables(1) Is Nothing) AndAlso ds.Tables(1).Rows.Count > 0 Then
-
-            gvVendorRawMat.DataSource = ds.Tables(1)
-            gvVendorRawMat.DataBind()
-            'Calculate Ratio Total
-            Dim totalRatio As Decimal = 0D
-            For Each row As DataRow In ds.Tables(1).Rows
-                If Not IsDBNull(row("ratio")) AndAlso
-                   Not String.IsNullOrWhiteSpace(Convert.ToString(row("ratio"))) Then
-                    totalRatio += Convert.ToDecimal(row("ratio"))
-                End If
-            Next
-            'Find footer controls
-            Dim lblRatioTotal As Label =
-                TryCast(gvVendorRawMat.FooterRow.FindControl("lblRatioTotal"), Label)
-            Dim lblRatioStatus As Label =
-                TryCast(gvVendorRawMat.FooterRow.FindControl("lblRatioStatus"), Label)
-            If lblRatioTotal IsNot Nothing Then
-                'lblRatioTotal.Text = totalRatio.ToString("0.00") & "%"
-                lblRatioTotal.Text = totalRatio.ToString("0.00") & "%"
-            End If
-
-            If lblRatioStatus IsNot Nothing Then
-                If totalRatio = 100D Then
-                    lblRatioStatus.Text = "Within 100%"
-                ElseIf totalRatio < 100D Then
-                    lblRatioStatus.Text = "Below 100%"
-                Else
-                    lblRatioStatus.Text = "Exceeds 100%"
-                End If
-            End If
-
-
+            ViewState(GridTableKey) = ds.Tables(1)
+            BindRawMatGrid()
         Else
             gvVendorRawMat.DataSource = Nothing
             gvVendorRawMat.DataBind()
@@ -440,51 +410,206 @@ Partial Class Product_Formulation
 
     Private Sub populateRecipe()
         Dim apiUrl As String = "https://oic-dev-axbw0xev3jux-hy.integration.ap-hyderabad-1.ocp.oraclecloud.com/ic/api/integration/v1/flows/rest/BPIL_IMPORT_RECIPE_DETAIL_V1/1.0/bpil/recipe/import"
-        Dim postData = New With {Key .SKU = hdnSkucode.Value
-    }
-        Dim ApiHelper As New OPC_VendorClass()
-        Dim ds As DataSet = ApiHelper.PostApiWithHeadersToDataSet(apiUrl, postData).Result
-        Dim filteredTable As DataTable
+        Dim postData = New With {Key .SKU = hdnSkucode.Value}
+        Dim ds As DataSet = OPC_VendorClass.PostApiWithHeadersToDataSet(apiUrl, postData).Result
 
         If (ds IsNot Nothing) AndAlso (ds.Tables.Count > 0) AndAlso (ds.Tables(0) IsNot Nothing) AndAlso (ds.Tables(0).Rows.Count > 0) Then
-            'Dim filteredTable As DataTable = ds.Tables(0).Clone()
+            Dim recipeTable As DataTable = ds.Tables(0).Copy()
+            If Not recipeTable.Columns.Contains("RecipeWithVersion") Then
+                recipeTable.Columns.Add("RecipeWithVersion", GetType(String))
+            End If
 
-            'For Each row As DataRow In ds.Tables(0).Rows
-            '    Dim version As String = row("VERSION").ToString().Trim()
-            '    If version = hdnSpecVersion.Value.Trim() Then filteredTable.ImportRow(row)
-            '    If version <> hdnSpecVersion.Value.Trim() Then filteredTable.ImportRow(row)
-            'Next
-
-            'filteredTable.Columns.Add("RecipeWithUnit", GetType(String))
-            filteredTable.Columns.Add("RecipeWithVersion", GetType(String))
-
-            For Each row As DataRow In filteredTable.Rows
-                Dim recipe As String = If(row("RECIPE NUMBER") IsNot Nothing, row("RECIPE NUMBER").ToString(), "")
-                'Dim unit As String = If(row("MFG UNIT") IsNot Nothing, row("MFG UNIT").ToString(), "")
-                Dim version As String = If(row("VERSION") IsNot Nothing, row("VERSION").ToString(), "")
-                'row("RecipeWithUnit") = recipe & " (" & unit & ") -> Ver." & version
+            For Each row As DataRow In recipeTable.Rows
+                Dim recipe As String = Convert.ToString(row("RECIPE NUMBER")).Trim()
+                Dim version As String = Convert.ToString(row("VERSION")).Trim()
                 row("RecipeWithVersion") = BuildRecipeDropDownValue(recipe, version)
             Next
 
-            ddlRecipe.DataSource = ds
+            ddlRecipe.DataSource = recipeTable
             ddlRecipe.DataTextField = "RecipeWithVersion"
             ddlRecipe.DataValueField = "RecipeWithVersion"
             ddlRecipe.DataBind()
-            ddlRecipe.Items.Insert(0, New ListItem With {
-                .Text = String.Concat(Constant.Common.Selec.ToString()),
-                .Value = String.Empty
-            })
-            'SelectSavedProjectRecipeInDropDown()
+            ddlRecipe.Items.Insert(0, New ListItem(Constant.Common.Selec, String.Empty, True))
         End If
     End Sub
+
     Private Shared Function BuildRecipeDropDownValue(ByVal recipe As String, ByVal version As String) As String
         Return String.Join("|", recipe.Trim(), version.Trim())
     End Function
+
+    Private Sub ParseSelectedRecipe(ByRef recipeNo As String, ByRef recipeVersion As String)
+        recipeNo = String.Empty
+        recipeVersion = String.Empty
+
+        If ddlRecipe.SelectedIndex <= 0 OrElse String.IsNullOrWhiteSpace(ddlRecipe.SelectedValue) Then
+            Return
+        End If
+
+        Dim recipeParts As String() = ddlRecipe.SelectedValue.Split("|"c)
+        If recipeParts.Length > 0 Then
+            recipeNo = recipeParts(0).Trim()
+        End If
+        If recipeParts.Length > 1 Then
+            recipeVersion = recipeParts(1).Trim()
+        End If
+    End Sub
     Protected Sub txtProductSearch_TextChanged(sender As Object, e As EventArgs)
         txtProductSearch.Attributes("readonly") = "readonly"
         populateRecipe()
     End Sub
-    Protected Sub ddlRecipe_SelectedIndexChanged(sender As Object, e As EventArgs)
+    Private Sub populateGridGrid(ByVal recipeNo As String, ByVal recipeVersion As String)
+        lblErrorMessage.Text = String.Empty
 
+        If String.IsNullOrWhiteSpace(recipeNo) OrElse String.IsNullOrWhiteSpace(recipeVersion) Then
+            Return
+        End If
+
+        Try
+            Dim apiUrl As String = "https://oic-dev-axbw0xev3jux-hy.integration.ap-hyderabad-1.ocp.oraclecloud.com/ic/api/integration/v1/flows/rest/BPIL_IMPORT_RECIPE_INGREDIE/1.0/bpil/ingredient/import"
+            Dim postData As New Dictionary(Of String, String) From {
+                {"RECIPE NO", recipeNo.Trim()},
+                {"VERSION", recipeVersion.Trim()}
+            }
+
+            Dim ds As DataSet = OPC_VendorClass.PostApiWithHeadersToDataSet(apiUrl, postData).Result
+            If ds Is Nothing OrElse ds.Tables.Count = 0 OrElse ds.Tables(0) Is Nothing OrElse ds.Tables(0).Rows.Count = 0 Then
+                lblErrorMessage.ForeColor = Drawing.Color.Red
+                lblErrorMessage.Text = "Recipe details were not returned from API. Please try again."
+                Return
+            End If
+
+            ViewState(GridTableKey) = BuildGridTableFromRecipeApi(ds.Tables(0))
+            BindRawMatGrid()
+            btnSubmit.Visible = True
+        Catch ex As Exception
+            lblErrorMessage.ForeColor = Drawing.Color.Red
+            lblErrorMessage.Text = "Unable to load recipe ingredients. Please try again."
+        End Try
+    End Sub
+
+    Private Function BuildGridTableFromRecipeApi(ByVal apiTable As DataTable) As DataTable
+        Dim dt As DataTable = GetGridTable()
+        dt.Rows.Clear()
+
+        Dim brandCode As String = If(ddlBrand.SelectedIndex > 0, ddlBrand.SelectedValue.Trim(), String.Empty)
+        Dim brandName As String = If(ddlBrand.SelectedIndex > 0, ddlBrand.SelectedItem.Text.Trim(), String.Empty)
+        Dim productCode As String = hdnProductCode.Value.Trim()
+        Dim productName As String = hdnProductName.Value.Trim()
+
+        Dim sortedRows As IEnumerable(Of DataRow) = apiTable.AsEnumerable()
+        If apiTable.Columns.Contains("LINE NUMBER") Then
+            sortedRows = sortedRows.OrderBy(Function(row)
+                                                Dim lineNo As Integer
+                                                Integer.TryParse(Convert.ToString(row("LINE NUMBER")).Trim(), lineNo)
+                                                Return lineNo
+                                            End Function)
+        End If
+
+        For Each apiRow As DataRow In sortedRows
+            Dim ingredientCode As String = GetApiColumnValue(apiRow, apiTable, "INGREDIENT")
+            If String.IsNullOrWhiteSpace(ingredientCode) Then
+                Continue For
+            End If
+
+            Dim rawMatCode As String = GetRawMaterialCodeFromIngredient(ingredientCode)
+            Dim unit As String = GetUnitFromIngredientCode(ingredientCode)
+
+            Dim dr As DataRow = dt.NewRow()
+            dr("brand_code") = brandCode
+            dr("brand_name") = brandName
+            dr("product_code") = productCode
+            dr("product_name") = productName
+            dr("rawmat_code") = rawMatCode
+            dr("rawmat_name") = GetRawMaterialName(rawMatCode)
+            dr("ratio") = ConvertRecipeQuantityToRatio(GetApiColumnValue(apiRow, apiTable, "Quantity"))
+            dr("unit") = unit
+            dt.Rows.Add(dr)
+        Next
+
+        Return dt
+    End Function
+
+    Private Function GetRawMaterialName(ByVal rawMatCode As String) As String
+        If String.IsNullOrWhiteSpace(rawMatCode) Then
+            Return String.Empty
+        End If
+
+        Try
+            Dim obj As New OPC_VendorClass()
+            Dim ds As DataSet = obj.GetRawMatList(rawMatCode.Trim())
+            If ds IsNot Nothing AndAlso ds.Tables.Count > 0 AndAlso Not ds.Tables(0) Is Nothing AndAlso ds.Tables(0).Rows.Count > 0 Then
+                For Each row As DataRow In ds.Tables(0).Rows
+                    If Convert.ToString(row("Raw_Mat_Code")).Trim().Equals(rawMatCode.Trim(), StringComparison.OrdinalIgnoreCase) Then
+                        Return Convert.ToString(row("Raw_Mat_Name")).Trim()
+                    End If
+                Next
+
+                Return Convert.ToString(ds.Tables(0).Rows(0)("Raw_Mat_Name")).Trim()
+            End If
+        Catch
+        End Try
+
+        Return rawMatCode.Trim()
+    End Function
+
+    Private Shared Function ConvertRecipeQuantityToRatio(ByVal quantityText As String) As String
+        Dim quantity As Decimal
+        If Not Decimal.TryParse(quantityText.Trim(), quantity) Then
+            Return quantityText.Trim()
+        End If
+
+        If quantity <= 1D Then
+            Return (quantity * 100D).ToString("0.##")
+        End If
+
+        Return quantity.ToString("0.##")
+    End Function
+
+    Private Shared ReadOnly IngredientUnitSuffixes As String() = {"BULKKG", "BULKLTR", "BULKMT", "BULKGM", "BULKLT", "KG", "LTR", "LT", "MT", "GM"}
+
+    Private Shared Function GetUnitFromIngredientCode(ByVal ingredientCode As String) As String
+        If String.IsNullOrWhiteSpace(ingredientCode) Then
+            Return String.Empty
+        End If
+
+        Dim code As String = ingredientCode.Trim().ToUpperInvariant()
+        For Each suffix As String In IngredientUnitSuffixes.OrderByDescending(Function(item) item.Length)
+            If code.EndsWith(suffix, StringComparison.OrdinalIgnoreCase) Then
+                Return suffix
+            End If
+        Next
+
+        Return String.Empty
+    End Function
+
+    Private Shared Function GetRawMaterialCodeFromIngredient(ByVal ingredientCode As String) As String
+        If String.IsNullOrWhiteSpace(ingredientCode) Then
+            Return String.Empty
+        End If
+
+        Dim code As String = ingredientCode.Trim()
+        Dim unitSuffix As String = GetUnitFromIngredientCode(code)
+        If Not String.IsNullOrWhiteSpace(unitSuffix) AndAlso code.Length > unitSuffix.Length Then
+            Return code.Substring(0, code.Length - unitSuffix.Length)
+        End If
+
+        Return code
+    End Function
+
+    Private Shared Function GetApiColumnValue(ByVal row As DataRow, ByVal table As DataTable, ParamArray columnNames As String()) As String
+        For Each columnName As String In columnNames
+            If table.Columns.Contains(columnName) AndAlso Not IsDBNull(row(columnName)) Then
+                Return Convert.ToString(row(columnName)).Trim()
+            End If
+        Next
+
+        Return String.Empty
+    End Function
+
+    Protected Sub ddlRecipe_SelectedIndexChanged(sender As Object, e As EventArgs)
+        Dim recipeNo As String = String.Empty
+        Dim recipeVersion As String = String.Empty
+        ParseSelectedRecipe(recipeNo, recipeVersion)
+        populateGridGrid(recipeNo, recipeVersion)
     End Sub
 End Class
