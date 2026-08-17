@@ -3,26 +3,6 @@
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
-    <style type="text/css">
-        .product-search-group {
-            display: flex;
-            align-items: stretch;
-        }
-
-        .product-search-group .form-control {
-            border-top-right-radius: 0;
-            border-bottom-right-radius: 0;
-        }
-
-        .product-search-group .product-reset-btn {
-            border-top-left-radius: 0;
-            border-bottom-left-radius: 0;
-            min-width: 36px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-    </style>
     <script type="text/javascript">
         function onProductSelected(sender, e) {
             var value = e.get_value();
@@ -55,6 +35,15 @@
     <asp:UpdatePanel ID="UpdatePanel" runat="server">
         <ContentTemplate>
             <div class="card">
+                <div class="mst-panel-header">
+                    <div class="mst-panel-header-left">
+                        <span class="mst-panel-icon"><i class="fas fa-search"></i></span>
+                        <div>
+                            <h5 class="mst-panel-title">Search Brand</h5>
+                            <p class="mst-panel-subtitle">Search a brand name to show it to the master list</p>
+                        </div>
+                    </div>
+                </div>
                 <div class="card-body">
                     <asp:Label ID="lblErrorMessage" CssClass="errormsg" Visible="true" runat="server"></asp:Label>
                     <div class="row">
@@ -70,7 +59,7 @@
                                 <asp:DropDownList ID="ddlRawMat" ClientIDMode="Static" CssClass="form-control select2" TabIndex="4" runat="server"></asp:DropDownList>
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-4">
                             <div class="form-group">
                                 <label class="form-control-label">Product:</label>
                                 <div class="input-group product-search-group">
@@ -87,20 +76,33 @@
                                     EnableCaching="false"
                                     CompletionSetCount="20"
                                     FirstRowSelected="true"
-                                    OnClientItemSelected="onProductSelected">
+                                    OnClientItemSelected="onProductSelected"
+                                    CompletionListCssClass="vmsAutoComplete"
+                                    CompletionListItemCssClass="vmsAutoCompleteItem"
+                                    CompletionListHighlightedItemCssClass="vmsAutoCompleteItemHighlight">
                                 </asp:AutoCompleteExtender>
                             </div>
                         </div>
                         <div class="col-md-2 form-btn-mt">
                             <div class="form-group">
                                 <asp:LinkButton CssClass="btn btn-primary btn-sm" ID="imgbtnSearch" runat="server" ClientIDMode="Static">Search</asp:LinkButton>
-                                <asp:LinkButton ID="ImgbtnAdd" runat="server" CssClass="btn btn-success btn-sm" ClientIDMode="Static">Add</asp:LinkButton>                                
+                                <asp:LinkButton ID="ImgbtnAdd" runat="server" CssClass="btn btn-success btn-sm" ClientIDMode="Static">Add</asp:LinkButton>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+
             <div class="card" runat="server" id="tr1">
+                <div class="mst-panel-header">
+                    <div class="mst-panel-header-left">
+                        <span class="mst-panel-icon"><i class="fas fa-list"></i></span>
+                        <div>
+                            <h5 class="mst-panel-title">Brand List</h5>
+                            <p class="mst-panel-subtitle">All brands currently available for product mapping</p>
+                        </div>
+                    </div>
+                </div>
                 <div class="card-body">
                     <div class="table-responsive" style="overflow-y: auto; max-height: calc(100vh - 290px);">
                         <asp:UpdatePanel ID="UpdatePanel1" runat="server">
@@ -147,11 +149,11 @@
                                             <ControlStyle Height="90%" Width="90%"></ControlStyle>
                                             <HeaderStyle HorizontalAlign="Center" />
                                             <ItemStyle HorizontalAlign="Center" Width="6%" />
-                                        </asp:TemplateField>                                            
+                                        </asp:TemplateField>
                                         <asp:TemplateField HeaderText="Action">
                                             <ItemTemplate>
                                                 <div style="display: flex; align-items: center; justify-content: center">
-                                                    <asp:LinkButton ID="btnView" runat="server" Visible="true" Text="View" CommandName="View" CommandArgument='<%# Container.DataItemIndex %>' ToolTip="View"><i class="fa fa-eye"></i></asp:LinkButton>
+                                                    <asp:LinkButton ID="btnView" runat="server" Visible="true" Text="View" CommandName="View" CommandArgument='<%# Container.DataItemIndex %>' ToolTip="View" CssClass="text-primary"><i class="fa fa-eye"></i></asp:LinkButton>
                                                 </div>
                                             </ItemTemplate>
                                             <ControlStyle></ControlStyle>

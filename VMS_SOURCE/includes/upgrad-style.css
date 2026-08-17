@@ -80,7 +80,7 @@ body {
     background: -webkit-linear-gradient(top,rgba(255, 255, 255, 1) 0%, rgba(245, 248, 252, 1) 100%);
     background: linear-gradient(180deg,rgba(255, 255, 255, 1) 0%, rgba(245, 248, 252, 1) 100%);
     border: 1px solid #e4eaf2;
-    border-radius: 10px;
+    border-radius: 16px;
     box-shadow: 0px 1px 2px rgba(16, 56, 90, 0.05), 0px 6px 18px rgba(16, 56, 90, 0.06);
     margin: 0px 0px 12px 0px;
     padding: 8px 12px 8px 22px;
@@ -268,7 +268,7 @@ body {
 .card {
     box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.15);
     margin-bottom: 0.8rem;
-    border-radius: 10px;
+    border-radius: 16px;
 }
 
 .card-body {
@@ -332,7 +332,7 @@ body {
 }
 
     .upgradDataGrid .gridBtn {
-        padding: 3px 8px !important;
+        padding: 3px 4px !important;
         font-size: 11px;
         line-height: 13px;
         text-transform: uppercase;
@@ -341,6 +341,7 @@ body {
         display: inline-block;
         width: auto !important;
         margin: 1px;
+        border-radius: 4px !important;
     }
 
     .upgradDataGrid.gvVendorDtlsGrid tr:first-child {
@@ -405,6 +406,7 @@ body {
             .upgradDataGrid tr td .form-control {
                 padding: .3rem .75rem;
                 height: calc(1.5em + .7rem + 0px);
+                border-radius: 4px;
             }
 
         .upgradDataGrid tr th, .upgradDataGrid tr td {
@@ -414,8 +416,9 @@ body {
         }
 
             .upgradDataGrid tr th a i, .upgradDataGrid tr td a i {
-                font-size: 15px;
+                font-size: 14px;
                 margin: 0px 2px;
+                font-weight: 600;
             }
 
     .upgradDataGrid .tlrowdark {
@@ -471,6 +474,11 @@ body {
             margin: 0px;
             padding: 0px;
         }
+
+.input-group-append .btn {
+    border-radius: 0px 16px 16px 0px !important;
+    border-color: #bfc9d3;
+}
 
 .mandatory {
     font-size: 13px;
@@ -1475,6 +1483,7 @@ body {
 /*=================================================*/
 .select2-container .select2-selection--single {
     height: 33px;
+    border-radius: 13px;
 }
 
 .select2-container--default .select2-selection--single .select2-selection__arrow {
@@ -2163,33 +2172,155 @@ body {
         color: #d91b56;
     }
 
-.autoCompleteFlyout {
-    background-color: #123B5B;
-    max-height: 200px;
+/* ==========================================================================
+   AutoCompleteExtender suggestion list - modern touch UI
+   --------------------------------------------------------------------------
+   Single reusable design for every asp:AutoCompleteExtender in the project.
+   Wire an extender up with:
+       CompletionListCssClass="vmsAutoComplete"
+       CompletionListItemCssClass="vmsAutoCompleteItem"
+       CompletionListHighlightedItemCssClass="vmsAutoCompleteItemHighlight"
+
+   The legacy class names (autoCompleteFlyout / autoCompleteFlyoutItem /
+   autoCompleteFlyoutHighLightedItem / raw-material-autocomplete) are kept as
+   aliases in the same rules, so older markup keeps the identical look.
+
+   NOTE: the toolkit swaps the item class for the highlighted class instead of
+   adding it, so the highlighted rule repeats the whole item box model.
+   ========================================================================== */
+.vmsAutoComplete,
+.autoCompleteFlyout,
+.raw-material-autocomplete {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 4px;
+    list-style: none;
+    background: #fff;
+    border: 1px solid #dbe4ee;
+    border-radius: 12px;
+    box-shadow: 0px 1px 2px rgba(16, 56, 90, 0.06), 0px 10px 26px rgba(16, 56, 90, 0.16);
+    min-width: 200px;
+    max-width: calc(100vw - 16px);
+    max-height: 264px;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 13px;
+    line-height: 17px;
+    color: #24425c;
+    text-align: left;
+    cursor: default;
+    z-index: 100000 !important;
 }
 
-.autoCompleteFlyoutItem {
-    color: #ffffff;
+    /* Flipped above the textbox (set by Scripts/vmsAutoCompleteUI.js) */
+    .vmsAutoComplete.vmsAutoCompleteAbove,
+    .autoCompleteFlyout.vmsAutoCompleteAbove,
+    .raw-material-autocomplete.vmsAutoCompleteAbove {
+        box-shadow: 0px -1px 2px rgba(16, 56, 90, 0.06), 0px -10px 26px rgba(16, 56, 90, 0.16);
+    }
+
+    .vmsAutoComplete > li,
+    .autoCompleteFlyout > li,
+    .raw-material-autocomplete > li {
+        list-style: none;
+    }
+
+/* Suggestion row - compact on desktop, finger sized on touch */
+.vmsAutoCompleteItem,
+.vmsAutoCompleteItemHighlight,
+.autoCompleteFlyoutItem,
+.autoCompleteFlyoutHighLightedItem,
+.autocomplete_highlightedListItem {
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    margin: 1px 0;
+    padding: 8px 11px;
+    min-height: 40px;
     list-style: none;
-    cursor: pointer;
-    padding: 5px;
-    border-bottom: 1px solid #3e75a0;
-    font-size: 12px;
-    line-height: 14px;
+    background: transparent;
+    border: 0;
+    border-radius: 9px;
+    color: #24425c;
+    font-size: 13px;
+    line-height: 17px;
     font-weight: 400;
+    white-space: normal;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    transition: background-color .15s ease, color .15s ease, box-shadow .15s ease;
 }
 
-.autoCompleteFlyoutHighLightedItem {
-    color: #ffffff;
-    list-style: none;
-    cursor: pointer;
-    padding: 5px;
-    background-color: #2b5d85;
-    border-bottom: 1px solid #3e75a0;
-    font-size: 12px;
-    line-height: 14px;
-    font-weight: 400;
+/* Keyboard selected / hovered / touched row */
+.vmsAutoCompleteItemHighlight,
+.autoCompleteFlyoutHighLightedItem,
+.autocomplete_highlightedListItem,
+.vmsAutoCompleteItem:hover,
+.autoCompleteFlyoutItem:hover,
+.vmsAutoCompleteItem:focus,
+.autoCompleteFlyoutItem:focus {
+    background: #eaf1ff;
+    color: #10385a;
+    box-shadow: inset 3px 0 0 0 #1b5a8c;
+    outline: none;
 }
+
+.vmsAutoCompleteItem:active,
+.vmsAutoCompleteItemHighlight:active,
+.autoCompleteFlyoutItem:active,
+.autoCompleteFlyoutHighLightedItem:active {
+    background: #dce7fb;
+}
+
+@media (max-width: 991.98px) {
+    .vmsAutoComplete,
+    .autoCompleteFlyout,
+    .raw-material-autocomplete {
+        max-height: 248px;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .vmsAutoComplete,
+    .autoCompleteFlyout,
+    .raw-material-autocomplete {
+        max-width: calc(100vw - 12px);
+        max-height: 236px;
+        font-size: 13.5px;
+        line-height: 18px;
+    }
+
+    .vmsAutoCompleteItem,
+    .vmsAutoCompleteItemHighlight,
+    .autoCompleteFlyoutItem,
+    .autoCompleteFlyoutHighLightedItem {
+        padding: 10px 12px;
+        min-height: 44px;
+        font-size: 13.5px;
+        line-height: 18px;
+    }
+}
+
+/* Touch devices of any width get the larger tap target */
+@media (hover: none) and (pointer: coarse) {
+    .vmsAutoCompleteItem,
+    .vmsAutoCompleteItemHighlight,
+    .autoCompleteFlyoutItem,
+    .autoCompleteFlyoutHighLightedItem {
+        min-height: 44px;
+    }
+}
+/* End AutoCompleteExtender suggestion list */
 
 .Progressoverlay {
     position: fixed;
@@ -2849,8 +2980,8 @@ body {
 .mst-panel-icon {
     width: 40px;
     height: 40px;
-    border-radius:12px;
-    background:#eaf1ff;
+    border-radius: 12px;
+    background: #eaf1ff;
     color: #10385a;
     display: flex;
     align-items: center;
@@ -2867,9 +2998,28 @@ body {
 
 .mst-panel-subtitle {
     font-size: 12.5px;
-    color:#6b7b8f;
+    color: #6b7b8f;
     margin: 3px 0 0 0;
 }
+
+.product-search-group {
+    display: flex;
+    align-items: stretch;
+}
+
+    .product-search-group .form-control {
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+    }
+
+    .product-search-group .product-reset-btn {
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+        min-width: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
 /* End User Help / Maintenance Page */
 
 /* Responsive */

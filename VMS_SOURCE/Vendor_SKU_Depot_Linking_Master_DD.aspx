@@ -91,9 +91,9 @@
                                     ServiceMethod="SKUSearch"
                                     MinimumPrefixLength="3"
                                     EnableCaching="false"
-                                    CompletionListCssClass="autoCompleteFlyout"
-                                    CompletionListItemCssClass="autoCompleteFlyoutItem"
-                                    CompletionListHighlightedItemCssClass="autoCompleteFlyoutHighLightedItem"
+                                    CompletionListCssClass="vmsAutoComplete"
+                                    CompletionListItemCssClass="vmsAutoCompleteItem"
+                                    CompletionListHighlightedItemCssClass="vmsAutoCompleteItemHighlight"
                                     OnClientItemSelected="aceSelected2"
                                     OnClientPopulated="HideLoading1"
                                     OnClientPopulating="ShowLoading1"
@@ -198,8 +198,8 @@
                                         <asp:TextBox ID="lblftrskudes" CssClass="form-control" runat="server" AutoPostBack="true" OnTextChanged="txtftrSKUdsec_OnTextChanged" Enabled="true"></asp:TextBox>
                                         <asp:AutoCompleteExtender ID="AutoCompleteExtender1" runat="server" TargetControlID="lblftrskudes"
                                             ServiceMethod="SKUSearch" MinimumPrefixLength="3" EnableCaching="false"
-                                            CompletionListCssClass="autoCompleteFlyout" CompletionListItemCssClass="autoCompleteFlyoutItem"
-                                            CompletionListHighlightedItemCssClass="autoCompleteFlyoutHighLightedItem" OnClientItemSelected="aceSelected"
+                                            CompletionListCssClass="vmsAutoComplete" CompletionListItemCssClass="vmsAutoCompleteItem"
+                                            CompletionListHighlightedItemCssClass="vmsAutoCompleteItemHighlight" OnClientItemSelected="aceSelected"
                                             OnClientPopulated="HideLoading" BehaviorID="AutoCompleteEx" CompletionListElementID="Panel1"
                                             OnClientPopulating="ShowLoading" FirstRowSelected="true" OnClientHidden="HideLoading"
                                             OnClientHiding="HideLoading">
