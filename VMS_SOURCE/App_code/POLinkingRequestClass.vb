@@ -90,7 +90,7 @@ Public Class POLinkingRequestClass
 #Region "Kazi"
     Public Function GetDispatchList(ByVal rmVendorCode As String, ByVal dispatch_status As String) As DataSet
         Try
-            rmVendorCode = "RM001"
+            'rmVendorCode = "RM001"
             Dim DS As DataSet
             Dim sqlParams(1) As SqlParameter
 
