@@ -125,5 +125,126 @@
             });
         });
     </script>
+    <!-- Left menu behaviour: one main menu open at a time + active (selected) menu highlight -->
+    <script type="text/javascript">
+        (function ($) {
+            if (!$) { return; }
+
+            var SIDEBAR = '#sidebar';
+            var MENU = '#sidebar ul.collapse';
+            var STORE_KEY = 'vmsSidebarOpenMenu';
+
+            // File name part of a url, used to match a menu link with the current page
+            function pageOf(url) {
+                if (!url) { return ''; }
+                var s = String(url).split('#')[0].split('?')[0];
+                return s.substring(s.lastIndexOf('/') + 1).toLowerCase();
+            }
+
+            function store(id) {
+                try { window.sessionStorage.setItem(STORE_KEY, id || ''); } catch (e) { }
+            }
+
+            function stored() {
+                try { return window.sessionStorage.getItem(STORE_KEY) || ''; } catch (e) { return ''; }
+            }
+
+            // Expand a submenu without animation (page load only)
+            function expand($ul) {
+                if (!$ul || !$ul.length) { return; }
+                $ul.addClass('show');
+                $ul.prev('a.dropdown-toggle').attr('aria-expanded', 'true').addClass('active');
+            }
+
+            // Collapse every other main menu
+            function closeOthers(el) {
+                $(SIDEBAR).find('ul.collapse.show').each(function () {
+                    if (this !== el) { $(this).collapse('hide'); }
+                });
+            }
+
+            // Find the menu entry of the current page, expand + highlight it
+            function applyState() {
+                var $sidebar = $(SIDEBAR);
+                if (!$sidebar.length) { return; }
+
+                var current = pageOf(window.location.pathname);
+                var $match = $();
+
+                if (current) {
+                    $sidebar.find('ul.components a[href]').each(function () {
+                        var $a = $(this);
+                        if ($a.hasClass('dropdown-toggle')) { return; }
+                        if (pageOf($a.attr('href')) === current) {
+                            $match = $a;
+                            return false;
+                        }
+                    });
+                }
+
+                if ($match.length) {
+                    $match.addClass('active');
+                    var $parent = $match.closest('ul.collapse');
+                    expand($parent);
+                    store($parent.length ? ($parent.attr('id') || '') : '');
+                    return;
+                }
+
+                // Page is not a menu entry itself (detail / child screen):
+                // keep the main menu the user came from expanded.
+                var last = stored();
+                if (last) {
+                    expand($sidebar.find('ul.collapse').filter(function () { return this.id === last; }));
+                }
+            }
+
+            var $doc = $(document);
+
+            // Expanding a main menu collapses the others and makes it the active one
+            $doc.on('show.bs.collapse', MENU, function () {
+                closeOthers(this);
+                $(SIDEBAR).find('a.dropdown-toggle').removeClass('active');
+                $(this).prev('a.dropdown-toggle').addClass('active');
+                store($(this).attr('id') || '');
+            });
+
+            // Safety net for rapid clicks: a menu that finished opening late is closed here
+            $doc.on('shown.bs.collapse', MENU, function () {
+                closeOthers(this);
+            });
+
+            $doc.on('hide.bs.collapse', MENU, function () {
+                $(this).prev('a.dropdown-toggle').removeClass('active');
+            });
+
+            // Clicking a page link keeps its main menu expanded + active
+            $doc.on('click', '#sidebar ul.components a', function () {
+                var $a = $(this);
+                if ($a.hasClass('dropdown-toggle')) { return; }
+
+                var $sidebar = $(SIDEBAR);
+                $sidebar.find('ul li a').not('.dropdown-toggle').not($a).removeClass('active');
+                $a.addClass('active');
+
+                var $parent = $a.closest('ul.collapse');
+                store($parent.length ? ($parent.attr('id') || '') : '');
+                if ($parent.length) {
+                    $sidebar.find('a.dropdown-toggle').removeClass('active');
+                    $parent.prev('a.dropdown-toggle').addClass('active');
+                }
+            });
+
+            $(function () {
+                applyState();
+
+                // Re-apply only if an async postback re-rendered the sidebar
+                if (typeof Sys !== 'undefined' && Sys.WebForms && Sys.WebForms.PageRequestManager) {
+                    Sys.WebForms.PageRequestManager.getInstance().add_endRequest(function () {
+                        if ($(SIDEBAR).find('ul.collapse.show').length === 0) { applyState(); }
+                    });
+                }
+            });
+        })(window.jQuery);
+    </script>
 </body>
 </html>

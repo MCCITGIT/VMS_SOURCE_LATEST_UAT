@@ -69,57 +69,206 @@ body {
     object-fit: contain;
 }
 
+/* ==========================================================================
+   Page header / breadcrumb bar - touch optimised
+   Light surface card with a deep-blue accent bar, 44px minimum tap targets,
+   page title with a supporting subtitle underneath.
+   ========================================================================== */
 .breadcrumbs {
-    /*background: #3F855A;*/
-    background: #10385a;
-    background: -webkit-linear-gradient(90deg,rgba(16, 56, 90, 1) 0%, rgba(255, 255, 255, 1) 100%);
-    background: -moz-linear-gradient(90deg,rgba(16, 56, 90, 1) 0%, rgba(255, 255, 255, 1) 100%);
-    background: linear-gradient(90deg,rgba(16, 56, 90, 1) 0%, rgba(255, 255, 255, 1) 100%);
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr="#10385a", endColorstr="#FFFFFF", GradientType=1 );
-    margin: 0px 0px 8px 0px;
-    padding: 8px 0px 8px 16px;
-    border-radius: 4px;
+    position: relative;
+    background: #fff;
+    background: -webkit-linear-gradient(top,rgba(255, 255, 255, 1) 0%, rgba(245, 248, 252, 1) 100%);
+    background: linear-gradient(180deg,rgba(255, 255, 255, 1) 0%, rgba(245, 248, 252, 1) 100%);
+    border: 1px solid #e4eaf2;
+    border-radius: 10px;
+    box-shadow: 0px 1px 2px rgba(16, 56, 90, 0.05), 0px 6px 18px rgba(16, 56, 90, 0.06);
+    margin: 0px 0px 12px 0px;
+    padding: 8px 12px 8px 22px;
+    min-height: 62px;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
 }
+
+    /* Accent bar */
+    .breadcrumbs::before {
+        content: "";
+        position: absolute;
+        left: 9px;
+        top: 12px;
+        bottom: 12px;
+        width: 4px;
+        border-radius: 4px;
+        background: #1b5a8c;
+        background: linear-gradient(180deg,rgba(27, 90, 140, 1) 0%, rgba(16, 56, 90, 1) 100%);
+    }
 
 .leftFung {
     display: flex;
     align-items: center;
+    flex: 1 1 260px;
+    min-width: 0;
 }
 
 .rightFung {
     display: flex;
     align-items: center;
-    gap: 4px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 8px;
+    color: #48586b;
+    font-size: 12px;
+    line-height: 16px;
 }
 
-.pageTitle {
-    color: #FFF;
-    font-size: 15px;
-    line-height: 17px;
-    margin: 0px;
-    padding: 0px;
+/* Home - touch target */
+.breadcrumbs .leftFung > a {
+    flex: 0 0 auto;
+    min-width: 44px;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 2px;
+    border: 1px solid #dbe6f1;
+    border-radius: 12px;
+    background: #eef4fa;
+    text-decoration: none;
+    -webkit-tap-highlight-color: transparent;
+    transition: background 0.18s ease, box-shadow 0.18s ease, transform 0.12s ease;
 }
+
+    .breadcrumbs .leftFung > a:hover,
+    .breadcrumbs .leftFung > a:focus {
+        background: #dfeaf6;
+        border-color: #c8d9ea;
+        text-decoration: none;
+    }
+
+    .breadcrumbs .leftFung > a:active {
+        transform: scale(0.94);
+        background: #d3e2f1;
+    }
+
+    .breadcrumbs .leftFung > a:focus-visible {
+        outline: 2px solid #1b5a8c;
+        outline-offset: 2px;
+    }
 
 .breadcrumbs .fa-home {
-    font-size: 15px;
-    color: #daeeff;
-    line-height: 15px;
+    font-size: 17px;
+    color: #10385a;
+    line-height: 1;
 }
 
 .diveider {
-    margin: 0px 10px;
+    flex: 0 0 auto;
+    margin: 0px 8px;
     padding: 0px;
-    color: #cbffdf;
-    font-size: 15px;
-    line-height: 17px;
+    color: #c3cfdd;
+    font-size: 16px;
+    font-weight: 300;
+    line-height: 1;
+}
+
+/* Title + subtitle stack */
+.pageTitleWrap {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-width: 0;
+}
+
+    /* Pages without a home link (help / FAQ / contact) */
+    .leftFung > .pageTitleWrap:first-child {
+        margin-left: 6px;
+    }
+
+.pageTitle {
+    color: #10385a;
+    font-size: 16px;
+    line-height: 20px;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+    margin: 0px;
+    padding: 0px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.pageSubTitle {
+    color: #6b7b8f;
+    font-size: 11.5px;
+    line-height: 15px;
+    font-weight: 400;
+    letter-spacing: 0.2px;
+    margin: 1px 0px 0px 0px;
+    padding: 0px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Action buttons in the bar - touch sized */
+.breadcrumbs .rightFung .btn {
+    min-height: 40px;
+    padding: 10px 18px;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 18px;
+    letter-spacing: 0.3px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    -webkit-tap-highlight-color: transparent;
+    transition: box-shadow 0.18s ease, transform 0.12s ease, filter 0.18s ease;
+}
+
+    .breadcrumbs .rightFung .btn:hover {
+        filter: brightness(1.06);
+    }
+
+    .breadcrumbs .rightFung .btn:active {
+        transform: scale(0.96);
+    }
+
+@media (max-width: 767px) {
+    .breadcrumbs {
+        padding: 8px 10px 8px 20px;
+        min-height: 0px;
+    }
+
+    .leftFung {
+        flex: 1 1 100%;
+    }
+
+    .pageTitle {
+        font-size: 14px;
+        line-height: 18px;
+        white-space: normal;
+    }
+
+    .pageSubTitle {
+        white-space: normal;
+    }
+
+    .rightFung {
+        flex: 1 1 100%;
+    }
+
+        .breadcrumbs .rightFung .btn {
+            min-height: 44px;
+        }
 }
 
 .card {
     box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.15);
     margin-bottom: 0.8rem;
+    border-radius:10px;
 }
 
 .card-body {
@@ -206,15 +355,18 @@ body {
         }
 
     .upgradDataGrid tr.headerGrid {
-        /*background: #3F855A;*/
-        background: #10395a;
+        background: #597d99;
+        /*background: #10395a;
         background: -webkit-linear-gradient(180deg,rgba(29, 95, 150, 1) 0%, rgba(16, 57, 90, 1) 100%);
         background: -moz-linear-gradient(180deg,rgba(29, 95, 150, 1) 0%, rgba(16, 57, 90, 1) 100%);
         background: linear-gradient(180deg,rgba(29, 95, 150, 1) 0%, rgba(16, 57, 90, 1) 100%);
-        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr="#10395a", endColorstr="#1d5f96", GradientType=0 );
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr="#10395a", endColorstr="#1d5f96", GradientType=0 );*/
         position: sticky;
         top: 0;
         z-index: 2;
+    }
+    .upgradDataGrid tr.headerGrid:hover {
+        background: #597d99;
     }
 
         .upgradDataGrid tr.headerGrid th {
@@ -236,6 +388,11 @@ body {
             font-weight: normal;
             padding: 3px 5px;
         }
+
+            .upgradDataGrid tr td .form-control {
+                padding: .3rem .75rem;
+                height: calc(1.5em + .7rem + 0px);
+            }
 
         .upgradDataGrid tr th, .upgradDataGrid tr td {
             font-size: 13px;
@@ -722,11 +879,11 @@ body {
 .sideNavBarView {
     min-width: 250px;
     max-width: 250px;
-    background: #123B5B;
-    background: -webkit-linear-gradient(90deg,rgba(18, 59, 91, 1) 0%, rgba(13, 51, 87, 1) 100%);
+    background: #375973;
+    /*background: -webkit-linear-gradient(90deg,rgba(18, 59, 91, 1) 0%, rgba(13, 51, 87, 1) 100%);
     background: -moz-linear-gradient(90deg,rgba(18, 59, 91, 1) 0%, rgba(13, 51, 87, 1) 100%);
     background: linear-gradient(90deg,rgba(18, 59, 91, 1) 0%, rgba(13, 51, 87, 1) 100%);
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr="#123B5B", endColorstr="#0D3357", GradientType=1 );
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr="#123B5B", endColorstr="#0D3357", GradientType=1 );*/
     color: #fff;
     transition: all 0.3s;
     position: fixed;
@@ -821,6 +978,17 @@ body {
 
     .sideNavBarView ul li a:hover {
         background: #ffffff36;
+    }
+    /* Selected menu / submenu - same look as the existing hover state */
+    .sideNavBarView ul li a.active,
+    .sideNavBarView ul li a.active:hover {
+        background: #ffffff36;
+    }
+
+    .sideNavBarView ul li ul.list-unstyled li a.active {
+        background: #ffffff36;
+        font-weight: 500;
+        box-shadow: inset 3px 0 0 0 #dde7ef;
     }
     /* Dropdown caret */
     .sideNavBarView ul li a .fa {

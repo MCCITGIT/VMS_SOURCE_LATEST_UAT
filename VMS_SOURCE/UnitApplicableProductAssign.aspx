@@ -37,7 +37,10 @@
         <div class="leftFung">
             <a href="Home.aspx" title="Home"><i class="fas fa-home"></i></a>
             <div class="diveider">/</div>
-            <h3 class="pageTitle">Unit Applicable Product Assign (HO)</h3>
+            <div class="pageTitleWrap">
+                <h3 class="pageTitle">Unit Applicable Product Assign (HO)</h3>
+                <p class="pageSubTitle">Assign the products applicable to each unit</p>
+            </div>
         </div>
         <div class="rightFung"></div>
     </div>

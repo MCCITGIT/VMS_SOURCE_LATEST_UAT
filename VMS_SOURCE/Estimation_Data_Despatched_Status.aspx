@@ -25,7 +25,10 @@
         <div class="leftFung">
             <a href="Home.aspx" title="Home"><i class="fas fa-home"></i></a>
             <div class="diveider">/</div>
-            <h3 class="pageTitle">SKU Wise Despatch Status</h3>
+            <div class="pageTitleWrap">
+                <h3 class="pageTitle">SKU Wise Despatch Status</h3>
+                <p class="pageSubTitle">Despatch status against estimates, SKU wise</p>
+            </div>
         </div>
         <div class="rightFung"></div>
     </div>

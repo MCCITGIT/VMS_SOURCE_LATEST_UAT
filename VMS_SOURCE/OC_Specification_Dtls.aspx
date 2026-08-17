@@ -43,7 +43,10 @@
         <div class="leftFung">
             <a href="Home.aspx" title="Home"><i class="fas fa-home"></i></a>
             <div class="diveider">/</div>
-            <h3 class="pageTitle">QC SPECIFICATION ADD</h3>
+            <div class="pageTitleWrap">
+                <h3 class="pageTitle">QC SPECIFICATION ADD</h3>
+                <p class="pageSubTitle">Define quality control specification parameters</p>
+            </div>
         </div>
         <div class="rightFung"></div>
     </div>

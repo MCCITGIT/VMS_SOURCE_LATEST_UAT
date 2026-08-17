@@ -31,7 +31,10 @@
         <div class="leftFung">
             <a href="Home.aspx" title="Home"><i class="fas fa-home"></i></a>
             <div class="diveider">/</div>
-            <h3 class="pageTitle">Production Vendor Master</h3>
+            <div class="pageTitleWrap">
+                <h3 class="pageTitle">Production Vendor Master</h3>
+                <p class="pageSubTitle">Browse and manage production vendors</p>
+            </div>
         </div>
         <div class="rightFung">
             <asp:LinkButton ID="ImgbtnAdd" runat="server" class="btn btn-success btn-sm" OnClick="ImgbtnAdd_Click">Add</asp:LinkButton>

@@ -12,7 +12,10 @@
         <div class="leftFung">
             <a href="Home.aspx" title="Home"><i class="fas fa-home"></i></a>
             <div class="diveider">/</div>
-            <h3 class="pageTitle">VMS Dashboard</h3>
+            <div class="pageTitleWrap">
+                <h3 class="pageTitle">VMS Dashboard</h3>
+                <p class="pageSubTitle">Key despatch and indent indicators at a glance</p>
+            </div>
         </div>
         <div class="rightFung">
             AS ON:

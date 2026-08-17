@@ -139,14 +139,15 @@ function PopupWindow_showPopup(anchorname) {
 		}
 	if (this.divName != null) {
 		// Show the DIV object
+		// Unitless lengths are ignored in standards mode, so "px" is required here.
 		if (this.use_gebi) {
-			document.getElementById(this.divName).style.left = this.x;
-			document.getElementById(this.divName).style.top = this.y;
+			document.getElementById(this.divName).style.left = this.x + "px";
+			document.getElementById(this.divName).style.top = this.y + "px";
 			document.getElementById(this.divName).style.visibility = "visible";
 			}
 		else if (this.use_css) {
-			document.all[this.divName].style.left = this.x;
-			document.all[this.divName].style.top = this.y;
+			document.all[this.divName].style.left = this.x + "px";
+			document.all[this.divName].style.top = this.y + "px";
 			document.all[this.divName].style.visibility = "visible";
 			}
 		else if (this.use_layers) {

@@ -67,7 +67,10 @@
         <div class="leftFung">
             <a href="Home.aspx" title="Home"><i class="fas fa-home"></i></a>
             <div class="diveider">/</div>
-            <h3 class="pageTitle">Depot Indents PO Download</h3>
+            <div class="pageTitleWrap">
+                <h3 class="pageTitle">Depot Indents PO Download</h3>
+                <p class="pageSubTitle">Download purchase orders against depot indents</p>
+            </div>
         </div>
         <div class="rightFung">
             <asp:Button ID="btnAddNewIndent" runat="server" Text="Add Colorant Indent" Visible="false" CssClass="btn btn-primary btn-sm" />

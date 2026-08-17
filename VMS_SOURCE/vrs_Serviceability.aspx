@@ -12,7 +12,10 @@
         <div class="leftFung">
             <a href="Home.aspx" title="Home"><i class="fas fa-home"></i></a>
             <div class="diveider">/</div>
-            <h3 class="pageTitle">Serviceability</h3>
+            <div class="pageTitleWrap">
+                <h3 class="pageTitle">Serviceability</h3>
+                <p class="pageSubTitle">Vendor serviceability scores used in rating</p>
+            </div>
         </div>
         <div class="rightFung"></div>
     </div>

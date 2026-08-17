@@ -11,7 +11,10 @@
         <div class="leftFung">
             <a href="Home.aspx" title="Home"><i class="fas fa-home"></i></a>
             <div class="diveider">/</div>
-            <h3 class="pageTitle">Vendor Cpmplaints Score</h3>
+            <div class="pageTitleWrap">
+                <h3 class="pageTitle">Vendor Cpmplaints Score</h3>
+                <p class="pageSubTitle">Acknowledge complaint scores raised against vendors</p>
+            </div>
         </div>
         <div class="rightFung"></div>
     </div>

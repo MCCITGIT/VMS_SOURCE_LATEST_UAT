@@ -51,48 +51,44 @@ NOTES:
    anchor tag correctly. Do not do <A></A> with no space.
 */ 
 
+// AnchorPosition_resolve(anchorname)
+//   Accepts an element, an id, or an anchor/element name and returns the element.
+function AnchorPosition_resolve(anchorname) {
+	if (!anchorname) { return null; }
+	if (anchorname.nodeType==1) { return anchorname; }
+	var o=document.getElementById(anchorname);
+	if (o) { return o; }
+	var byName=document.getElementsByName(anchorname);
+	if (byName && byName.length) { return byName[0]; }
+	return null;
+	}
+
 // getAnchorPosition(anchorname)
 //   This function returns an object having .x and .y properties which are the coordinates
 //   of the named anchor, relative to the page.
+//
+//   The original implementation returned offsetLeft/offsetTop, which are relative to the
+//   element's offset parent rather than to the page. Inside nested/positioned containers
+//   (every Bootstrap card and table layout in this application) that produced coordinates
+//   that were far too small, so popups were drawn in the wrong place. Coordinates are now
+//   taken from getBoundingClientRect() plus the current scroll offset, which is the real
+//   page position, with the accumulated-offset walk kept as a fallback.
 function getAnchorPosition(anchorname) {
 	// This function will return an Object with x and y properties
-	var useWindow=false;
 	var coordinates=new Object();
-	var x=0,y=0;
-	// Browser capability sniffing
-	var use_gebi=false, use_css=false, use_layers=false;
-	if (document.getElementById) { use_gebi=true; }
-	else if (document.all) { use_css=true; }
-	else if (document.layers) { use_layers=true; }
-	// Logic to find position
- 	if (use_gebi && document.all) {
-		x=AnchorPosition_getPageOffsetLeft(document.all[anchorname]);
-		y=AnchorPosition_getPageOffsetTop(document.all[anchorname]);
+	coordinates.x=0; coordinates.y=0;
+	var o=AnchorPosition_resolve(anchorname);
+	if (!o) { return coordinates; }
+	if (o.getBoundingClientRect) {
+		var rect=o.getBoundingClientRect();
+		var scrollX=(window.pageXOffset!=null)?window.pageXOffset:(document.documentElement.scrollLeft||document.body.scrollLeft||0);
+		var scrollY=(window.pageYOffset!=null)?window.pageYOffset:(document.documentElement.scrollTop||document.body.scrollTop||0);
+		coordinates.x=rect.left+scrollX;
+		coordinates.y=rect.top+scrollY;
+		return coordinates;
 		}
-	else if (use_gebi) {
-		var o=document.getElementById(anchorname);
-		x=o.offsetLeft; y=o.offsetTop;
-		}
- 	else if (use_css) {
-		x=AnchorPosition_getPageOffsetLeft(document.all[anchorname]);
-		y=AnchorPosition_getPageOffsetTop(document.all[anchorname]);
-		}
-	else if (use_layers) {
-		var found=0;
-		for (var i=0; i<document.anchors.length; i++) {
-			if (document.anchors[i].name==anchorname) { found=1; break; }
-			}
-		if (found==0) {
-			coordinates.x=0; coordinates.y=0; return coordinates;
-			}
-		x=document.anchors[i].x;
-		y=document.anchors[i].y;
-		}
-	else {
-		coordinates.x=0; coordinates.y=0; return coordinates;
-		}
-	coordinates.x=x;
-	coordinates.y=y;
+	coordinates.x=AnchorPosition_getPageOffsetLeft(o);
+	coordinates.y=AnchorPosition_getPageOffsetTop(o);
 	return coordinates;
 	}
 
