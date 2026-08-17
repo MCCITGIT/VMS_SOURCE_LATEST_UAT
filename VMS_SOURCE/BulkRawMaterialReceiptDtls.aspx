@@ -62,6 +62,15 @@
     <asp:UpdatePanel ID="UpdatePanel" runat="server">
         <ContentTemplate>
             <div class="card">
+                <div class="mst-panel-header">
+                    <div class="mst-panel-header-left">
+                        <span class="mst-panel-icon"><i class="fas fa-box-open"></i></span>
+                        <div>
+                            <h5 class="mst-panel-title">Receipt Details</h5>
+                            <p class="mst-panel-subtitle">Record received quantities for this bulk raw material despatch</p>
+                        </div>
+                    </div>
+                </div>
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-4">

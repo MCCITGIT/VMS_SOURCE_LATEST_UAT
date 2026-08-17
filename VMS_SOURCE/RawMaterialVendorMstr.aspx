@@ -37,8 +37,14 @@
     </div>
 
     <div class="card">
-        <div class="card-header">
-            <h6 class="card-title m-0">Vendor Details</h6>
+        <div class="mst-panel-header">
+            <div class="mst-panel-header-left">
+                <span class="mst-panel-icon"><i class="fas fa-truck"></i></span>
+                <div>
+                    <h5 class="mst-panel-title">Vendor Details</h5>
+                    <p class="mst-panel-subtitle">Basic identification for the raw material vendor</p>
+                </div>
+            </div>
         </div>
         <div class="card-body">
             <asp:Label ID="lblConfirmMsg" Visible="true" Style="color: Red; font-size: small; font-weight: bold;" runat="server"></asp:Label>
@@ -69,8 +75,14 @@
     </div>
 
     <div class="card">
-        <div class="card-header">
-            <h6 class="card-title m-0">Address Details</h6>
+        <div class="mst-panel-header">
+            <div class="mst-panel-header-left">
+                <span class="mst-panel-icon"><i class="fas fa-map-marker-alt"></i></span>
+                <div>
+                    <h5 class="mst-panel-title">Address Details</h5>
+                    <p class="mst-panel-subtitle">Registered address of the vendor</p>
+                </div>
+            </div>
         </div>
         <div class="card-body">
             <div class="row">
@@ -103,8 +115,14 @@
     </div>
 
     <div class="card">
-        <div class="card-header">
-            <h6 class="card-title m-0">Others Details</h6>
+        <div class="mst-panel-header">
+            <div class="mst-panel-header-left">
+                <span class="mst-panel-icon"><i class="fas fa-info-circle"></i></span>
+                <div>
+                    <h5 class="mst-panel-title">Other Details</h5>
+                    <p class="mst-panel-subtitle">Contact information and active status</p>
+                </div>
+            </div>
         </div>
         <div class="card-body">
             <div class="row">
