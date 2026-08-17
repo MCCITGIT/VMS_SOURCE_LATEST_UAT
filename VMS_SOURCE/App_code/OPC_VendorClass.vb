@@ -2,6 +2,11 @@
 Imports System.Data.SqlClient
 Imports VMS.DataAccess
 Imports System.Data.SqlTypes
+Imports Newtonsoft.Json
+Imports System.Net
+Imports System.IO
+Imports Newtonsoft.Json.Linq
+Imports System.Threading.Tasks
 
 Public Class OPC_VendorClass
 #Region "product master"
@@ -520,6 +525,38 @@ Public Class OPC_VendorClass
             End If
         End Try
         Return numRowsAffected
+    End Function
+    Public Shared Async Function PostApiWithHeadersToDataSet(ByVal apiUrl As String, ByVal postBody As Object) As Task(Of DataSet)
+        Dim ds As DataSet = New DataSet()
+
+        Try
+            Dim jsonBody As String = JsonConvert.SerializeObject(postBody)
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12
+            Dim httpWReq As HttpWebRequest = CType(WebRequest.Create(apiUrl), HttpWebRequest)
+            httpWReq.Accept = "application/json"
+            httpWReq.Method = "POST"
+            httpWReq.ContentType = "application/json"
+            httpWReq.Headers.Add("Authorization", "Basic " & ConfigurationManager.AppSettings("BerGerWebAPIAuthToken").ToString())
+            Dim encoding = New UTF8Encoding()
+            Dim data = encoding.GetBytes(jsonBody)
+            httpWReq.ContentLength = data.Length
+
+            Using stream = httpWReq.GetRequestStream()
+                stream.Write(data, 0, data.Length)
+            End Using
+
+            Dim httpResponse As HttpWebResponse = CType(httpWReq.GetResponse(), HttpWebResponse)
+            Dim responseJson As String = New StreamReader(httpResponse.GetResponseStream()).ReadToEnd()
+            Dim jObject As JObject = JObject.Parse(responseJson)
+            Dim detailsArray As JArray = CType(jObject("Details"), JArray)
+            Dim table As DataTable = detailsArray.ToObject(Of DataTable)()
+            ds.Tables.Add(table)
+            Return ds
+        Catch ex As Exception
+            Dim exMsg = ex.Message
+        End Try
+
+        Return ds
     End Function
 #End Region
 
