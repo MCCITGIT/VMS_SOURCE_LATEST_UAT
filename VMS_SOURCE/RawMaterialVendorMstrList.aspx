@@ -34,7 +34,7 @@
             <div class="card">
                 <div class="mst-panel-header">
                     <div class="mst-panel-header-left">
-                        <span class="mst-panel-icon"><i class="fas fa-filter"></i></span>
+                        <span class="mst-panel-icon"><i class="fas fa-search"></i></span>
                         <div>
                             <h5 class="mst-panel-title">Search Vendor</h5>
                             <p class="mst-panel-subtitle">Filter raw material vendors by name</p>
@@ -47,13 +47,13 @@
                         <div class="col-md-4">
                             <div class="form-group pb-0">
                                 <label class="form-control-label">Vendor Name:</label>
-                                <asp:DropDownList ID="ddlVendor" ClientIDMode="Static" CssClass="form-control select2" runat="server"
-                                 ></asp:DropDownList>
+                                <asp:DropDownList ID="ddlVendor" ClientIDMode="Static" CssClass="form-control select2" runat="server">
+                                </asp:DropDownList>
                             </div>
                         </div>
                         <div class="col-md-4 form-btn-mt">
                             <div class="form-group pb-0">
-                                <asp:LinkButton ID="imgbtnSearch" runat="server" CssClass="btn btn-primary btn-sm" ClientIDMode="Static" OnClick="imgbtnSearch_Click"><i class="fas fa-search"></i></asp:LinkButton>
+                                <asp:LinkButton ID="imgbtnSearch" runat="server" CssClass="btn btn-primary btn-sm" ClientIDMode="Static" OnClick="imgbtnSearch_Click">Search</asp:LinkButton>
                                 <asp:LinkButton ID="ImgbtnAdd" runat="server" CssClass="btn btn-success btn-sm" ClientIDMode="Static" OnClick="ImgbtnAdd_Click">Add</asp:LinkButton>
                                 <asp:Button ID="btnReset" runat="server" Text="Reset" CssClass="btn btn-warning btn-sm" OnClick="btnReset_Click" />
                             </div>

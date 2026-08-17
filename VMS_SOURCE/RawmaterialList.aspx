@@ -14,6 +14,15 @@
     </div>
 
     <div class="card">
+        <div class="mst-panel-header">
+            <div class="mst-panel-header-left">
+                <span class="mst-panel-icon"><i class="fas fa-plus"></i></span>
+                <div>
+                    <h5 class="mst-panel-title">Add Vendor Raw Material</h5>
+                    <p class="mst-panel-subtitle">Enter a Vendor Raw Material name to add it to the master list</p>
+                </div>
+            </div>
+        </div>
         <div class="card-body">
             <div class="row">
                 <div class="col-md-4">
@@ -103,7 +112,7 @@
                         <asp:TemplateField HeaderText="Action">
                             <ItemTemplate>
                                 <div style="display: flex; align-items: center; justify-content: center">
-                                    <asp:LinkButton ID="btnView" runat="server" Visible="true" Text="View" CommandName="View" CommandArgument='<%# Container.DataItemIndex %>' ToolTip="View"><i class="fa fa-eye"></i></asp:LinkButton>
+                                    <asp:LinkButton ID="btnView" runat="server" Visible="true" Text="View" CommandName="View" CommandArgument='<%# Container.DataItemIndex %>' ToolTip="View" CssClass="text-primary"><i class="fa fa-eye"></i></asp:LinkButton>
                                 </div>
                             </ItemTemplate>
                             <ControlStyle></ControlStyle>

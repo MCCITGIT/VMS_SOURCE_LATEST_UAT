@@ -1,26 +1,26 @@
 ﻿<%@ Page Title="" Language="VB" MasterPageFile="~/MasterPage.master" AutoEventWireup="false" CodeFile="VendorRawMaterialLink.aspx.vb" Inherits="VendorRawMaterialLink" %>
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
-<asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">  
+<asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
     <style type="text/css">
         .product-search-group {
             display: flex;
             align-items: stretch;
         }
 
-        .product-search-group .form-control {
-            border-top-right-radius: 0;
-            border-bottom-right-radius: 0;
-        }
+            .product-search-group .form-control {
+                border-top-right-radius: 0;
+                border-bottom-right-radius: 0;
+            }
 
-        .product-search-group .product-reset-btn {
-            border-top-left-radius: 0;
-            border-bottom-left-radius: 0;
-            min-width: 36px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+            .product-search-group .product-reset-btn {
+                border-top-left-radius: 0;
+                border-bottom-left-radius: 0;
+                min-width: 36px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
     </style>
     <script type="text/javascript" src="Scripts/FunctionValidator.js"></script>
     <script type="text/javascript" src="Scripts/VendorRawMaterialLinking.js?time=<%= DateTime.Now.ToString("yyyy.MM.dd-HH.mm.ss.fff") %>"></script>
@@ -135,7 +135,7 @@
             control.value = numValue.toFixed(2);
         }
     </script>
-    
+
     <div class="breadcrumbs">
         <div class="leftFung">
             <a href="Home.aspx" title="Home"><i class="fas fa-home"></i></a>
@@ -198,7 +198,8 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row">
+
+                    <div class="row form-btn-mt">
                         <div class="col-md-12">
                             <div class="table-responsive">
                                 <asp:GridView ID="gvVendorRawMat" ClientIDMode="Static" runat="server" AutoGenerateColumns="False" CssClass="table table-hover upgradDataGrid"
@@ -236,13 +237,13 @@
                                         </asp:TemplateField>
                                         <asp:TemplateField HeaderText="Action">
                                             <ItemTemplate>
-                                                <asp:LinkButton ID="btnEdit" CommandName="Edit" runat="server" CssClass="btn btn-info btn-sm gridBtn mr-1" ToolTip="Edit"
+                                                <asp:LinkButton ID="btnEdit" CommandName="Edit" runat="server" CssClass="text-info mr-1" ToolTip="Edit"
                                                     Visible='<%# (Not String.IsNullOrWhiteSpace(Convert.ToString(Eval("id")))) %>'><i class="fas fa-edit"></i></asp:LinkButton>
-                                                <asp:LinkButton ID="btnDeleteRow" runat="server" CommandName="DeleteRow" CommandArgument='<%# Container.DataItemIndex %>' CssClass="btn btn-danger btn-sm" ToolTip="Delete" OnClientClick="return confirm('Are you sure you want to delete this row?');"><i class="fas fa-trash"></i></asp:LinkButton>
+                                                <asp:LinkButton ID="btnDeleteRow" runat="server" CommandName="DeleteRow" CommandArgument='<%# Container.DataItemIndex %>' CssClass="text-danger" ToolTip="Delete" OnClientClick="return confirm('Are you sure you want to delete this row?');"><i class="fas fa-trash"></i></asp:LinkButton>
                                             </ItemTemplate>
                                             <EditItemTemplate>
-                                                <asp:LinkButton ID="btnUpdate" CommandName="Update" CssClass="btn btn-success btn-sm gridBtn mr-1" runat="server" ToolTip="Update" OnClientClick="return confirm('Are you sure you want to update this record?');"><i class="fas fa-check"></i></asp:LinkButton>
-                                                <asp:LinkButton ID="btncancel" CommandName="Cancel" CssClass="btn btn-danger btn-sm gridBtn" runat="server" ToolTip="Cancel"><i class="fas fa-times"></i></asp:LinkButton>
+                                                <asp:LinkButton ID="btnUpdate" CommandName="Update" CssClass="text-success mr-1" runat="server" ToolTip="Update" OnClientClick="return confirm('Are you sure you want to update this record?');"><i class="fas fa-check"></i></asp:LinkButton>
+                                                <asp:LinkButton ID="btncancel" CommandName="Cancel" CssClass="text-danger" runat="server" ToolTip="Cancel"><i class="fas fa-times"></i></asp:LinkButton>
                                             </EditItemTemplate>
                                         </asp:TemplateField>
                                     </Columns>
@@ -252,7 +253,7 @@
                     </div>
                     <div class="row">
                         <div class="col-md-12 text-center">
-                            <asp:Button ID="btnSubmit" runat="server" Text="Submit" CssClass="btn btn-primary btn-sm" ClientIDMode="Static" Visible="false"/>
+                            <asp:Button ID="btnSubmit" runat="server" Text="Submit" CssClass="btn btn-primary btn-sm" ClientIDMode="Static" Visible="false" />
                             <asp:Button ID="btnCancel" runat="server" Text="Back" CssClass="btn btn-secondary btn-sm" />
                             <asp:Button ID="btnReset" runat="server" Text="Reset" CssClass="btn btn-warning btn-sm" />
                         </div>

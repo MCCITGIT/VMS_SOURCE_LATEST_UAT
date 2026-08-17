@@ -36,14 +36,14 @@
             <div class="card">
                 <div class="mst-panel-header">
                     <div class="mst-panel-header-left">
-                        <span class="mst-panel-icon"><i class="fas fa-filter"></i></span>
+                        <span class="mst-panel-icon"><i class="fas fa-search"></i></span>
                         <div>
                             <h5 class="mst-panel-title">Search Requisition</h5>
                             <p class="mst-panel-subtitle">Filter raw material requisitions by vendor and status</p>
                         </div>
                     </div>
                 </div>
-                <div class="card-body">                   
+                <div class="card-body">
                     <div class="row">
                         <div class="col-md-3">
                             <div class="form-group pb-0">
@@ -65,7 +65,7 @@
                         </div>
                         <div class="col-md-3 form-btn-mt">
                             <div class="form-group pb-0">
-                                <asp:LinkButton CssClass="btn btn-primary btn-sm" ID="imgbtnSearch" runat="server" ClientIDMode="Static" OnClick="imgbtnSearch_Click"><i class="fas fa-search"></i></asp:LinkButton>
+                                <asp:LinkButton CssClass="btn btn-primary btn-sm" ID="imgbtnSearch" runat="server" ClientIDMode="Static" OnClick="imgbtnSearch_Click">Search</asp:LinkButton>
                                 <asp:LinkButton ID="ImgbtnAdd" runat="server" CssClass="btn btn-success btn-sm" ClientIDMode="Static" OnClick="ImgbtnAdd_Click">Add</asp:LinkButton>
                                 <asp:Button ID="btnReset" runat="server" Text="Reset" CssClass="btn btn-warning btn-sm" OnClick="btnReset_Click" />
                             </div>
@@ -153,7 +153,7 @@
                                 <asp:TemplateField HeaderText="Action">
                                     <ItemTemplate>
                                         <div style="display: flex; align-items: center; justify-content: center">
-                                            <asp:LinkButton ID="btnView" runat="server" Visible="true" Text="View" CommandName="ViewRequisition" CommandArgument='<%# Container.DataItemIndex %>' ToolTip="View"><i class="fa fa-eye"></i></asp:LinkButton>
+                                            <asp:LinkButton ID="btnView" runat="server" Visible="true" Text="View" CommandName="ViewRequisition" CommandArgument='<%# Container.DataItemIndex %>' ToolTip="View" CssClass="text-primary"><i class="fa fa-eye"></i></asp:LinkButton>
                                         </div>
                                     </ItemTemplate>
                                     <HeaderStyle HorizontalAlign="Center" Width="6%" />
@@ -161,14 +161,6 @@
                                 </asp:TemplateField>
                             </Columns>
                         </asp:GridView>
-                        <div class="row mt-2">
-                            <div class="col-md-12 text-center">
-                                <asp:Button ID="btnApprove" runat="server" Text="Approve" CssClass="btn btn-success btn-sm"
-                                    OnClientClick="return validateRawMaterialRequisitionApprove();"
-                                    CausesValidation="false" UseSubmitBehavior="true" />
-                                 <asp:Label ID="lblErrorMessage" ClientIDMode="Static" CssClass="errormsg" Visible="true" runat="server" Style="text-align: left; font-size: 13px; font-weight: bold;" Text=""></asp:Label>
-                            </div>
-                        </div>
                     </ContentTemplate>
                     <Triggers>
                         <asp:AsyncPostBackTrigger ControlID="imgbtnSearch" EventName="Click" />
@@ -177,6 +169,14 @@
                         <asp:AsyncPostBackTrigger ControlID="btnApprove" EventName="Click" />
                     </Triggers>
                 </asp:UpdatePanel>
+            </div>
+            <div class="row mt-2">
+                <div class="col-md-12 text-center">
+                    <asp:Button ID="btnApprove" runat="server" Text="Approve" CssClass="btn btn-success btn-sm"
+                        OnClientClick="return validateRawMaterialRequisitionApprove();"
+                        CausesValidation="false" UseSubmitBehavior="true" />
+                    <asp:Label ID="lblErrorMessage" ClientIDMode="Static" CssClass="errormsg" Visible="true" runat="server" Style="text-align: left; font-size: 13px; font-weight: bold;" Text=""></asp:Label>
+                </div>
             </div>
         </div>
     </div>
