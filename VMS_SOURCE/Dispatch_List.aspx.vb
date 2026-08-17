@@ -15,9 +15,9 @@ Partial Class Dispatch_List
             If Request.QueryString("rmvendor_code") IsNot Nothing Then
                 rmVendorCode = Request.QueryString("rmvendor_code").ToString()
             End If
-            PopulateList(rmVendorCode)
             divVendor.Visible = False
             populateStatus()
+            PopulateList(rmVendorCode)
         End If
     End Sub
 
@@ -84,7 +84,12 @@ Partial Class Dispatch_List
     End Sub
 
     Protected Sub btnSearch_Click(sender As Object, e As EventArgs)
-        PopulateList()
+        Dim rmVendorCode As String = String.Empty
+        If Request.QueryString("rmvendor_code") IsNot Nothing Then
+            rmVendorCode = Request.QueryString("rmvendor_code").ToString()
+        End If
+
+        PopulateList(rmVendorCode)
     End Sub
 
     Protected Sub lbtnDetails_Click(sender As Object, e As EventArgs)
