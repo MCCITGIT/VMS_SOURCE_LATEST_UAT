@@ -535,7 +535,7 @@ Partial Class Dispatch_Details
             'txtDelType.Text.Trim()
 
             dispatchEntity.CreatedUser =
-            "murthy"
+            hdnRawMaterialVendorCode.Value.Trim()
 
 
             '===========================================
