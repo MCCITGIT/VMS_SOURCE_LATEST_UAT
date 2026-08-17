@@ -277,6 +277,20 @@ Public Class OPC_VendorClass
         Return rowsAffected
 
     End Function
+
+    Function GetVendorList(ByVal searchText As String) As DataSet
+        Dim ds As DataSet
+        Dim sqlParams(0) As SqlParameter
+
+        sqlParams(0) = New SqlParameter()
+        sqlParams(0).ParameterName = "@search_key"
+        sqlParams(0).DbType = DbType.String
+        sqlParams(0).Direction = ParameterDirection.Input
+        sqlParams(0).Value = If(Not String.IsNullOrWhiteSpace(searchText), CObj(searchText.Trim()), DBNull.Value)
+
+        ds = DBFactory.GetHelper().ExecuteDataSet("[dbo].[GetVendor_List]", Data.CommandType.StoredProcedure, sqlParams)
+        Return ds
+    End Function
 #End Region
 
 #Region "formulation master"

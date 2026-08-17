@@ -52,7 +52,7 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label class="form-control-label">Vendor Name:</label>
-                                <asp:TextBox ID="txtreqVendor" ClientIDMode="Static" CssClass="form-control" runat="server" ReadOnly="true"></asp:TextBox>
+                                <asp:DropDownList ID="ddlUnit" runat="server" CssClass="form-control select2"></asp:DropDownList>
                             </div>
                         </div>
                         <div class="col-md-4">
