@@ -2,26 +2,7 @@
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
-    <style type="text/css">
-        .product-search-group {
-            display: flex;
-            align-items: stretch;
-        }
 
-            .product-search-group .form-control {
-                border-top-right-radius: 0;
-                border-bottom-right-radius: 0;
-            }
-
-            .product-search-group .product-reset-btn {
-                border-top-left-radius: 0;
-                border-bottom-left-radius: 0;
-                min-width: 36px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-    </style>
     <script type="text/javascript" src="Scripts/FunctionValidator.js"></script>
     <script type="text/javascript" src="Scripts/VendorRawMaterialLinking.js?time=<%= DateTime.Now.ToString("yyyy.MM.dd-HH.mm.ss.fff") %>"></script>
 
@@ -135,6 +116,24 @@
             control.value = numValue.toFixed(2);
         }
     </script>
+    <script type="text/javascript">
+        function onProductSelected(sender, e) {
+            var value = e.get_value();
+            var text = e.get_text();
+            document.getElementById('<%=hdnVendorCode.ClientID%>').value = value;
+            document.getElementById('<%=txtVendorSearch.ClientID%>').value = text + " (" + value + ")";
+            sender.get_element().value = text + " (" + value + ")";
+        }
+
+        function clearProductSelection() {
+            document.getElementById('<%=hdnVendorCode.ClientID%>').value = '';
+        }
+
+        function resetProductField() {
+            document.getElementById('<%=txtVendorSearch.ClientID%>').value = '';
+         document.getElementById('<%=hdnVendorCode.ClientID%>').value = '';
+     }
+    </script>
 
     <div class="breadcrumbs">
         <div class="leftFung">
@@ -162,10 +161,31 @@
                 </div>
                 <div class="card-body">
                     <div class="row">
-                        <div class="col-md-4">
+                        <%--<div class="col-md-4">
                             <div class="form-group">
                                 <label class="form-control-label">Vendor:<span id="Span1" class="mandatory">*</span></label>
                                 <asp:DropDownList ID="ddlVendor" ClientIDMode="Static" CssClass="form-control select2" runat="server" AutoPostBack="true" OnSelectedIndexChanged="ddlVendor_SelectedIndexChanged"></asp:DropDownList>
+                            </div>
+                        </div>--%>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-control-label">Vendor:</label>
+                                <div class="input-group product-search-group">
+                                    <asp:TextBox ID="txtVendorSearch" ClientIDMode="Static" CssClass="form-control" TabIndex="2" runat="server" AutoComplete="Off" Placeholder="Enter Vendor" onkeyup="clearProductSelection();"></asp:TextBox>
+                                    <div class="input-group-append">
+                                        <button type="button" class="btn btn-outline-secondary product-reset-btn" onclick="resetProductField(); return false;" title="Reset SKU"><i class="fas fa-sync-alt fa-xs"></i></button>
+                                    </div>
+                                </div>
+                                <asp:HiddenField ID="hdnVendorCode" ClientIDMode="Static" runat="server" />
+                                <asp:AutoCompleteExtender ID="aceVendorSearch" runat="server"
+                                    TargetControlID="txtVendorSearch"
+                                    ServiceMethod="VendorSearch"
+                                    CompletionInterval="200"
+                                    EnableCaching="false"
+                                    CompletionSetCount="20"
+                                    FirstRowSelected="true"
+                                    OnClientItemSelected="onProductSelected">
+                                </asp:AutoCompleteExtender>
                             </div>
                         </div>
                         <div class="col-md-4">
@@ -255,7 +275,7 @@
                         <div class="col-md-12 text-center">
                             <asp:Button ID="btnSubmit" runat="server" Text="Submit" CssClass="btn btn-primary btn-sm" ClientIDMode="Static" Visible="false" />
                             <asp:Button ID="btnCancel" runat="server" Text="Back" CssClass="btn btn-secondary btn-sm" />
-                            <asp:Button ID="btnReset" runat="server" Text="Reset" CssClass="btn btn-warning btn-sm" />
+
                         </div>
                     </div>
                     <asp:UpdatePanel ID="UpdatePanel5" runat="server">
