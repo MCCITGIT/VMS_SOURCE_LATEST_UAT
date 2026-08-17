@@ -11,12 +11,13 @@ Partial Class Dispatch_List
         Page.MaintainScrollPositionOnPostBack = True
 
         If (Not IsPostBack) Then
-            'VendorCode for querystring. Replace VendorCode with ddlVendor.SelectedValue whereever used
-            'Dim VendorCode As String
-            'populateVendor()
+            Dim rmVendorCode As String = String.Empty
+            If Request.QueryString("rmvendor_code") IsNot Nothing Then
+                rmVendorCode = Request.QueryString("rmvendor_code").ToString()
+            End If
+            PopulateList(rmVendorCode)
             divVendor.Visible = False
             populateStatus()
-            PopulateList()
         End If
     End Sub
 
@@ -61,12 +62,12 @@ Partial Class Dispatch_List
 
     End Sub
 
-    Private Sub PopulateList()
+    Private Sub PopulateList(ByVal rmVendorCode As String)
         Dim obj As POLinkingRequestClass = New POLinkingRequestClass()
         gvDispatchList.DataSource = Nothing
         gvDispatchList.DataBind()
 
-        Dim ds As DataSet = obj.GetDispatchList(ddlVendor.SelectedValue, ddlStatus.SelectedValue)
+        Dim ds As DataSet = obj.GetDispatchList(rmVendorCode, ddlStatus.SelectedValue)
 
         If ds.Tables.Count > 0 AndAlso ds.Tables(0).Rows.Count > 0 Then
             Dim vendorName As String = ds.Tables(0).Rows(0)("rvm_vendor_name").ToString()
