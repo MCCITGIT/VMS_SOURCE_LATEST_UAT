@@ -16,7 +16,7 @@ function validateInputs() {
 
     if (firstErrorControl != "") {
         SetControlFocus(firstErrorControl);
-        errMsg = "<table>" + errMsg + "</table>";
+        errMsg = errMsg;
         document.getElementById("lblErrorMessage").innerHTML = errMsg;
         return false;
     }
