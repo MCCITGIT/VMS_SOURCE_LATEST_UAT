@@ -189,15 +189,12 @@
             <div class="table-responsive">
                 <asp:UpdatePanel ID="UpdatePanel4" runat="server">
                     <ContentTemplate>
-                        <asp:GridView ID="gvIndentSKUList" runat="server" AutoGenerateColumns="False" Width="100%"
-                            BackColor="White" BorderColor="#999999" EmptyDataText="No records found" BorderStyle="None"
-                            BorderWidth="1px" CellPadding="2">
-                            <RowStyle BackColor="#ffffff" Font-Bold="True" Font-Size="8pt" ForeColor="Black"
-                                Font-Names="Verdana" Font-Strikeout="False" />
-                            <SelectedRowStyle BackColor="#f9f9f9" Font-Bold="True" ForeColor="White" />
-                            <AlternatingRowStyle BackColor="#f5f5f5" Font-Bold="True" Font-Size="8pt" ForeColor="Black" />
-                            <HeaderStyle BackColor="#99CCFF" Font-Bold="True" Font-Size="11px" ForeColor="Black"
-                                Height="25px" HorizontalAlign="Center" Font-Names="Verdana" />
+                        <asp:GridView ID="gvIndentSKUList" runat="server" AutoGenerateColumns="False" EmptyDataText="No records found" BorderStyle="None"
+                            BorderWidth="1" CssClass="table table-hover upgradDataGrid">
+                            <RowStyle CssClass="tlrowlight" />
+                            <PagerStyle CssClass="PagerGrid" HorizontalAlign="Right" />
+                            <HeaderStyle CssClass="headerGrid" />
+                            <FooterStyle CssClass="footerGrid" />
                             <Columns>
                                 <asp:TemplateField HeaderText="#" HeaderStyle-HorizontalAlign="Center">
                                     <ItemTemplate>
