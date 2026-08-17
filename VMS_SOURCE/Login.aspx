@@ -3,9 +3,11 @@
 <!doctype html>
 <html lang="en">
 <head runat="server">
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <title>Welcome to Vendor Management System</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>:: Welcome to Vendor Management System ::</title>
+     <link rel="shortcut icon" href="images/favicon.png" type="image/x-icon" />
     <link href="includes/style.css?v=@DateTime.Now.ToString()" rel="stylesheet" type="text/css" />
     <link href="includes/bootstrap.min.css" rel="stylesheet" type="text/css" />
     <link href="includes/upgrad-style.css?v=@DateTime.Now.ToString()" rel="stylesheet" type="text/css" />

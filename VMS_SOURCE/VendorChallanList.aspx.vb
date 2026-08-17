@@ -267,16 +267,16 @@ Partial Class VendorChallanList
 
                     'CType(lb, Label).ForeColor = System.Drawing.Color.Red
                     CType(lb, Label).CssClass = "lblpager"
-                    CType(lb, Label).Width = 20
-                    CType(lb, Label).Height = 15
+                    'CType(lb, Label).Width = 20
+                    'CType(lb, Label).Height = 15
                     'set current pager
 
                 ElseIf (TypeOf (lb) Is LinkButton) Then
 
                     CType(lb, LinkButton).CssClass = "lnkpager"
-                    CType(lb, LinkButton).Width = 20
-                    CType(lb, LinkButton).Height = 15
-                    CType(lb, LinkButton).ForeColor = Drawing.Color.Black
+                    'CType(lb, LinkButton).Width = 20
+                    'CType(lb, LinkButton).Height = 15
+                    'CType(lb, LinkButton).ForeColor = Drawing.Color.Black
                 End If
 
             Next

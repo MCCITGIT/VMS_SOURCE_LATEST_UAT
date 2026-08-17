@@ -20,7 +20,6 @@
         <ContentTemplate>
             <div class="card">
                 <div class="card-body">
-                    <asp:Label ID="lblPwdErrMsg" runat="server"></asp:Label>
                     <div class="row">
                         <div class="col-md-3">
                             <div class="form-group">
@@ -48,6 +47,7 @@
                             </div>
                         </div>
                     </div>
+                    <asp:Label ID="lblPwdErrMsg" runat="server" CssClass="errormsg"></asp:Label>
                     <asp:Label ID="lblErrMsg" CssClass="errormsg" Visible="true" runat="server"></asp:Label>
                     <div id="divErrorMessage"></div>
                 </div>

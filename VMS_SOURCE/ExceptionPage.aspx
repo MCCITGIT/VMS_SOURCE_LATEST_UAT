@@ -20,7 +20,7 @@
         <ContentTemplate>
             <div id="frmException" runat="server" class="excpPageView">
                 <img src="images/exception.png" class="excpImg" alt="Error" />
-                <asp:Label ID="lblErr" runat="server" class="excpTx">fsdfsdf</asp:Label>
+                <asp:Label ID="lblErr" runat="server" class="excpTx">An error has ocurred.Contact Administrator.</asp:Label>
                 <asp:Button ID="btnBack" CssClass="btn btn-secondary btn-sm" runat="server" Text="Back" />
             </div>
         </ContentTemplate>
