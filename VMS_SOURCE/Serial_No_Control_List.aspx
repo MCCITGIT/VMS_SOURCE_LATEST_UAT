@@ -17,7 +17,10 @@
         <div class="leftFung">
             <a href="Home.aspx" title="Home"><i class="fas fa-home"></i></a>
             <div class="diveider">/</div>
-            <h3 class="pageTitle">Serial Number Control</h3>
+            <div class="pageTitleWrap">
+                <h3 class="pageTitle">Serial Number Control</h3>
+                <p class="pageSubTitle">Browse serial number control records</p>
+            </div>
         </div>
         <div class="rightFung">
             <asp:LinkButton ID="ImgbtnAdd" runat="server" CssClass="btn btn-success btn-sm" OnClick="ImgbtnAdd_Click">Add</asp:LinkButton>

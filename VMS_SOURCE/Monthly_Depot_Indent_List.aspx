@@ -12,7 +12,10 @@
         <div class="leftFung">
             <a href="Home.aspx" title="Home"><i class="fas fa-home"></i></a>
             <div class="diveider">/</div>
-            <h3 class="pageTitle">Monthly Indent List</h3>
+            <div class="pageTitleWrap">
+                <h3 class="pageTitle">Monthly Indent List</h3>
+                <p class="pageSubTitle">Depot indents summarised by month</p>
+            </div>
         </div>
         <div class="rightFung"></div>
     </div>

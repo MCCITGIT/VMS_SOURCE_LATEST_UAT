@@ -182,7 +182,10 @@
         <div class="leftFung">
             <a href="Home.aspx" title="Home"><i class="fas fa-home"></i></a>
             <div class="diveider">/</div>
-            <h3 class="pageTitle">Deviations in FG quality</h3>
+            <div class="pageTitleWrap">
+                <h3 class="pageTitle">Deviations in FG quality</h3>
+                <p class="pageSubTitle">Deviation details for finished goods quality</p>
+            </div>
         </div>
         <div class="rightFung"></div>
     </div>

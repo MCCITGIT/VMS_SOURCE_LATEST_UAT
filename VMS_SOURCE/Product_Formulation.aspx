@@ -127,7 +127,10 @@
                 <i class="fas fa-home"></i>
             </a>
             <div class="diveider">/</div>
-            <h3 class="pageTitle">Product Formulation Master</h3>
+            <div class="pageTitleWrap">
+                <h3 class="pageTitle">Product Formulation Master</h3>
+                <p class="pageSubTitle">Define the raw material formulation of a product</p>
+            </div>
         </div>
         <div class="rightFung"></div>
     </div>

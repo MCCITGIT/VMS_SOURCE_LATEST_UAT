@@ -29,7 +29,10 @@
         <div class="leftFung">
             <a href="Home.aspx" title="Home"><i class="fas fa-home"></i></a>
             <div class="diveider">/</div>
-            <h3 class="pageTitle">Despatched Challan Cancellation</h3>
+            <div class="pageTitleWrap">
+                <h3 class="pageTitle">Despatched Challan Cancellation</h3>
+                <p class="pageSubTitle">Request cancellation of a despatched challan</p>
+            </div>
         </div>
         <div class="rightFung"></div>
     </div>

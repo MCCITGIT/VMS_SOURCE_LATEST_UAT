@@ -41,7 +41,10 @@
         <div class="leftFung">
             <a href="Home.aspx" title="Home"><i class="fas fa-home"></i></a>
             <div class="diveider">/</div>
-            <h3 class="pageTitle">Factory Applicable Vendor</h3>
+            <div class="pageTitleWrap">
+                <h3 class="pageTitle">Factory Applicable Vendor</h3>
+                <p class="pageSubTitle">Map vendors applicable to each factory</p>
+            </div>
         </div>
         <div class="rightFung"></div>
     </div>
