@@ -43,18 +43,29 @@
         }
 
         function onProductSelected(sender, e) {
-            // debugger;
+             //debugger;
             var value = e.get_value();
             var text = e.get_text();
 
-            document.getElementById('<%=hdnProductCode.ClientID%>').value = value;
-            document.getElementById('<%=txtProductSearch.ClientID%>').value = text + " (" + value + ")";
-            document.getElementById('<%=hdnProductName.ClientID%>').value = text + " (" + value + ")";
-            // Disable Product textbox after selection
-            document.getElementById('<%=txtProductSearch.ClientID%>').disabled = true;
+            // value = productCode|sku_code
+            var values = value.split('|');
 
-            sender.get_element().value = text + " (" + value + ")";
+            var productCode = values[0];
+            var skuCode = values[1];
+
+            document.getElementById('<%=hdnProductCode.ClientID%>').value = productCode;
+            document.getElementById('<%=txtProductSearch.ClientID%>').value = text + " (" + productCode + ")";
+            document.getElementById('<%=hdnProductName.ClientID%>').value = text + " (" + productCode + ")";
+            document.getElementById('<%=hdnSkucode.ClientID%>').value = skuCode
+            // Disable Product textbox after selection
+            <%--document.getElementById('<%=txtProductSearch.ClientID%>').readOnly = true;--%>
+            
+
+            sender.get_element().value = text + " (" + productCode + ")";
             //__doPostBack('<%=btnLoadShade.UniqueID%>', '');
+            // Trigger ASP.NET TextChanged event
+            __doPostBack('<%= txtProductSearch.UniqueID %>', '');
+           
         }
 
         function clearProductSelection() {
@@ -131,14 +142,14 @@
                     <div class="form-group">
                         <label class="form-control-label">Brand:<span id="Span1" class="mandatory">*</span></label>
                         <asp:DropDownList ID="ddlBrand" ClientIDMode="Static" CssClass="form-control select2" TabIndex="1" runat="server" AutoPostBack="true" OnSelectedIndexChanged="ddlBrand_SelectedIndexChanged"></asp:DropDownList>
-                        <asp:HiddenField ID="hdnId" runat="server" ClientIDMode="Static"/>
+                        <asp:HiddenField ID="hdnId" runat="server" ClientIDMode="Static" />
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="form-group">
                         <label class="form-control-label">Product:<span class="mandatory">*</span></label>
                         <div class="input-group product-search-group">
-                            <asp:TextBox ID="txtProductSearch" ClientIDMode="Static" CssClass="form-control" TabIndex="2" runat="server" AutoComplete="Off" Placeholder="Enter Product" onkeyup="clearProductSelection();">
+                            <asp:TextBox ID="txtProductSearch" ClientIDMode="Static" CssClass="form-control" TabIndex="2" runat="server" AutoComplete="Off" Placeholder="Enter Product" onkeyup="clearProductSelection();" OnTextChanged="txtProductSearch_TextChanged" AutoPostBack="true">
                             </asp:TextBox>
                             <div class="input-group-append">
                                 <button type="button" class="btn btn-outline-secondary product-reset-btn" onclick="resetProductField(); return false;" title="Reset Product">
@@ -148,6 +159,7 @@
                         </div>
                         <asp:HiddenField ID="hdnProductCode" ClientIDMode="Static" runat="server" />
                         <asp:HiddenField ID="hdnProductName" ClientIDMode="Static" runat="server" />
+                        <asp:HiddenField ID="hdnSkucode" runat="server" ClientIDMode="Static" />
                         <asp:AutoCompleteExtender ID="aceProductSearch" runat="server" TargetControlID="txtProductSearch" ServiceMethod="ProductSearch" CompletionInterval="200" EnableCaching="false" CompletionSetCount="20" FirstRowSelected="true" OnClientItemSelected="onProductSelected">
                         </asp:AutoCompleteExtender>
                         <asp:LinkButton ID="btnLoadShade" runat="server" Style="display: none;"></asp:LinkButton>
@@ -190,6 +202,11 @@
                         </asp:TextBox>
                     </div>
                 </div>
+                <div class="col-md-2">
+                    <label class="form-control-label">Recipe:<span id="Span111" class="mandatory">*</span></label>
+                    <asp:DropDownList ID="ddlRecipe" ClientIDMode="Static" CssClass="form-control select2" TabIndex="1" runat="server" AutoPostBack="true" 
+                        OnSelectedIndexChanged="ddlRecipe_SelectedIndexChanged"></asp:DropDownList>
+                </div>
                 <div class="col-md-2 form-btn-mt">
                     <div class="form-group">
                         <asp:Button ID="btnAdd" runat="server" Text="Add" CssClass="btn btn-success btn-sm" OnClick="btnAdd_Click" />
@@ -200,7 +217,7 @@
                 <div class="col-md-12">
                     <div class="table-responsive">
                         <asp:GridView ID="gvVendorRawMat" ClientIDMode="Static" runat="server" AutoGenerateColumns="False" CssClass="table table-hover upgradDataGrid"
-                            EmptyDataText="No records added." GridLines="both" ShowFooter="true">
+                            EmptyDataText="No records added." GridLines="both" ShowFooter="false">
                             <RowStyle CssClass="tlrowlight" />
                             <HeaderStyle CssClass="headerGrid" />
                             <Columns>
@@ -229,7 +246,7 @@
                                         <asp:Label ID="lblRatio" runat="server" Text='<%# Bind("ratio") %>'></asp:Label>
                                     </ItemTemplate>
                                     <FooterTemplate>
-                                        <asp:Label ID="lblRatioTotal" runat="server" ClientIDMode="Static" Text="0.00%"></asp:Label>
+                                        <asp:Label ID="lblRatioTotal" runat="server"></asp:Label>
                                         <br />
                                         <asp:Label ID="lblRatioStatus" runat="server" ClientIDMode="Static" Text="Within 100%"></asp:Label>
                                     </FooterTemplate>
@@ -262,7 +279,7 @@
                         <div class="col-md-12 text-center">
                             <asp:Button ID="btnSubmit" runat="server" Text="Submit" CssClass="btn btn-primary btn-sm" ClientIDMode="Static" Visible="false"
                                 OnClientClick="return confirm('Are you sure you want to submit this record?');" />
-                            <asp:Button ID="btnCancel" runat="server" Text="Back" CssClass="btn btn-secondary btn-sm" OnClick="btnCancel_Click1"/>
+                            <asp:Button ID="btnCancel" runat="server" Text="Back" CssClass="btn btn-secondary btn-sm" OnClick="btnCancel_Click1" />
                         </div>
                     </div>
                 </div>

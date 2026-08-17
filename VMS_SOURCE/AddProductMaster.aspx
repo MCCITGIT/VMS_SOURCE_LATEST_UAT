@@ -24,6 +24,11 @@
     </script>
     <script type="text/javascript" src="Scripts/FunctionValidator.js"></script>
     <script type="text/javascript" src="Scripts/ValidateAddUpdate_ProductMaster.js?time=<%= DateTime.Now.ToString("yyyy.MM.dd-HH.mm.ss.fff") %>"></script>
+    <style>
+        .errormsg {
+            font-size: 13px;
+        }
+    </style>
     <div class="breadcrumbs">
         <div class="leftFung">
             <a href="Home.aspx" title="Home"><i class="fas fa-home"></i></a>
@@ -53,7 +58,7 @@
             </div>
             <asp:UpdatePanel ID="UpdatePanel5" runat="server">
                 <ContentTemplate>
-                    <asp:Label ID="lblErrorMessage" ClientIDMode="Static" CssClass="errormsg" Visible="true" runat="server" Style="text-align: left; font-size: 13px; font-weight: bold;" Text=""></asp:Label>
+                    <asp:Label ID="lblErrorMessage" ClientIDMode="Static" Visible="true" runat="server" Style="text-align: left; font-size: 10px; font-weight: bold;color:red" Text=""></asp:Label>
                 </ContentTemplate>
             </asp:UpdatePanel>
 

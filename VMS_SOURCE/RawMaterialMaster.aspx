@@ -22,6 +22,40 @@
                 align-items: center;
                 justify-content: center;
             }
+        /* AutoComplete dropdown container */
+        .raw-material-autocomplete {
+            max-height: 250px;
+            overflow-y: auto;
+            overflow-x: hidden;
+            background: #fff;
+            border: 1px solid #ced4da;
+            border-radius: 0 0 5px 5px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+            z-index: 99999 !important;
+            width: auto !important;
+        }
+
+            /* Individual autocomplete item */
+            .raw-material-autocomplete div {
+                padding: 9px 12px;
+                font-size: 14px;
+                color: #343a40;
+                cursor: pointer;
+                border-bottom: 1px solid #f1f1f1;
+                background: #fff;
+            }
+
+                /* Hover / selected item */
+                .raw-material-autocomplete div:hover,
+                .raw-material-autocomplete .autocomplete_highlightedListItem {
+                    background-color: #f0f6ff !important;
+                    color: #007bff !important;
+                }
+
+                /* Last item */
+                .raw-material-autocomplete div:last-child {
+                    border-bottom: none;
+                }
     </style>
     <script type="text/javascript">
         document.onkeydown = checkValue;
@@ -104,7 +138,8 @@
                             EnableCaching="false"
                             CompletionSetCount="20"
                             FirstRowSelected="true"
-                            OnClientItemSelected="onRawMaterialSelected">
+                            OnClientItemSelected="onRawMaterialSelected"
+                            CompletionListCssClass="raw-material-autocomplete">
                         </asp:AutoCompleteExtender>
                     </div>
                 </div>
@@ -115,7 +150,7 @@
             </div>
             <asp:UpdatePanel ID="UpdatePanel5" runat="server">
                 <ContentTemplate>
-                    <asp:Label ID="lblErrorMessage" ClientIDMode="Static" CssClass="errormsg" Visible="true" runat="server" Style="text-align: left; font-size: 13px; font-weight: bold;" Text=""></asp:Label>
+                    <asp:Label ID="lblErrorMessage" ClientIDMode="Static" CssClass="errormsg" Visible="true" runat="server" Style="text-align: left; font-size: 13px; font-weight: bold;color:red;" Text=""></asp:Label>
                 </ContentTemplate>
             </asp:UpdatePanel>
         </div>
