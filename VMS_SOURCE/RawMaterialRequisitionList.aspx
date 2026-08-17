@@ -1,6 +1,8 @@
 ﻿<%@ Page Title="" Language="VB" MasterPageFile="~/MasterPage.master" AutoEventWireup="false" CodeFile="RawMaterialRequisitionList.aspx.vb" Inherits="RawMaterialRequisitionList" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
+    <script type="text/javascript" src="Scripts/FunctionValidator.js"></script>
+    <script type="text/javascript" src="Scripts/ValidateRawMaterialRequisitionDtls.js?time=<%= DateTime.Now.ToString("yyyy.MM.dd-HH.mm.ss.fff") %>"></script>
     <script type="text/javascript">
         document.onkeydown = checkValue;
         function checkValue() {
@@ -29,8 +31,7 @@
     <asp:UpdatePanel ID="UpdatePanelFilter" runat="server">
         <ContentTemplate>
             <div class="card">
-                <div class="card-body">
-                    <asp:Label ID="lblErrorMessage" ClientIDMode="Static" CssClass="errormsg" Visible="true" runat="server" Style="text-align: left; font-size: 13px; font-weight: bold;" Text=""></asp:Label>
+                <div class="card-body">                   
                     <div class="row">
                         <div class="col-md-3">
                             <div class="form-group pb-0">
@@ -69,9 +70,9 @@
                 <asp:UpdatePanel ID="UpdatePanelGrid" runat="server">
                     <ContentTemplate>
                         <asp:GridView BorderWidth="1" CssClass="table table-hover upgradDataGrid" CellSpacing="0" CellPadding="0"
-                            ID="gvRequisition" runat="server" AutoGenerateColumns="false" AllowPaging="false" Visible="true"
+                            ID="gvRequisition" runat="server" ClientIDMode="Static" AutoGenerateColumns="false" AllowPaging="false" Visible="true"
                             ShowFooter="false" GridLines="both" EmptyDataText="No records found"
-                            OnRowCommand="gvRequisition_RowCommand">
+                            OnRowCommand="gvRequisition_RowCommand" OnRowDataBound="gvRequisition_RowDataBound">
                             <RowStyle CssClass="tlrowlight" />
                             <PagerStyle CssClass="PagerGrid" HorizontalAlign="Right" />
                             <HeaderStyle CssClass="headerGrid" />
@@ -81,8 +82,16 @@
                                     <ItemTemplate>
                                         <asp:Label ID="lblSlNo" runat="server" Text='<%# Container.DataItemIndex + 1 %>'></asp:Label>
                                     </ItemTemplate>
-                                    <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" />
-                                    <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="5%" />
+                                    <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="4%" />
+                                    <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="4%" />
+                                </asp:TemplateField>
+                                <asp:TemplateField HeaderStyle-HorizontalAlign="Center" HeaderText="Select">
+                                    <ItemTemplate>
+                                        <asp:CheckBox ID="chkSelect" runat="server" />
+                                    </ItemTemplate>
+                                    <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="4%" />
+                                    <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="4%" />
+                                    <FooterStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="4%" />
                                 </asp:TemplateField>
                                 <asp:TemplateField HeaderText="Vendor Name">
                                     <ItemTemplate>
@@ -90,32 +99,34 @@
                                         <asp:HiddenField ID="hdnVendorCode" runat="server" Value='<%# Bind("vendor_code") %>' />
                                         <asp:HiddenField ID="hdnRequestId" runat="server" Value='<%# Bind("request_id") %>' />
                                     </ItemTemplate>
-                                    <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" />
-                                    <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="18%" />
+                                    <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="16%" />
+                                    <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="16%" />
                                 </asp:TemplateField>
                                 <asp:TemplateField HeaderText="RM Vendor Name">
                                     <ItemTemplate>
                                         <asp:Label ID="lblRawMatVendorName" runat="server" Text='<%# Bind("rawmat_vendor_name") %>'></asp:Label>
                                         <asp:HiddenField ID="hdnrmVendorcode" runat="server" Value='<%# Bind("rawmat_vendor_code") %>' />
+                                        <asp:HiddenField ID="hdnrmVendoremail" runat="server" Value='<%# Bind("rawmat_vendor_email") %>' />
+                                        <asp:HiddenField ID="hdnccemail" runat="server" Value='<%# Bind("CCAddress") %>' />
                                     </ItemTemplate>
-                                    <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" />
-                                    <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="18%" />
+                                    <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="16%" />
+                                    <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="16%" />
                                 </asp:TemplateField>
 
                                 <asp:TemplateField HeaderText="Raw Material List">
                                     <ItemTemplate>
                                         <asp:Label ID="lblRawmaterialList" runat="server" Text='<%# Bind("RawmaterialList") %>'></asp:Label>
                                     </ItemTemplate>
-                                    <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" />
-                                    <ItemStyle HorizontalAlign="Left" VerticalAlign="Middle" Width="25%" />
+                                    <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="36%" />
+                                    <ItemStyle HorizontalAlign="Left" VerticalAlign="Middle" Width="36%" />
                                 </asp:TemplateField>
-                               
+
                                 <asp:TemplateField HeaderText="Approval Status">
                                     <ItemTemplate>
                                         <asp:Label ID="lblApprovalStatus" runat="server" Text='<%# Bind("approval_status") %>'></asp:Label>
                                     </ItemTemplate>
-                                    <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" />
-                                    <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="10%" />
+                                    <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="14%" />
+                                    <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="14%" />
                                 </asp:TemplateField>
 
                                 <asp:TemplateField HeaderText="Action">
@@ -124,15 +135,25 @@
                                             <asp:LinkButton ID="btnView" runat="server" Visible="true" Text="View" CommandName="ViewRequisition" CommandArgument='<%# Container.DataItemIndex %>' ToolTip="View"><i class="fa fa-eye"></i></asp:LinkButton>
                                         </div>
                                     </ItemTemplate>
-                                    <HeaderStyle HorizontalAlign="Center" />
-                                    <ItemStyle HorizontalAlign="Center" Width="8%" />
+                                    <HeaderStyle HorizontalAlign="Center" Width="6%" />
+                                    <ItemStyle HorizontalAlign="Center" Width="6%" />
                                 </asp:TemplateField>
                             </Columns>
                         </asp:GridView>
+                        <div class="row mt-2">
+                            <div class="col-md-12 text-center">
+                                <asp:Button ID="btnApprove" runat="server" Text="Approve" CssClass="btn btn-success btn-sm"
+                                    OnClientClick="return validateRawMaterialRequisitionApprove();"
+                                    CausesValidation="false" UseSubmitBehavior="true" />
+                                 <asp:Label ID="lblErrorMessage" ClientIDMode="Static" CssClass="errormsg" Visible="true" runat="server" Style="text-align: left; font-size: 13px; font-weight: bold;" Text=""></asp:Label>
+                            </div>
+                        </div>
                     </ContentTemplate>
                     <Triggers>
                         <asp:AsyncPostBackTrigger ControlID="imgbtnSearch" EventName="Click" />
+                        <asp:AsyncPostBackTrigger ControlID="btnReset" EventName="Click" />
                         <asp:PostBackTrigger ControlID="gvRequisition" />
+                        <asp:AsyncPostBackTrigger ControlID="btnApprove" EventName="Click" />
                     </Triggers>
                 </asp:UpdatePanel>
             </div>

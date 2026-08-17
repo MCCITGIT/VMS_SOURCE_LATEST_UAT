@@ -61,7 +61,7 @@
                                 <asp:DropDownList ID="ddlBrand" ClientIDMode="Static" CssClass="form-control select2" TabIndex="1" runat="server"></asp:DropDownList>
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-3" runat="server" visible="false">
                             <div class="form-group">
                                 <label class="form-control-label">Raw Material:</label>
                                 <asp:DropDownList ID="ddlRawMat" ClientIDMode="Static" CssClass="form-control select2" TabIndex="4" runat="server"></asp:DropDownList>
@@ -121,12 +121,13 @@
                                             <ItemTemplate>
                                                 <asp:Label ID="lblbrand" Text='<%# Bind("Brand_Name") %>' runat="server" />
                                                 <asp:HiddenField runat="server" ID="hdnbrandcode" Value='<%# Bind("Brand_Code") %>' />
+                                                <asp:HiddenField runat="server" ID="hdnid" Value='<%# Bind("fh_id") %>' />
                                             </ItemTemplate>
                                             <ControlStyle Height="90%" Width="90%"></ControlStyle>
                                             <HeaderStyle HorizontalAlign="Center" />
                                             <ItemStyle HorizontalAlign="Center" Width="8%" />
                                         </asp:TemplateField>
-                                        <asp:TemplateField HeaderText="Raw Material" ControlStyle-Width="90%">
+                                        <%--<asp:TemplateField HeaderText="Raw Material" ControlStyle-Width="90%">
                                             <ItemTemplate>
                                                 <asp:Label ID="lblraw" Text='<%# Bind("Raw_Mat_Name")%>' runat="server" />
                                                 <asp:HiddenField runat="server" ID="hdnRawCode" Value='<%# Bind("Raw_Mat_Code") %>' />
@@ -134,7 +135,7 @@
                                             <ControlStyle Height="90%" Width="90%"></ControlStyle>
                                             <HeaderStyle HorizontalAlign="Center" />
                                             <ItemStyle HorizontalAlign="Center" Width="6%" />
-                                        </asp:TemplateField>
+                                        </asp:TemplateField>--%>
                                         <asp:TemplateField HeaderText="Sku" ControlStyle-Width="90%">
                                             <ItemTemplate>
                                                 <asp:Label ID="lblSku" Text='<%# Bind("Sku_Desc")%>' runat="server" />

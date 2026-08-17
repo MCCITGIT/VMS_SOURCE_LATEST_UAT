@@ -128,14 +128,17 @@ Partial Class FormulationMstrList
                 End If
 
                 Dim hdnBrandCode As HiddenField = CType(row.FindControl("hdnbrandcode"), HiddenField)
-                Dim hdnRawCode As HiddenField = CType(row.FindControl("hdnRawCode"), HiddenField)
+                'Dim hdnRawCode As HiddenField = CType(row.FindControl("hdnRawCode"), HiddenField)
                 Dim hdnSkuCode As HiddenField = CType(row.FindControl("hdnskucode"), HiddenField)
+                Dim hdnid As HiddenField = CType(row.FindControl("hdnid"), HiddenField)
 
                 Dim brandCode As String = If(hdnBrandCode Is Nothing, String.Empty, Convert.ToString(hdnBrandCode.Value))
-                Dim rawCode As String = If(hdnRawCode Is Nothing, String.Empty, Convert.ToString(hdnRawCode.Value))
+                ' Dim rawCode As String = If(hdnRawCode Is Nothing, String.Empty, Convert.ToString(hdnRawCode.Value))
                 Dim produCode As String = If(hdnSkuCode Is Nothing, String.Empty, Convert.ToString(hdnSkuCode.Value))
+                Dim id As String = If(hdnid Is Nothing, String.Empty, Convert.ToString(hdnid.Value))
 
-                Dim redirectUrl = "FormulationMaster.aspx?brandcode=" & Server.UrlEncode(brandCode) & "&rawcode=" & Server.UrlEncode(rawCode) & "&producode=" & Server.UrlEncode(produCode)
+                'Dim redirectUrl = "FormulationMaster.aspx?brandcode=" & Server.UrlEncode(brandCode) & "&rawcode=" & Server.UrlEncode(rawCode) & "&producode=" & Server.UrlEncode(produCode)
+                Dim redirectUrl = "Product_Formulation.aspx?brandcode=" & Server.UrlEncode(brandCode) & "&producode=" & Server.UrlEncode(produCode) & "&id=" & Server.UrlEncode(id)
                 Response.Redirect(redirectUrl, False)
                 Context.ApplicationInstance.CompleteRequest()
                 Exit Sub
@@ -149,7 +152,8 @@ Partial Class FormulationMstrList
         End Try
     End Sub
     Protected Sub ImgbtnAdd_Click(sender As Object, e As EventArgs) Handles ImgbtnAdd.Click
-        Response.Redirect("~/FormulationMaster.aspx")
+        'Response.Redirect("~/FormulationMaster.aspx")
+        Response.Redirect("~/Product_Formulation.aspx")
     End Sub
     Protected Sub imgbtnSearch_Click(sender As Object, e As EventArgs) Handles imgbtnSearch.Click
         Binddata()

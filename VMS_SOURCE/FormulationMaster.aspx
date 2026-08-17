@@ -175,7 +175,7 @@
                     <asp:Label ID="lblErrorMessage" CssClass="errormsg" Visible="true" runat="server" ClientIDMode="Static"></asp:Label>
                     <div id="divErrorMessage"></div>
                     <asp:Button ID="btnSubmit" ClientIDMode="Static" CssClass="btn btn-success btn-sm" runat="server" Text="Submit" />
-                    <asp:Button ID="btnCancel" ClientIDMode="Static" CssClass="btn btn-secondary btn-sm" runat="server" Text="Cancel" />
+                    <asp:Button ID="btnCancel" ClientIDMode="Static" CssClass="btn btn-secondary btn-sm" runat="server" Text="Back" />
                     <asp:Button ID="btnReset" ClientIDMode="Static" CssClass="btn btn-danger btn-sm" runat="server" Text="Reset" />
                 </div>
             </div>

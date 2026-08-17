@@ -129,7 +129,7 @@
                     <HeaderStyle CssClass="headerGrid" />
                     <FooterStyle CssClass="footerGrid" />
                     <Columns>
-                        <asp:TemplateField HeaderText="SlNo" HeaderStyle-HorizontalAlign="Center">
+                        <asp:TemplateField HeaderText="Sl No" HeaderStyle-HorizontalAlign="Center">
                             <ItemTemplate>
                                 <asp:Label ID="lblrawmatdid" runat="server" Text='<%# Container.DataItemIndex + 1 %>'></asp:Label>
                             </ItemTemplate>

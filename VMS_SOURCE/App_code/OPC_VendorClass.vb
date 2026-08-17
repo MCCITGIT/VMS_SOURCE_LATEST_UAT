@@ -423,7 +423,7 @@ Public Class OPC_VendorClass
         DS = DBFactory.GetHelper().ExecuteDataSet("[dbo].[getformulation_datalist]", Data.CommandType.StoredProcedure, sqlParams)
         Return DS
     End Function
-    Function GetFormulationEditList(ByVal brandcode As String, ByVal rawmatcode As String, ByVal productcode As String) As DataSet
+    Function GetFormulationEditList(ByVal brandcode As String, ByVal rawmatcode As Integer, ByVal productcode As String) As DataSet
         Dim DS As System.Data.DataSet
         Dim sqlParams(2) As SqlParameter
 
@@ -435,9 +435,9 @@ Public Class OPC_VendorClass
 
         sqlParams(1) = New SqlParameter()
         sqlParams(1).ParameterName = "@rawcode"
-        sqlParams(1).DbType = DbType.String
+        sqlParams(1).DbType = DbType.Int32
         sqlParams(1).Direction = Data.ParameterDirection.Input
-        sqlParams(1).Value = If(Not String.IsNullOrWhiteSpace(rawmatcode), CObj(rawmatcode.Trim()), DBNull.Value)
+        sqlParams(1).Value = rawmatcode
 
         sqlParams(2) = New SqlParameter()
         sqlParams(2).ParameterName = "@producode"
@@ -445,8 +445,81 @@ Public Class OPC_VendorClass
         sqlParams(2).Direction = Data.ParameterDirection.Input
         sqlParams(2).Value = If(Not String.IsNullOrWhiteSpace(productcode), CObj(productcode.Trim()), DBNull.Value)
 
-        DS = DBFactory.GetHelper().ExecuteDataSet("dbo.opc_get_formulation_for_edit", Data.CommandType.StoredProcedure, sqlParams)
+        'DS = DBFactory.GetHelper().ExecuteDataSet("dbo.opc_get_formulation_for_edit", Data.CommandType.StoredProcedure, sqlParams)
+        DS = DBFactory.GetHelper().ExecuteDataSet("[dbo].[opc_get_formulation_for_view]", Data.CommandType.StoredProcedure, sqlParams)
         Return DS
+    End Function
+
+    Public Function Insert_Formulation(ByVal headerid As Integer, ByVal brandCode As String, ByVal productCode As String, ByVal tbl As DataTable, ByVal user_id As String) As Integer
+
+        Dim sqlConn As SqlConnection = Nothing
+        Dim sqlTrans As SqlTransaction = Nothing
+        Dim numRowsAffected As Integer
+
+        sqlConn = DBFactory.GetHelper.OpenConnection
+        sqlTrans = sqlConn.BeginTransaction
+        Dim sqlParams(4) As SqlParameter
+
+        Try
+            sqlParams(0) = New SqlParameter()
+            sqlParams(0).ParameterName = "@headerid"
+            sqlParams(0).SqlDbType = SqlDbType.Int
+            sqlParams(0).Direction = ParameterDirection.Input
+            sqlParams(0).Value = headerid
+
+            sqlParams(1) = New SqlParameter()
+            sqlParams(1).ParameterName = "@opc_brand_code"
+            sqlParams(1).SqlDbType = SqlDbType.VarChar
+            sqlParams(1).Direction = ParameterDirection.Input
+            sqlParams(1).Value = brandCode
+
+            sqlParams(2) = New SqlParameter()
+            sqlParams(2).ParameterName = "@opc_product_code"
+            sqlParams(2).SqlDbType = SqlDbType.VarChar
+            sqlParams(2).Direction = ParameterDirection.Input
+            sqlParams(2).Value = productCode
+
+            sqlParams(3) = New SqlParameter()
+            sqlParams(3).ParameterName = "@FormulationDetails"
+            sqlParams(3).SqlDbType = SqlDbType.Structured
+            sqlParams(3).TypeName = "dbo.tbl_opc_formula_dtls"
+            sqlParams(3).Direction = ParameterDirection.Input
+            sqlParams(3).Value = tbl
+
+            sqlParams(4) = New SqlParameter()
+            sqlParams(4).ParameterName = "@created_user"
+            sqlParams(4).SqlDbType = SqlDbType.VarChar
+            sqlParams(4).Direction = ParameterDirection.Input
+            sqlParams(4).Value = user_id
+
+            Dim sqlCmd As New SqlCommand()
+            sqlCmd.Connection = sqlConn
+            sqlCmd.Transaction = sqlTrans
+            sqlCmd.CommandType = CommandType.StoredProcedure
+            sqlCmd.CommandText = "[dbo].[opc_formulationinsert]"
+
+            sqlCmd.Parameters.AddRange(sqlParams)
+            Using dr As SqlDataReader = sqlCmd.ExecuteReader()
+                If dr.Read() AndAlso Not IsDBNull(dr("Status")) Then
+                    numRowsAffected = Convert.ToInt32(dr("Status"))
+                Else
+                    numRowsAffected = 0
+                End If
+            End Using
+            sqlTrans.Commit()
+
+        Catch ex As Exception
+
+            If (sqlTrans IsNot Nothing) Then
+                sqlTrans.Rollback()
+            End If
+            Throw ex
+        Finally
+            If (sqlConn IsNot Nothing) Then
+                sqlConn.Close()
+            End If
+        End Try
+        Return numRowsAffected
     End Function
 #End Region
 
@@ -715,6 +788,171 @@ Public Class OPC_VendorClass
 
         DS = DBFactory.GetHelper().ExecuteDataSet("[dbo].[getrawmaterial_requisition_editdata]", Data.CommandType.StoredProcedure, sqlParams)
         Return DS
+    End Function
+
+    Function ApproveRawMaterialRequest(ByVal userId As String, ByVal dtApprove As DataTable) As Integer
+        Dim sqlConn As SqlConnection = Nothing
+        Dim outputCode As Integer = 0
+        Dim sqlParams(2) As SqlParameter
+
+        Try
+            If dtApprove Is Nothing OrElse dtApprove.Rows.Count = 0 Then
+                Return 0
+            End If
+
+            sqlConn = DBFactory.GetHelper.OpenConnection()
+
+            sqlParams(0) = New SqlParameter()
+            sqlParams(0).ParameterName = "@user_id"
+            sqlParams(0).SqlDbType = SqlDbType.VarChar
+            sqlParams(0).Size = 50
+            sqlParams(0).Direction = Data.ParameterDirection.Input
+            sqlParams(0).Value = userId
+
+            sqlParams(1) = New SqlParameter()
+            sqlParams(1).ParameterName = "@tbl_opc_request_approve"
+            sqlParams(1).SqlDbType = SqlDbType.Structured
+            sqlParams(1).Direction = Data.ParameterDirection.Input
+            sqlParams(1).TypeName = "dbo.tbl_opc_request_approve"
+            sqlParams(1).Value = dtApprove
+
+            sqlParams(2) = New SqlParameter()
+            sqlParams(2).ParameterName = "@outputCode"
+            sqlParams(2).SqlDbType = SqlDbType.Int
+            sqlParams(2).Direction = Data.ParameterDirection.Output
+
+            Dim sqlCmd As New SqlCommand()
+            sqlCmd.Connection = sqlConn
+            sqlCmd.CommandType = CommandType.StoredProcedure
+            sqlCmd.CommandText = "[dbo].[opc_rawmaterial_request_approve]"
+            sqlCmd.Parameters.AddRange(sqlParams)
+            sqlCmd.ExecuteNonQuery()
+
+            If Not IsDBNull(sqlParams(2).Value) Then
+                outputCode = Convert.ToInt32(sqlParams(2).Value)
+            End If
+        Catch ex As Exception
+            Throw ex
+        Finally
+            If (sqlConn IsNot Nothing) Then
+                sqlConn.Close()
+            End If
+        End Try
+
+        Return outputCode
+    End Function
+#End Region
+#Region "Receipt Raw Material"
+    Function GetRawMaterialReceiptList(ByVal rmvendorcode As String, ByVal status As String) As DataSet
+        Dim DS As System.Data.DataSet
+        Dim sqlParams(1) As SqlParameter
+
+        sqlParams(0) = New SqlParameter()
+        sqlParams(0).ParameterName = "@rmVendor_code"
+        sqlParams(0).DbType = DbType.String
+        sqlParams(0).Direction = Data.ParameterDirection.Input
+        sqlParams(0).Value = If(Not String.IsNullOrWhiteSpace(rmvendorcode), CObj(rmvendorcode.Trim()), DBNull.Value)
+
+        sqlParams(1) = New SqlParameter()
+        sqlParams(1).ParameterName = "@status"
+        sqlParams(1).DbType = DbType.String
+        sqlParams(1).Direction = Data.ParameterDirection.Input
+        sqlParams(1).Value = If(Not String.IsNullOrWhiteSpace(status), CObj(status.Trim()), DBNull.Value)
+
+        DS = DBFactory.GetHelper().ExecuteDataSet("[dbo].[opc_bulkreceiptlist]", Data.CommandType.StoredProcedure, sqlParams)
+        Return DS
+    End Function
+    Function GetRawMaterial_DespatchHdrList(ByVal despatchid As String) As DataSet
+        Dim DS As System.Data.DataSet
+        Dim sqlParams(0) As SqlParameter
+
+        sqlParams(0) = New SqlParameter()
+        sqlParams(0).ParameterName = "@despatchid"
+        sqlParams(0).DbType = DbType.Int32
+        sqlParams(0).Direction = Data.ParameterDirection.Input
+        Dim despatchIdValue As Integer = 0
+        Integer.TryParse(despatchid, despatchIdValue)
+        sqlParams(0).Value = despatchIdValue
+
+        DS = DBFactory.GetHelper().ExecuteDataSet("[dbo].[opc_getdespatch_headerdtls]", Data.CommandType.StoredProcedure, sqlParams)
+        Return DS
+    End Function
+
+    Function GetRawMaterial_ReceivedHdrList(ByVal receiveid As String) As DataSet
+        Dim DS As System.Data.DataSet
+        Dim sqlParams(0) As SqlParameter
+
+        sqlParams(0) = New SqlParameter()
+        sqlParams(0).ParameterName = "@receiveid"
+        sqlParams(0).DbType = DbType.Int32
+        sqlParams(0).Direction = Data.ParameterDirection.Input
+        Dim receiveIdValue As Integer = 0
+        Integer.TryParse(receiveid, receiveIdValue)
+        sqlParams(0).Value = receiveIdValue
+
+        DS = DBFactory.GetHelper().ExecuteDataSet("[dbo].[opc_getreceived_headerdtls]", Data.CommandType.StoredProcedure, sqlParams)
+        Return DS
+    End Function
+
+    Function InsertRawMaterialReceipt(ByVal dispatchId As Integer, ByVal userId As String, ByVal dtDetails As DataTable) As Integer
+        Dim sqlConn As SqlConnection = Nothing
+        Dim receiveId As Integer = 0
+        Dim sqlParams(3) As SqlParameter
+
+        Try
+            sqlConn = DBFactory.GetHelper.OpenConnection()
+
+            sqlParams(0) = New SqlParameter()
+            sqlParams(0).ParameterName = "@dispatch_id"
+            sqlParams(0).SqlDbType = SqlDbType.Int
+            sqlParams(0).Direction = Data.ParameterDirection.Input
+            sqlParams(0).Value = dispatchId
+
+            'sqlParams(1) = New SqlParameter()
+            'sqlParams(1).ParameterName = "@inv_no"
+            'sqlParams(1).SqlDbType = SqlDbType.VarChar
+            'sqlParams(1).Size = 100
+            'sqlParams(1).Direction = Data.ParameterDirection.Input
+            'sqlParams(1).Value = If(String.IsNullOrWhiteSpace(invNo), CObj(DBNull.Value), invNo)
+
+            sqlParams(1) = New SqlParameter()
+            sqlParams(1).ParameterName = "@user_id"
+            sqlParams(1).SqlDbType = SqlDbType.VarChar
+            sqlParams(1).Size = 50
+            sqlParams(1).Direction = Data.ParameterDirection.Input
+            sqlParams(1).Value = If(String.IsNullOrWhiteSpace(userId), CObj(DBNull.Value), userId)
+
+            sqlParams(2) = New SqlParameter()
+            sqlParams(2).ParameterName = "@tbl"
+            sqlParams(2).SqlDbType = SqlDbType.Structured
+            sqlParams(2).Direction = Data.ParameterDirection.Input
+            sqlParams(2).TypeName = "dbo.tbl_received_dtls"
+            sqlParams(2).Value = dtDetails
+
+            sqlParams(3) = New SqlParameter()
+            sqlParams(3).ParameterName = "@outputCode"
+            sqlParams(3).SqlDbType = SqlDbType.Int
+            sqlParams(3).Direction = Data.ParameterDirection.Output
+
+            Dim sqlCmd As New SqlCommand()
+            sqlCmd.Connection = sqlConn
+            sqlCmd.CommandType = CommandType.StoredProcedure
+            sqlCmd.CommandText = "[dbo].[opc_rawmaterial_receipt_insert]"
+            sqlCmd.Parameters.AddRange(sqlParams)
+            sqlCmd.ExecuteNonQuery()
+
+            If Not IsDBNull(sqlParams(3).Value) Then
+                Integer.TryParse(Convert.ToString(sqlParams(3).Value), receiveId)
+            End If
+        Catch ex As Exception
+            Throw ex
+        Finally
+            If (sqlConn IsNot Nothing) Then
+                sqlConn.Close()
+            End If
+        End Try
+
+        Return receiveId
     End Function
 #End Region
 End Class

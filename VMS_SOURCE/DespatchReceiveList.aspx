@@ -104,7 +104,7 @@
                                 <asp:TextBox ID="txtChallanNo" CssClass="form-control" runat="server"></asp:TextBox>
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-3 form-btn-mt">
                             <div class="form-group">
                                 <%--<asp:ImageButton ImageUrl="images/ic_search.gif" ID="imgbtnSearch" runat="server" />
                                 <asp:ImageButton ImageUrl="images/ic_add.gif" ID="imgbtnAdd" runat="server" />--%>

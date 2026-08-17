@@ -136,9 +136,11 @@ body {
 
 .form-control-label {
     margin: 0px 0px 3px 0px;
-    font-size: 13px;
-    font-weight: 600;
-    line-height: 15px;
+    /*font-size: 13px;
+    font-weight: 600;*/
+    font-size: 0.78rem;
+    font-weight: 500;
+    line-height: 16px;
     display: block;
 }
 
@@ -391,9 +393,10 @@ body {
     display: flex;
     align-items: baseline;
     justify-content: flex-start;
-    background-color: #dfe7ef;
+    /*background-color: #dfe7ef;*/
+    background-color: rgb(253, 254, 254);
     padding: 20px 12px;
-    opacity: 0.75;
+    opacity: 0.65;
 }
 
 .loginFullBody {
@@ -408,7 +411,8 @@ body {
 }
 
 .loginCBox {
-    background-color: #ffffffed;
+    /*background-color: #ffffffcf;*/
+    background-color: #ffffff75;
     width: 100%;
     max-width: 65%;
     min-height: 500px;
@@ -422,7 +426,8 @@ body {
 }
 
 .transBg {
-    background-color: rgb(0 0 0 / 46%);
+    /*background-color: rgb(0 0 0 / 46%);*/
+    background-color: rgb(73 173 253 / 83%);
     width: 100%;
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
@@ -444,20 +449,21 @@ body {
     margin: 0px;
     padding: 5px 0px 0px 0px;
     font-size: 18px;
-    color: #333;
+    color: #0072eb;
     line-height: 21px;
     text-transform: uppercase;
 }
 
 .dclimCont {
-    color: #eaeaea;
+    /*color: #f3ecec;*/
+    color: #fbf7f7;
     font-size: 11px;
     margin: 0px;
     padding: 0px;
     line-height: 14px;
-    text-align: justify;
     letter-spacing: 0.3px;
-    font-weight: bold;
+    font-weight: 500;
+    text-align: center;
 }
 
 .loginFormArea {
@@ -475,14 +481,14 @@ body {
     opacity: 0.85;
     border-radius: 25%;
     width: auto;
-    height: 104px;
+    height: 95px;
     object-fit: contain;
 }
 
 .vmsTitle {
     font-size: 18px;
     text-transform: uppercase;
-    color: #333;
+    color: #525151;
     line-height: 20px;
     margin: 0px;
     padding: 6px 0px;
@@ -490,7 +496,7 @@ body {
 
 .vmsSubTitle {
     font-size: 13px;
-    color: #333;
+    color: #666;
     line-height: 16px;
     margin: 0px 0px 20px 0px;
     padding: 0px;
@@ -577,7 +583,7 @@ body {
             }
 
             .supportLink ul li a {
-                font-size: 12px;
+                font-size: 13px;
                 letter-spacing: 0.4px;
                 line-height: 16px;
                 color: #007bff;
@@ -625,9 +631,9 @@ body {
 
 .compyDtls {
     background: #d0dbe6;
-    background: -webkit-linear-gradient(90deg,rgba(208, 219, 230, 1) 0%, rgba(255, 255, 255, 0) 100%);
-    background: -moz-linear-gradient(90deg,rgba(208, 219, 230, 1) 0%, rgba(255, 255, 255, 0) 100%);
-    background: linear-gradient(90deg,rgba(208, 219, 230, 1) 0%, rgba(255, 255, 255, 0) 100%);
+    background: -webkit-linear-gradient(90deg,rgba(231, 236, 241, 1) 0%, rgba(255, 255, 255, 0) 100%);
+    background: -moz-linear-gradient(90deg,rgba(231, 236, 241, 1) 0%, rgba(255, 255, 255, 0) 100%);
+    background: linear-gradient(90deg,rgba(231, 236, 241, 1) 0%, rgba(255, 255, 255, 0) 100%);
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr="#d0dbe6", endColorstr="#FFFFFF", GradientType=1 );
     padding: 10px 15px;
     margin-bottom: 15px;
@@ -762,13 +768,13 @@ body {
         display: block;
         color: #FFF;
         font-family: Montserrat;
-        font-size: 0.8rem;
+        font-size: 0.75rem;
         font-style: normal;
         font-weight: 500;
         line-height: 1.5rem;
         position: relative;
         text-decoration: none;
-        text-transform: capitalize;
+        text-transform: uppercase;
     }
 
     .sideNavBarView ul li ul.list-unstyled {
@@ -778,10 +784,12 @@ body {
 
         .sideNavBarView ul li ul.list-unstyled li a {
             padding: 0.5rem 0.25rem 0.5rem 1.15rem;
-            font-size: 0.75rem;
+            font-size: 0.78rem;
             line-height: 1.1rem;
             display: flex;
             align-items: baseline;
+            font-weight: 400;
+            text-transform: capitalize;
         }
 
             .sideNavBarView ul li ul.list-unstyled li a::after {
@@ -823,6 +831,7 @@ body {
         font-size: 0.85rem;
         min-width: 20px;
         max-width: 20px;
+        text-align: center;
     }
 
 .custBgLight {
@@ -2166,7 +2175,7 @@ body {
 
 .custTabs .nav-link {
     padding: .25rem 1.5rem;
-    outline:0;
+    outline: 0;
 }
 
 .flexFormGrup {
@@ -2218,7 +2227,7 @@ body {
     margin-bottom: 10px;
     background-image: url(../images/gold-abstract-2.png);
     background-size: cover;
-    position:relative;
+    position: relative;
 }
 
 /*.p-card-content:hover {
@@ -2368,6 +2377,281 @@ body {
     vertical-align: middle;
 }
 
+/* Start Contact Us Page */
+.contactPageWrap {
+    min-height: 100vh;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px 12px;
+    box-sizing: border-box;
+}
+
+.contactPageCard {
+    width: 100%;
+    max-width: 780px;
+    margin-bottom: 0;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #fff;
+}
+
+.contactPageBar {
+    margin: 0;
+    border-radius: 0;
+    padding: 10px 16px;
+}
+
+.contactPageInner {
+    display: flex;
+    align-items: stretch;
+    gap: 16px;
+}
+
+.contactLogoCol {
+    flex: 0 0 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #123B5B;
+    border-radius: 6px;
+    padding: 10px;
+}
+
+.contactPageLogo {
+    width: 100%;
+    max-width: 100px;
+    height: auto;
+    object-fit: contain;
+    display: block;
+}
+
+.contactSupportCol {
+    flex: 1 1 auto;
+    min-width: 0;
+    border: 1px solid #d9e2ea;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.contactSupportHead {
+    background: #10385a;
+    background: -webkit-linear-gradient(90deg, rgba(16, 56, 90, 1) 0%, rgba(27, 90, 140, 1) 100%);
+    background: -moz-linear-gradient(90deg, rgba(16, 56, 90, 1) 0%, rgba(27, 90, 140, 1) 100%);
+    background: linear-gradient(90deg, rgba(16, 56, 90, 1) 0%, rgba(27, 90, 140, 1) 100%);
+    padding: 8px 14px;
+}
+
+    .contactSupportHead span {
+        color: #fff;
+        font-size: 14px;
+        font-weight: 600;
+        font-style: italic;
+        line-height: 18px;
+        letter-spacing: 0.3px;
+        display: block;
+    }
+
+.contactEmailGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    padding: 10px;
+    background: #fff;
+}
+
+.contactEmailItem {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 48px;
+    padding: 8px 10px;
+    background: #f7f9fb;
+    border: 1px solid #e3e7ed;
+    border-radius: 6px;
+}
+
+    .contactEmailItem img {
+        width: 26px;
+        height: 28px;
+        object-fit: contain;
+        flex-shrink: 0;
+    }
+
+    .contactEmailItem span {
+        color: #10385a;
+        font-size: 12px;
+        font-weight: 600;
+        line-height: 16px;
+        word-break: break-all;
+    }
+/* End Contact Us Page */
+
+/* Start FAQ / Maintenance Page */
+.faqPageWrap {
+    min-height: 100vh;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px 12px;
+    box-sizing: border-box;
+}
+
+.faqPageCard {
+    width: 100%;
+    max-width: 520px;
+    margin-bottom: 0;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #fff;
+}
+
+.faqPageBar {
+    margin: 0;
+    border-radius: 0;
+    padding: 10px 16px;
+}
+
+.faqPageInner {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+}
+
+.faqImgCol {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 140px;
+    padding: 12px;
+    background: #f7f9fb;
+    border: 1px solid #d9e2ea;
+    border-radius: 6px;
+}
+
+.faqPageImg {
+    max-width: 148px;
+    max-height: 120px;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    display: block;
+}
+
+.faqMsgCol {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 48px;
+    padding: 10px 14px;
+    background: #10385a;
+    background: -webkit-linear-gradient(90deg, rgba(16, 56, 90, 1) 0%, rgba(27, 90, 140, 1) 100%);
+    background: -moz-linear-gradient(90deg, rgba(16, 56, 90, 1) 0%, rgba(27, 90, 140, 1) 100%);
+    background: linear-gradient(90deg, rgba(16, 56, 90, 1) 0%, rgba(27, 90, 140, 1) 100%);
+    border-radius: 6px;
+}
+
+.faqPageMsg {
+    color: #fff;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 22px;
+    letter-spacing: 0.6px;
+    text-align: center;
+    display: block;
+}
+
+    .faqPageMsg em {
+        font-style: italic;
+        font-family: inherit;
+    }
+/* End FAQ / Maintenance Page */
+
+/* Start User Help / Maintenance Page */
+.helpPageWrap {
+    min-height: 100vh;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px 12px;
+    box-sizing: border-box;
+}
+
+.helpPageCard {
+    width: 100%;
+    max-width: 520px;
+    margin-bottom: 0;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #fff;
+}
+
+.helpPageBar {
+    margin: 0;
+    border-radius: 0;
+    padding: 10px 16px;
+}
+
+.helpPageInner {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+}
+
+.helpImgCol {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 140px;
+    padding: 12px;
+    background: #f7f9fb;
+    border: 1px solid #d9e2ea;
+    border-radius: 6px;
+}
+
+.helpPageImg {
+    max-width: 148px;
+    max-height: 120px;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    display: block;
+}
+
+.helpMsgCol {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 48px;
+    padding: 10px 14px;
+    background: #10385a;
+    background: -webkit-linear-gradient(90deg, rgba(16, 56, 90, 1) 0%, rgba(27, 90, 140, 1) 100%);
+    background: -moz-linear-gradient(90deg, rgba(16, 56, 90, 1) 0%, rgba(27, 90, 140, 1) 100%);
+    background: linear-gradient(90deg, rgba(16, 56, 90, 1) 0%, rgba(27, 90, 140, 1) 100%);
+    border-radius: 6px;
+}
+
+.helpPageMsg {
+    color: #fff;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 22px;
+    letter-spacing: 0.6px;
+    text-align: center;
+    display: block;
+}
+
+    .helpPageMsg em {
+        font-style: italic;
+        font-family: inherit;
+    }
+/* End User Help / Maintenance Page */
+
 /* Responsive */
 @media (max-width: 520px) {
     .menu {
@@ -2427,6 +2711,87 @@ body {
 
     .loginCBox {
         max-width: 98%;
+    }
+
+    .contactPageWrap {
+        padding: 10px 8px;
+        align-items: flex-start;
+    }
+
+    .contactPageInner {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .contactLogoCol {
+        flex: 0 0 auto;
+        width: 100%;
+        padding: 8px;
+    }
+
+    .contactPageLogo {
+        max-width: 72px;
+        margin: 0 auto;
+    }
+
+    .contactEmailGrid {
+        grid-template-columns: 1fr;
+        gap: 6px;
+        padding: 8px;
+    }
+
+    .contactEmailItem {
+        min-height: 46px;
+    }
+
+    .faqPageWrap {
+        padding: 10px 8px;
+        align-items: flex-start;
+    }
+
+    .faqImgCol {
+        min-height: 120px;
+        padding: 10px;
+    }
+
+    .faqPageImg {
+        max-width: 120px;
+        max-height: 100px;
+    }
+
+    .faqMsgCol {
+        min-height: 46px;
+        padding: 10px 12px;
+    }
+
+    .faqPageMsg {
+        font-size: 15px;
+        line-height: 20px;
+    }
+
+    .helpPageWrap {
+        padding: 10px 8px;
+        align-items: flex-start;
+    }
+
+    .helpImgCol {
+        min-height: 120px;
+        padding: 10px;
+    }
+
+    .helpPageImg {
+        max-width: 120px;
+        max-height: 100px;
+    }
+
+    .helpMsgCol {
+        min-height: 46px;
+        padding: 10px 12px;
+    }
+
+    .helpPageMsg {
+        font-size: 15px;
+        line-height: 20px;
     }
 
     .copyRight {

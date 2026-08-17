@@ -135,7 +135,8 @@ Partial Class ChildDepotLinking
 
             Dim returnUrl As String = "~/ExceptionPage.aspx"
             Session(Constant.SessionKeys.ErrMessage) = Constant.ErrorMessages.GeneralError
-            Server.Transfer(returnUrl)
+            'Server.Transfer(returnUrl)
+            Response.Redirect(returnUrl)
 
         End Try
 
