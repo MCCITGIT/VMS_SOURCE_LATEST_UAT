@@ -21,13 +21,14 @@ Partial Class RawMaterialRequisitionDtls
         CheckLogin()
         If (Not IsPostBack) Then
             btnSubmit.Attributes.Add("onclick", "return validateRawMaterialRequisitionSubmit();")
+            PopulateUnit()
             PopulateVendor()
 
             Dim requestId As Integer = 0
             If Integer.TryParse(Convert.ToString(Request.QueryString("request_id")), requestId) AndAlso requestId > 0 Then
                 BindEditData(requestId)
-            Else
-                txtreqVendor.Text = userInfo.userFirstNameEntity + " " + userInfo.userLastNameEntity
+                'Else
+                '    txtreqVendor.Text = userInfo.userFirstNameEntity + " " + userInfo.userLastNameEntity
             End If
         End If
     End Sub
@@ -88,7 +89,8 @@ Partial Class RawMaterialRequisitionDtls
             btnSubmit.Visible = True
         End If
 
-        txtreqVendor.Text = Convert.ToString(firstRow("vendor_name")).Trim()
+        'txtreqVendor.Text =Convert.ToString(firstRow("vendor_name")).Trim()
+        ddlVendor.SelectedValue = ds.Tables(0).Rows(0)("vendor_code").ToString()
 
         Dim rawMatVendorCode As String = Convert.ToString(firstRow("rawmat_vendor_code")).Trim()
         If rawMatVendorCode <> "" AndAlso ddlVendor.Items.FindByValue(rawMatVendorCode) IsNot Nothing Then
@@ -210,7 +212,7 @@ Partial Class RawMaterialRequisitionDtls
                 Return
             End If
 
-            headerEntity.VendorCode = userInfo.userIDEntity
+            headerEntity.VendorCode = ddlUnit.SelectedValue.ToString() 'userInfo.userIDEntity
             headerEntity.RawMaterialVendorCode = ddlVendor.SelectedValue.Trim()
             headerEntity.CreatedUser = userInfo.userIDEntity
             headerEntity.ActiveStatus = "Y"
@@ -319,4 +321,28 @@ Partial Class RawMaterialRequisitionDtls
 
         Return Convert.ToString(value).Trim()
     End Function
+
+#Region "Populate Unit"
+    Private Sub PopulateUnit()
+        Dim UnitDespatch As New PendingDespatchesClass
+        Dim UnitSet As New DataSet
+
+        UnitSet = UnitDespatch.GetUnitName(Constant.Common.ActiveStatus, userInfo.userRegionEntity)
+        If (Not (UnitSet Is Nothing) AndAlso UnitSet.Tables.Count > 0 AndAlso Not (UnitSet.Tables(0) Is Nothing) AndAlso UnitSet.Tables(0).Rows.Count > 0) Then
+            ddlUnit.DataSource = UnitSet.Tables(0)
+            ddlUnit.DataTextField = "unit_name"
+            ddlUnit.DataValueField = "unit_code"
+            ddlUnit.DataBind()
+            ddlUnit.Items.Insert(0, New ListItem(Constant.Common.All, String.Empty, True))
+        End If
+        'If Not (userInfo.userGroupCodeEntity = Constant.UserFormAccess.SYSADMIN Or userInfo.userGroupCodeEntity = Constant.UserFormAccess.HOMARKETING Or userInfo.userGroupCodeEntity = Constant.UserFormAccess.HOACCOUNTS Or userInfo.userGroupCodeEntity = Constant.UserFormAccess.DEPOT) Then
+        '    ddlUnit.SelectedValue = userInfo.userUnitEntity
+        '    ddlUnit.Enabled = False
+        'End If
+        If (userInfo.userGroupCodeEntity = "UNIT") Then
+            ddlUnit.SelectedValue = userInfo.userBranchEntity
+            ddlUnit.Enabled = False
+        End If
+    End Sub
+#End Region
 End Class

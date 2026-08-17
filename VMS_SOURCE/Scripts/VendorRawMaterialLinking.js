@@ -4,7 +4,8 @@ function validateAddRawmaterial() {
 
     firstErrorControl = "";
     errMsg = "";
-    ValidateDropDown1("ddlVendor", "Please Select Vendor.");
+    //ValidateDropDown1("ddlVendor", "Please Select Vendor.");
+    ValidateRequired("txtVendorSearch", "Please enter Vendor.");
     ValidateRequired("txtSearchText", "Please enter Raw Material.");
 
     var selectedVendorCode = "";
@@ -63,7 +64,8 @@ function validateVendorRawMaterialLinkAdd() {
 
     firstErrorControl = "";
     errMsg = "";
-    ValidateDropDown1("ddlVendor", "Please Select Vendor.");
+    //ValidateDropDown1("ddlVendor", "Please Select Vendor.");
+    //ValidateRequired("txtVendorSearch", "Please enter Vendor.");
     var grid = document.getElementById("gvVendorRawMat");
     var hasDataRow = false;
     var rateInputs = [];
