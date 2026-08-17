@@ -3,26 +3,7 @@
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
-    <style type="text/css">
-        .product-search-group {
-            display: flex;
-            align-items: stretch;
-        }
 
-            .product-search-group .form-control {
-                border-top-right-radius: 0;
-                border-bottom-right-radius: 0;
-            }
-
-            .product-search-group .product-reset-btn {
-                border-top-left-radius: 0;
-                border-bottom-left-radius: 0;
-                min-width: 36px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-    </style>
     <script type="text/javascript" src="Scripts/FunctionValidator.js"></script>
     <script type="text/javascript" src="Scripts/ValidateFormulationMstr.js?time=<%= DateTime.Now.ToString("yyyy.MM.dd-HH.mm.ss.fff") %>"></script>
     <script type="text/javascript">
@@ -43,7 +24,7 @@
         }
 
         function onProductSelected(sender, e) {
-             //debugger;
+            //debugger;
             var value = e.get_value();
             var text = e.get_text();
 
@@ -59,13 +40,13 @@
             document.getElementById('<%=hdnSkucode.ClientID%>').value = skuCode
             // Disable Product textbox after selection
             <%--document.getElementById('<%=txtProductSearch.ClientID%>').readOnly = true;--%>
-            
+
 
             sender.get_element().value = text + " (" + productCode + ")";
             //__doPostBack('<%=btnLoadShade.UniqueID%>', '');
             // Trigger ASP.NET TextChanged event
             __doPostBack('<%= txtProductSearch.UniqueID %>', '');
-           
+
         }
 
         function clearProductSelection() {
@@ -136,6 +117,15 @@
     </div>
 
     <div class="card">
+        <div class="mst-panel-header">
+            <div class="mst-panel-header-left">
+                <span class="mst-panel-icon"><i class="fas fa-flask"></i></span>
+                <div>
+                    <h5 class="mst-panel-title">Add Formulation</h5>
+                    <p class="mst-panel-subtitle">Select a product and raw material to define the consumption ratio</p>
+                </div>
+            </div>
+        </div>
         <div class="card-body">
             <div class="row">
                 <div class="col-md-4">
@@ -204,94 +194,105 @@
                         </asp:TextBox>
                     </div>
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-3">
                     <label class="form-control-label">Recipe:<span id="Span111" class="mandatory">*</span></label>
-                    <asp:DropDownList ID="ddlRecipe" ClientIDMode="Static" CssClass="form-control select2" TabIndex="1" runat="server" AutoPostBack="true" 
-                        OnSelectedIndexChanged="ddlRecipe_SelectedIndexChanged"></asp:DropDownList>
+                    <asp:DropDownList ID="ddlRecipe" ClientIDMode="Static" CssClass="form-control select2" TabIndex="1" runat="server" AutoPostBack="true"
+                        OnSelectedIndexChanged="ddlRecipe_SelectedIndexChanged">
+                    </asp:DropDownList>
                 </div>
-                <div class="col-md-2 form-btn-mt">
+                <div class="col-md-1 form-btn-mt">
                     <div class="form-group">
                         <asp:Button ID="btnAdd" runat="server" Text="Add" CssClass="btn btn-success btn-sm" OnClick="btnAdd_Click" />
                     </div>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="table-responsive">
-                        <asp:GridView ID="gvVendorRawMat" ClientIDMode="Static" runat="server" AutoGenerateColumns="False" CssClass="table table-hover upgradDataGrid"
-                            EmptyDataText="No records added." GridLines="both" ShowFooter="false">
-                            <RowStyle CssClass="tlrowlight" />
-                            <HeaderStyle CssClass="headerGrid" />
-                            <Columns>
-                                <asp:TemplateField HeaderText="Brand">
-                                    <ItemTemplate>
-                                        <%--<asp:HiddenField ID="hdnId" runat="server" Value='<%# Bind("id") %>' />--%>
-                                        <asp:Label ID="lblVendorName" runat="server" Text='<%# Bind("brand_name") %>'></asp:Label>
-                                        <asp:HiddenField ID="hdnBrandCode" runat="server" Value='<%# Bind("brand_code") %>' />
-                                        <asp:HiddenField ID="hdnProductCode" runat="server" Value='<%# Bind("product_code") %>' />
-                                        <asp:HiddenField ID="hdnRawMatCode" runat="server" Value='<%# Bind("rawmat_code") %>' />
-                                    </ItemTemplate>
-                                </asp:TemplateField>
-
-                                <asp:BoundField DataField="product_name" HeaderText="Product Name" ReadOnly="true" />
-
-                                <asp:TemplateField HeaderText="Raw Material Name">
-                                    <ItemTemplate>
-                                        <asp:Label ID="lblRawMatName" runat="server" Text='<%# Bind("rawmat_name") %>'></asp:Label>
-                                    </ItemTemplate>
-                                    <FooterTemplate>
-                                        <asp:Label ID="lblTotalText" runat="server" Text="Total"></asp:Label>
-                                    </FooterTemplate>
-                                </asp:TemplateField>
-                                <asp:TemplateField HeaderText="Consumption Ratio" HeaderStyle-HorizontalAlign="Center">
-                                    <ItemTemplate>
-                                        <asp:Label ID="lblRatio" runat="server" Text='<%# Bind("ratio") %>'></asp:Label>
-                                    </ItemTemplate>
-                                    <FooterTemplate>
-                                        <asp:Label ID="lblRatioTotal" runat="server"></asp:Label>
-                                        <br />
-                                        <asp:Label ID="lblRatioStatus" runat="server" ClientIDMode="Static" Text="Within 100%"></asp:Label>
-                                    </FooterTemplate>
-                                    <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="25%" />
-                                    <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="25%" />
-                                    <FooterStyle HorizontalAlign="Center" VerticalAlign="Middle" />
-                                </asp:TemplateField>
-                                <asp:TemplateField HeaderText="Unit of Measurement" HeaderStyle-HorizontalAlign="Center">
-                                    <ItemTemplate>
-                                        <asp:Label ID="lblUnit" runat="server" Text='<%# Bind("unit") %>'></asp:Label>
-                                    </ItemTemplate>
-                                    <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="25%" />
-                                    <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="25%" />
-                                    <FooterStyle HorizontalAlign="Center" VerticalAlign="Middle" />
-                                </asp:TemplateField>
-
-                                <asp:TemplateField HeaderText="Action">
-                                    <ItemTemplate>
-                                        <asp:LinkButton ID="btnDeleteRow" runat="server" CommandName="DeleteRow" CommandArgument='<%# Container.DataItemIndex %>' CssClass="btn btn-danger btn-sm" ToolTip="Delete" OnClientClick="return confirm('Are you sure you want to delete this row?');"><i class="fas fa-trash"></i></asp:LinkButton>
-                                    </ItemTemplate>
-                                    <EditItemTemplate>
-                                        <asp:LinkButton ID="btnUpdate" CommandName="Update" CssClass="btn btn-success btn-sm gridBtn mr-1" runat="server" ToolTip="Update" OnClientClick="return confirm('Are you sure you want to update this record?');"><i class="fas fa-check"></i></asp:LinkButton>
-                                        <asp:LinkButton ID="btncancel" CommandName="Cancel" CssClass="btn btn-danger btn-sm gridBtn" runat="server" ToolTip="Cancel"><i class="fas fa-times"></i></asp:LinkButton>
-                                    </EditItemTemplate>
-                                </asp:TemplateField>
-                            </Columns>
-                        </asp:GridView>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12 text-center">
-                            <asp:Button ID="btnSubmit" runat="server" Text="Submit" CssClass="btn btn-primary btn-sm" ClientIDMode="Static" Visible="false"
-                                OnClientClick="return confirm('Are you sure you want to submit this record?');" />
-                            <asp:Button ID="btnCancel" runat="server" Text="Back" CssClass="btn btn-secondary btn-sm" OnClick="btnCancel_Click1" />
-                        </div>
-                    </div>
-                </div>
-            </div>
-
             <asp:UpdatePanel ID="UpdatePanel5" runat="server">
                 <ContentTemplate>
                     <asp:Label ID="lblErrorMessage" ClientIDMode="Static" CssClass="errormsg" Visible="true" runat="server" Style="text-align: left; font-size: 13px; font-weight: bold;" Text=""></asp:Label>
                 </ContentTemplate>
             </asp:UpdatePanel>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="mst-panel-header">
+            <div class="mst-panel-header-left">
+                <span class="mst-panel-icon"><i class="fas fa-list"></i></span>
+                <div>
+                    <h5 class="mst-panel-title">Formulation List</h5>
+                    <p class="mst-panel-subtitle">Raw materials and their consumption ratios for the selected product</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <div class="table-responsive">
+                <asp:GridView ID="gvVendorRawMat" ClientIDMode="Static" runat="server" AutoGenerateColumns="False" CssClass="table table-hover upgradDataGrid"
+                    EmptyDataText="No records added." GridLines="both" ShowFooter="false">
+                    <RowStyle CssClass="tlrowlight" />
+                    <HeaderStyle CssClass="headerGrid" />
+                    <Columns>
+                        <asp:TemplateField HeaderText="Brand">
+                            <ItemTemplate>
+                                <%--<asp:HiddenField ID="hdnId" runat="server" Value='<%# Bind("id") %>' />--%>
+                                <asp:Label ID="lblVendorName" runat="server" Text='<%# Bind("brand_name") %>'></asp:Label>
+                                <asp:HiddenField ID="hdnBrandCode" runat="server" Value='<%# Bind("brand_code") %>' />
+                                <asp:HiddenField ID="hdnProductCode" runat="server" Value='<%# Bind("product_code") %>' />
+                                <asp:HiddenField ID="hdnRawMatCode" runat="server" Value='<%# Bind("rawmat_code") %>' />
+                            </ItemTemplate>
+                        </asp:TemplateField>
+
+                        <asp:BoundField DataField="product_name" HeaderText="Product Name" ReadOnly="true" />
+
+                        <asp:TemplateField HeaderText="Raw Material Name">
+                            <ItemTemplate>
+                                <asp:Label ID="lblRawMatName" runat="server" Text='<%# Bind("rawmat_name") %>'></asp:Label>
+                            </ItemTemplate>
+                            <FooterTemplate>
+                                <asp:Label ID="lblTotalText" runat="server" Text="Total"></asp:Label>
+                            </FooterTemplate>
+                        </asp:TemplateField>
+                        <asp:TemplateField HeaderText="Consumption Ratio" HeaderStyle-HorizontalAlign="Center">
+                            <ItemTemplate>
+                                <asp:Label ID="lblRatio" runat="server" Text='<%# Bind("ratio") %>'></asp:Label>
+                            </ItemTemplate>
+                            <FooterTemplate>
+                                <asp:Label ID="lblRatioTotal" runat="server"></asp:Label>
+                                <br />
+                                <asp:Label ID="lblRatioStatus" runat="server" ClientIDMode="Static" Text="Within 100%"></asp:Label>
+                            </FooterTemplate>
+                            <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="25%" />
+                            <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="25%" />
+                            <FooterStyle HorizontalAlign="Center" VerticalAlign="Middle" />
+                        </asp:TemplateField>
+                        <asp:TemplateField HeaderText="Unit of Measurement" HeaderStyle-HorizontalAlign="Center">
+                            <ItemTemplate>
+                                <asp:Label ID="lblUnit" runat="server" Text='<%# Bind("unit") %>'></asp:Label>
+                            </ItemTemplate>
+                            <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="25%" />
+                            <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="25%" />
+                            <FooterStyle HorizontalAlign="Center" VerticalAlign="Middle" />
+                        </asp:TemplateField>
+
+                        <asp:TemplateField HeaderText="Action">
+                            <ItemTemplate>
+                                <asp:LinkButton ID="btnDeleteRow" runat="server" CommandName="DeleteRow" CommandArgument='<%# Container.DataItemIndex %>' CssClass="text-danger" ToolTip="Delete" OnClientClick="return confirm('Are you sure you want to delete this row?');"><i class="fas fa-trash"></i></asp:LinkButton>
+                            </ItemTemplate>
+                            <EditItemTemplate>
+                                <asp:LinkButton ID="btnUpdate" CommandName="Update" CssClass="text-success mr-1" runat="server" ToolTip="Update" OnClientClick="return confirm('Are you sure you want to update this record?');"><i class="fas fa-check"></i></asp:LinkButton>
+                                <asp:LinkButton ID="btncancel" CommandName="Cancel" CssClass="text-danger" runat="server" ToolTip="Cancel"><i class="fas fa-times"></i></asp:LinkButton>
+                            </EditItemTemplate>
+                        </asp:TemplateField>
+                    </Columns>
+                </asp:GridView>
+            </div>
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    <asp:Button ID="btnSubmit" runat="server" Text="Submit" CssClass="btn btn-primary btn-sm" ClientIDMode="Static" Visible="false"
+                        OnClientClick="return confirm('Are you sure you want to submit this record?');" />
+                    <asp:Button ID="btnCancel" runat="server" Text="Back" CssClass="btn btn-secondary btn-sm" OnClick="btnCancel_Click1" />
+                </div>
+            </div>
         </div>
     </div>
 </asp:Content>
