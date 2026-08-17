@@ -235,8 +235,8 @@
 
                                 <asp:AutoCompleteExtender ID="AutoCompleteExtender1" runat="server" TargetControlID="txtTranspoterName"
                                     ServiceMethod="TranspoterSearch" MinimumPrefixLength="3" EnableCaching="false"
-                                    CompletionListCssClass="autoCompleteFlyout" CompletionListItemCssClass="autoCompleteFlyoutItem"
-                                    CompletionListHighlightedItemCssClass="autoCompleteFlyoutHighLightedItem" OnClientItemSelected="aceSelected"
+                                    CompletionListCssClass="vmsAutoComplete" CompletionListItemCssClass="vmsAutoCompleteItem"
+                                    CompletionListHighlightedItemCssClass="vmsAutoCompleteItemHighlight" OnClientItemSelected="aceSelected"
                                     OnClientPopulated="HideLoading" BehaviorID="AutoCompleteEx" CompletionListElementID="Panel1"
                                     OnClientPopulating="ShowLoading" FirstRowSelected="true" OnClientHidden="HideLoading"
                                     OnClientHiding="HideLoading">

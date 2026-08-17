@@ -89,8 +89,8 @@
                                 <asp:TextBox ID="txtSkuCode" ClientIDMode="Static" runat="server" CssClass="form-control" AutoPostBack="false"></asp:TextBox>
                                 <asp:AutoCompleteExtender ID="AutoCompleteExtender2" runat="server" TargetControlID="txtSkuCode"
                                     ServiceMethod="SKUSearch" MinimumPrefixLength="3" EnableCaching="false"
-                                    CompletionListCssClass="autoCompleteFlyout" CompletionListItemCssClass="autoCompleteFlyoutItem"
-                                    CompletionListHighlightedItemCssClass="autoCompleteFlyoutHighLightedItem" OnClientItemSelected="aceSelected2"
+                                    CompletionListCssClass="vmsAutoComplete" CompletionListItemCssClass="vmsAutoCompleteItem"
+                                    CompletionListHighlightedItemCssClass="vmsAutoCompleteItemHighlight" OnClientItemSelected="aceSelected2"
                                     OnClientPopulated="HideLoading1" BehaviorID="AutoCompleteEx1" CompletionListElementID="Panel2"
                                     OnClientPopulating="ShowLoading1" FirstRowSelected="true" OnClientHidden="HideLoading1"
                                     OnClientHiding="HideLoading1">
@@ -216,8 +216,8 @@
                                         <asp:TextBox ID="lblftrskudes" runat="server" AutoPostBack="true" CssClass="form-control" OnTextChanged="txtftrSKUdsec_OnTextChanged" Enabled="true"></asp:TextBox>
                                         <asp:AutoCompleteExtender ID="AutoCompleteExtender1" runat="server" TargetControlID="lblftrskudes"
                                             ServiceMethod="SKUSearch" MinimumPrefixLength="3" EnableCaching="false"
-                                            CompletionListCssClass="autoCompleteFlyout" CompletionListItemCssClass="autoCompleteFlyoutItem"
-                                            CompletionListHighlightedItemCssClass="autoCompleteFlyoutHighLightedItem" OnClientItemSelected="aceSelected"
+                                            CompletionListCssClass="vmsAutoComplete" CompletionListItemCssClass="vmsAutoCompleteItem"
+                                            CompletionListHighlightedItemCssClass="vmsAutoCompleteItemHighlight" OnClientItemSelected="aceSelected"
                                             OnClientPopulated="HideLoading" BehaviorID="AutoCompleteEx" CompletionListElementID="Panel1"
                                             OnClientPopulating="ShowLoading" FirstRowSelected="true" OnClientHidden="HideLoading"
                                             OnClientHiding="HideLoading">

@@ -2,26 +2,7 @@
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
-    <style type="text/css">
-        .product-search-group {
-            display: flex;
-            align-items: stretch;
-        }
 
-        .product-search-group .form-control {
-            border-top-right-radius: 0;
-            border-bottom-right-radius: 0;
-        }
-
-        .product-search-group .product-reset-btn {
-            border-top-left-radius: 0;
-            border-bottom-left-radius: 0;
-            min-width: 36px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-    </style>
     <script type="text/javascript" src="Scripts/FunctionValidator.js"></script>
     <script type="text/javascript" src="Scripts/ValidateFormulationMstr.js?time=<%= DateTime.Now.ToString("yyyy.MM.dd-HH.mm.ss.fff") %>"></script>
     <%-- <script type="text/javascript">
@@ -79,7 +60,7 @@
         <div class="rightFung"></div>
     </div>
     <div class="card">
-        <div class="card-body" >
+        <div class="card-body">
             <div class="row">
                 <div class="col-md-3">
                     <div class="form-group">
@@ -111,7 +92,10 @@
                             EnableCaching="false"
                             CompletionSetCount="20"
                             FirstRowSelected="true"
-                            OnClientItemSelected="onProductSelected">
+                            OnClientItemSelected="onProductSelected"
+                            CompletionListCssClass="vmsAutoComplete"
+                            CompletionListItemCssClass="vmsAutoCompleteItem"
+                            CompletionListHighlightedItemCssClass="vmsAutoCompleteItemHighlight">
                         </asp:AutoCompleteExtender>
                         <asp:LinkButton ID="btnLoadShade" runat="server" Style="display: none;"></asp:LinkButton>
                     </div>

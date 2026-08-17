@@ -3,60 +3,8 @@
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
-    <style type="text/css">
-        .product-search-group {
-            display: flex;
-            align-items: stretch;
-        }
-
-            .product-search-group .form-control {
-                border-top-right-radius: 0;
-                border-bottom-right-radius: 0;
-            }
-
-            .product-search-group .product-reset-btn {
-                border-top-left-radius: 0;
-                border-bottom-left-radius: 0;
-                min-width: 36px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-        /* AutoComplete dropdown container */
-        .raw-material-autocomplete {
-            max-height: 250px;
-            overflow-y: auto;
-            overflow-x: hidden;
-            background: #fff;
-            border: 1px solid #ced4da;
-            border-radius: 0 0 5px 5px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
-            z-index: 99999 !important;
-            width: auto !important;
-        }
-
-            /* Individual autocomplete item */
-            .raw-material-autocomplete div {
-                padding: 9px 12px;
-                font-size: 14px;
-                color: #343a40;
-                cursor: pointer;
-                border-bottom: 1px solid #f1f1f1;
-                background: #fff;
-            }
-
-                /* Hover / selected item */
-                .raw-material-autocomplete div:hover,
-                .raw-material-autocomplete .autocomplete_highlightedListItem {
-                    background-color: #f0f6ff !important;
-                    color: #007bff !important;
-                }
-
-                /* Last item */
-                .raw-material-autocomplete div:last-child {
-                    border-bottom: none;
-                }
-    </style>
+    <%-- AutoComplete suggestion list styling now lives in includes/upgrad-style.css
+         (.vmsAutoComplete / .vmsAutoCompleteItem / .vmsAutoCompleteItemHighlight) --%>
     <script type="text/javascript">
         document.onkeydown = checkValue;
         function checkValue() {
@@ -119,9 +67,18 @@
     </div>
 
     <div class="card">
+        <div class="mst-panel-header">
+            <div class="mst-panel-header-left">
+                <span class="mst-panel-icon"><i class="fas fa-plus"></i></span>
+                <div>
+                    <h5 class="mst-panel-title">Add Raw Material</h5>
+                    <p class="mst-panel-subtitle">Enter a new Raw Material name to add it to the master list</p>
+                </div>
+            </div>
+        </div>
         <div class="card-body">
             <div class="row">
-                <div class="col-md-4">
+                <div class="col-md-6">
                     <div class="form-group pb-0">
                         <label class="form-control-label">Search Raw Material:<span id="Span2" class="mandatory">*</span></label>
                         <div class="input-group product-search-group">
@@ -139,24 +96,35 @@
                             CompletionSetCount="20"
                             FirstRowSelected="true"
                             OnClientItemSelected="onRawMaterialSelected"
-                            CompletionListCssClass="raw-material-autocomplete">
+                            CompletionListCssClass="vmsAutoComplete"
+                            CompletionListItemCssClass="vmsAutoCompleteItem"
+                            CompletionListHighlightedItemCssClass="vmsAutoCompleteItemHighlight">
                         </asp:AutoCompleteExtender>
                     </div>
                 </div>
-                <div class="col-md-12 form-btn-mt text-center">
+                <div class="col-md-4 form-btn-mt">
                     <asp:Button ID="btnSubmit" ClientIDMode="Static" runat="server" Text="Submit" CssClass="btn btn-primary btn-sm" OnClick="btnSubmit_Click" />
-                    <asp:Button ID="btnCancel" runat="server" Text="Cancel" CssClass="btn btn-secondary btn-sm" OnClick="btnCancel_Click" />
+                    <asp:Button ID="btnCancel" runat="server" Text="Cancel" CssClass="btn btn-outline-danger btn-sm" OnClick="btnCancel_Click" />
                 </div>
             </div>
             <asp:UpdatePanel ID="UpdatePanel5" runat="server">
                 <ContentTemplate>
-                    <asp:Label ID="lblErrorMessage" ClientIDMode="Static" CssClass="errormsg" Visible="true" runat="server" Style="text-align: left; font-size: 13px; font-weight: bold;color:red;" Text=""></asp:Label>
+                    <asp:Label ID="lblErrorMessage" ClientIDMode="Static" CssClass="errormsg" Visible="true" runat="server" Style="text-align: left; font-size: 13px; font-weight: bold; color: red;" Text=""></asp:Label>
                 </ContentTemplate>
             </asp:UpdatePanel>
         </div>
     </div>
 
     <div class="card">
+        <div class="mst-panel-header">
+            <div class="mst-panel-header-left">
+                <span class="mst-panel-icon"><i class="fas fa-list"></i></span>
+                <div>
+                    <h5 class="mst-panel-title">Raw Material List</h5>
+                    <p class="mst-panel-subtitle">All Raw Material currently available</p>
+                </div>
+            </div>
+        </div>
         <div class="card-body">
             <div class="table-responsive">
                 <asp:GridView BorderWidth="1" CssClass="table table-hover upgradDataGrid" CellSpacing="0" CellPadding="0"
@@ -197,11 +165,11 @@
                         </asp:TemplateField>
                         <asp:TemplateField HeaderText="Action" HeaderStyle-HorizontalAlign="Center">
                             <ItemTemplate>
-                                <asp:LinkButton ID="btnEdit" CommandName="Edit" runat="server" CssClass="btn btn-info btn-sm gridBtn" ToolTip="Edit"><i class="fas fa-edit"></i></asp:LinkButton>
+                                <asp:LinkButton ID="btnEdit" CommandName="Edit" runat="server" CssClass="text-info" ToolTip="Edit"><i class="fas fa-edit"></i></asp:LinkButton>
                             </ItemTemplate>
                             <EditItemTemplate>
-                                <asp:LinkButton ID="btnUpdate" CommandName="Update" CssClass="btn btn-success btn-sm gridBtn mr-1" runat="server" ToolTip="Update" OnClientClick="return confirm('Are you sure you want to update this record?');"><i class="fas fa-check"></i></asp:LinkButton>
-                                <asp:LinkButton ID="btncancel" CommandName="Cancel" CssClass="btn btn-danger btn-sm gridBtn" runat="server" ToolTip="Cancel"><i class="fas fa-times"></i></asp:LinkButton>
+                                <asp:LinkButton ID="btnUpdate" CommandName="Update" CssClass="text-success mr-1" runat="server" ToolTip="Update" OnClientClick="return confirm('Are you sure you want to update this record?');"><i class="fas fa-check"></i></asp:LinkButton>
+                                <asp:LinkButton ID="btncancel" CommandName="Cancel" CssClass="text-danger" runat="server" ToolTip="Cancel"><i class="fas fa-times"></i></asp:LinkButton>
                             </EditItemTemplate>
                             <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="10%" />
                             <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="10%" />
