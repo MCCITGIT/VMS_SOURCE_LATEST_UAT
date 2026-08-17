@@ -88,7 +88,7 @@ Partial Class Dispatch_Details
             lblVendorCode.Text = dr("orh_vendor_code").ToString()
             lblVendorName.Text = dr("unit_name").ToString()
             lblRequestDate.Text = dr("created_date").ToString()
-
+            hdnRawMaterialVendorCode.Value = ds.Tables(0).Rows(0)("orh_rawmaterial_vender_code").ToString()
         End If
 
 
