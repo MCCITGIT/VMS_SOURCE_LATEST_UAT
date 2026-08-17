@@ -32,6 +32,15 @@
     <asp:UpdatePanel ID="UpdatePanelFilter" runat="server">
         <ContentTemplate>
             <div class="card">
+                <div class="mst-panel-header">
+                    <div class="mst-panel-header-left">
+                        <span class="mst-panel-icon"><i class="fas fa-filter"></i></span>
+                        <div>
+                            <h5 class="mst-panel-title">Search Receipt</h5>
+                            <p class="mst-panel-subtitle">Filter bulk raw material receipts by vendor and status</p>
+                        </div>
+                    </div>
+                </div>
                 <div class="card-body">
                     <asp:Label ID="lblErrorMessage" ClientIDMode="Static" CssClass="errormsg" Visible="true" runat="server" Style="text-align: left; font-size: 13px; font-weight: bold;" Text=""></asp:Label>
                     <div class="row">
@@ -49,7 +58,7 @@
                         </div>
                         <div class="col-md-3 form-btn-mt">
                             <div class="form-group pb-0">
-                                <asp:LinkButton CssClass="btn btn-primary btn-sm" ID="imgbtnSearch" runat="server" ClientIDMode="Static" OnClick="imgbtnSearch_Click">Search</asp:LinkButton>
+                                <asp:LinkButton CssClass="btn btn-primary btn-sm" ID="imgbtnSearch" runat="server" ClientIDMode="Static" OnClick="imgbtnSearch_Click"><i class="fas fa-search"></i></asp:LinkButton>
                             </div>
                         </div>
                     </div>
@@ -59,6 +68,15 @@
     </asp:UpdatePanel>
 
     <div class="card">
+        <div class="mst-panel-header">
+            <div class="mst-panel-header-left">
+                <span class="mst-panel-icon"><i class="fas fa-list"></i></span>
+                <div>
+                    <h5 class="mst-panel-title">Receipt List</h5>
+                    <p class="mst-panel-subtitle">All bulk raw material receipts and their status</p>
+                </div>
+            </div>
+        </div>
         <div class="card-body">
             <div class="table-responsive" style="overflow-y: auto; max-height: calc(100vh - 290px);">
                 <asp:UpdatePanel ID="UpdatePanelGrid" runat="server">

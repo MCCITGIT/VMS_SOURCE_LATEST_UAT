@@ -151,6 +151,15 @@
     <asp:UpdatePanel ID="UpdatePanel" runat="server">
         <ContentTemplate>
             <div class="card">
+                <div class="mst-panel-header">
+                    <div class="mst-panel-header-left">
+                        <span class="mst-panel-icon"><i class="fas fa-link"></i></span>
+                        <div>
+                            <h5 class="mst-panel-title">Link Raw Material</h5>
+                            <p class="mst-panel-subtitle">Search a raw material and link it to the selected vendor</p>
+                        </div>
+                    </div>
+                </div>
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-4">

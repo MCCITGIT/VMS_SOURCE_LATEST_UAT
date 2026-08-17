@@ -34,6 +34,15 @@
     <asp:UpdatePanel ID="UpdatePanelFilter" runat="server">
         <ContentTemplate>
             <div class="card">
+                <div class="mst-panel-header">
+                    <div class="mst-panel-header-left">
+                        <span class="mst-panel-icon"><i class="fas fa-filter"></i></span>
+                        <div>
+                            <h5 class="mst-panel-title">Search Requisition</h5>
+                            <p class="mst-panel-subtitle">Filter raw material requisitions by vendor and status</p>
+                        </div>
+                    </div>
+                </div>
                 <div class="card-body">                   
                     <div class="row">
                         <div class="col-md-3">
@@ -56,7 +65,7 @@
                         </div>
                         <div class="col-md-3 form-btn-mt">
                             <div class="form-group pb-0">
-                                <asp:LinkButton CssClass="btn btn-primary btn-sm" ID="imgbtnSearch" runat="server" ClientIDMode="Static" OnClick="imgbtnSearch_Click">Search</asp:LinkButton>
+                                <asp:LinkButton CssClass="btn btn-primary btn-sm" ID="imgbtnSearch" runat="server" ClientIDMode="Static" OnClick="imgbtnSearch_Click"><i class="fas fa-search"></i></asp:LinkButton>
                                 <asp:LinkButton ID="ImgbtnAdd" runat="server" CssClass="btn btn-success btn-sm" ClientIDMode="Static" OnClick="ImgbtnAdd_Click">Add</asp:LinkButton>
                                 <asp:Button ID="btnReset" runat="server" Text="Reset" CssClass="btn btn-warning btn-sm" OnClick="btnReset_Click" />
                             </div>
@@ -68,6 +77,15 @@
     </asp:UpdatePanel>
 
     <div class="card">
+        <div class="mst-panel-header">
+            <div class="mst-panel-header-left">
+                <span class="mst-panel-icon"><i class="fas fa-list"></i></span>
+                <div>
+                    <h5 class="mst-panel-title">Requisition List</h5>
+                    <p class="mst-panel-subtitle">All raw material requisitions and their approval status</p>
+                </div>
+            </div>
+        </div>
         <div class="card-body">
             <div class="table-responsive" style="overflow-y: auto; max-height: calc(100vh - 290px);">
                 <asp:UpdatePanel ID="UpdatePanelGrid" runat="server">
