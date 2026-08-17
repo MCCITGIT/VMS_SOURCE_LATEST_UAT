@@ -38,6 +38,15 @@
     <asp:UpdatePanel ID="UpdatePanel" runat="server">
         <ContentTemplate>
             <div class="card">
+                <div class="mst-panel-header">
+                    <div class="mst-panel-header-left">
+                        <span class="mst-panel-icon"><i class="fas fa-plus"></i></span>
+                        <div>
+                            <h5 class="mst-panel-title">Add Requisition</h5>
+                            <p class="mst-panel-subtitle">Select an RM vendor and enter raw material requisition details</p>
+                        </div>
+                    </div>
+                </div>
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-4">
