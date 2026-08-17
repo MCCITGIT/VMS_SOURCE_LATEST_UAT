@@ -176,7 +176,10 @@
                                     EnableCaching="false"
                                     CompletionSetCount="20"
                                     FirstRowSelected="true"
-                                    OnClientItemSelected="onRawMaterialSelected">
+                                    OnClientItemSelected="onRawMaterialSelected"
+                                    CompletionListCssClass="vmsAutoComplete"
+                                    CompletionListItemCssClass="vmsAutoCompleteItem"
+                                    CompletionListHighlightedItemCssClass="vmsAutoCompleteItemHighlight">
                                 </asp:AutoCompleteExtender>
                             </div>
                         </div>

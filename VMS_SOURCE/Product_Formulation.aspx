@@ -160,7 +160,8 @@
                         <asp:HiddenField ID="hdnProductCode" ClientIDMode="Static" runat="server" />
                         <asp:HiddenField ID="hdnProductName" ClientIDMode="Static" runat="server" />
                         <asp:HiddenField ID="hdnSkucode" runat="server" ClientIDMode="Static" />
-                        <asp:AutoCompleteExtender ID="aceProductSearch" runat="server" TargetControlID="txtProductSearch" ServiceMethod="ProductSearch" CompletionInterval="200" EnableCaching="false" CompletionSetCount="20" FirstRowSelected="true" OnClientItemSelected="onProductSelected">
+                        <asp:AutoCompleteExtender ID="aceProductSearch" runat="server" TargetControlID="txtProductSearch" ServiceMethod="ProductSearch" CompletionInterval="200" EnableCaching="false" CompletionSetCount="20" FirstRowSelected="true" OnClientItemSelected="onProductSelected"
+                            CompletionListCssClass="vmsAutoComplete" CompletionListItemCssClass="vmsAutoCompleteItem" CompletionListHighlightedItemCssClass="vmsAutoCompleteItemHighlight">
                         </asp:AutoCompleteExtender>
                         <asp:LinkButton ID="btnLoadShade" runat="server" Style="display: none;"></asp:LinkButton>
                     </div>
@@ -180,7 +181,8 @@
                         </div>
                         <asp:HiddenField ID="txtrawmatid" ClientIDMode="Static" runat="server" />
                         <asp:AutoCompleteExtender ID="aceRawMaterialSearch" runat="server" TargetControlID="txtSearchText" ServiceMethod="RawMaterialSearch" CompletionInterval="200"
-                            EnableCaching="false" CompletionSetCount="20" FirstRowSelected="true" OnClientItemSelected="onRawMaterialSelected">
+                            EnableCaching="false" CompletionSetCount="20" FirstRowSelected="true" OnClientItemSelected="onRawMaterialSelected"
+                            CompletionListCssClass="vmsAutoComplete" CompletionListItemCssClass="vmsAutoCompleteItem" CompletionListHighlightedItemCssClass="vmsAutoCompleteItemHighlight">
                         </asp:AutoCompleteExtender>
                     </div>
                 </div>

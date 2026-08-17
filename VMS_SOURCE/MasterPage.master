@@ -24,6 +24,7 @@
     <script type="text/javascript" src="Scripts/RegEX.js"></script>
     <script type="text/javascript" src="Scripts/AjaxServices.js"></script>
     <script type="text/javascript" src="Scripts/Autocomplete.js"></script>
+    <script type="text/javascript" src="Scripts/vmsAutoCompleteUI.js"></script>
 
     <link type="text/css" rel="Stylesheet" href="includes/select2.min.css" />
     <link type="text/css" rel="Stylesheet" href="includes/select2-bootstrap4.min.css" />

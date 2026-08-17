@@ -123,11 +123,11 @@
                         </asp:TemplateField>
                         <asp:TemplateField HeaderText="Action" HeaderStyle-HorizontalAlign="Center">
                             <ItemTemplate>
-                                <asp:LinkButton ID="btnEdit" CommandName="Edit" runat="server" CssClass="btn btn-info btn-sm gridBtn" ToolTip="Edit"><i class="fas fa-edit"></i></asp:LinkButton>
+                                <asp:LinkButton ID="btnEdit" CommandName="Edit" runat="server" CssClass="text-info" ToolTip="Edit"><i class="fas fa-edit"></i></asp:LinkButton>
                             </ItemTemplate>
                             <EditItemTemplate>
-                                <asp:LinkButton ID="btnUpdate" CommandName="Update" CssClass="btn btn-success btn-sm gridBtn mr-1" runat="server" ToolTip="Update" OnClientClick="return confirm('Are you sure you want to update this record?');"><i class="fas fa-check"></i></asp:LinkButton>
-                                <asp:LinkButton ID="btncancel" CommandName="Cancel" CssClass="btn btn-danger btn-sm gridBtn" runat="server" ToolTip="Cancel"><i class="fas fa-times"></i></asp:LinkButton>
+                                <asp:LinkButton ID="btnUpdate" CommandName="Update" CssClass="text-success mr-1" runat="server" ToolTip="Update" OnClientClick="return confirm('Are you sure you want to update this record?');"><i class="fas fa-check"></i></asp:LinkButton>
+                                <asp:LinkButton ID="btncancel" CommandName="Cancel" CssClass="text-danger" runat="server" ToolTip="Cancel"><i class="fas fa-times"></i></asp:LinkButton>
                             </EditItemTemplate>
                             <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="10%" />
                             <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="10%" />
