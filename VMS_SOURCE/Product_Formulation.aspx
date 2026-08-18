@@ -35,14 +35,17 @@
             var skuCode = values[1];
 
             document.getElementById('<%=hdnProductCode.ClientID%>').value = productCode;
-            document.getElementById('<%=txtProductSearch.ClientID%>').value = text + " (" + productCode + ")";
-            document.getElementById('<%=hdnProductName.ClientID%>').value = text + " (" + productCode + ")";
+            <%-- document.getElementById('<%=txtProductSearch.ClientID%>').value = text + " (" + productCode + ")";
+            document.getElementById('<%=hdnProductName.ClientID%>').value = text + " (" + productCode + ")";--%>
+             document.getElementById('<%=txtProductSearch.ClientID%>').value = text ;
+            document.getElementById('<%=hdnProductName.ClientID%>').value = text;
             document.getElementById('<%=hdnSkucode.ClientID%>').value = skuCode
             // Disable Product textbox after selection
             <%--document.getElementById('<%=txtProductSearch.ClientID%>').readOnly = true;--%>
 
 
-            sender.get_element().value = text + " (" + productCode + ")";
+            //sender.get_element().value = text + " (" + productCode + ")";
+            sender.get_element().value = text;
             //__doPostBack('<%=btnLoadShade.UniqueID%>', '');
             // Trigger ASP.NET TextChanged event
             __doPostBack('<%= txtProductSearch.UniqueID %>', '');
@@ -62,8 +65,10 @@
             var value = e.get_value();
             var text = e.get_text();
             document.getElementById('<%=txtrawmatid.ClientID%>').value = value;
-            document.getElementById('<%=txtSearchText.ClientID%>').value = text + " (" + value + ")";
-            sender.get_element().value = text + " (" + value + ")";
+            <%--document.getElementById('<%=txtSearchText.ClientID%>').value = text + " (" + value + ")";
+            sender.get_element().value = text + " (" + value + ")";--%>
+            document.getElementById('<%=txtSearchText.ClientID%>').value = text;
+            sender.get_element().value = text;
         }
 
         function clearRawMaterialSelection() {
@@ -128,14 +133,14 @@
         </div>
         <div class="card-body">
             <div class="row">
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <div class="form-group">
                         <label class="form-control-label">Brand:<span id="Span1" class="mandatory">*</span></label>
                         <asp:DropDownList ID="ddlBrand" ClientIDMode="Static" CssClass="form-control select2" TabIndex="1" runat="server" AutoPostBack="true" OnSelectedIndexChanged="ddlBrand_SelectedIndexChanged"></asp:DropDownList>
                         <asp:HiddenField ID="hdnId" runat="server" ClientIDMode="Static" />
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <div class="form-group">
                         <label class="form-control-label">Product:<span class="mandatory">*</span></label>
                         <div class="input-group product-search-group">
@@ -156,7 +161,7 @@
                         <asp:LinkButton ID="btnLoadShade" runat="server" Style="display: none;"></asp:LinkButton>
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <div class="form-group">
                         <label class="form-control-label">Search Raw Material:<span class="mandatory">*</span></label>
                         <div class="input-group product-search-group">
@@ -176,9 +181,7 @@
                         </asp:AutoCompleteExtender>
                     </div>
                 </div>
-            </div>
-            <div class="row">
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <div class="form-group">
                         <label class="form-control-label">Consumption Ratio:<span class="mandatory">*</span> </label>
                         <asp:TextBox ID="txtRatio" ClientIDMode="Static" CssClass="form-control" runat="server" AutoComplete="Off" Placeholder="Enter Consumption Ratio"
@@ -186,6 +189,8 @@
                         </asp:TextBox>
                     </div>
                 </div>
+            </div>
+            <div class="row" runat="server" visible="false">                
                 <!-- Unit of Measurement -->
                 <div class="col-md-4">
                     <div class="form-group">
@@ -200,15 +205,15 @@
                         OnSelectedIndexChanged="ddlRecipe_SelectedIndexChanged">
                     </asp:DropDownList>
                 </div>
-                <div class="col-md-1 form-btn-mt">
-                    <div class="form-group">
-                        <asp:Button ID="btnAdd" runat="server" Text="Add" CssClass="btn btn-success btn-sm" OnClick="btnAdd_Click" />
-                    </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    <asp:Button ID="btnAdd" runat="server" Text="Add" CssClass="btn btn-success btn-sm" OnClick="btnAdd_Click" />
                 </div>
             </div>
             <asp:UpdatePanel ID="UpdatePanel5" runat="server">
                 <ContentTemplate>
-                    <asp:Label ID="lblErrorMessage" ClientIDMode="Static" CssClass="errormsg" Visible="true" runat="server" Style="text-align: left; font-size: 13px; font-weight: bold;" Text=""></asp:Label>
+                    <asp:Label ID="lblErrorMessage" ClientIDMode="Static" CssClass="errormsg" Visible="true" runat="server" Style="text-align: left; font-size: 10px; font-weight: bold;" Text=""></asp:Label>
                 </ContentTemplate>
             </asp:UpdatePanel>
         </div>
@@ -228,7 +233,7 @@
         <div class="card-body">
             <div class="table-responsive">
                 <asp:GridView ID="gvVendorRawMat" ClientIDMode="Static" runat="server" AutoGenerateColumns="False" CssClass="table table-hover upgradDataGrid"
-                    EmptyDataText="No records added." GridLines="both" ShowFooter="false">
+                    EmptyDataText="No records added." GridLines="both" ShowFooter="true">
                     <RowStyle CssClass="tlrowlight" />
                     <HeaderStyle CssClass="headerGrid" />
                     <Columns>
@@ -265,7 +270,7 @@
                             <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="25%" />
                             <FooterStyle HorizontalAlign="Center" VerticalAlign="Middle" />
                         </asp:TemplateField>
-                        <asp:TemplateField HeaderText="Unit of Measurement" HeaderStyle-HorizontalAlign="Center">
+                        <asp:TemplateField HeaderText="Unit of Measurement" HeaderStyle-HorizontalAlign="Center" Visible="false">
                             <ItemTemplate>
                                 <asp:Label ID="lblUnit" runat="server" Text='<%# Bind("unit") %>'></asp:Label>
                             </ItemTemplate>
@@ -289,7 +294,7 @@
             <div class="row">
                 <div class="col-md-12 text-center">
                     <asp:Button ID="btnSubmit" runat="server" Text="Submit" CssClass="btn btn-primary btn-sm" ClientIDMode="Static" Visible="false"
-                        OnClientClick="return confirm('Are you sure you want to submit this record?');" />
+                        OnClientClick="return validateFormulationSubmit();" />
                     <asp:Button ID="btnCancel" runat="server" Text="Back" CssClass="btn btn-secondary btn-sm" OnClick="btnCancel_Click1" />
                 </div>
             </div>

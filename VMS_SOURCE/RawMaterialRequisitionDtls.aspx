@@ -114,7 +114,7 @@
                         <div class="col-md-12 text-center">
                             <asp:Button ID="btnSubmit" runat="server" Text="Submit" CssClass="btn btn-primary btn-sm" ClientIDMode="Static" Visible="false"/>
                             <asp:Button ID="btnCancel" runat="server" Text="Back" CssClass="btn btn-secondary btn-sm" />
-                            <asp:Button ID="btnReset" runat="server" Text="Reset" CssClass="btn btn-warning btn-sm" />
+                           <%-- <asp:Button ID="btnReset" runat="server" Text="Reset" CssClass="btn btn-warning btn-sm" />--%>
                         </div>
                     </div>
                     <asp:UpdatePanel ID="UpdatePanel5" runat="server">

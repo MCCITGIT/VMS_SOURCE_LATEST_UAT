@@ -238,11 +238,13 @@
                                         <asp:BoundField DataField="rawmat_name" HeaderText="Raw Material Name" ReadOnly="true" />
                                         <asp:TemplateField HeaderText="Rate">
                                             <ItemTemplate>
-                                                <asp:TextBox ID="txtRate" runat="server" CssClass="form-control form-control-sm" Text='<%# Bind("rate") %>' AutoComplete="Off"
+                                                <asp:TextBox ID="txtRate" runat="server" CssClass="form-control form-control-sm text-right" Text='<%# Bind("rate") %>' AutoComplete="Off"
                                                     onkeypress="return allowRateTwoDecimal(event, this);"
                                                     oninput="sanitizeRateTwoDecimal(this);"
                                                     onblur="formatRateTwoDecimal(this);"></asp:TextBox>
                                             </ItemTemplate>
+                                            <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" />
+                                            <ItemStyle HorizontalAlign="Right" VerticalAlign="Middle" />
                                         </asp:TemplateField>
                                         <asp:TemplateField HeaderText="Active" HeaderStyle-HorizontalAlign="Center">
                                             <ItemTemplate>

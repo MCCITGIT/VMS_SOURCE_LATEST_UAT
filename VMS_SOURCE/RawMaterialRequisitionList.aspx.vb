@@ -157,7 +157,8 @@ Partial Class RawMaterialRequisitionList
                 lblErrorMessage.ForeColor = Drawing.Color.Green
                 lblErrorMessage.Text = approvedCount.ToString() & " requisition(s) approved successfully."
                 If mailSentCount > 0 OrElse mailFailedCount > 0 OrElse mailMissingCount > 0 Then
-                    lblErrorMessage.Text &= " Mail sent: " & mailSentCount.ToString() & "."
+                    'lblErrorMessage.Text &= " Link has been sent to the concern vendor for despatch : " & mailSentCount.ToString() & "."
+                    lblErrorMessage.Text &= " Link has been sent to the concern vendor for despatch ."
                     If mailMissingCount > 0 Then
                         lblErrorMessage.Text &= " Mail ID not found: " & mailMissingCount.ToString() & "."
                     End If
@@ -179,7 +180,8 @@ Partial Class RawMaterialRequisitionList
 
     Private Function BuildDispatchListUrl(ByVal rmVendorCode As String) As String
         Dim redirectUrl As String = "Dispatch_List.aspx?rmvendor_code=" & Server.UrlEncode(rmVendorCode)
-        Dim baseUrl As String = "https://bpilweb.bergerindia.com/vms/"
+        'Dim baseUrl As String = "https://bpilweb.bergerindia.com/vms/"
+        Dim baseUrl As String = "http://localhost:15723/"
         Return New Uri(New Uri(baseUrl), redirectUrl).ToString()
     End Function
 

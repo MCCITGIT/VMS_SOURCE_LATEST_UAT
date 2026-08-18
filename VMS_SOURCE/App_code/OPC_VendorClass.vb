@@ -96,6 +96,19 @@ Public Class OPC_VendorClass
         ds = DBFactory.GetHelper().ExecuteDataSet("[dbo].[GetRawmaterialData]", CommandType.StoredProcedure, sqlParams)
         Return ds
     End Function
+    Public Function GetRawMaterial_SearchList(ByVal searchText As String) As DataSet
+        Dim ds As DataSet
+        Dim sqlParams(0) As SqlParameter
+
+        sqlParams(0) = New SqlParameter()
+        sqlParams(0).ParameterName = "@search_key"
+        sqlParams(0).DbType = DbType.String
+        sqlParams(0).Direction = ParameterDirection.Input
+        sqlParams(0).Value = If(Not String.IsNullOrWhiteSpace(searchText), CObj(searchText.Trim()), DBNull.Value)
+
+        ds = DBFactory.GetHelper().ExecuteDataSet("[dbo].[GetRawmaterial]", CommandType.StoredProcedure, sqlParams)
+        Return ds
+    End Function
     Function InsertUpdateRawMatMasterDtls(ByRef entity As RawMaterialMasterEntity) As Integer
         Dim sqlConn As SqlConnection = Nothing
         sqlConn = DBFactory.GetHelper.OpenConnection()
@@ -725,6 +738,11 @@ Public Class OPC_VendorClass
         DS = DBFactory.GetHelper().ExecuteDataSet("[dbo].[getrawmat_vendorlist]", CommandType.StoredProcedure)
         Return DS
     End Function
+    Function GetRawMaterialVendorList_vr1() As DataSet
+        Dim DS As System.Data.DataSet
+        DS = DBFactory.GetHelper().ExecuteDataSet("[dbo].[getrawmat_vendorlist_vr1]", CommandType.StoredProcedure)
+        Return DS
+    End Function
 #End Region
 
 #Region "Raw Material Requisition"
@@ -910,7 +928,8 @@ Public Class OPC_VendorClass
         sqlParams(1).Direction = Data.ParameterDirection.Input
         sqlParams(1).Value = If(Not String.IsNullOrWhiteSpace(status), CObj(status.Trim()), DBNull.Value)
 
-        DS = DBFactory.GetHelper().ExecuteDataSet("[dbo].[opc_bulkreceiptlist]", Data.CommandType.StoredProcedure, sqlParams)
+        'DS = DBFactory.GetHelper().ExecuteDataSet("[dbo].[opc_bulkreceiptlist]", Data.CommandType.StoredProcedure, sqlParams)
+        DS = DBFactory.GetHelper().ExecuteDataSet("[dbo].[opc_bulkreceiptlist_vr1]", Data.CommandType.StoredProcedure, sqlParams)
         Return DS
     End Function
     Function GetRawMaterial_DespatchHdrList(ByVal despatchid As String) As DataSet

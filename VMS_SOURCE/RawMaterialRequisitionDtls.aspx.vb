@@ -249,13 +249,13 @@ Partial Class RawMaterialRequisitionDtls
         Response.Redirect("~/RawMaterialRequisitionList.aspx", False)
     End Sub
 
-    Protected Sub btnReset_Click(sender As Object, e As EventArgs) Handles btnReset.Click
-        If Not String.IsNullOrWhiteSpace(Request.QueryString("request_id")) Then
-            Response.Redirect("~/RawMaterialRequisitionDtls.aspx?request_id=" & Server.UrlEncode(Request.QueryString("request_id")), False)
-        Else
-            Response.Redirect("~/RawMaterialRequisitionDtls.aspx", False)
-        End If
-    End Sub
+    'Protected Sub btnReset_Click(sender As Object, e As EventArgs) Handles btnReset.Click
+    '    If Not String.IsNullOrWhiteSpace(Request.QueryString("request_id")) Then
+    '        Response.Redirect("~/RawMaterialRequisitionDtls.aspx?request_id=" & Server.UrlEncode(Request.QueryString("request_id")), False)
+    '    Else
+    '        Response.Redirect("~/RawMaterialRequisitionDtls.aspx", False)
+    '    End If
+    'End Sub
 
     Private Function BuildRequisitionDetailTable() As DataTable
         Dim dt As New DataTable()

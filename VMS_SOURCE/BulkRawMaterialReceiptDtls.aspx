@@ -177,40 +177,40 @@
                                                 </asp:TemplateField>
                                                 <asp:TemplateField HeaderText="Request Qty">
                                                     <ItemTemplate>
-                                                        <asp:TextBox ID="txtQty" runat="server" CssClass="form-control" Text='<%# Eval("request_quant", "{0:0.##}") %>' Enabled="false"></asp:TextBox>
+                                                        <asp:TextBox ID="txtQty" runat="server" CssClass="form-control text-right" Text='<%# Eval("request_quant", "{0:0.##}") %>' Enabled="false"></asp:TextBox>
                                                     </ItemTemplate>
-                                                    <HeaderStyle HorizontalAlign="Center" Width="12%" />
-                                                    <ItemStyle HorizontalAlign="Right" Width="12%" />
+                                                    <HeaderStyle HorizontalAlign="Right" VerticalAlign="Middle" Width="12%" />
+                                                    <ItemStyle HorizontalAlign="Right" VerticalAlign="Middle" Width="12%" />
                                                 </asp:TemplateField>
                                                 <asp:TemplateField HeaderText="Received Qty">
                                                     <ItemTemplate>
-                                                        <asp:TextBox ID="txtRecMatchQty" runat="server" CssClass="form-control" Text='<%# Eval("despatch_qunt", "{0:0.##}") %>' Enabled="false"></asp:TextBox>
+                                                        <asp:TextBox ID="txtRecMatchQty" runat="server" CssClass="form-control text-right" Text='<%# Eval("despatch_qunt", "{0:0.##}") %>' Enabled="false"></asp:TextBox>
                                                     </ItemTemplate>
-                                                    <HeaderStyle HorizontalAlign="Center" Width="12%" />
-                                                    <ItemStyle HorizontalAlign="Right" Width="12%" />
+                                                    <HeaderStyle HorizontalAlign="Right" VerticalAlign="Middle" Width="12%" />
+                                                    <ItemStyle HorizontalAlign="Right" VerticalAlign="Middle" Width="12%" />
                                                 </asp:TemplateField>
                                                 <asp:TemplateField HeaderText="Good">
                                                     <ItemTemplate>
-                                                        <asp:TextBox ID="txtGood" runat="server" CssClass="form-control" Text='<%# Eval("Good_Qty", "{0:0.##}") %>' oninput="validateDecimalInput(this)"></asp:TextBox>
+                                                        <asp:TextBox ID="txtGood" runat="server" CssClass="form-control text-right" Text='<%# Eval("Good_Qty", "{0:0.##}") %>' oninput="validateDecimalInput(this)"></asp:TextBox>
                                                     </ItemTemplate>
-                                                    <HeaderStyle HorizontalAlign="Center" Width="10%" />
-                                                    <ItemStyle HorizontalAlign="Right" Width="10%" />
+                                                    <HeaderStyle HorizontalAlign="Right" VerticalAlign="Middle" Width="10%" />
+                                                    <ItemStyle HorizontalAlign="Right" VerticalAlign="Middle" Width="10%" />
                                                 </asp:TemplateField>
 
                                                 <asp:TemplateField HeaderText="Damage">
                                                     <ItemTemplate>
-                                                        <asp:TextBox ID="txtDamage" runat="server" CssClass="form-control" Text='<%# Eval("Damage_Qty", "{0:0.##}") %>' oninput="validateDecimalInput(this)"></asp:TextBox>
+                                                        <asp:TextBox ID="txtDamage" runat="server" CssClass="form-control text-right" Text='<%# Eval("Damage_Qty", "{0:0.##}") %>' oninput="validateDecimalInput(this)"></asp:TextBox>
                                                     </ItemTemplate>
-                                                    <HeaderStyle HorizontalAlign="Center" Width="10%" />
-                                                    <ItemStyle HorizontalAlign="Right" Width="10%" />
+                                                    <HeaderStyle HorizontalAlign="Right" VerticalAlign="Middle" Width="10%" />
+                                                    <ItemStyle HorizontalAlign="Right" VerticalAlign="Middle" Width="10%" />
                                                 </asp:TemplateField>
 
                                                 <asp:TemplateField HeaderText="Short">
                                                     <ItemTemplate>
-                                                        <asp:TextBox ID="txtShort" runat="server" CssClass="form-control" Text='<%# Eval("Short_Qty", "{0:0.##}") %>' oninput="validateDecimalInput(this)"></asp:TextBox>
+                                                        <asp:TextBox ID="txtShort" runat="server" CssClass="form-control text-right" Text='<%# Eval("Short_Qty", "{0:0.##}") %>' oninput="validateDecimalInput(this)"></asp:TextBox>
                                                     </ItemTemplate>
-                                                    <HeaderStyle HorizontalAlign="Center" Width="10%" />
-                                                    <ItemStyle HorizontalAlign="Right" Width="10%" />
+                                                    <HeaderStyle HorizontalAlign="Right" VerticalAlign="Middle" Width="10%" />
+                                                    <ItemStyle HorizontalAlign="Right" VerticalAlign="Middle" Width="10%" />
                                                 </asp:TemplateField>
                                                 <asp:TemplateField HeaderText="" Visible="false">
                                                     <ItemTemplate>

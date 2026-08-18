@@ -195,11 +195,11 @@ Partial Class Product_Formulation
             Exit Sub
         End If
 
-        If String.IsNullOrWhiteSpace(txtmeasurement.Text) Then
-            lblErrorMessage.ForeColor = System.Drawing.Color.Red
-            lblErrorMessage.Text = "Please enter Unit of Measurement."
-            Exit Sub
-        End If
+        'If String.IsNullOrWhiteSpace(txtmeasurement.Text) Then
+        '    lblErrorMessage.ForeColor = System.Drawing.Color.Red
+        '    lblErrorMessage.Text = "Please enter Unit of Measurement."
+        '    Exit Sub
+        'End If
 
         Dim dt As DataTable = GetGridTable()
         Dim selectedbrandCode As String = ddlBrand.SelectedValue.Trim()
@@ -241,7 +241,8 @@ Partial Class Product_Formulation
         dr("rawmat_name") = rawMatName
 
         dr("ratio") = txtRatio.Text
-        dr("unit") = txtmeasurement.Text
+        'dr("unit") = txtmeasurement.Text
+        dr("unit") = ""
         dt.Rows.Add(dr)
 
         ViewState(GridTableKey) = dt
@@ -336,9 +337,9 @@ Partial Class Product_Formulation
                 dr("fd_unit") = measurement
                 dt.Rows.Add(dr)
             Next
-            If totalRatio > 100 Then
+            If totalRatio <> 100 Then
                 lblErrorMessage.ForeColor = System.Drawing.Color.Red
-                lblErrorMessage.Text = "Total Consumption Ratio should be within 100%."
+                lblErrorMessage.Text = "Total Consumption Ratio should be equal 100%."
                 Exit Sub
             End If
 

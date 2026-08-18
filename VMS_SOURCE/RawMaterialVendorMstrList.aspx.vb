@@ -95,7 +95,7 @@ Partial Class RawMaterialVendorMstrList
     Private Sub PopulateVendor()
         Dim obj As New OPC_VendorClass()
         Dim ds As New DataSet()
-        ds = obj.GetRawMaterialVendorList()
+        ds = obj.GetRawMaterialVendorList_vr1()
 
         ddlVendor.Items.Clear()
         If (Not (ds Is Nothing) AndAlso ds.Tables.Count > 0 AndAlso Not (ds.Tables(0) Is Nothing) AndAlso ds.Tables(0).Rows.Count > 0) Then

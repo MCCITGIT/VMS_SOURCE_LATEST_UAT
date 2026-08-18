@@ -40,7 +40,7 @@ Partial Class AddProductMaster
 
                     If MsgID = 1 Then
                         lblErrorMessage.ForeColor = System.Drawing.Color.Green
-                        lblErrorMessage.Text = "Brand Save Succssfully."
+                        lblErrorMessage.Text = "Brand Saved Succssfully."
                         'btnSubmit.Enabled = False
                         txtBrandName.Text = ""
                         BrandDetailsListLoad()
