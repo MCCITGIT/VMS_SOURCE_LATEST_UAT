@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="VB" MasterPageFile="~/MasterPage.master" AutoEventWireup="false" CodeFile="VendorRawMaterialLink.aspx.vb" Inherits="VendorRawMaterialLink" %>
+﻿<%@ Page Title="Vendor Raw Material Linking" Language="VB" MasterPageFile="~/MasterPage.master" AutoEventWireup="false" CodeFile="VendorRawMaterialLink.aspx.vb" Inherits="VendorRawMaterialLink" %>
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
@@ -131,8 +131,8 @@
 
         function resetProductField() {
             document.getElementById('<%=txtVendorSearch.ClientID%>').value = '';
-         document.getElementById('<%=hdnVendorCode.ClientID%>').value = '';
-     }
+            document.getElementById('<%=hdnVendorCode.ClientID%>').value = '';
+        }
     </script>
 
     <div class="breadcrumbs">
@@ -184,11 +184,14 @@
                                     EnableCaching="false"
                                     CompletionSetCount="20"
                                     FirstRowSelected="true"
-                                    OnClientItemSelected="onProductSelected">
+                                    OnClientItemSelected="onProductSelected"
+                                    CompletionListCssClass="vmsAutoComplete"
+                                    CompletionListItemCssClass="vmsAutoCompleteItem"
+                                    CompletionListHighlightedItemCssClass="vmsAutoCompleteItemHighlight">
                                 </asp:AutoCompleteExtender>
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <div class="form-group">
                                 <label class="form-control-label">Search Raw Material:<span id="Span2" class="mandatory">*</span></label>
                                 <div class="input-group product-search-group">
@@ -225,7 +228,9 @@
                                 <asp:GridView ID="gvVendorRawMat" ClientIDMode="Static" runat="server" AutoGenerateColumns="False" CssClass="table table-hover upgradDataGrid"
                                     EmptyDataText="No records added." GridLines="both">
                                     <RowStyle CssClass="tlrowlight" />
+                                    <PagerStyle CssClass="PagerGrid" HorizontalAlign="Right" />
                                     <HeaderStyle CssClass="headerGrid" />
+                                    <FooterStyle CssClass="footerGrid" />
                                     <Columns>
                                         <asp:TemplateField HeaderText="Vendor Name">
                                             <ItemTemplate>
@@ -277,7 +282,6 @@
                         <div class="col-md-12 text-center">
                             <asp:Button ID="btnSubmit" runat="server" Text="Submit" CssClass="btn btn-primary btn-sm" ClientIDMode="Static" Visible="false" />
                             <asp:Button ID="btnCancel" runat="server" Text="Back" CssClass="btn btn-secondary btn-sm" />
-
                         </div>
                     </div>
                     <asp:UpdatePanel ID="UpdatePanel5" runat="server">
