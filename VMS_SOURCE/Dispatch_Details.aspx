@@ -160,7 +160,7 @@
             background: #ffffff;
             border: 1px solid #dcdcdc;
             border-radius: 16px;
-            overflow: hidden;
+            /*overflow: hidden;*/
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.07);
         }
 
