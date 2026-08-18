@@ -910,7 +910,8 @@ Public Class OPC_VendorClass
         sqlParams(1).Direction = Data.ParameterDirection.Input
         sqlParams(1).Value = If(Not String.IsNullOrWhiteSpace(status), CObj(status.Trim()), DBNull.Value)
 
-        DS = DBFactory.GetHelper().ExecuteDataSet("[dbo].[opc_bulkreceiptlist]", Data.CommandType.StoredProcedure, sqlParams)
+        'DS = DBFactory.GetHelper().ExecuteDataSet("[dbo].[opc_bulkreceiptlist]", Data.CommandType.StoredProcedure, sqlParams)
+        DS = DBFactory.GetHelper().ExecuteDataSet("[dbo].[opc_bulkreceiptlist_vr1]", Data.CommandType.StoredProcedure, sqlParams)
         Return DS
     End Function
     Function GetRawMaterial_DespatchHdrList(ByVal despatchid As String) As DataSet
