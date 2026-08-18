@@ -317,7 +317,7 @@ Public Class POLinkingRequestClass
         sqlConn = DBFactory.GetHelper.OpenConnection()
 
         Dim MsgID As Integer
-        Dim sqlParams(19) As SqlParameter
+        Dim sqlParams(20) As SqlParameter
 
         Try
             sqlTrans = sqlConn.BeginTransaction()
@@ -448,6 +448,17 @@ Public Class POLinkingRequestClass
             sqlParams(19).SqlDbType = SqlDbType.NVarChar
             sqlParams(19).Size = 4000
             sqlParams(19).Direction = Data.ParameterDirection.Output
+
+            sqlParams(20) = New SqlParameter()
+            sqlParams(20).ParameterName = "@CourierDate"
+            sqlParams(20).SqlDbType = SqlDbType.DateTime
+            sqlParams(20).Direction = Data.ParameterDirection.Input
+
+            If dispatchEntity.CourDt = DateTime.MinValue Then
+                sqlParams(20).Value = DBNull.Value
+            Else
+                sqlParams(20).Value = dispatchEntity.CourDt
+            End If
 
             Dim sqlCmd As New SqlCommand()
             sqlCmd.Connection = sqlConn
