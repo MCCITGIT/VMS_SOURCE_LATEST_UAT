@@ -106,6 +106,7 @@ Partial Class Dispatch_List
     End Sub
 
     Protected Sub lbtnDetails_Click(sender As Object, e As EventArgs)
+
         Dim lbtn As LinkButton = CType(sender, LinkButton)
 
         Dim row As GridViewRow = CType(lbtn.NamingContainer, GridViewRow)
@@ -116,13 +117,21 @@ Partial Class Dispatch_List
         Dim orhId As String = hdnReqId.Value
         Dim orhVendorCode As String = hdnVendorCode.Value
 
-        If Not String.IsNullOrEmpty(orhId) And Not String.IsNullOrEmpty(orhVendorCode) Then
-            Dim url As String = "Dispatch_Details.aspx?orh_id=" &
-                                Server.UrlEncode(orhId) &
-                                "&orh_vendor_code=" &
-                                Server.UrlEncode(orhVendorCode)
+        'Get selected status
+        Dim dispatchStatus As String = ddlStatus.SelectedValue
+
+        If Not String.IsNullOrEmpty(orhId) AndAlso
+           Not String.IsNullOrEmpty(orhVendorCode) AndAlso
+           Not String.IsNullOrEmpty(dispatchStatus) Then
+
+            Dim url As String =
+                "Dispatch_Details.aspx?orh_id=" & Server.UrlEncode(orhId) &
+                "&orh_vendor_code=" & Server.UrlEncode(orhVendorCode) &
+                "&dispatch_status=" & Server.UrlEncode(dispatchStatus)
+
             Response.Redirect(url)
-            'Response.Redirect("Dispatch_List.aspx")
+
         End If
+
     End Sub
 End Class

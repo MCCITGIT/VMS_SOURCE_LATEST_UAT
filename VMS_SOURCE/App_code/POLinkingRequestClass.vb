@@ -330,7 +330,7 @@ Public Class POLinkingRequestClass
 
             sqlParams(1) = New SqlParameter()
             sqlParams(1).ParameterName = "@CourierID"
-            sqlParams(1).SqlDbType = SqlDbType.Int
+            sqlParams(1).SqlDbType = SqlDbType.VarChar
             sqlParams(1).Direction = Data.ParameterDirection.Input
             sqlParams(1).Value = dispatchEntity.CourierId
 
@@ -521,6 +521,30 @@ Public Class POLinkingRequestClass
 
         DS = DBFactory.GetHelper().ExecuteDataSet("[dbo].[opc_get_lov_details]", System.Data.CommandType.StoredProcedure, sqlParams)
         Return DS
+    End Function
+
+    Public Function GetDispatchDetails(ByVal orhId As Integer, ByVal vendorCode As String) As DataSet
+        Try
+            Dim DS As DataSet
+            Dim sqlParams(1) As SqlParameter
+
+            sqlParams(0) = New SqlParameter()
+            sqlParams(0).ParameterName = "@odh_id"
+            sqlParams(0).DbType = DbType.Int32
+            sqlParams(0).Direction = System.Data.ParameterDirection.Input
+            sqlParams(0).Value = If(orhId > 0, CObj(orhId), DBNull.Value)
+
+            sqlParams(1) = New SqlParameter()
+            sqlParams(1).ParameterName = "@vendor_code"
+            sqlParams(1).DbType = DbType.String
+            sqlParams(1).Direction = System.Data.ParameterDirection.Input
+            sqlParams(1).Value = If(vendorCode = "", DBNull.Value, CObj(vendorCode))
+
+            DS = DBFactory.GetHelper().ExecuteDataSet("[dbo].[opc_get_dispatch_dtls]", System.Data.CommandType.StoredProcedure, sqlParams)
+            Return DS
+        Catch ex As Exception
+            Throw ex
+        End Try
     End Function
 #End Region
 End Class

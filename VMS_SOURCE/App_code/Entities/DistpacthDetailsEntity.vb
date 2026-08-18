@@ -5,7 +5,7 @@ Public Class DistpacthDetailsEntity
     ' ---------------- Header fields (odh_*) ----------------
     Private m_RequestID As Integer
     Private m_DispatchDate As DateTime
-    Private m_CourierID As Integer
+    Private m_CourierID As String
     Private m_InvNo As String
     Private m_InvDate As DateTime
     Private m_TransName As String
@@ -47,7 +47,7 @@ Public Class DistpacthDetailsEntity
     Public Sub New()
         m_RequestID = Integer.MinValue
         m_DispatchDate = DateTime.MinValue
-        m_CourierID = Integer.MinValue
+        m_CourierID = String.Empty
         m_InvNo = String.Empty
         m_InvDate = DateTime.MinValue
         m_TransName = String.Empty
@@ -102,11 +102,11 @@ Public Class DistpacthDetailsEntity
         End Set
     End Property
 
-    Public Property CourierId() As Integer
+    Public Property CourierId() As String
         Get
             Return m_CourierID
         End Get
-        Set(ByVal value As Integer)
+        Set(ByVal value As String)
             m_CourierID = value
         End Set
     End Property
