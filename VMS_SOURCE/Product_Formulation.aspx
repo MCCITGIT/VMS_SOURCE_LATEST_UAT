@@ -35,14 +35,17 @@
             var skuCode = values[1];
 
             document.getElementById('<%=hdnProductCode.ClientID%>').value = productCode;
-            document.getElementById('<%=txtProductSearch.ClientID%>').value = text + " (" + productCode + ")";
-            document.getElementById('<%=hdnProductName.ClientID%>').value = text + " (" + productCode + ")";
+            <%-- document.getElementById('<%=txtProductSearch.ClientID%>').value = text + " (" + productCode + ")";
+            document.getElementById('<%=hdnProductName.ClientID%>').value = text + " (" + productCode + ")";--%>
+             document.getElementById('<%=txtProductSearch.ClientID%>').value = text ;
+            document.getElementById('<%=hdnProductName.ClientID%>').value = text;
             document.getElementById('<%=hdnSkucode.ClientID%>').value = skuCode
             // Disable Product textbox after selection
             <%--document.getElementById('<%=txtProductSearch.ClientID%>').readOnly = true;--%>
 
 
-            sender.get_element().value = text + " (" + productCode + ")";
+            //sender.get_element().value = text + " (" + productCode + ")";
+            sender.get_element().value = text;
             //__doPostBack('<%=btnLoadShade.UniqueID%>', '');
             // Trigger ASP.NET TextChanged event
             __doPostBack('<%= txtProductSearch.UniqueID %>', '');
@@ -62,8 +65,10 @@
             var value = e.get_value();
             var text = e.get_text();
             document.getElementById('<%=txtrawmatid.ClientID%>').value = value;
-            document.getElementById('<%=txtSearchText.ClientID%>').value = text + " (" + value + ")";
-            sender.get_element().value = text + " (" + value + ")";
+            <%--document.getElementById('<%=txtSearchText.ClientID%>').value = text + " (" + value + ")";
+            sender.get_element().value = text + " (" + value + ")";--%>
+            document.getElementById('<%=txtSearchText.ClientID%>').value = text;
+            sender.get_element().value = text;
         }
 
         function clearRawMaterialSelection() {
@@ -187,7 +192,7 @@
                     </div>
                 </div>
                 <!-- Unit of Measurement -->
-                <div class="col-md-4">
+                <div class="col-md-4" runat="server" visible="false">
                     <div class="form-group">
                         <label class="form-control-label">Unit of Measurement:<span class="mandatory">*</span> </label>
                         <asp:TextBox ID="txtmeasurement" ClientIDMode="Static" CssClass="form-control" runat="server" AutoComplete="Off" Placeholder="Enter Unit of Measurement">
@@ -265,7 +270,7 @@
                             <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="25%" />
                             <FooterStyle HorizontalAlign="Center" VerticalAlign="Middle" />
                         </asp:TemplateField>
-                        <asp:TemplateField HeaderText="Unit of Measurement" HeaderStyle-HorizontalAlign="Center">
+                        <asp:TemplateField HeaderText="Unit of Measurement" HeaderStyle-HorizontalAlign="Center" Visible="false">
                             <ItemTemplate>
                                 <asp:Label ID="lblUnit" runat="server" Text='<%# Bind("unit") %>'></asp:Label>
                             </ItemTemplate>
@@ -289,7 +294,7 @@
             <div class="row">
                 <div class="col-md-12 text-center">
                     <asp:Button ID="btnSubmit" runat="server" Text="Submit" CssClass="btn btn-primary btn-sm" ClientIDMode="Static" Visible="false"
-                        OnClientClick="return confirm('Are you sure you want to submit this record?');" />
+                        OnClientClick="return validateFormulationSubmit();" />
                     <asp:Button ID="btnCancel" runat="server" Text="Back" CssClass="btn btn-secondary btn-sm" OnClick="btnCancel_Click1" />
                 </div>
             </div>
