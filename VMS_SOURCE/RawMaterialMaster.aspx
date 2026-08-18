@@ -30,8 +30,10 @@
             var value = e.get_value();
             var text = e.get_text();
             document.getElementById('<%=txtrawmatid.ClientID%>').value = value;
-            document.getElementById('<%=txtSearchText.ClientID%>').value = text + " (" + value + ")";
-            sender.get_element().value = text + " (" + value + ")";
+            <%--document.getElementById('<%=txtSearchText.ClientID%>').value = text + " (" + value + ")";--%>
+            document.getElementById('<%=txtSearchText.ClientID%>').value = text ;
+            //sender.get_element().value = text + " (" + value + ")";
+            sender.get_element().value = text;
         }
 
         function clearRawMaterialSelection() {

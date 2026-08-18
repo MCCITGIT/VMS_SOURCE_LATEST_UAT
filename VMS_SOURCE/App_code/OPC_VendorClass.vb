@@ -725,6 +725,11 @@ Public Class OPC_VendorClass
         DS = DBFactory.GetHelper().ExecuteDataSet("[dbo].[getrawmat_vendorlist]", CommandType.StoredProcedure)
         Return DS
     End Function
+    Function GetRawMaterialVendorList_vr1() As DataSet
+        Dim DS As System.Data.DataSet
+        DS = DBFactory.GetHelper().ExecuteDataSet("[dbo].[getrawmat_vendorlist_vr1]", CommandType.StoredProcedure)
+        Return DS
+    End Function
 #End Region
 
 #Region "Raw Material Requisition"

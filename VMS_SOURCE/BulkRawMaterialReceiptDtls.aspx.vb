@@ -832,12 +832,14 @@ Partial Class BulkRawMaterialReceiptDtls
             Dim damageQty As Decimal = ToDecimal(dr("damage_qty"))
             Dim totalQty As Decimal = goodQty + shortQty + damageQty
             If totalQty <> receivedQty Then
+                'Return "For Raw Material " & rawMaterialCode &
+                '   ", Good Qty + Short Qty + Damage Qty must be equal to Received Qty. " &
+                '   "Received Qty: " & receivedQty.ToString("0.##") &
+                '   ", Good: " & goodQty.ToString("0.##") &
+                '   ", Short: " & shortQty.ToString("0.##") &
+                '   ", Damage: " & damageQty.ToString("0.##") & "."
                 Return "For Raw Material " & rawMaterialCode &
-                   ", Good Qty + Short Qty + Damage Qty must be equal to Received Qty. " &
-                   "Received Qty: " & receivedQty.ToString("0.##") &
-                   ", Good: " & goodQty.ToString("0.##") &
-                   ", Short: " & shortQty.ToString("0.##") &
-                   ", Damage: " & damageQty.ToString("0.##") & "."
+                   ", Good Qty + Short Qty + Damage Qty must be equal to Received Qty. "
             End If
         Next
         Return String.Empty
