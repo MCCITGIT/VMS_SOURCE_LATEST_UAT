@@ -16,96 +16,356 @@
     <link href="includes/bootstrap.min.css" rel="stylesheet" type="text/css" />
 
     <link href="includes/upgrad-style.css?v=<%= DateTime.Now.Ticks %>" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
 
     <style type="text/css">
+        /* ==========================================================
+           STANDALONE PAGE - SAME UI FAMILY AS DISPATCH LIST
+        ========================================================== */
+
         html,
         body {
             margin: 0;
             padding: 0;
+            width: 100%;
+            min-height: 100%;
+        }
+
+        body {
+            background: #ffffff;
+            font-family: Arial, Helvetica, sans-serif;
+            color: #343a40;
         }
 
         .contentMainBody {
             margin: 0 !important;
-            padding: 20px !important;
+            padding: 14px 16px 30px !important;
             width: 100% !important;
             max-width: 100% !important;
+            min-height: 100vh;
+            box-sizing: border-box;
+            background: #ffffff;
+        }
+
+        /* ==========================================================
+           PAGE HEADER
+        ========================================================== */
+
+        .standalone-breadcrumbs {
+            position: relative;
+            width: 100%;
+            min-height: 68px;
+            padding: 9px 20px 9px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-sizing: border-box;
+            background: #f8fbfe;
+            border: 1px solid #dde7f0;
+            border-radius: 16px;
+            margin-bottom: 14px;
+            box-shadow: 0 2px 5px rgba(31, 55, 78, 0.08), 0 5px 12px rgba(31, 55, 78, 0.04);
+        }
+
+            .standalone-breadcrumbs::before {
+                content: "";
+                position: absolute;
+                left: 9px;
+                top: 14px;
+                bottom: 14px;
+                width: 4px;
+                background: #154872;
+                border-radius: 4px;
+            }
+
+            .standalone-breadcrumbs .leftFung {
+                display: flex;
+                align-items: center;
+                min-width: 0;
+            }
+
+        .home-link {
+            width: 46px;
+            height: 46px;
+            min-width: 46px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: #eef4fa;
+            border: 1px solid #d6e3ef;
+            border-radius: 12px;
+            color: #154872 !important;
+            font-size: 18px;
+            text-decoration: none !important;
+            transition: all 0.2s ease;
+        }
+
+            .home-link:hover {
+                background: #e6eff8;
+                border-color: #cbdbea;
+                color: #10385a !important;
+            }
+
+        .diveider {
+            margin: 0 11px;
+            color: #b5c3d0;
+            font-size: 18px;
+            font-weight: 400;
+        }
+
+        .pageTitleWrap {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
 
         .pageTitle {
-            font-weight: 600;
-            margin-bottom: 0;
-        }
-
-        .details-card {
-            margin-bottom: 20px;
-        }
-
-            .details-card .card-header {
-                padding: 12px 18px;
-            }
-
-                .details-card .card-header h5 {
-                    margin: 0;
-                    font-weight: 600;
-                }
-
-        .form-control-label {
-            font-weight: 600;
-            margin-bottom: 5px;
-        }
-
-        .detail-value {
-            min-height: 38px;
-            display: flex;
-            align-items: center;
-            background-color: #f8f9fa;
-            font-weight: 600;
-            color: #333;
-        }
-
-        .upgradDataGrid {
-            width: 100%;
-            margin-bottom: 0;
-        }
-
-            .upgradDataGrid th,
-            .upgradDataGrid td {
-                padding: 9px 12px !important;
-                vertical-align: middle !important;
-            }
-
-            .upgradDataGrid th {
-                font-weight: 600;
-                white-space: nowrap;
-            }
-
-            .upgradDataGrid td {
-                line-height: 1.4;
-                font-weight: 500;
-            }
-
-                .upgradDataGrid th:first-child,
-                .upgradDataGrid td:first-child {
-                    padding-left: 6px !important;
-                    padding-right: 6px !important;
-                }
-
-        .qty-value {
-            font-weight: 600;
-        }
-
-        .pending-qty {
+            margin: 0 0 3px 0;
+            color: #153d60;
+            font-size: 18px !important;
+            line-height: 22px;
             font-weight: 700;
         }
 
-        .message-box {
-            margin-bottom: 15px;
+        .pageSubTitle {
+            margin: 0;
+            color: #61758f;
+            font-size: 13px !important;
+            line-height: 17px;
+            font-weight: 400;
+        }
+
+        .rightFung {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            white-space: nowrap;
+        }
+
+        .welcome-text,
+        .rm-vendor-label {
+            color: #154872;
+            font-size: 16px !important;
+            font-weight: 700 !important;
+        }
+
+        /* ==========================================================
+           CARDS
+        ========================================================== */
+
+        .contentMainBody .card,
+        .contentMainBody .details-card {
+            width: 100%;
+            margin-bottom: 14px;
+            background: #ffffff;
+            border: 1px solid #dcdcdc;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.07);
+        }
+
+        .contentMainBody .card-body {
+            padding: 16px 18px 18px;
+        }
+
+        /* ==========================================================
+           SECTION HEADERS
+        ========================================================== */
+
+        .mst-panel-header {
+            padding: 15px 16px 9px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #ffffff;
+            border-bottom: 0;
+        }
+
+        .mst-panel-header-left {
+            display: flex;
+            align-items: center;
+        }
+
+        .mst-panel-icon {
+            width: 42px;
+            height: 42px;
+            min-width: 42px;
+            margin-right: 12px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: #eaf1ff;
+            border-radius: 11px;
+            color: #154872;
+            font-size: 18px;
+        }
+
+        .mst-panel-title {
+            margin: 0 0 2px 0;
+            color: #414141;
+            font-size: 16px !important;
+            font-weight: 700;
+        }
+
+        .mst-panel-subtitle {
+            margin: 0;
+            color: #61758f;
+            font-size: 13px !important;
+            font-weight: 400;
+        }
+
+        /* Existing Bootstrap card-header fallback */
+        .details-card .card-header {
+            padding: 14px 18px;
+            background: #ffffff;
+            border-bottom: 1px solid #eef1f4;
+        }
+
+            .details-card .card-header h5 {
+                margin: 0;
+                color: #414141;
+                font-size: 16px;
+                font-weight: 700;
+            }
+
+        /* ==========================================================
+           FORM
+        ========================================================== */
+
+        .form-group {
+            margin-bottom: 0;
+        }
+
+        .row .form-group {
+            margin-bottom: 4px;
+        }
+
+        .form-control-label {
+            display: block;
+            margin-bottom: 5px;
+            color: #3e3e3e;
+            font-size: 13px !important;
+            font-weight: 600;
+        }
+
+        .form-control {
+            min-height: 38px;
+            padding: 7px 11px;
+            background: #ffffff;
+            border: 1px solid #aeb4ba;
+            border-radius: 12px;
+            color: #333333;
+            font-size: 14px !important;
+            box-shadow: none !important;
+        }
+
+            .form-control:focus {
+                border-color: #7899b8;
+                box-shadow: 0 0 0 2px rgba(21, 72, 114, 0.07) !important;
+            }
+
+        .detail-value {
+            min-height: 40px;
+            display: flex;
+            align-items: center;
+            background: #f8fbfe;
+            border-color: #dbe3ea;
+            color: #26394b;
+            font-size: 14px !important;
+            font-weight: 600;
+        }
+
+        input[type="file"].form-control {
+            height: 40px;
+            padding: 7px 10px;
+        }
+
+        /* ==========================================================
+           BUTTONS
+        ========================================================== */
+
+        .btn {
+            font-size: 14px !important;
+            font-weight: 600;
+        }
+
+        .btn-primary {
+            background: #154872 !important;
+            border-color: #154872 !important;
+            color: #ffffff !important;
+            border-radius: 18px !important;
+            padding: 6px 17px !important;
+        }
+
+            .btn-primary:hover,
+            .btn-primary:focus {
+                background: #10385a !important;
+                border-color: #10385a !important;
+                color: #ffffff !important;
+            }
+
+        .btn-secondary {
+            background: #6c757d !important;
+            border-color: #6c757d !important;
+            color: #ffffff !important;
+            border-radius: 18px !important;
+            padding: 6px 17px !important;
         }
 
         .button-section {
-            margin-top: 20px;
+            margin-top: 18px;
             text-align: center;
         }
+
+            .button-section .btn {
+                min-width: 92px;
+                margin: 0 4px;
+            }
+
+        /* ==========================================================
+           MATERIAL GRID
+        ========================================================== */
+
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        .upgradDataGrid {
+            width: 100% !important;
+            margin-bottom: 0 !important;
+            border-collapse: collapse !important;
+            border: 1px solid #d9d9d9 !important;
+            background: #ffffff;
+            color: #333333;
+            font-size: 14px !important;
+        }
+
+            .upgradDataGrid th {
+                padding: 9px 9px !important;
+                background: #eff2f5 !important;
+                color: #4e4e56 !important;
+                border: 1px solid #d9d9d9 !important;
+                font-size: 13px !important;
+                font-weight: 700 !important;
+                vertical-align: middle !important;
+                white-space: normal;
+            }
+
+            .upgradDataGrid td {
+                padding: 8px 9px !important;
+                background: #ffffff;
+                color: #222222;
+                border: 1px solid #dddddd !important;
+                font-size: 13px !important;
+                line-height: 1.35;
+                font-weight: 500;
+                vertical-align: middle !important;
+            }
+
+            .upgradDataGrid tr:hover td {
+                background: #f9fbfd !important;
+            }
 
         .materialGrid {
             width: 100%;
@@ -114,27 +374,28 @@
 
             .materialGrid th,
             .materialGrid td {
-                padding: 8px 6px !important;
                 vertical-align: middle !important;
                 text-align: center;
                 word-wrap: break-word;
             }
 
-            .materialGrid th {
-                white-space: normal;
-                font-weight: 600;
-            }
-
-        .qtyDispatchBox {
-            width: 90px !important;
-            height: 34px;
-            margin: 0 auto;
-            text-align: center;
-            padding: 4px 6px;
+        .qty-value {
+            color: #26394b;
+            font-weight: 600;
         }
 
-        .qty-value,
         .pending-qty {
+            color: #b46b00;
+            font-weight: 700;
+        }
+
+        .qtyDispatchBox {
+            width: 105px !important;
+            height: 38px;
+            min-height: 38px;
+            margin: 0 auto;
+            text-align: center;
+            padding: 5px 7px;
             font-weight: 600;
         }
 
@@ -150,69 +411,92 @@
             -moz-appearance: textfield;
         }
 
+        /* ==========================================================
+           MESSAGE
+        ========================================================== */
+
+        .message-box {
+            margin-bottom: 14px;
+        }
+
+            .message-box .alert {
+                margin-bottom: 0;
+                border-radius: 12px;
+                font-size: 14px;
+            }
+
+        #divMessage {
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        /* ==========================================================
+           POPUPS
+        ========================================================== */
+
         .modalBackground {
             background-color: #000;
             opacity: 0.6;
             filter: alpha(opacity=60);
         }
 
-        .success-popup {
-            background-color: #fff;
-            width: 320px;
-            padding: 0;
-            border-radius: 6px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-        }
-
-            .success-popup .success-popup-header {
-                background-color: #28a745;
-                color: #fff;
-                padding: 12px 18px;
-                border-radius: 6px 6px 0 0;
-            }
-
-                .success-popup .success-popup-header h5 {
-                    margin: 0;
-                    font-weight: 600;
-                }
-
-            .success-popup .success-popup-body {
-                padding: 20px 18px;
-                text-align: center;
-            }
-
-            .success-popup .success-popup-footer {
-                padding: 12px 18px;
-                text-align: center;
-                border-top: 1px solid #eee;
-            }
-
+        .success-popup,
         .validation-popup {
             background-color: #fff;
-            width: 420px;
-            max-width: 90%;
             padding: 0;
-            border-radius: 6px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 8px 28px rgba(0,0,0,0.28);
+        }
+
+        .success-popup {
+            width: 360px;
+            max-width: 90%;
+        }
+
+        .validation-popup {
+            width: 450px;
+            max-width: 90%;
+        }
+
+        .success-popup .success-popup-header {
+            background-color: #28a745;
+            color: #fff;
+            padding: 13px 18px;
+        }
+
+            .success-popup .success-popup-header h5,
+            .validation-popup-header h5 {
+                margin: 0;
+                font-size: 16px;
+                font-weight: 700;
+            }
+
+        .success-popup .success-popup-body {
+            padding: 22px 18px;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .success-popup .success-popup-footer,
+        .validation-popup-footer {
+            padding: 12px 18px;
+            text-align: center;
+            border-top: 1px solid #eee;
         }
 
         .validation-popup-header {
             background-color: #dc3545;
             color: #fff;
-            padding: 12px 18px;
-            border-radius: 6px 6px 0 0;
+            padding: 13px 18px;
         }
-
-            .validation-popup-header h5 {
-                margin: 0;
-                font-weight: 600;
-            }
 
         .validation-popup-body {
             padding: 20px 25px;
             text-align: left;
             max-height: 350px;
             overflow-y: auto;
+            font-size: 14px;
         }
 
             .validation-popup-body ul {
@@ -226,10 +510,84 @@
                 font-weight: 500;
             }
 
-        .validation-popup-footer {
-            padding: 12px 18px;
-            text-align: center;
-            border-top: 1px solid #eee;
+        /* ==========================================================
+           RESPONSIVE
+        ========================================================== */
+
+        @media (max-width: 991px) {
+            .rightFung {
+                max-width: 42%;
+                white-space: normal;
+                text-align: right;
+            }
+        }
+
+        @media (max-width: 767px) {
+            .contentMainBody {
+                padding: 10px !important;
+            }
+
+            .standalone-breadcrumbs {
+                min-height: 64px;
+                padding: 8px 12px 8px 20px;
+                border-radius: 12px;
+            }
+
+            .home-link {
+                width: 40px;
+                height: 40px;
+                min-width: 40px;
+                border-radius: 10px;
+                font-size: 16px;
+            }
+
+            .pageTitle {
+                font-size: 17px !important;
+            }
+
+            .pageSubTitle {
+                font-size: 12px !important;
+            }
+
+            .rightFung {
+                display: none;
+            }
+
+            .contentMainBody .card,
+            .contentMainBody .details-card {
+                border-radius: 12px;
+            }
+
+            .contentMainBody .card-body {
+                padding: 13px;
+            }
+
+            .mst-panel-header {
+                padding: 12px 12px 8px;
+            }
+
+            .mst-panel-icon {
+                width: 38px;
+                height: 38px;
+                min-width: 38px;
+                font-size: 16px;
+            }
+
+            .mst-panel-title {
+                font-size: 15px !important;
+            }
+
+            .mst-panel-subtitle {
+                font-size: 12px !important;
+            }
+
+            .row > [class*="col-md-"] {
+                margin-bottom: 12px;
+            }
+
+            .button-section .btn {
+                margin-bottom: 6px;
+            }
         }
     </style>
 
@@ -237,15 +595,23 @@
 
 <body>
 
-    <form id="form1" runat="server">
+    <form id="form1" runat="server" autocomplete="off">
         <ajaxToolkit:ToolkitScriptManager ID="ToolkitScriptManager1" runat="server"></ajaxToolkit:ToolkitScriptManager>
         <div class="contentMainBody">
 
-            <div class="breadcrumbs">
+            <div class="standalone-breadcrumbs">
                 <div class="leftFung">
-                    <h3 class="pageTitle">Request Details</h3>
+                    <a href="Dispatch_List.aspx" class="home-link" title="Dispatch List">
+                        <i class="fas fa-home"></i>
+                    </a>
+
+                    <div class="diveider">/</div>
+
+                    <div class="pageTitleWrap">
+                        <h3 class="pageTitle">Request Details</h3>
+                        <p class="pageSubTitle">Review request information and complete dispatch details</p>
+                    </div>
                 </div>
-                <div class="rightFung"></div>
             </div>
             <asp:Panel ID="pnlMessage" runat="server" Visible="false" CssClass="message-box">
                 <asp:Label ID="lblMessage" runat="server" CssClass="alert alert-danger d-block"></asp:Label>
@@ -326,11 +692,16 @@
 
             <div class="card details-card">
 
-                <div class="card-header">
-
-                    <h5>Request Information
-                    </h5>
-
+                <div class="mst-panel-header">
+                    <div class="mst-panel-header-left">
+                        <span class="mst-panel-icon">
+                            <i class="fas fa-file-alt"></i>
+                        </span>
+                        <div>
+                            <h5 class="mst-panel-title">Request Information</h5>
+                            <p class="mst-panel-subtitle">Basic request and vendor information</p>
+                        </div>
+                    </div>
                 </div>
 
 
@@ -344,6 +715,7 @@
 
                                 <label class="form-control-label">
                                     Request ID:
+                               
                                 </label>
 
                                 <asp:Label
@@ -363,6 +735,7 @@
 
                                 <label class="form-control-label">
                                     Request Date:
+                               
                                 </label>
 
                                 <asp:Label
@@ -381,6 +754,7 @@
 
                                 <label class="form-control-label">
                                     Vendor Code:
+                               
                                 </label>
 
                                 <asp:Label
@@ -399,6 +773,7 @@
 
                                 <label class="form-control-label">
                                     Vendor Name:
+                               
                                 </label>
 
                                 <asp:Label
@@ -418,174 +793,37 @@
 
             </div>
 
-            <%--<div class="card details-card">
-
-                <div class="card-header">
-
-                    <h5>Courier Information
-                    </h5>
-
+            <div class="card details-card">
+                <div class="mst-panel-header">
+                    <div class="mst-panel-header-left">
+                        <span class="mst-panel-icon">
+                            <i class="fas fa-shipping-fast"></i>
+                        </span>
+                        <div>
+                            <h5 class="mst-panel-title">Dispatch Information</h5>
+                            <p class="mst-panel-subtitle">Select how the material will be dispatched</p>
+                        </div>
+                    </div>
                 </div>
-
 
                 <div class="card-body">
-
                     <div class="row">
-
                         <div class="col-md-3">
-
                             <div class="form-group">
-
                                 <label class="form-control-label">
                                     Delivery Type:
+                               
                                 </label>
-                                <asp:DropDownList ID="ddlDelType" class="form-control select2" runat="server"></asp:DropDownList>
-
-                            </div>
-
-                        </div>
-
-                        <div class="col-md-3">
-
-                            <div class="form-group">
-
-                                <label class="form-control-label">
-                                    Courier No:
-                                </label>
-
-                                <asp:TextBox
-                                    ID="txtCouNo"
+                                <asp:DropDownList
+                                    ID="ddlDelType"
                                     runat="server"
                                     ClientIDMode="Static"
-                                    CssClass="form-control">
-                                </asp:TextBox>
-
+                                    CssClass="form-control select2"
+                                    AutoPostBack="true"
+                                    OnSelectedIndexChanged="ddlDelType_SelectedIndexChanged">
+                                </asp:DropDownList>
                             </div>
-
                         </div>
-
-                        <div class="col-md-3">
-
-                            <div class="form-group">
-
-                                <label class="form-control-label">
-                                    Transporter Name:
-                                </label>
-
-                                <asp:TextBox
-                                    ID="txtTranName"
-                                    runat="server"
-                                    ClientIDMode="Static"
-                                    CssClass="form-control">
-                                </asp:TextBox>
-
-                            </div>
-
-                        </div>
-
-                        <div class="col-md-3">
-
-                            <div class="form-group">
-
-                                <label class="form-control-label">
-                                    LR/Consignment No::
-                                </label>
-
-                                <asp:TextBox
-                                    ID="txtLRNo"
-                                    runat="server"
-                                    ClientIDMode="Static"
-                                    CssClass="form-control">
-                                </asp:TextBox>
-
-                            </div>
-
-                        </div>
-
-                        <div class="col-md-3">
-
-                            <div class="form-group">
-
-                                <label class="form-control-label">
-                                    LR Date:
-                                </label>
-
-                                <asp:TextBox
-                                    ID="txtLRDate"
-                                    runat="server"
-                                    CssClass="form-control"
-                                    autocomplete="off">
-                                </asp:TextBox>
-
-                                <ajaxToolkit:CalendarExtender
-                                    ID="calLRDate"
-                                    runat="server"
-                                    TargetControlID="txtLRDate"
-                                    Format="dd-MM-yyyy">
-                                </ajaxToolkit:CalendarExtender>
-
-                            </div>
-
-                        </div>
-
-                        <div class="col-md-3">
-
-                            <div class="form-group">
-
-                                <label class="form-control-label">
-                                    Vehicle No:
-                                </label>
-
-                                <asp:TextBox
-                                    ID="txtVehNo"
-                                    runat="server"
-                                    ClientIDMode="Static"
-                                    CssClass="form-control">
-                                </asp:TextBox>
-
-                            </div>
-
-                        </div>
-
-                        <div class="col-md-3">
-
-                            <div class="form-group">
-
-                                <label class="form-control-label">
-                                    LR Doc:
-                                </label>
-
-                                <asp:FileUpload
-                                    ID="fuLrDoc"
-                                    runat="server"
-                                    ClientIDMode="Static"
-                                    accept=".pdf,application/pdf"
-                                    CssClass="form-control" />
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>--%>
-
-            <div class="row">
-                <div class="col-md-3">
-                    <div class="form-group">
-                        <label class="form-control-label">
-                            Delivery Type:
-                        </label>
-                        <asp:DropDownList
-                            ID="ddlDelType"
-                            runat="server"
-                            ClientIDMode="Static"
-                            CssClass="form-control select2"
-                            AutoPostBack="true"
-                            OnSelectedIndexChanged="ddlDelType_SelectedIndexChanged">
-                        </asp:DropDownList>
                     </div>
                 </div>
             </div>
@@ -596,10 +834,18 @@
                 CssClass="card details-card"
                 Visible="false">
 
-                <div class="card-header">
-                    <h5>
-                        <asp:Label ID="lblCourierCardHeader" runat="server" Text="Courier Information"></asp:Label>
-                    </h5>
+                <div class="mst-panel-header">
+                    <div class="mst-panel-header-left">
+                        <span class="mst-panel-icon">
+                            <i class="fas fa-truck"></i>
+                        </span>
+                        <div>
+                            <h5 class="mst-panel-title">
+                                <asp:Label ID="lblCourierCardHeader" runat="server" Text="Courier Information"></asp:Label>
+                            </h5>
+                            <p class="mst-panel-subtitle">Enter courier or transport dispatch information</p>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="card-body">
@@ -609,13 +855,14 @@
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label class="form-control-label">
-                                    <asp:Label ID="lblCourierNoLabel" runat="server" Text="Courier No:"></asp:Label>
+                                    <asp:Label ID="lblCourierNoLabel" runat="server" Text="POD No:"></asp:Label>
                                 </label>
                                 <asp:TextBox
                                     ID="txtCouNo"
                                     runat="server"
                                     ClientIDMode="Static"
-                                    CssClass="form-control">
+                                    CssClass="form-control"
+                                    placeholder="Enter POD No.">
                                 </asp:TextBox>
                             </div>
                         </div>
@@ -623,27 +870,30 @@
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label class="form-control-label">
-                                    <asp:Label ID="lblTranNameLabel" runat="server" Text="Transporter Name:"></asp:Label>
+                                    <asp:Label ID="lblTranNameLabel" runat="server" Text="Courier Name:"></asp:Label>
                                 </label>
                                 <asp:TextBox
                                     ID="txtTranName"
                                     runat="server"
                                     ClientIDMode="Static"
-                                    CssClass="form-control">
+                                    CssClass="form-control"
+                                    placeholder="Enter Courier Name.">
                                 </asp:TextBox>
                             </div>
                         </div>
 
-                        <div class="col-md-3">
+                        <div id="divLrNo" class="col-md-3" runat="server">
                             <div class="form-group">
                                 <label class="form-control-label">
-                                    LR/Consignment No::
+                                    LR/Consignment No:
+                               
                                 </label>
                                 <asp:TextBox
                                     ID="txtLRNo"
                                     runat="server"
                                     ClientIDMode="Static"
-                                    CssClass="form-control">
+                                    CssClass="form-control"
+                                    placeholder="Enter LR/Consignment No.">
                                 </asp:TextBox>
                             </div>
                         </div>
@@ -651,13 +901,17 @@
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label class="form-control-label">
-                                    LR Date:
+                                    <asp:Label ID="lblLrDate" runat="server" Text="Courier Date:"></asp:Label>
                                 </label>
                                 <asp:TextBox
                                     ID="txtLRDate"
                                     runat="server"
                                     CssClass="form-control"
-                                    autocomplete="off">
+                                    autocomplete="off"
+                                    placeholder="Select Courier Date."
+                                    onkeydown="return handleDateKeyDown(event, this);"
+                                    onpaste="return false;"
+                                    ondrop="return false;">
                                 </asp:TextBox>
                                 <ajaxToolkit:CalendarExtender
                                     ID="calLRDate"
@@ -668,16 +922,18 @@
                             </div>
                         </div>
 
-                        <div class="col-md-3">
+                        <div id="divVehNo" class="col-md-3" runat="server">
                             <div class="form-group">
                                 <label class="form-control-label">
                                     Vehicle No:
+                               
                                 </label>
                                 <asp:TextBox
                                     ID="txtVehNo"
                                     runat="server"
                                     ClientIDMode="Static"
-                                    CssClass="form-control">
+                                    CssClass="form-control"
+                                    placeholder="Enter Vehicle No.">
                                 </asp:TextBox>
                             </div>
                         </div>
@@ -686,6 +942,7 @@
                             <div class="form-group">
                                 <label class="form-control-label">
                                     LR Doc:
+                               
                                 </label>
                                 <asp:FileUpload
                                     ID="fuLrDoc"
@@ -704,11 +961,16 @@
 
             <div class="card details-card">
 
-                <div class="card-header">
-
-                    <h5>Invoice Information
-                    </h5>
-
+                <div class="mst-panel-header">
+                    <div class="mst-panel-header-left">
+                        <span class="mst-panel-icon">
+                            <i class="fas fa-file-invoice"></i>
+                        </span>
+                        <div>
+                            <h5 class="mst-panel-title">Invoice Information</h5>
+                            <p class="mst-panel-subtitle">Upload the invoice and verify extracted invoice details</p>
+                        </div>
+                    </div>
                 </div>
 
 
@@ -721,71 +983,8 @@
                             <div class="form-group">
 
                                 <label class="form-control-label">
-                                    Invoice No:
-                                </label>
-
-                                <asp:TextBox
-                                    ID="txtInvNo"
-                                    runat="server"
-                                    ClientIDMode="Static"
-                                    CssClass="form-control">
-                                </asp:TextBox>
-
-                            </div>
-
-                        </div>
-
-                        <%--<div class="col-md-3">
-
-                            <div class="form-group">
-
-                                <label class="form-control-label">
-                                    Invoice Amount:
-                                </label>
-
-                                <asp:TextBox
-                                    ID="txtInvAmt"
-                                    runat="server"
-                                    CssClass="form-control"
-                                    autocomplete="off">
-                                </asp:TextBox>
-
-                                <ajaxToolkit:CalendarExtender
-                                    ID="CalendarExtender1"
-                                    runat="server"
-                                    TargetControlID="txtLRDate"
-                                    Format="dd-MM-yyyy">
-                                </ajaxToolkit:CalendarExtender>
-
-                            </div>
-
-                        </div>--%>
-
-                        <div class="col-md-3">
-
-                            <div class="form-group">
-
-                                <label class="form-control-label">
-                                    Invoice Date:
-                                </label>
-
-                                <asp:TextBox
-                                    ID="txtInvDate"
-                                    runat="server"
-                                    ClientIDMode="Static"
-                                    CssClass="form-control">
-                                </asp:TextBox>
-
-                            </div>
-
-                        </div>
-
-                        <div class="col-md-3">
-
-                            <div class="form-group">
-
-                                <label class="form-control-label">
                                     Invoice Doc:
+                               
                                 </label>
 
                                 <asp:FileUpload
@@ -797,9 +996,67 @@
 
                                 <button type="button" id="btnUploadInvoice" class="btn btn-primary btn-sm mt-2">
                                     Upload &amp; Extract
+       
                                
                                 </button>
                                 <div id="divMessage" class="mt-2"></div>
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-3">
+
+                            <div class="form-group">
+
+                                <label class="form-control-label">
+                                    Invoice No:
+                               
+                                </label>
+
+                                <asp:TextBox
+                                    ID="txtInvNo"
+                                    runat="server"
+                                    ClientIDMode="Static"
+                                    CssClass="form-control"
+                                    placeholder="Enter Invoice No.">
+                                </asp:TextBox>
+
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-3">
+
+                            <div class="form-group">
+
+                                <label class="form-control-label">
+                                    Invoice Date:
+                               
+                                </label>
+
+                                <%--<asp:TextBox
+                                    ID="txtInvDate"
+                                    runat="server"
+                                    ClientIDMode="Static"
+                                    CssClass="form-control">
+                                </asp:TextBox>--%>
+                                <asp:TextBox
+                                    ID="txtInvDate"
+                                    runat="server"
+                                    CssClass="form-control"
+                                    autocomplete="off"
+                                    placeholder="Select Invoice Date."
+                                    onkeydown="return handleDateKeyDown(event, this);"
+                                    onpaste="return false;"
+                                    ondrop="return false;">
+                                </asp:TextBox>
+                                <ajaxToolkit:CalendarExtender
+                                    ID="calInvDate"
+                                    runat="server"
+                                    TargetControlID="txtInvDate"
+                                    Format="dd-MM-yyyy">
+                                </ajaxToolkit:CalendarExtender>
+
                             </div>
 
                         </div>
@@ -812,11 +1069,16 @@
 
             <div class="card details-card">
 
-                <div class="card-header">
-
-                    <h5>Material Request Details
-                    </h5>
-
+                <div class="mst-panel-header">
+                    <div class="mst-panel-header-left">
+                        <span class="mst-panel-icon">
+                            <i class="fas fa-list"></i>
+                        </span>
+                        <div>
+                            <h5 class="mst-panel-title">Material Request Details</h5>
+                            <p class="mst-panel-subtitle">Review requested quantities and enter quantity to dispatch</p>
+                        </div>
+                    </div>
                 </div>
 
 
@@ -1156,8 +1418,41 @@
                         document.getElementById('txtInvNo').value = result.invoice_no;
                     }
 
+                    //if (result.invoice_date) {
+                    //    document.getElementById('txtInvDate').value = result.invoice_date.replace(/-/g, '/');
+                    //}
                     if (result.invoice_date) {
-                        document.getElementById('txtInvDate').value = result.invoice_date.replace(/-/g, '/');
+
+                        console.log("Invoice Date from API:", result.invoice_date);
+
+                        var invoiceDate = result.invoice_date.trim();
+                        invoiceDate = invoiceDate.replace(/\//g, '-');
+
+                        var parts = invoiceDate.split('-');
+
+                        if (parts.length === 3) {
+
+                            var day;
+                            var month;
+                            var year;
+
+                            if (parts[0].length === 4) {
+                                // yyyy-MM-dd
+                                year = parts[0];
+                                month = parts[1];
+                                day = parts[2];
+                            } else {
+                                // dd-MM-yyyy
+                                day = parts[0];
+                                month = parts[1];
+                                year = parts[2];
+                            }
+
+                            document.getElementById('txtInvDate').value =
+                                day.padStart(2, '0') + '-' +
+                                month.padStart(2, '0') + '-' +
+                                year;
+                        }
                     }
 
                     showInvoiceMessage(msgDiv, 'Invoice details extracted successfully.', 'success');
@@ -1195,7 +1490,7 @@
         }
 
     </script>
-    <script type="text/javascript">
+    <%--<script type="text/javascript">
 
         function validateDispatchForm() {
 
@@ -1277,22 +1572,22 @@
             // LR Document
             // REQUIRED
             // ========================================
-            var lrDoc = document.getElementById('fuLrDoc');
+            //var lrDoc = document.getElementById('fuLrDoc');
 
-            if (!lrDoc ||
-                !lrDoc.files ||
-                lrDoc.files.length === 0) {
+            //if (!lrDoc ||
+            //    !lrDoc.files ||
+            //    lrDoc.files.length === 0) {
 
-                errors.push('LR Document is required.');
+            //    errors.push('LR Document is required.');
 
-            } else {
+            //} else {
 
-                var lrFileName = lrDoc.files[0].name;
+            //    var lrFileName = lrDoc.files[0].name;
 
-                if (!/\.pdf$/i.test(lrFileName)) {
-                    errors.push('LR Document must be a PDF file.');
-                }
-            }
+            //    if (!/\.pdf$/i.test(lrFileName)) {
+            //        errors.push('LR Document must be a PDF file.');
+            //    }
+            //}
 
 
             // ========================================
@@ -1480,59 +1775,458 @@
             );
         }
 
-    </script>
+    </script>--%>
 
-    <%--<script type="text/javascript">
+    <script type="text/javascript">
 
-        function toggleCourierCard() {
+        function validateDispatchForm() {
 
-            var ddl = document.getElementById('ddlDelType');
-            var card = document.getElementById('divCourierCard');
-            var cardHeader = document.getElementById('lblCourierCardHeader');
-            var courierNoLabel = document.getElementById('lblCourierNoLabel');
-            var tranNameLabel = document.getElementById('lblTranNameLabel');
+            var errors = [];
 
-            if (!ddl || !card) {
-                return;
-            }
+            // ========================================
+            // Delivery Type
+            // ========================================
+            var deliveryType = document.getElementById('ddlDelType');
+            var selectedDeliveryText = '';
 
-            var selectedOption = ddl.options[ddl.selectedIndex];
-            var selectedText = selectedOption ? selectedOption.text.trim().toLowerCase() : '';
-            var selectedValue = ddl.value ? ddl.value.trim() : '';
+            if (!deliveryType || deliveryType.value.trim() === '') {
 
-            if (selectedValue === '' || selectedText === '') {
-                card.style.display = 'none';
-                return;
-            }
-
-            card.style.display = 'block';
-
-            if (selectedText.indexOf('courier') !== -1) {
-
-                if (cardHeader) { cardHeader.textContent = 'Courier Information'; }
-                if (courierNoLabel) { courierNoLabel.textContent = 'Courier No:'; }
-                if (tranNameLabel) { tranNameLabel.textContent = 'Courier Name:'; }
-
-            } else if (selectedText.indexOf('transport') !== -1) {
-
-                if (cardHeader) { cardHeader.textContent = 'Transport Information'; }
-                if (courierNoLabel) { courierNoLabel.textContent = 'Transport No:'; }
-                if (tranNameLabel) { tranNameLabel.textContent = 'Transporter Name:'; }
+                errors.push('Delivery Type is required.');
 
             } else {
 
-                if (cardHeader) { cardHeader.textContent = 'Courier Information'; }
-                if (courierNoLabel) { courierNoLabel.textContent = 'Courier No:'; }
-                if (tranNameLabel) { tranNameLabel.textContent = 'Transporter Name:'; }
+                selectedDeliveryText =
+                    deliveryType.options[deliveryType.selectedIndex]
+                        .text
+                        .trim()
+                        .toLowerCase();
+
+
+                // ========================================
+                // Courier / POD / Transport No
+                // Mandatory for Courier & Transport
+                // ========================================
+                var courierNo = document.getElementById('txtCouNo');
+
+                if (!courierNo || courierNo.value.trim() === '') {
+
+                    if (selectedDeliveryText.indexOf('courier') !== -1) {
+
+                        errors.push('POD No is required.');
+
+                    } else if (selectedDeliveryText.indexOf('transport') !== -1) {
+
+                        errors.push('Transport No is required.');
+
+                    } else {
+
+                        errors.push('Courier / Transport No is required.');
+                    }
+                }
+
+
+                // ========================================
+                // Courier Name / Transporter Name
+                // Mandatory for Courier & Transport
+                // ========================================
+                var transporterName = document.getElementById('txtTranName');
+
+                if (!transporterName ||
+                    transporterName.value.trim() === '') {
+
+                    if (selectedDeliveryText.indexOf('courier') !== -1) {
+
+                        errors.push('Courier Name is required.');
+
+                    } else if (selectedDeliveryText.indexOf('transport') !== -1) {
+
+                        errors.push('Transporter Name is required.');
+
+                    } else {
+
+                        errors.push('Courier / Transporter Name is required.');
+                    }
+                }
+
+
+                // ========================================
+                // LR / Consignment No
+                // Mandatory ONLY for Transport
+                // ========================================
+                if (selectedDeliveryText.indexOf('transport') !== -1) {
+
+                    var lrNo = document.getElementById('txtLRNo');
+
+                    if (!lrNo || lrNo.value.trim() === '') {
+
+                        errors.push('LR / Consignment No is required.');
+                    }
+                }
+
+
+                // ========================================
+                // LR Date / Courier Date
+                // Mandatory for Courier & Transport
+                // ========================================
+                var lrDate =
+                    document.getElementById('<%= txtLRDate.ClientID %>');
+
+                if (!lrDate || lrDate.value.trim() === '') {
+
+                    if (selectedDeliveryText.indexOf('courier') !== -1) {
+
+                        errors.push('Courier Date is required.');
+
+                    } else if (selectedDeliveryText.indexOf('transport') !== -1) {
+
+                        errors.push('LR Date is required.');
+
+                    } else {
+
+                        errors.push('Delivery Date is required.');
+                    }
+
+                } else if (!isValidDispatchDate(lrDate.value.trim())) {
+
+                    if (selectedDeliveryText.indexOf('courier') !== -1) {
+
+                        errors.push('Please enter a valid Courier Date.');
+
+                    } else if (selectedDeliveryText.indexOf('transport') !== -1) {
+
+                        errors.push('Please enter a valid LR Date.');
+
+                    } else {
+
+                        errors.push('Please enter a valid Delivery Date.');
+                    }
+                }
+
+
+                // ========================================
+                // Vehicle No
+                // Mandatory for Courier & Transport
+                // ========================================
+                if (selectedDeliveryText.indexOf('transport') !== -1) {
+
+                    var vehicleNo = document.getElementById('txtVehNo');
+
+                    if (!vehicleNo || vehicleNo.value.trim() === '') {
+                        errors.push('Vehicle No is required.');
+                    }
+                }
 
             }
+
+
+            // ========================================
+            // LR Document
+            // NOT MANDATORY
+            // ========================================
+            // No mandatory validation for fuLrDoc.
+            //
+            // Optional:
+            // If user uploads a file, validate that it is PDF.
+            // ========================================
+
+            var lrDoc = document.getElementById('fuLrDoc');
+
+            if (lrDoc &&
+                lrDoc.files &&
+                lrDoc.files.length > 0) {
+
+                var lrFileName = lrDoc.files[0].name;
+
+                if (!/\.pdf$/i.test(lrFileName)) {
+
+                    errors.push('LR Document must be a PDF file.');
+                }
+            }
+
+
+            // ========================================
+            // Invoice No
+            // Mandatory
+            // ========================================
+            var invoiceNo = document.getElementById('txtInvNo');
+
+            if (!invoiceNo ||
+                invoiceNo.value.trim() === '') {
+
+                errors.push('Invoice No is required.');
+            }
+
+
+            // ========================================
+            // Invoice Date
+            // Mandatory
+            // ========================================
+            var invoiceDate = document.getElementById('txtInvDate');
+
+            if (!invoiceDate ||
+                invoiceDate.value.trim() === '') {
+
+                errors.push('Invoice Date is required.');
+
+            } else if (!isValidDispatchDate(invoiceDate.value.trim())) {
+
+                errors.push('Please enter a valid Invoice Date.');
+            }
+
+
+            // ========================================
+            // Invoice Document
+            // NOT REQUIRED
+            // ========================================
+            // No mandatory validation for fuInv.
+            //
+            // Optional:
+            // Validate PDF only if file is selected.
+            // ========================================
+
+            var invDoc = document.getElementById('fuInv');
+
+            if (invDoc &&
+                invDoc.files &&
+                invDoc.files.length > 0) {
+
+                var invFileName = invDoc.files[0].name;
+
+                if (!/\.pdf$/i.test(invFileName)) {
+
+                    errors.push('Invoice Document must be a PDF file.');
+                }
+            }
+
+
+            // ========================================
+            // Quantity Validation
+            // ========================================
+            var qtyBoxes =
+                document.querySelectorAll('.qtyDispatchBox');
+
+            var hasDispatchQty = false;
+
+            for (var i = 0; i < qtyBoxes.length; i++) {
+
+                var qtyBox = qtyBoxes[i];
+
+                var qtyText = qtyBox.value.trim();
+
+                if (qtyText === '') {
+                    qtyText = '0';
+                }
+
+                var qty = parseFloat(qtyText);
+
+
+                // ========================================
+                // Invalid Quantity
+                // ========================================
+                if (isNaN(qty)) {
+
+                    errors.push(
+                        'Please enter a valid dispatch quantity at row ' +
+                        (i + 1) + '.'
+                    );
+
+                    continue;
+                }
+
+
+                // ========================================
+                // Negative Quantity
+                // ========================================
+                if (qty < 0) {
+
+                    errors.push(
+                        'Dispatch quantity cannot be negative at row ' +
+                        (i + 1) + '.'
+                    );
+
+                    continue;
+                }
+
+
+                // ========================================
+                // Quantity > 0
+                // ========================================
+                if (qty > 0) {
+
+                    hasDispatchQty = true;
+
+                    var row = qtyBox.closest('tr');
+
+                    if (row) {
+
+                        var pendingLabel =
+                            row.querySelector('.pending-qty');
+
+                        if (pendingLabel) {
+
+                            var pendingText =
+                                pendingLabel.innerText ||
+                                pendingLabel.textContent ||
+                                '0';
+
+                            var pendingQty =
+                                parseFloat(pendingText);
+
+
+                            // ========================================
+                            // Cannot exceed pending quantity
+                            // ========================================
+                            if (!isNaN(pendingQty) &&
+                                qty > pendingQty) {
+
+                                errors.push(
+                                    'Dispatch quantity cannot exceed pending quantity at row ' +
+                                    (i + 1) + '.'
+                                );
+                            }
+                        }
+                    }
+                }
+            }
+
+
+            // ========================================
+            // At least one dispatch quantity required
+            // ========================================
+            if (!hasDispatchQty) {
+
+                errors.push(
+                    'Please enter quantity to dispatch for at least one material.'
+                );
+            }
+
+
+            // ========================================
+            // Show Validation Modal
+            // ========================================
+            if (errors.length > 0) {
+
+                var message = '<ul>';
+
+                for (var j = 0; j < errors.length; j++) {
+
+                    message +=
+                        '<li>' +
+                        errors[j] +
+                        '</li>';
+                }
+
+                message += '</ul>';
+
+
+                document.getElementById(
+                '<%= lblValidationMessage.ClientID %>'
+                ).innerHTML = message;
+
+
+                var popup =
+                    $find('mpeValidationBehavior');
+
+                if (popup) {
+                    popup.show();
+                }
+
+                return false;
+            }
+
+
+            // ========================================
+            // All validations passed
+            // ========================================
+            return true;
         }
 
-        // Re-apply state on load (covers postbacks that keep the selected value)
-        document.addEventListener('DOMContentLoaded', function () {
-            toggleCourierCard();
-        });
 
-    </script>--%>
+
+        // ============================================================
+        // Date Validation
+        //
+        // Accepted:
+        // dd-MM-yyyy
+        // dd/MM/yyyy
+        //
+        // Examples:
+        // 17-08-2026
+        // 17/08/2026
+        // ============================================================
+        function isValidDispatchDate(value) {
+
+            if (!value) {
+                return false;
+            }
+
+            var match =
+                value.match(
+                    /^(\d{2})[-\/](\d{2})[-\/](\d{4})$/
+                );
+
+            if (!match) {
+                return false;
+            }
+
+
+            var day =
+                parseInt(match[1], 10);
+
+            var month =
+                parseInt(match[2], 10);
+
+            var year =
+                parseInt(match[3], 10);
+
+
+            var date =
+                new Date(
+                    year,
+                    month - 1,
+                    day
+                );
+
+
+            return (
+                date.getFullYear() === year &&
+                date.getMonth() === month - 1 &&
+                date.getDate() === day
+            );
+        }
+
+    </script>
+
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function () {
+            var vendorName = document.getElementById('<%= lblVendorName.ClientID %>');
+            var welcomeVendorName = document.getElementById('welcomeVendorName');
+
+            if (vendorName && welcomeVendorName) {
+                welcomeVendorName.textContent =
+                    (vendorName.innerText || vendorName.textContent || '').trim();
+            }
+        });
+    </script>
+
+    <script type="text/javascript">
+        function handleDateKeyDown(event, textbox) {
+
+            // Allow Tab for navigation
+            if (event.key === "Tab") {
+                return true;
+            }
+
+            // Backspace / Delete clears the complete date
+            if (event.key === "Backspace" || event.key === "Delete") {
+                textbox.value = "";
+                return false;
+            }
+
+            // Block all other keyboard input
+            return false;
+        }
+</script>
+
 </body>
 </html>

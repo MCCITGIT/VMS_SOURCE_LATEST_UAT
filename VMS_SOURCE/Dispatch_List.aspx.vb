@@ -9,17 +9,30 @@ Partial Class Dispatch_List
 #Region "Page Load Event Handler"
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
         Page.MaintainScrollPositionOnPostBack = True
-
         If (Not IsPostBack) Then
             Dim rmVendorCode As String = String.Empty
             If Request.QueryString("rmvendor_code") IsNot Nothing Then
                 rmVendorCode = Request.QueryString("rmvendor_code").ToString()
             End If
+            'Dim rmVendorCode As String = "RM001"
+            ViewState("RmVendorCode") = rmVendorCode
             divVendor.Visible = False
             populateStatus()
-            PopulateList(rmVendorCode)
         End If
+        PopulateList(rmVendorCode)
     End Sub
+
+    Private Property RmVendorCode As String
+        Get
+            If ViewState("RmVendorCode") Is Nothing Then
+                Return String.Empty
+            End If
+            Return ViewState("RmVendorCode").ToString()
+        End Get
+        Set(value As String)
+            ViewState("RmVendorCode") = value
+        End Set
+    End Property
 
 #End Region
 
@@ -84,10 +97,10 @@ Partial Class Dispatch_List
     End Sub
 
     Protected Sub btnSearch_Click(sender As Object, e As EventArgs)
-        Dim rmVendorCode As String = String.Empty
-        If Request.QueryString("rmvendor_code") IsNot Nothing Then
-            rmVendorCode = Request.QueryString("rmvendor_code").ToString()
-        End If
+        'Dim rmVendorCode As String = String.Empty
+        'If Request.QueryString("rmvendor_code") IsNot Nothing Then
+        '    rmVendorCode = Request.QueryString("rmvendor_code").ToString()
+        'End If
 
         PopulateList(rmVendorCode)
     End Sub

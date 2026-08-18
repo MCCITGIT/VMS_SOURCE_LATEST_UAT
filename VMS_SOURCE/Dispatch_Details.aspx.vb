@@ -525,14 +525,22 @@ Partial Class Dispatch_Details
             dispatchEntity.LRNumber =
             txtLRNo.Text.Trim()
 
-            dispatchEntity.LRDt =
-            ParseDateOrMin(txtLRDate.Text)
+            Dim ddltype As String = ddlDelType.SelectedItem.Text.Trim().ToLowerInvariant()
+
+            If ddltype.Contains("courier") Then
+                dispatchEntity.CourDt =
+                ParseDateOrMin(txtLRDate.Text)
+            ElseIf ddltype.Contains("transport") Then
+                dispatchEntity.LRDt =
+                ParseDateOrMin(txtLRDate.Text)
+            End If
+
 
             dispatchEntity.VehicleNumber =
             txtVehNo.Text.Trim()
 
-            'dispatchEntity.DeliveryType =
-            'txtDelType.Text.Trim()
+            dispatchEntity.DeliveryType =
+            ddlDelType.SelectedValue
 
             dispatchEntity.CreatedUser =
             hdnRawMaterialVendorCode.Value.Trim()
@@ -770,60 +778,378 @@ Partial Class Dispatch_Details
 
     End Function
 
+    'Private Function ValidateDispatchDetails() As List(Of String)
+
+    '    Dim errors As New List(Of String)()
+
+
+    '    '---------------------------------------
+    '    ' Delivery Type
+    '    '---------------------------------------
+    '    'If String.IsNullOrWhiteSpace(txtDelType.Text) Then
+    '    '    errors.Add("Delivery Type is required.")
+    '    'End If
+
+
+    '    '---------------------------------------
+    '    ' Courier No
+    '    '---------------------------------------
+    '    If String.IsNullOrWhiteSpace(txtCouNo.Text) Then
+    '        errors.Add("Courier No is required.")
+    '    End If
+
+
+    '    '---------------------------------------
+    '    ' Transporter Name
+    '    '---------------------------------------
+    '    If String.IsNullOrWhiteSpace(txtTranName.Text) Then
+    '        errors.Add("Transporter Name is required.")
+    '    End If
+
+
+    '    '---------------------------------------
+    '    ' LR / Consignment No
+    '    '---------------------------------------
+    '    If String.IsNullOrWhiteSpace(txtLRNo.Text) Then
+    '        errors.Add("LR / Consignment No is required.")
+    '    End If
+
+
+    '    '---------------------------------------
+    '    ' LR Date
+    '    '---------------------------------------
+    '    If String.IsNullOrWhiteSpace(txtLRDate.Text) Then
+
+    '        errors.Add("LR Date is required.")
+
+    '    Else
+
+    '        Dim lrDateValue As DateTime
+
+    '        If Not TryParseDispatchDate(
+    '            txtLRDate.Text.Trim(),
+    '            lrDateValue
+    '        ) Then
+
+    '            errors.Add("Please enter a valid LR Date.")
+
+    '        End If
+
+    '    End If
+
+
+    '    '---------------------------------------
+    '    ' Vehicle Number
+    '    '---------------------------------------
+    '    If String.IsNullOrWhiteSpace(txtVehNo.Text) Then
+    '        errors.Add("Vehicle No is required.")
+    '    End If
+
+
+    '    '---------------------------------------
+    '    ' LR Document
+    '    '---------------------------------------
+    '    'If Not fuLrDoc.HasFile Then
+
+    '    '    errors.Add("LR Document is required.")
+
+    '    'Else
+
+    '    '    Dim extension As String =
+    '    '        System.IO.Path.GetExtension(
+    '    '            fuLrDoc.FileName
+    '    '        )
+
+    '    '    If Not extension.Equals(
+    '    '        ".pdf",
+    '    '        StringComparison.OrdinalIgnoreCase
+    '    '    ) Then
+
+    '    '        errors.Add(
+    '    '            "LR Document must be a PDF file."
+    '    '        )
+
+    '    '    End If
+
+    '    'End If
+
+
+    '    '---------------------------------------
+    '    ' Invoice Number
+    '    '---------------------------------------
+    '    If String.IsNullOrWhiteSpace(txtInvNo.Text) Then
+    '        errors.Add("Invoice No is required.")
+    '    End If
+
+
+    '    '---------------------------------------
+    '    ' Invoice Date
+    '    '---------------------------------------
+    '    If String.IsNullOrWhiteSpace(txtInvDate.Text) Then
+
+    '        errors.Add("Invoice Date is required.")
+
+    '    Else
+
+    '        Dim invoiceDateValue As DateTime
+
+    '        If Not TryParseDispatchDate(
+    '            txtInvDate.Text.Trim(),
+    '            invoiceDateValue
+    '        ) Then
+
+    '            errors.Add(
+    '                "Please enter a valid Invoice Date."
+    '            )
+
+    '        End If
+
+    '    End If
+
+
+    '    '---------------------------------------
+    '    ' Invoice Document
+    '    '---------------------------------------
+
+    '    ' fuInv is intentionally NOT validated.
+
+
+    '    '---------------------------------------
+    '    ' Quantity Validation
+    '    '---------------------------------------
+
+    '    Dim hasDispatchQty As Boolean = False
+
+    '    Dim rowNumber As Integer = 0
+
+    '    For Each row As GridViewRow In gvMaterials.Rows
+
+    '        rowNumber += 1
+
+    '        Dim txtQty As TextBox =
+    '            CType(
+    '                row.FindControl("txtQtyToDispatch"),
+    '                TextBox
+    '            )
+
+    '        Dim lblPendingQty As Label =
+    '            CType(
+    '                row.FindControl("lblPendingQty"),
+    '                Label
+    '            )
+
+
+    '        Dim qty As Decimal = 0D
+    '        Dim pendingQty As Decimal = 0D
+
+
+    '        If Not Decimal.TryParse(
+    '            txtQty.Text.Trim(),
+    '            qty
+    '        ) Then
+
+    '            errors.Add(
+    '                "Please enter a valid dispatch quantity at row " &
+    '                rowNumber.ToString() & "."
+    '            )
+
+    '            Continue For
+
+    '        End If
+
+
+    '        Decimal.TryParse(
+    '            lblPendingQty.Text.Trim(),
+    '            pendingQty
+    '        )
+
+
+    '        If qty < 0 Then
+
+    '            errors.Add(
+    '                "Dispatch quantity cannot be negative at row " &
+    '                rowNumber.ToString() & "."
+    '            )
+
+    '        End If
+
+
+    '        If qty > 0 Then
+
+    '            hasDispatchQty = True
+
+    '            If qty > pendingQty Then
+
+    '                errors.Add(
+    '                    "Dispatch quantity cannot exceed pending quantity at row " &
+    '                    rowNumber.ToString() & "."
+    '                )
+
+    '            End If
+
+    '        End If
+
+    '    Next
+
+
+    '    If Not hasDispatchQty Then
+
+    '        errors.Add(
+    '            "Please enter quantity to dispatch for at least one material."
+    '        )
+
+    '    End If
+
+
+    '    Return errors
+
+    'End Function
+
     Private Function ValidateDispatchDetails() As List(Of String)
 
         Dim errors As New List(Of String)()
 
-
         '---------------------------------------
         ' Delivery Type
         '---------------------------------------
-        'If String.IsNullOrWhiteSpace(txtDelType.Text) Then
-        '    errors.Add("Delivery Type is required.")
-        'End If
+        If ddlDelType.SelectedIndex <= 0 OrElse
+       ddlDelType.SelectedItem Is Nothing OrElse
+       String.IsNullOrWhiteSpace(ddlDelType.SelectedItem.Text) Then
 
-
-        '---------------------------------------
-        ' Courier No
-        '---------------------------------------
-        If String.IsNullOrWhiteSpace(txtCouNo.Text) Then
-            errors.Add("Courier No is required.")
-        End If
-
-
-        '---------------------------------------
-        ' Transporter Name
-        '---------------------------------------
-        If String.IsNullOrWhiteSpace(txtTranName.Text) Then
-            errors.Add("Transporter Name is required.")
-        End If
-
-
-        '---------------------------------------
-        ' LR / Consignment No
-        '---------------------------------------
-        If String.IsNullOrWhiteSpace(txtLRNo.Text) Then
-            errors.Add("LR / Consignment No is required.")
-        End If
-
-
-        '---------------------------------------
-        ' LR Date
-        '---------------------------------------
-        If String.IsNullOrWhiteSpace(txtLRDate.Text) Then
-
-            errors.Add("LR Date is required.")
+            errors.Add("Delivery Type is required.")
 
         Else
 
-            Dim lrDateValue As DateTime
+            Dim selectedDeliveryText As String =
+            ddlDelType.SelectedItem.Text.Trim().ToLowerInvariant()
 
-            If Not TryParseDispatchDate(
+
+            '---------------------------------------
+            ' Courier / POD / Transport No
+            ' Mandatory for Courier and Transport
+            '---------------------------------------
+            If String.IsNullOrWhiteSpace(txtCouNo.Text) Then
+
+                If selectedDeliveryText.Contains("courier") Then
+
+                    errors.Add("POD No is required.")
+
+                ElseIf selectedDeliveryText.Contains("transport") Then
+
+                    errors.Add("Transport No is required.")
+
+                Else
+
+                    errors.Add("Courier / Transport No is required.")
+
+                End If
+
+            End If
+
+
+            '---------------------------------------
+            ' Courier Name / Transporter Name
+            ' Mandatory for Courier and Transport
+            '---------------------------------------
+            If String.IsNullOrWhiteSpace(txtTranName.Text) Then
+
+                If selectedDeliveryText.Contains("courier") Then
+
+                    errors.Add("Courier Name is required.")
+
+                ElseIf selectedDeliveryText.Contains("transport") Then
+
+                    errors.Add("Transporter Name is required.")
+
+                Else
+
+                    errors.Add("Courier / Transporter Name is required.")
+
+                End If
+
+            End If
+
+
+            '---------------------------------------
+            ' LR / Consignment No
+            ' Mandatory ONLY for Transport
+            '---------------------------------------
+            If selectedDeliveryText.Contains("transport") Then
+
+                If String.IsNullOrWhiteSpace(txtLRNo.Text) Then
+
+                    errors.Add("LR / Consignment No is required.")
+
+                End If
+
+            End If
+
+
+            '---------------------------------------
+            ' LR Date / Courier Date
+            ' Mandatory for Courier and Transport
+            '---------------------------------------
+            If String.IsNullOrWhiteSpace(txtLRDate.Text) Then
+
+                If selectedDeliveryText.Contains("courier") Then
+
+                    errors.Add("Courier Date is required.")
+
+                ElseIf selectedDeliveryText.Contains("transport") Then
+
+                    errors.Add("LR Date is required.")
+
+                Else
+
+                    errors.Add("Delivery Date is required.")
+
+                End If
+
+            Else
+
+                Dim lrDateValue As DateTime
+
+                If Not TryParseDispatchDate(
                 txtLRDate.Text.Trim(),
                 lrDateValue
             ) Then
 
-                errors.Add("Please enter a valid LR Date.")
+                    If selectedDeliveryText.Contains("courier") Then
+
+                        errors.Add(
+                        "Please enter a valid Courier Date."
+                    )
+
+                    ElseIf selectedDeliveryText.Contains("transport") Then
+
+                        errors.Add(
+                        "Please enter a valid LR Date."
+                    )
+
+                    Else
+
+                        errors.Add(
+                        "Please enter a valid Delivery Date."
+                    )
+
+                    End If
+
+                End If
+
+            End If
+
+
+            '---------------------------------------
+            ' Vehicle Number
+            ' Mandatory ONLY for Transport
+            '---------------------------------------
+            If selectedDeliveryText.Contains("transport") Then
+
+                If String.IsNullOrWhiteSpace(txtVehNo.Text) Then
+
+                    errors.Add("Vehicle No is required.")
+
+                End If
 
             End If
 
@@ -831,35 +1157,25 @@ Partial Class Dispatch_Details
 
 
         '---------------------------------------
-        ' Vehicle Number
-        '---------------------------------------
-        If String.IsNullOrWhiteSpace(txtVehNo.Text) Then
-            errors.Add("Vehicle No is required.")
-        End If
-
-
-        '---------------------------------------
         ' LR Document
+        ' NOT Mandatory
+        ' Validate PDF only if uploaded
         '---------------------------------------
-        If Not fuLrDoc.HasFile Then
-
-            errors.Add("LR Document is required.")
-
-        Else
+        If fuLrDoc.HasFile Then
 
             Dim extension As String =
-                System.IO.Path.GetExtension(
-                    fuLrDoc.FileName
-                )
+            System.IO.Path.GetExtension(
+                fuLrDoc.FileName
+            )
 
             If Not extension.Equals(
-                ".pdf",
-                StringComparison.OrdinalIgnoreCase
-            ) Then
+            ".pdf",
+            StringComparison.OrdinalIgnoreCase
+        ) Then
 
                 errors.Add(
-                    "LR Document must be a PDF file."
-                )
+                "LR Document must be a PDF file."
+            )
 
             End If
 
@@ -870,7 +1186,9 @@ Partial Class Dispatch_Details
         ' Invoice Number
         '---------------------------------------
         If String.IsNullOrWhiteSpace(txtInvNo.Text) Then
+
             errors.Add("Invoice No is required.")
+
         End If
 
 
@@ -886,13 +1204,13 @@ Partial Class Dispatch_Details
             Dim invoiceDateValue As DateTime
 
             If Not TryParseDispatchDate(
-                txtInvDate.Text.Trim(),
-                invoiceDateValue
-            ) Then
+            txtInvDate.Text.Trim(),
+            invoiceDateValue
+        ) Then
 
                 errors.Add(
-                    "Please enter a valid Invoice Date."
-                )
+                "Please enter a valid Invoice Date."
+            )
 
             End If
 
@@ -901,15 +1219,33 @@ Partial Class Dispatch_Details
 
         '---------------------------------------
         ' Invoice Document
+        ' NOT Mandatory
+        ' Validate PDF only if uploaded
         '---------------------------------------
+        If fuInv.HasFile Then
 
-        ' fuInv is intentionally NOT validated.
+            Dim extension As String =
+            System.IO.Path.GetExtension(
+                fuInv.FileName
+            )
+
+            If Not extension.Equals(
+            ".pdf",
+            StringComparison.OrdinalIgnoreCase
+        ) Then
+
+                errors.Add(
+                "Invoice Document must be a PDF file."
+            )
+
+            End If
+
+        End If
 
 
         '---------------------------------------
         ' Quantity Validation
         '---------------------------------------
-
         Dim hasDispatchQty As Boolean = False
 
         Dim rowNumber As Integer = 0
@@ -919,53 +1255,72 @@ Partial Class Dispatch_Details
             rowNumber += 1
 
             Dim txtQty As TextBox =
-                CType(
-                    row.FindControl("txtQtyToDispatch"),
-                    TextBox
-                )
+            CType(
+                row.FindControl("txtQtyToDispatch"),
+                TextBox
+            )
 
             Dim lblPendingQty As Label =
-                CType(
-                    row.FindControl("lblPendingQty"),
-                    Label
-                )
+            CType(
+                row.FindControl("lblPendingQty"),
+                Label
+            )
 
 
             Dim qty As Decimal = 0D
             Dim pendingQty As Decimal = 0D
 
 
-            If Not Decimal.TryParse(
-                txtQty.Text.Trim(),
-                qty
-            ) Then
+            '---------------------------------------
+            ' Invalid Quantity
+            '---------------------------------------
+            If txtQty Is Nothing OrElse
+           Not Decimal.TryParse(
+               txtQty.Text.Trim(),
+               qty
+           ) Then
 
                 errors.Add(
-                    "Please enter a valid dispatch quantity at row " &
-                    rowNumber.ToString() & "."
-                )
+                "Please enter a valid dispatch quantity at row " &
+                rowNumber.ToString() & "."
+            )
 
                 Continue For
 
             End If
 
 
-            Decimal.TryParse(
+            '---------------------------------------
+            ' Pending Quantity
+            '---------------------------------------
+            If lblPendingQty IsNot Nothing Then
+
+                Decimal.TryParse(
                 lblPendingQty.Text.Trim(),
                 pendingQty
             )
 
+            End If
 
+
+            '---------------------------------------
+            ' Negative Quantity
+            '---------------------------------------
             If qty < 0 Then
 
                 errors.Add(
-                    "Dispatch quantity cannot be negative at row " &
-                    rowNumber.ToString() & "."
-                )
+                "Dispatch quantity cannot be negative at row " &
+                rowNumber.ToString() & "."
+            )
+
+                Continue For
 
             End If
 
 
+            '---------------------------------------
+            ' Quantity > 0
+            '---------------------------------------
             If qty > 0 Then
 
                 hasDispatchQty = True
@@ -973,9 +1328,9 @@ Partial Class Dispatch_Details
                 If qty > pendingQty Then
 
                     errors.Add(
-                        "Dispatch quantity cannot exceed pending quantity at row " &
-                        rowNumber.ToString() & "."
-                    )
+                    "Dispatch quantity cannot exceed pending quantity at row " &
+                    rowNumber.ToString() & "."
+                )
 
                 End If
 
@@ -984,11 +1339,14 @@ Partial Class Dispatch_Details
         Next
 
 
+        '---------------------------------------
+        ' At least one material required
+        '---------------------------------------
         If Not hasDispatchQty Then
 
             errors.Add(
-                "Please enter quantity to dispatch for at least one material."
-            )
+            "Please enter quantity to dispatch for at least one material."
+        )
 
         End If
 
@@ -1056,13 +1414,28 @@ Partial Class Dispatch_Details
         pnlCourierCard.Visible = True
 
         If selectedText.Contains("courier") Then
+            'lblCourierCardHeader.Text = "Courier Information"
+            'lblCourierNoLabel.Text = "Courier No:"
+            'lblTranNameLabel.Text = "Courier Name:"
+            divLrNo.Visible = False
+            divVehNo.Visible = False
             lblCourierCardHeader.Text = "Courier Information"
-            lblCourierNoLabel.Text = "Courier No:"
+            lblCourierNoLabel.Text = "POD No:"
+            txtCouNo.Attributes("placeholder") = "Enter POD No."
             lblTranNameLabel.Text = "Courier Name:"
+            txtTranName.Attributes("placeholder") = "Enter Courier Name."
+            lblLrDate.Text = "Courier Date: "
+            txtLRDate.Attributes("placeholder") = "Select Courier Date."
         ElseIf selectedText.Contains("transport") Then
             lblCourierCardHeader.Text = "Transport Information"
             lblCourierNoLabel.Text = "Transport No:"
+            txtCouNo.Attributes("placeholder") = "Enter Transport No."
             lblTranNameLabel.Text = "Transporter Name:"
+            txtTranName.Attributes("placeholder") = "Enter Transport Name."
+            lblLrDate.Text = "LR Date: "
+            txtLRDate.Attributes("placeholder") = "Select LR Date."
+            divLrNo.Visible = True
+            divVehNo.Visible = True
         Else
             pnlCourierCard.Visible = False
         End If

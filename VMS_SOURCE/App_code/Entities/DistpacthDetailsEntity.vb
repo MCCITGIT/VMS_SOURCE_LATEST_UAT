@@ -11,6 +11,7 @@ Public Class DistpacthDetailsEntity
     Private m_TransName As String
     Private m_LRNo As String
     Private m_LRDate As DateTime
+    Private m_CourierDate As DateTime
     Private m_VehicleNo As String
     Private m_LRDoc As String
     Private m_DelType As String
@@ -52,6 +53,7 @@ Public Class DistpacthDetailsEntity
         m_TransName = String.Empty
         m_LRNo = String.Empty
         m_LRDate = DateTime.MinValue
+        m_CourierDate = DateTime.MinValue
         m_VehicleNo = String.Empty
         m_LRDoc = String.Empty
         m_DelType = String.Empty
@@ -151,6 +153,15 @@ Public Class DistpacthDetailsEntity
         End Get
         Set(ByVal value As DateTime)
             m_LRDate = value
+        End Set
+    End Property
+
+    Public Property CourDt() As DateTime
+        Get
+            Return m_CourierDate
+        End Get
+        Set(ByVal value As DateTime)
+            m_CourierDate = value
         End Set
     End Property
 
