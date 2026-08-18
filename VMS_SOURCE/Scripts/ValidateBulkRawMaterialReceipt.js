@@ -109,11 +109,11 @@ function validateReceive() {
         var txtShort = row.querySelector('[id*="txtShort"]');
 
         // Good validation
-        if (txtGood && txtGood.value.trim() === "0") {
-            errMsg = "Please enter Good Quantity.";
-            firstErrorControl = txtGood;
-            break;
-        }
+        //if (txtGood && txtGood.value.trim() === "0") {
+        //    errMsg = "Please enter Good Quantity.";
+        //    firstErrorControl = txtGood;
+        //    break;
+        //}
 
         if (txtGood && !decimalRegex.test(txtGood.value.trim())) {
             errMsg = "Good Quantity must be a valid number with maximum 2 decimal places.";
@@ -122,11 +122,11 @@ function validateReceive() {
         }
 
         // Damage validation
-        if (txtDamage && txtDamage.value.trim() === "0") {
-            errMsg = "Please enter Damage Quantity.";
-            firstErrorControl = txtDamage;
-            break;
-        }
+        //if (txtDamage && txtDamage.value.trim() === "0") {
+        //    errMsg = "Please enter Damage Quantity.";
+        //    firstErrorControl = txtDamage;
+        //    break;
+        //}
 
         if (txtDamage && !decimalRegex.test(txtDamage.value.trim())) {
             errMsg = "Damage Quantity must be a valid number with maximum 2 decimal places.";
@@ -135,11 +135,11 @@ function validateReceive() {
         }
 
         // Short validation
-        if (txtShort && txtShort.value.trim() === "0") {
-            errMsg = "Please enter Short Quantity.";
-            firstErrorControl = txtShort;
-            break;
-        }
+        //if (txtShort && txtShort.value.trim() === "0") {
+        //    errMsg = "Please enter Short Quantity.";
+        //    firstErrorControl = txtShort;
+        //    break;
+        //}
 
         if (txtShort && !decimalRegex.test(txtShort.value.trim())) {
             errMsg = "Short Quantity must be a valid number with maximum 2 decimal places.";

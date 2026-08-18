@@ -194,7 +194,7 @@
                         </asp:TextBox>
                     </div>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-3" runat="server" visible="false">
                     <label class="form-control-label">Recipe:<span id="Span111" class="mandatory">*</span></label>
                     <asp:DropDownList ID="ddlRecipe" ClientIDMode="Static" CssClass="form-control select2" TabIndex="1" runat="server" AutoPostBack="true"
                         OnSelectedIndexChanged="ddlRecipe_SelectedIndexChanged">
@@ -228,7 +228,7 @@
         <div class="card-body">
             <div class="table-responsive">
                 <asp:GridView ID="gvVendorRawMat" ClientIDMode="Static" runat="server" AutoGenerateColumns="False" CssClass="table table-hover upgradDataGrid"
-                    EmptyDataText="No records added." GridLines="both" ShowFooter="false">
+                    EmptyDataText="No records added." GridLines="both" ShowFooter="true">
                     <RowStyle CssClass="tlrowlight" />
                     <HeaderStyle CssClass="headerGrid" />
                     <Columns>
