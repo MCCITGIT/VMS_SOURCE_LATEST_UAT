@@ -111,7 +111,7 @@
             </div>
             <asp:UpdatePanel ID="UpdatePanel5" runat="server">
                 <ContentTemplate>
-                    <asp:Label ID="lblErrorMessage" ClientIDMode="Static" CssClass="errormsg" Visible="true" runat="server" Style="text-align: left; font-size: 13px; font-weight: bold; color: red;" Text=""></asp:Label>
+                    <asp:Label ID="lblErrorMessage" ClientIDMode="Static" CssClass="errormsg" Visible="true" runat="server" Style="text-align: left; font-size: 10px; font-weight: bold; color: red;" Text=""></asp:Label>
                 </ContentTemplate>
             </asp:UpdatePanel>
         </div>
