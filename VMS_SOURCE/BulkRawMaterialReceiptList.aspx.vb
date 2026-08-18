@@ -75,7 +75,10 @@ Partial Class BulkRawMaterialReceiptList
                 Dim hdnReceivedId As HiddenField = CType(row.FindControl("hdnReceivedId"), HiddenField)
                 Dim receiveId As String = String.Empty
                 If hdnReceivedId IsNot Nothing Then
-                    receiveId = Convert.ToString(hdnReceivedId.Value)
+                    receiveId = Convert.ToString(hdnReceivedId.Value).Trim()
+                    If receiveId.Contains(",") Then
+                        receiveId = receiveId.Split(","c)(0).Trim()
+                    End If
                 End If
 
                 Dim redirectUrl As String

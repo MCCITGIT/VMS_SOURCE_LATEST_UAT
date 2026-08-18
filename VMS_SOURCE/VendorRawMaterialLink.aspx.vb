@@ -408,6 +408,8 @@ Partial Class VendorRawMaterialLink
         '    End If
         'End If
         'ddlVendor.Enabled = False
+        txtSearchText.Enabled = False
+        btnAdd.Visible = False
         selectedVendorCode = Convert.ToString(Request.QueryString("vendorcode")).Trim()
         If selectedVendorCode = "" Then
             InitializeGridTable()
