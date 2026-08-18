@@ -96,6 +96,19 @@ Public Class OPC_VendorClass
         ds = DBFactory.GetHelper().ExecuteDataSet("[dbo].[GetRawmaterialData]", CommandType.StoredProcedure, sqlParams)
         Return ds
     End Function
+    Public Function GetRawMaterial_SearchList(ByVal searchText As String) As DataSet
+        Dim ds As DataSet
+        Dim sqlParams(0) As SqlParameter
+
+        sqlParams(0) = New SqlParameter()
+        sqlParams(0).ParameterName = "@search_key"
+        sqlParams(0).DbType = DbType.String
+        sqlParams(0).Direction = ParameterDirection.Input
+        sqlParams(0).Value = If(Not String.IsNullOrWhiteSpace(searchText), CObj(searchText.Trim()), DBNull.Value)
+
+        ds = DBFactory.GetHelper().ExecuteDataSet("[dbo].[GetRawmaterial]", CommandType.StoredProcedure, sqlParams)
+        Return ds
+    End Function
     Function InsertUpdateRawMatMasterDtls(ByRef entity As RawMaterialMasterEntity) As Integer
         Dim sqlConn As SqlConnection = Nothing
         sqlConn = DBFactory.GetHelper.OpenConnection()
