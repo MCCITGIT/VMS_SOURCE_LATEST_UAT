@@ -33,8 +33,7 @@ Partial Class RawMaterialMaster
         Try
             Dim obj As New OPC_VendorClass()
             Dim searchText As String = prefixText.Trim()
-            Dim ds As DataSet = obj.GetRawMatList(prefixText)
-
+            Dim ds As DataSet = obj.GetRawMaterial_SearchList(prefixText)
 
             If Not ds Is Nothing AndAlso ds.Tables.Count > 0 AndAlso Not ds.Tables(0) Is Nothing Then
                 For Each dr As DataRow In ds.Tables(0).Rows
