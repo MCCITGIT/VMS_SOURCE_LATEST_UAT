@@ -9,11 +9,15 @@ Partial Class Dispatch_Details
     Dim userInfo As VMSUserEntity = New VMSUserEntity()
 
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
+
         If Not IsPostBack Then
             Try
                 Dim orhId As Integer
                 Dim vendorCode As String = String.Empty
-                vendorCode = Request.QueryString("orh_vendor_code").ToString().Trim()
+                Dim dispatchStatus As String = String.Empty
+
+                vendorCode = If(Request.QueryString("orh_vendor_code"), String.Empty).Trim()
+                dispatchStatus = If(Request.QueryString("dispatch_status"), String.Empty).Trim()
 
                 ' Validate Request ID
                 If Not Integer.TryParse(Request.QueryString("orh_id"), orhId) OrElse orhId <= 0 Then
@@ -29,15 +33,48 @@ Partial Class Dispatch_Details
                     Return
                 End If
 
-                BindRequestDetails(orhId, vendorCode)
+                ' Validate Dispatch Status
+                If String.IsNullOrWhiteSpace(dispatchStatus) Then
+                    Response.Redirect("Dispatch_List.aspx", False)
+                    Context.ApplicationInstance.CompleteRequest()
+                    Return
+                End If
+
                 populateDeliveryType()
+                ' Decide which method to call
+                BindDetailsByStatus(orhId, vendorCode, dispatchStatus)
+
 
             Catch ex As Exception
-                Throw ex
+                Throw
             End Try
-
-            'txtDelType.Text = "COURIER/TRANSPORT DELIVERY"
         End If
+
+    End Sub
+
+    Private Sub BindDetailsByStatus(ByVal orhId As Integer,
+                                ByVal vendorCode As String,
+                                ByVal dispatchStatus As String)
+
+        Dim status As String = dispatchStatus.Trim().ToUpper()
+
+        If status = "PENDING" Then
+            gvMaterials.Columns(4).Visible = True
+            gvMaterials.Columns(6).Visible = True
+            BindRequestDetails(orhId, vendorCode)
+
+        ElseIf status = "DISPATCHED" Then
+            btnUploadInvoice.Visible = False
+            gvMaterials.Columns(4).Visible = False
+            gvMaterials.Columns(6).Visible = False
+            BindDispatchDetails(orhId, vendorCode)
+
+        Else
+            Response.Redirect("Dispatch_List.aspx", False)
+            Context.ApplicationInstance.CompleteRequest()
+            Return
+        End If
+
     End Sub
 
     Public Sub populateDeliveryType()
@@ -103,6 +140,193 @@ Partial Class Dispatch_Details
             gvMaterials.DataBind()
 
         End If
+
+    End Sub
+
+    Private Sub BindDispatchDetails(ByVal odhId As Integer,
+                                ByVal vendorCode As String)
+
+        Try
+            Dim obj As New POLinkingRequestClass()
+            Dim ds As DataSet = obj.GetDispatchDetails(odhId, vendorCode)
+
+            If ds Is Nothing OrElse
+           ds.Tables.Count = 0 OrElse
+           ds.Tables(0).Rows.Count = 0 Then
+
+                Response.Redirect("Dispatch_List.aspx", False)
+                Context.ApplicationInstance.CompleteRequest()
+                Return
+            End If
+
+            '========================================================
+            ' HEADER DETAILS
+            '========================================================
+            Dim dr As DataRow = ds.Tables(0).Rows(0)
+
+            lblRequestID.Text = Convert.ToString(dr("orh_Id"))
+            lblRequestDate.Text = Convert.ToString(dr("created_date"))
+            lblVendorCode.Text = Convert.ToString(dr("orh_vendor_code"))
+            lblVendorName.Text = Convert.ToString(dr("unit_name"))
+
+            hdnRawMaterialVendorCode.Value =
+            Convert.ToString(dr("orh_rawmaterial_vender_code"))
+
+
+            '========================================================
+            ' DELIVERY TYPE
+            '========================================================
+            Dim deliveryType As String =
+            Convert.ToString(dr("odh_del_type")).Trim()
+
+            If Not String.IsNullOrWhiteSpace(deliveryType) Then
+
+                Dim item As ListItem =
+                ddlDelType.Items.FindByValue(deliveryType)
+
+                'Fallback in case DB stores text instead of value
+                If item Is Nothing Then
+                    item = ddlDelType.Items.FindByText(deliveryType)
+                End If
+
+                If item IsNot Nothing Then
+                    ddlDelType.ClearSelection()
+                    item.Selected = True
+                End If
+
+            End If
+
+
+            '========================================================
+            ' VERY IMPORTANT
+            ' Setup Courier / Transport UI first
+            '========================================================
+            DisplayCourierInfo()
+
+
+            '========================================================
+            ' INVOICE DETAILS
+            '========================================================
+            txtInvNo.Text = Convert.ToString(dr("odh_inv_no"))
+            txtInvDate.Text = Convert.ToString(dr("odh_inv_date"))
+
+
+            '========================================================
+            ' COURIER / TRANSPORT DETAILS
+            '========================================================
+            If ddlDelType.SelectedIndex > 0 Then
+
+                Dim selectedText As String =
+                ddlDelType.SelectedItem.Text.Trim().ToLowerInvariant()
+
+
+                '----------------------------------------------------
+                ' COURIER
+                '----------------------------------------------------
+                If selectedText.Contains("courier") Then
+                    txtCouNo.Text =
+                    Convert.ToString(dr("odh_courier_id"))
+
+                    txtTranName.Text =
+                    Convert.ToString(dr("odh_trans_name"))
+
+                    'For Courier use Courier Date
+                    txtLRDate.Text =
+                    Convert.ToString(dr("odh_courier_date"))
+
+                    'Not applicable for Courier
+                    txtLRNo.Text = String.Empty
+                    txtVehNo.Text = String.Empty
+
+
+                    '----------------------------------------------------
+                    ' TRANSPORT
+                    '----------------------------------------------------
+                ElseIf selectedText.Contains("transport") Then
+                    txtCouNo.Text =
+                    Convert.ToString(dr("odh_courier_id"))
+
+                    txtTranName.Text =
+                    Convert.ToString(dr("odh_trans_name"))
+
+                    txtLRNo.Text =
+                    Convert.ToString(dr("odh_lr_no"))
+
+                    txtLRDate.Text =
+                    Convert.ToString(dr("odh_lr_date"))
+
+                    txtVehNo.Text =
+                    Convert.ToString(dr("odh_vehicle_no"))
+
+                End If
+
+            End If
+
+
+            '========================================================
+            ' MATERIAL DETAILS
+            '========================================================
+            If ds.Tables.Count > 1 AndAlso
+           ds.Tables(1) IsNot Nothing AndAlso
+           ds.Tables(1).Rows.Count > 0 Then
+
+                gvMaterials.DataSource = ds.Tables(1)
+                gvMaterials.DataBind()
+
+            Else
+
+                gvMaterials.DataSource = Nothing
+                gvMaterials.DataBind()
+
+            End If
+
+
+            '========================================================
+            ' DISABLE ALL EDITABLE CONTROLS
+            '========================================================
+            SetDispatchDetailsReadOnly()
+
+        Catch ex As Exception
+            Throw
+        End Try
+
+    End Sub
+
+    Private Sub SetDispatchDetailsReadOnly()
+
+        ddlDelType.Enabled = False
+
+        txtCouNo.Enabled = False
+        txtTranName.Enabled = False
+        txtLRNo.Enabled = False
+        txtLRDate.Enabled = False
+        txtVehNo.Enabled = False
+
+        txtInvNo.Enabled = False
+        txtInvDate.Enabled = False
+
+        fuLrDoc.Enabled = False
+        fuInv.Enabled = False
+
+        calLRDate.Enabled = False
+        calInvDate.Enabled = False
+
+        For Each row As GridViewRow In gvMaterials.Rows
+
+            If row.RowType = DataControlRowType.DataRow Then
+
+                Dim txtQty As TextBox =
+                TryCast(row.FindControl("txtQtyToDispatch"), TextBox)
+
+                If txtQty IsNot Nothing Then
+                    txtQty.Enabled = False
+                End If
+
+            End If
+
+        Next
+
+        btnSubmit.Visible = False
 
     End Sub
 

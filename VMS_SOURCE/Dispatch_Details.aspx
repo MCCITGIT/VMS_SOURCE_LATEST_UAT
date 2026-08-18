@@ -994,7 +994,7 @@
                                     accept=".pdf,application/pdf"
                                     CssClass="form-control" />
 
-                                <button type="button" id="btnUploadInvoice" class="btn btn-primary btn-sm mt-2">
+                                <button type="button" id="btnUploadInvoice" class="btn btn-primary btn-sm mt-2" runat="server">
                                     Upload &amp; Extract
        
                                
