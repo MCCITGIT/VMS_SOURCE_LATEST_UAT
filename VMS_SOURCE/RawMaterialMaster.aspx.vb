@@ -76,7 +76,7 @@ Partial Class RawMaterialMaster
 
                     If MsgID = 1 Then
                         lblErrorMessage.ForeColor = System.Drawing.Color.Green
-                        lblErrorMessage.Text = "Raw Material Save Succssfully."
+                        lblErrorMessage.Text = "Raw Material Saved Succssfully."
                         txtSearchText.Text = ""
                         BindData()
                     ElseIf MsgID = 2 Then

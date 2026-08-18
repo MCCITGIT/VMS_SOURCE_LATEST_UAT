@@ -143,14 +143,15 @@ function validateInputs() {
     }
 }
 
-function updateVendorRawMatRatioTotal() {
+function getVendorRawMatGridRatioTotal() {
     var grid = document.getElementById("gvVendorRawMat");
+    var total = 0;
+
     if (!grid) {
-        return;
+        return total;
     }
 
     var ratioLabels = grid.querySelectorAll("tbody tr.tlrowlight span[id$='lblRatio']");
-    var total = 0;
 
     for (var i = 0; i < ratioLabels.length; i++) {
         var rawValue = (ratioLabels[i].innerText || ratioLabels[i].textContent || "").trim();
@@ -160,6 +161,12 @@ function updateVendorRawMatRatioTotal() {
             total += numValue;
         }
     }
+
+    return Math.round(total * 100) / 100;
+}
+
+function updateVendorRawMatRatioTotal() {
+    var total = getVendorRawMatGridRatioTotal();
 
     var totalLabel = document.getElementById("lblRatioTotal");
     var statusLabel = document.getElementById("lblRatioStatus");
@@ -182,8 +189,6 @@ document.addEventListener("DOMContentLoaded", function () {
     updateVendorRawMatRatioTotal();
 });
 function validateAddRawMaterial() {
-    debugger;
-
     var errors = [];
 
     var lblErrorMessage = document.getElementById("lblErrorMessage");
@@ -192,10 +197,13 @@ function validateAddRawMaterial() {
     var txtrawmatid = document.getElementById("txtrawmatid");
     var txtRatio = document.getElementById("txtRatio");
     var txtmeasurement = document.getElementById("txtmeasurement");
+    var ratio = NaN;
+    var totalRatio = getVendorRawMatGridRatioTotal();
 
     // Clear previous error
     if (lblErrorMessage) {
         lblErrorMessage.innerHTML = "";
+        lblErrorMessage.style.color = "";
     }
 
     // Brand
@@ -218,7 +226,7 @@ function validateAddRawMaterial() {
         errors.push("Please enter Consumption Ratio.");
     }
     else {
-        var ratio = parseFloat(txtRatio.value.trim());
+        ratio = parseFloat(txtRatio.value.trim());
 
         if (isNaN(ratio)) {
             errors.push("Please enter a valid Consumption Ratio.");
@@ -226,17 +234,25 @@ function validateAddRawMaterial() {
         else if (ratio <= 0) {
             errors.push("Consumption Ratio must be greater than 0.");
         }
+        else {
+            totalRatio = Math.round((totalRatio + ratio) * 100) / 100;
+
+            if (totalRatio > 100) {
+                errors.push("Total Consumption Ratio should not be greater than 100%.");
+            }
+        }
     }
 
     // Unit
-    if (!txtmeasurement || txtmeasurement.value.trim() === "") {
-        errors.push("Please enter Unit of Measurement.");
-    }
+    //if (!txtmeasurement || txtmeasurement.value.trim() === "") {
+    //    errors.push("Please enter Unit of Measurement.");
+    //}
 
     // Show all errors
     if (errors.length > 0) {
 
         if (lblErrorMessage) {
+            lblErrorMessage.style.color = "#dc3545";
             lblErrorMessage.innerHTML = errors.join("<br>");
         }
 
@@ -245,4 +261,34 @@ function validateAddRawMaterial() {
 
     // Confirmation
     return confirm("Are you sure you want to add this record?");
+}
+
+function validateFormulationSubmit() {
+    var lblErrorMessage = document.getElementById("lblErrorMessage");
+    var totalRatio = getVendorRawMatGridRatioTotal();
+    var grid = document.getElementById("gvVendorRawMat");
+    var ratioLabels = grid ? grid.querySelectorAll("tbody tr.tlrowlight span[id$='lblRatio']") : [];
+
+    if (lblErrorMessage) {
+        lblErrorMessage.innerHTML = "";
+        lblErrorMessage.style.color = "";
+    }
+
+    if (!ratioLabels || ratioLabels.length === 0) {
+        if (lblErrorMessage) {
+            lblErrorMessage.style.color = "#dc3545";
+            lblErrorMessage.innerHTML = "Please enter at least one record in the grid.";
+        }
+        return false;
+    }
+
+    if (totalRatio !== 100) {
+        if (lblErrorMessage) {
+            lblErrorMessage.style.color = "#dc3545";
+            lblErrorMessage.innerHTML = "Total Consumption Ratio should be equal 100%.";
+        }
+        return false;
+    }
+
+    return confirm("Are you sure you want to submit this record?");
 }

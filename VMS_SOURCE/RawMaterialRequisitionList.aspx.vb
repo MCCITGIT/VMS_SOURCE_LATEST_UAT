@@ -157,7 +157,8 @@ Partial Class RawMaterialRequisitionList
                 lblErrorMessage.ForeColor = Drawing.Color.Green
                 lblErrorMessage.Text = approvedCount.ToString() & " requisition(s) approved successfully."
                 If mailSentCount > 0 OrElse mailFailedCount > 0 OrElse mailMissingCount > 0 Then
-                    lblErrorMessage.Text &= " Mail sent: " & mailSentCount.ToString() & "."
+                    'lblErrorMessage.Text &= " Link has been sent to the concern vendor for despatch : " & mailSentCount.ToString() & "."
+                    lblErrorMessage.Text &= " Link has been sent to the concern vendor for despatch ."
                     If mailMissingCount > 0 Then
                         lblErrorMessage.Text &= " Mail ID not found: " & mailMissingCount.ToString() & "."
                     End If

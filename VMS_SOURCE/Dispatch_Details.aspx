@@ -910,8 +910,8 @@
                                     autocomplete="off"
                                     placeholder="Select Courier Date."
                                     onkeydown="return handleDateKeyDown(event, this);"
-                                    onpaste="return false;"
-                                    ondrop="return false;">
+                                    onpaste="return true;"
+                                    ondrop="return true;">
                                 </asp:TextBox>
                                 <ajaxToolkit:CalendarExtender
                                     ID="calLRDate"
