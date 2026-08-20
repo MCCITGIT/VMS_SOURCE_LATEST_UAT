@@ -39,21 +39,22 @@ Partial Class AddProductMaster
                     MsgID = obj.InsertUpdateBrandMasterDtls(ProdMstrEntity)
 
                     If MsgID = 1 Then
-                        lblErrorMessage.ForeColor = System.Drawing.Color.Green
-                        lblErrorMessage.Text = "Brand Saved Succssfully."
-                        'btnSubmit.Enabled = False
+                        lblErrorMessage.Text = ""
                         txtBrandName.Text = ""
+                        gvbrandDetails.PageIndex = 0
                         BrandDetailsListLoad()
+                        RmActionPopup.ShowSuccess(Me, "Brand Saved Successfully.")
                     ElseIf MsgID = 2 Then
-                        lblErrorMessage.ForeColor = System.Drawing.Color.Red
-                        lblErrorMessage.Text = "Brand With Samename Already Present."
+                        lblErrorMessage.Text = ""
+                        RmActionPopup.ShowError(Me, "Brand with the same name already exists.")
                     Else
-                        lblErrorMessage.Text = "Brand Not Save."
+                        lblErrorMessage.Text = ""
+                        RmActionPopup.ShowError(Me, "Brand not saved.")
                     End If
                 End If
             Else
-                lblErrorMessage.ForeColor = System.Drawing.Color.Red
-                lblErrorMessage.Text = "Please enter brand name."
+                lblErrorMessage.Text = ""
+                RmActionPopup.ShowError(Me, "Please enter brand name.")
             End If
         Catch ex As Exception
             Dim returnUrl As String = "~/ExceptionPage.aspx"
@@ -82,14 +83,52 @@ Partial Class AddProductMaster
 
         If (Not (ds Is Nothing) AndAlso ds.Tables.Count > 0) Then
             If (Not (ds.Tables(0) Is Nothing) AndAlso ds.Tables(0).Rows.Count > 0) Then
+                Dim rowCount As Integer = ds.Tables(0).Rows.Count
+                Dim pageCount As Integer = CInt(Math.Ceiling(rowCount / CDbl(gvbrandDetails.PageSize)))
+                If gvbrandDetails.PageIndex >= pageCount Then
+                    gvbrandDetails.PageIndex = Math.Max(pageCount - 1, 0)
+                End If
                 gvbrandDetails.DataSource = ds
                 gvbrandDetails.DataBind()
+                UpdateBrandSummary(ds.Tables(0))
             Else
+                gvbrandDetails.PageIndex = 0
                 gvbrandDetails.DataSource = Nothing
                 gvbrandDetails.DataBind()
+                UpdateBrandSummary(Nothing)
             End If
+        Else
+            gvbrandDetails.PageIndex = 0
+            UpdateBrandSummary(Nothing)
         End If
     End Sub
+
+    Private Sub UpdateBrandSummary(ByVal brandTable As DataTable)
+        Dim totalCount As Integer = 0
+        Dim activeCount As Integer = 0
+        Dim inactiveCount As Integer = 0
+
+        If brandTable IsNot Nothing Then
+            totalCount = brandTable.Rows.Count
+            For Each row As DataRow In brandTable.Rows
+                If NormalizeActiveValue(Convert.ToString(row("active"))) = "Y" Then
+                    activeCount += 1
+                Else
+                    inactiveCount += 1
+                End If
+            Next
+        End If
+
+        lblTotalBrands.Text = totalCount.ToString()
+        lblActiveBrands.Text = activeCount.ToString()
+        lblInactiveBrands.Text = inactiveCount.ToString()
+    End Sub
+    Protected Sub gvbrandDetails_PageIndexChanging(sender As Object, e As GridViewPageEventArgs) Handles gvbrandDetails.PageIndexChanging
+        gvbrandDetails.EditIndex = -1
+        gvbrandDetails.PageIndex = e.NewPageIndex
+        BrandDetailsListLoad()
+    End Sub
+
     Protected Sub gvbrandDetails_RowEditing(sender As Object, e As GridViewEditEventArgs) Handles gvbrandDetails.RowEditing
         gvbrandDetails.EditIndex = e.NewEditIndex
         BrandDetailsListLoad()
@@ -128,15 +167,16 @@ Partial Class AddProductMaster
             MsgID = obj.InsertUpdateBrandMasterDtls(ProdMstrEntity)
 
             If MsgID = 1 Then
-                lblErrorMessage.ForeColor = System.Drawing.Color.Green
-                lblErrorMessage.Text = "Brand Updated Succssfully."
+                lblErrorMessage.Text = ""
                 txtBrandName.Text = ""
                 txtBrandId.Value = ""
                 btnSubmit.Text = Constant.GeneralMessages.btnSubmit
                 gvbrandDetails.EditIndex = -1
                 BrandDetailsListLoad()
+                RmActionPopup.ShowSuccess(Me, "Brand Updated Successfully.")
             Else
-                lblErrorMessage.Text = "Brand Not Save."
+                lblErrorMessage.Text = ""
+                RmActionPopup.ShowError(Me, "Unable to update brand.")
             End If
 
         End If
