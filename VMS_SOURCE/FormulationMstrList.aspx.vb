@@ -25,13 +25,14 @@ Partial Class FormulationMstrList
 
     Private Sub BindDropdown()
         BrandDetailsListLoad()
+        VendorDetailsListLoad()
         RawMaterialListLoad()
     End Sub
 
     Private Sub BrandDetailsListLoad()
         Dim ds As DataSet
         Dim obj As New OPC_VendorClass()
-        ds = obj.GetBrandMasterList()
+        ds = obj.BindBrandMasterList()
 
         If (Not (ds Is Nothing) AndAlso ds.Tables.Count > 0) Then
             If (Not (ds.Tables(0) Is Nothing) AndAlso ds.Tables(0).Rows.Count > 0) Then
@@ -96,7 +97,7 @@ Partial Class FormulationMstrList
     Private Sub Binddata()
         Dim ds As DataSet
         Dim obj As New OPC_VendorClass()
-        ds = obj.GetFormulationDataList(ddlBrand.SelectedValue, ddlRawMat.SelectedValue, hdnProductCode.Value)
+        ds = obj.GetFormulationDataList(ddlBrand.SelectedValue, ddlRawMat.SelectedValue, hdnProductCode.Value, ddlvendor.SelectedValue)
 
         Dim table As DataTable = RmGridHelper.GetTable(ds)
         RmGridHelper.BindPaged(gvFormulationList, table)
@@ -193,5 +194,23 @@ Partial Class FormulationMstrList
     Protected Sub gvFormulationList_PageIndexChanging(sender As Object, e As GridViewPageEventArgs) Handles gvFormulationList.PageIndexChanging
         gvFormulationList.PageIndex = e.NewPageIndex
         Binddata()
+    End Sub
+    Private Sub VendorDetailsListLoad()
+        Dim ds As DataSet
+        Dim obj As New OPC_VendorClass()
+        ds = obj.GetUnitName(Constant.Common.ActiveStatus)
+
+        If (Not (ds Is Nothing) AndAlso ds.Tables.Count > 0) Then
+            If (Not (ds.Tables(0) Is Nothing) AndAlso ds.Tables(0).Rows.Count > 0) Then
+                ddlvendor.DataSource = ds
+                ddlvendor.DataTextField = "unit_name"
+                ddlvendor.DataValueField = "unit_code"
+                ddlvendor.DataBind()
+            Else
+                ddlvendor.DataSource = Nothing
+                ddlvendor.DataBind()
+            End If
+            ddlvendor.Items.Insert(0, New ListItem(Constant.Common.Selec, String.Empty, True))
+        End If
     End Sub
 End Class
