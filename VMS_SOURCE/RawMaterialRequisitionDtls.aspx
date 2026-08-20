@@ -1,6 +1,8 @@
 ﻿<%@ Page Title="" Language="VB" MasterPageFile="~/MasterPage.master" AutoEventWireup="false" CodeFile="RawMaterialRequisitionDtls.aspx.vb" Inherits="RawMaterialRequisitionDtls" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
+    <link href="includes/rm-procurement.css?v=<%= DateTime.Now.Ticks %>" rel="stylesheet" type="text/css" />
+    <div class="rm-module rm-requisition-dtls">
     <script type="text/javascript" src="Scripts/FunctionValidator.js"></script>
     <script type="text/javascript" src="Scripts/ValidateRawMaterialRequisitionDtls.js?time=<%= DateTime.Now.ToString("yyyy.MM.dd-HH.mm.ss.fff") %>"></script>
     <script type="text/javascript">
@@ -61,9 +63,12 @@
                                 <asp:DropDownList ID="ddlVendor" ClientIDMode="Static" CssClass="form-control select2" runat="server" AutoPostBack="true" OnSelectedIndexChanged="ddlVendor_SelectedIndexChanged"></asp:DropDownList>
                             </div>
                         </div>
-                        <div class="col-md-2 form-btn-mt">
-                            <div class="form-group">
-                                <asp:LinkButton CssClass="btn btn-primary btn-sm" ID="imgbtnSearch" runat="server" ClientIDMode="Static" OnClick="imgbtnSearch_Click">Search</asp:LinkButton>
+                        <div class="col-md-2">
+                            <div class="form-group rm-requisition-dtls-action">
+                                <label class="form-control-label">&nbsp;</label>
+                                <div class="rm-filter-actions">
+                                    <asp:LinkButton CssClass="btn btn-primary btn-sm rm-btn-icon" ID="imgbtnSearch" runat="server" ClientIDMode="Static" OnClick="imgbtnSearch_Click" ToolTip="Search"><i class="fas fa-search"></i></asp:LinkButton>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -129,5 +134,7 @@
             <asp:PostBackTrigger ControlID="btnSubmit" />
         </Triggers>
     </asp:UpdatePanel>
+    </div>
+    <script type="text/javascript" src="Scripts/rm-status-confirm.js?v=<%= DateTime.Now.Ticks %>"></script>
 </asp:Content>
 

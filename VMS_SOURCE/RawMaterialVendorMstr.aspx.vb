@@ -40,8 +40,8 @@ Partial Class RawMaterialVendorMstr
 
         Try
             If String.IsNullOrWhiteSpace(txtUnitName.Text.Trim()) Then
-                lblErrorMessage.ForeColor = System.Drawing.Color.Red
-                lblErrorMessage.Text = "Please enter Vendor Name."
+                lblErrorMessage.Text = ""
+                RmActionPopup.ShowError(Me, "Please enter Vendor Name.")
                 Exit Sub
             End If
 
@@ -82,12 +82,12 @@ Partial Class RawMaterialVendorMstr
                 End If
                 Context.ApplicationInstance.CompleteRequest()
             ElseIf MsgID = 2 Then
-                lblErrorMessage.ForeColor = System.Drawing.Color.Red
-                lblErrorMessage.Text = "Vendor Code already exists."
+                lblErrorMessage.Text = ""
+                RmActionPopup.ShowError(Me, "Vendor Code already exists.")
                 btnSubmit.Enabled = True
             Else
-                lblErrorMessage.ForeColor = System.Drawing.Color.Red
-                lblErrorMessage.Text = "Vendor Not Saved."
+                lblErrorMessage.Text = ""
+                RmActionPopup.ShowError(Me, "Vendor not saved.")
                 btnSubmit.Enabled = True
             End If
         Catch ex As Exception
@@ -100,8 +100,8 @@ Partial Class RawMaterialVendorMstr
     Private Sub ShowSavedMessage()
         Dim saveMessage As String = Convert.ToString(Session("RawMaterialVendorSaveMsg"))
         If Not String.IsNullOrWhiteSpace(saveMessage) Then
-            lblErrorMessage.ForeColor = System.Drawing.Color.Green
-            lblErrorMessage.Text = saveMessage
+            lblErrorMessage.Text = ""
+            RmActionPopup.ShowSuccess(Me, saveMessage)
             Session.Remove("RawMaterialVendorSaveMsg")
         End If
     End Sub

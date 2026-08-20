@@ -74,8 +74,8 @@ Partial Class RawMaterialRequisitionDtls
         Dim ds As DataSet = obj.GetRawMaterialRequesteditt(requestId)
 
         If ds Is Nothing OrElse ds.Tables.Count = 0 OrElse ds.Tables(0) Is Nothing OrElse ds.Tables(0).Rows.Count = 0 Then
-            lblErrorMessage.ForeColor = System.Drawing.Color.Red
-            lblErrorMessage.Text = "Requisition details not found."
+            lblErrorMessage.Text = ""
+            RmActionPopup.ShowError(Me, "Requisition details not found.")
             btnSubmit.Visible = False
             Return
         End If
@@ -200,15 +200,15 @@ Partial Class RawMaterialRequisitionDtls
             lblErrorMessage.Text = String.Empty
 
             If ddlVendor.SelectedIndex <= 0 OrElse String.IsNullOrWhiteSpace(ddlVendor.SelectedValue) Then
-                lblErrorMessage.ForeColor = System.Drawing.Color.Red
-                lblErrorMessage.Text = "Please select RM Vendor."
+                lblErrorMessage.Text = ""
+                RmActionPopup.ShowError(Me, "Please select RM Vendor.")
                 Return
             End If
 
             dtDetails = BuildRequisitionDetailTable()
             If dtDetails.Rows.Count = 0 Then
-                lblErrorMessage.ForeColor = System.Drawing.Color.Red
-                lblErrorMessage.Text = "Please enter Quantity greater than 0 for at least one Raw Material."
+                lblErrorMessage.Text = ""
+                RmActionPopup.ShowError(Me, "Please enter Quantity greater than 0 for at least one Raw Material.")
                 Return
             End If
 
@@ -230,13 +230,17 @@ Partial Class RawMaterialRequisitionDtls
             result = obj.InsertUpdateRawMaterialRequisition(headerEntity, dtDetails)
 
             If result > 0 Then
-                lblErrorMessage.ForeColor = System.Drawing.Color.Green
-                lblErrorMessage.Text = "Requisition submitted successfully."
+                lblErrorMessage.Text = ""
+                If headerEntity.Trantype = 2 Then
+                    Session("RmActionResultMsg") = "Requisition updated successfully."
+                Else
+                    Session("RmActionResultMsg") = "Requisition submitted successfully."
+                End If
                 Response.Redirect("~/RawMaterialRequisitionList.aspx", False)
                 Context.ApplicationInstance.CompleteRequest()
             Else
-                lblErrorMessage.ForeColor = System.Drawing.Color.Red
-                lblErrorMessage.Text = "Unable to submit requisition. Please try again."
+                lblErrorMessage.Text = ""
+                RmActionPopup.ShowError(Me, "Unable to submit requisition. Please try again.")
             End If
         Catch ex As Exception
             Dim returnUrl As String = "~/ExceptionPage.aspx"

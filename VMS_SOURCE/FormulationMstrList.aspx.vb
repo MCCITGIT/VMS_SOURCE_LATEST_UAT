@@ -3,6 +3,7 @@ Imports System.Data
 Imports System.Data.SqlTypes
 Imports System.Data.SqlClient
 Imports VMS.DataAccess
+Imports System.Collections.Generic
 Partial Class FormulationMstrList
     Inherits System.Web.UI.Page
     Dim userInfo As VMSUserEntity = New VMSUserEntity()
@@ -97,15 +98,45 @@ Partial Class FormulationMstrList
         Dim obj As New OPC_VendorClass()
         ds = obj.GetFormulationDataList(ddlBrand.SelectedValue, ddlRawMat.SelectedValue, hdnProductCode.Value)
 
-        If (Not (ds Is Nothing) AndAlso ds.Tables.Count > 0) Then
-            If (Not (ds.Tables(0) Is Nothing) AndAlso ds.Tables(0).Rows.Count > 0) Then
-                gvFormulationList.DataSource = ds
-                gvFormulationList.DataBind()
-            Else
-                gvFormulationList.DataSource = Nothing
-                gvFormulationList.DataBind()
-            End If
+        Dim table As DataTable = RmGridHelper.GetTable(ds)
+        RmGridHelper.BindPaged(gvFormulationList, table)
+        UpdateSummary(table)
+    End Sub
+
+    Private Sub UpdateSummary(ByVal sourceTable As DataTable)
+        Dim totalCount As Integer = 0
+        Dim brandCount As Integer = 0
+        Dim skuCount As Integer = 0
+
+        If sourceTable IsNot Nothing Then
+            totalCount = sourceTable.Rows.Count
+            Dim brands As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
+            Dim skus As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
+            Dim brandColumn As String = If(sourceTable.Columns.Contains("Brand_Code"), "Brand_Code", If(sourceTable.Columns.Contains("Brand_Name"), "Brand_Name", String.Empty))
+            Dim skuColumn As String = If(sourceTable.Columns.Contains("Sku_Code"), "Sku_Code", If(sourceTable.Columns.Contains("Sku_Desc"), "Sku_Desc", String.Empty))
+
+            For Each row As DataRow In sourceTable.Rows
+                If brandColumn <> "" Then
+                    Dim brandValue As String = Convert.ToString(row(brandColumn)).Trim()
+                    If brandValue <> "" Then
+                        brands.Add(brandValue)
+                    End If
+                End If
+                If skuColumn <> "" Then
+                    Dim skuValue As String = Convert.ToString(row(skuColumn)).Trim()
+                    If skuValue <> "" Then
+                        skus.Add(skuValue)
+                    End If
+                End If
+            Next
+
+            brandCount = brands.Count
+            skuCount = skus.Count
         End If
+
+        'lblTotalCount.Text = totalCount.ToString()
+        'lblBrandCount.Text = brandCount.ToString()
+        'lblSkuCount.Text = skuCount.ToString()
     End Sub
     Protected Sub gvFormulationList_RowCommand(sender As Object, e As GridViewCommandEventArgs) Handles gvFormulationList.RowCommand
         Try
@@ -156,6 +187,7 @@ Partial Class FormulationMstrList
         Response.Redirect("~/Product_Formulation.aspx")
     End Sub
     Protected Sub imgbtnSearch_Click(sender As Object, e As EventArgs) Handles imgbtnSearch.Click
+        gvFormulationList.PageIndex = 0
         Binddata()
     End Sub
     Protected Sub gvFormulationList_PageIndexChanging(sender As Object, e As GridViewPageEventArgs) Handles gvFormulationList.PageIndexChanging

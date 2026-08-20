@@ -1,6 +1,8 @@
 ﻿<%@ Page Title="" Language="VB" MasterPageFile="~/MasterPage.master" AutoEventWireup="false" CodeFile="RawMaterialVendorMstrList.aspx.vb" Inherits="RawMaterialVendorMstrList" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
+    <link href="includes/rm-procurement.css?v=<%= DateTime.Now.Ticks %>" rel="stylesheet" type="text/css" />
+    <div class="rm-module rm-compact rm-vendor-mstr-list">
     <script type="text/javascript">
         document.onkeydown = checkValue;
         function checkValue() {
@@ -32,30 +34,48 @@
     <asp:UpdatePanel ID="UpdatePanelFilter" runat="server">
         <ContentTemplate>
             <div class="card">
-                <div class="mst-panel-header">
-                    <div class="mst-panel-header-left">
-                        <span class="mst-panel-icon"><i class="fas fa-filter"></i></span>
-                        <div>
-                            <h5 class="mst-panel-title">Search Vendor</h5>
-                            <p class="mst-panel-subtitle">Filter raw material vendors by name</p>
-                        </div>
-                    </div>
-                </div>
                 <div class="card-body">
                     <asp:Label ID="lblErrorMessage" ClientIDMode="Static" CssClass="errormsg" Visible="true" runat="server" Style="text-align: left; font-size: 13px; font-weight: bold;" Text=""></asp:Label>
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="form-group pb-0">
-                                <label class="form-control-label">Vendor Name:</label>
-                                <asp:DropDownList ID="ddlVendor" ClientIDMode="Static" CssClass="form-control select2" runat="server"
-                                 ></asp:DropDownList>
+                    <div class="rm-filter-stats-row">
+                        <div class="rm-filter-fields">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group pb-0">
+                                        <label class="form-control-label">Vendor Name:</label>
+                                        <asp:DropDownList ID="ddlVendor" ClientIDMode="Static" CssClass="form-control select2" runat="server"
+                                         ></asp:DropDownList>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 form-btn-mt">
+                                    <div class="rm-filter-actions">
+                                        <asp:LinkButton ID="imgbtnSearch" runat="server" CssClass="btn btn-primary btn-sm rm-btn-icon" ClientIDMode="Static" OnClick="imgbtnSearch_Click" ToolTip="Search"><i class="fas fa-search"></i></asp:LinkButton>
+                                        <asp:LinkButton ID="ImgbtnAdd" runat="server" CssClass="btn btn-success btn-sm rm-btn-icon" ClientIDMode="Static" OnClick="ImgbtnAdd_Click" ToolTip="Add"><i class="fas fa-plus"></i></asp:LinkButton>
+                                        <asp:Button ID="btnReset" runat="server" Text="Reset" CssClass="btn btn-warning btn-sm" OnClick="btnReset_Click" />
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <div class="col-md-4 form-btn-mt">
-                            <div class="form-group pb-0">
-                                <asp:LinkButton ID="imgbtnSearch" runat="server" CssClass="btn btn-primary btn-sm" ClientIDMode="Static" OnClick="imgbtnSearch_Click"><i class="fas fa-search"></i></asp:LinkButton>
-                                <asp:LinkButton ID="ImgbtnAdd" runat="server" CssClass="btn btn-success btn-sm" ClientIDMode="Static" OnClick="ImgbtnAdd_Click">Add</asp:LinkButton>
-                                <asp:Button ID="btnReset" runat="server" Text="Reset" CssClass="btn btn-warning btn-sm" OnClick="btnReset_Click" />
+                        <div class="rm-stat-row">
+                            <div class="rm-stat-card">
+                                <div class="rm-stat-icon is-blue"><i class="fas fa-layer-group"></i></div>
+                                <div>
+                                    <p class="rm-stat-label">Total</p>
+                                    <p class="rm-stat-value"><asp:Label ID="lblTotalCount" runat="server" Text="0"></asp:Label></p>
+                                </div>
+                            </div>
+                            <div class="rm-stat-card">
+                                <div class="rm-stat-icon is-green"><i class="fas fa-check-circle"></i></div>
+                                <div>
+                                    <p class="rm-stat-label">Active</p>
+                                    <p class="rm-stat-value is-green"><asp:Label ID="lblActiveCount" runat="server" Text="0"></asp:Label></p>
+                                </div>
+                            </div>
+                            <div class="rm-stat-card">
+                                <div class="rm-stat-icon is-red"><i class="fas fa-times-circle"></i></div>
+                                <div>
+                                    <p class="rm-stat-label">Inactive</p>
+                                    <p class="rm-stat-value is-red"><asp:Label ID="lblInactiveCount" runat="server" Text="0"></asp:Label></p>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -64,7 +84,7 @@
         </ContentTemplate>
     </asp:UpdatePanel>
 
-    <div class="card">
+    <div class="card rm-list-fill">
         <div class="mst-panel-header">
             <div class="mst-panel-header-left">
                 <span class="mst-panel-icon"><i class="fas fa-list"></i></span>
@@ -75,12 +95,14 @@
             </div>
         </div>
         <div class="card-body">
-            <div class="table-responsive" style="overflow-y: auto; max-height: calc(100vh - 290px);">
+            <div class="table-responsive rm-grid-scroll">
                 <asp:UpdatePanel ID="UpdatePanelGrid" runat="server">
                     <ContentTemplate>
                         <asp:GridView BorderWidth="1" CssClass="table table-hover upgradDataGrid" CellSpacing="0" CellPadding="0"
-                            ID="gvRawMatVendorDetails" runat="server" AutoGenerateColumns="false" AllowPaging="false" Visible="true"
+                            ID="gvRawMatVendorDetails" runat="server" AutoGenerateColumns="false" AllowPaging="true" PageSize="10" Visible="true"
                             ShowFooter="false" GridLines="both" EmptyDataText="No records found"
+                            PagerSettings-Mode="NumericFirstLast" PagerSettings-PageButtonCount="5"
+                            PagerSettings-FirstPageText="First" PagerSettings-LastPageText="Last"
                             OnRowCommand="gvRawMatVendorDetails_RowCommand">
                             <RowStyle CssClass="tlrowlight" />
                             <PagerStyle CssClass="PagerGrid" HorizontalAlign="Right" />
@@ -89,7 +111,7 @@
                             <Columns>
                                 <asp:TemplateField HeaderText="Sl No">
                                     <ItemTemplate>
-                                        <asp:Label ID="lblSlNo" runat="server" Text='<%# Container.DataItemIndex + 1 %>'></asp:Label>
+                                        <asp:Label ID="lblSlNo" runat="server" Text='<%# (gvRawMatVendorDetails.PageIndex * gvRawMatVendorDetails.PageSize) + Container.DataItemIndex + 1 %>'></asp:Label>
                                     </ItemTemplate>
                                     <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" />
                                     <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="4%" />
@@ -154,7 +176,7 @@
 
                                 <asp:TemplateField HeaderText="Status">
                                     <ItemTemplate>
-                                        <asp:Label ID="lblStatus" runat="server" Text='<%# If(Convert.ToString(Eval("active")).Trim().ToUpper() = "Y", "Yes", "No") %>'></asp:Label>
+                                        <asp:Label ID="lblStatus" runat="server" CssClass='<%# If(Convert.ToString(Eval("active")).Trim().ToUpper() = "Y", "rm-status-pill is-active", "rm-status-pill is-inactive") %>' Text='<%# If(Convert.ToString(Eval("active")).Trim().ToUpper() = "Y", "Active", "Inactive") %>'></asp:Label>
                                     </ItemTemplate>
                                     <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" />
                                     <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="6%" />
@@ -174,11 +196,13 @@
                     </ContentTemplate>
                     <Triggers>
                         <asp:AsyncPostBackTrigger ControlID="imgbtnSearch" EventName="Click" />
+                        <asp:AsyncPostBackTrigger ControlID="btnReset" EventName="Click" />
                         <asp:AsyncPostBackTrigger ControlID="ddlVendor" EventName="SelectedIndexChanged" />
                         <asp:PostBackTrigger ControlID="gvRawMatVendorDetails" />
                     </Triggers>
                 </asp:UpdatePanel>
             </div>
         </div>
+    </div>
     </div>
 </asp:Content>

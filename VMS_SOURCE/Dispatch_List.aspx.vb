@@ -10,11 +10,11 @@ Partial Class Dispatch_List
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
         Page.MaintainScrollPositionOnPostBack = True
         If (Not IsPostBack) Then
-            Dim rmVendorCode As String = String.Empty
-            If Request.QueryString("rmvendor_code") IsNot Nothing Then
-                rmVendorCode = Request.QueryString("rmvendor_code").ToString()
-            End If
-            'Dim rmVendorCode As String = "RM001"
+            'Dim rmVendorCode As String = String.Empty
+            'If Request.QueryString("rmvendor_code") IsNot Nothing Then
+            '    rmVendorCode = Request.QueryString("rmvendor_code").ToString()
+            'End If
+            Dim rmVendorCode As String = "5023412"
             ViewState("RmVendorCode") = rmVendorCode
             divVendor.Visible = False
             populateStatus()
@@ -77,9 +77,6 @@ Partial Class Dispatch_List
 
     Private Sub PopulateList(ByVal rmVendorCode As String)
         Dim obj As POLinkingRequestClass = New POLinkingRequestClass()
-        gvDispatchList.DataSource = Nothing
-        gvDispatchList.DataBind()
-
         Dim ds As DataSet = obj.GetDispatchList(rmVendorCode, ddlStatus.SelectedValue)
 
         If ds.Tables.Count > 0 AndAlso ds.Tables(0).Rows.Count > 0 Then
@@ -88,21 +85,74 @@ Partial Class Dispatch_List
         End If
 
         If (ds IsNot Nothing AndAlso ds.Tables.Count > 1 AndAlso ds.Tables(1) IsNot Nothing) Then
-            gvDispatchList.DataSource = ds.Tables(1)
-            gvDispatchList.DataBind()
+            RmGridHelper.BindPaged(gvDispatchList, ds.Tables(1))
         Else
-            gvDispatchList.DataSource = Nothing
-            gvDispatchList.DataBind()
+            RmGridHelper.BindPaged(gvDispatchList, Nothing)
         End If
+
+        BindSummaryCounts(rmVendorCode, ddlStatus.SelectedValue, ds)
     End Sub
 
-    Protected Sub btnSearch_Click(sender As Object, e As EventArgs)
-        'Dim rmVendorCode As String = String.Empty
-        'If Request.QueryString("rmvendor_code") IsNot Nothing Then
-        '    rmVendorCode = Request.QueryString("rmvendor_code").ToString()
-        'End If
+    Protected Function GetVendorInitials(ByVal nameObj As Object) As String
+        Dim name As String = If(nameObj Is Nothing, String.Empty, nameObj.ToString().Trim())
+        If String.IsNullOrEmpty(name) Then
+            Return "--"
+        End If
 
-        PopulateList(rmVendorCode)
+        Dim parts() As String = name.Split(New Char() {" "c}, StringSplitOptions.RemoveEmptyEntries)
+        If parts.Length = 1 Then
+            Return parts(0).Substring(0, Math.Min(2, parts(0).Length)).ToUpper()
+        End If
+
+        Return (parts(0).Substring(0, 1) & parts(1).Substring(0, 1)).ToUpper()
+    End Function
+
+    Private Sub BindSummaryCounts(ByVal rmVendorCode As String, ByVal selectedStatus As String, ByVal currentDs As DataSet)
+        Dim currentCount As Integer = 0
+        If currentDs IsNot Nothing AndAlso currentDs.Tables.Count > 1 AndAlso currentDs.Tables(1) IsNot Nothing Then
+            currentCount = currentDs.Tables(1).Rows.Count
+        End If
+
+        Dim pendingCount As Integer = 0
+        Dim completedCount As Integer = 0
+        Dim statusValue As String = If(selectedStatus, String.Empty).Trim().ToUpper()
+
+        If statusValue = "PENDING" Then
+            pendingCount = currentCount
+            completedCount = GetDispatchCount(rmVendorCode, "DISPATCHED")
+        ElseIf statusValue = "DISPATCHED" Then
+            completedCount = currentCount
+            pendingCount = GetDispatchCount(rmVendorCode, "PENDING")
+        Else
+            pendingCount = GetDispatchCount(rmVendorCode, "PENDING")
+            completedCount = GetDispatchCount(rmVendorCode, "DISPATCHED")
+        End If
+
+        lblPendingRequests.Text = pendingCount.ToString()
+        lblCompletedRequests.Text = completedCount.ToString()
+        lblTotalRequests.Text = (pendingCount + completedCount).ToString()
+    End Sub
+
+    Private Function GetDispatchCount(ByVal rmVendorCode As String, ByVal dispatchStatus As String) As Integer
+        Try
+            Dim obj As POLinkingRequestClass = New POLinkingRequestClass()
+            Dim ds As DataSet = obj.GetDispatchList(rmVendorCode, dispatchStatus)
+            If ds IsNot Nothing AndAlso ds.Tables.Count > 1 AndAlso ds.Tables(1) IsNot Nothing Then
+                Return ds.Tables(1).Rows.Count
+            End If
+        Catch
+        End Try
+        Return 0
+    End Function
+
+    Protected Sub btnSearch_Click(sender As Object, e As EventArgs)
+        gvDispatchList.PageIndex = 0
+        PopulateList(RmVendorCode)
+    End Sub
+
+    Protected Sub gvDispatchList_PageIndexChanging(sender As Object, e As GridViewPageEventArgs) Handles gvDispatchList.PageIndexChanging
+        gvDispatchList.PageIndex = e.NewPageIndex
+        PopulateList(RmVendorCode)
     End Sub
 
     Protected Sub lbtnDetails_Click(sender As Object, e As EventArgs)
