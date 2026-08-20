@@ -116,22 +116,22 @@
                     <HeaderStyle CssClass="headerGrid" />
                     <FooterStyle CssClass="footerGrid" />
                     <Columns>
-                        <asp:TemplateField HeaderText="Sl No" HeaderStyle-HorizontalAlign="Center">
+                        <asp:TemplateField HeaderText="Sl No">
                             <ItemTemplate>
                                 <asp:Label ID="lblbrandid" runat="server" Text='<%# (gvbrandDetails.PageIndex * gvbrandDetails.PageSize) + Container.DataItemIndex + 1 %>'></asp:Label>
                             </ItemTemplate>
-                            <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="10%" />
-                            <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="10%" />
+                            <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="8%" CssClass="text-center" />
+                            <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="8%" CssClass="text-center" />
                         </asp:TemplateField>
-                        <asp:TemplateField HeaderText="Brand Name" HeaderStyle-HorizontalAlign="Center">
+                        <asp:TemplateField HeaderText="Brand Name">
                             <ItemTemplate>
                                 <asp:Label ID="lblbrandname" runat="server" Text='<%# Bind("brand_name") %>'></asp:Label>
                                 <asp:HiddenField ID="hdnBrandId" runat="server" Value='<%# Bind("brand_id") %>' />
                             </ItemTemplate>
-                            <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="65%" />
-                            <ItemStyle HorizontalAlign="Left" VerticalAlign="Middle" Width="65%" />
+                            <HeaderStyle HorizontalAlign="Left" VerticalAlign="Middle" Width="62%" CssClass="text-left" />
+                            <ItemStyle HorizontalAlign="Left" VerticalAlign="Middle" Width="62%" CssClass="text-left" />
                         </asp:TemplateField>
-                        <asp:TemplateField HeaderText="Active" HeaderStyle-HorizontalAlign="Center">
+                        <asp:TemplateField HeaderText="Active">
                             <ItemTemplate>
                                 <asp:Label ID="lblactiveText" runat="server" CssClass='<%# IIf(UCase(Trim(CStr(Eval("active")))) = "Y", "rm-status-pill is-active", "rm-status-pill is-inactive") %>' Text='<%# IIf(UCase(Trim(CStr(Eval("active")))) = "Y", "Active", "Inactive") %>'></asp:Label>
                             </ItemTemplate>
@@ -141,10 +141,10 @@
                                     <asp:ListItem Text="Inactive" Value="N"></asp:ListItem>
                                 </asp:DropDownList>
                             </EditItemTemplate>
-                            <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="15%" />
-                            <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="15%" />
+                            <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="18%" CssClass="text-center" />
+                            <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="18%" CssClass="text-center" />
                         </asp:TemplateField>
-                        <asp:TemplateField HeaderText="Action" HeaderStyle-HorizontalAlign="Center">
+                        <asp:TemplateField HeaderText="Action">
                             <ItemTemplate>
                                 <asp:LinkButton ID="btnEdit" CommandName="Edit" runat="server" CssClass="text-info" ToolTip="Edit"><i class="fas fa-edit"></i></asp:LinkButton>
                             </ItemTemplate>
@@ -152,8 +152,8 @@
                                 <asp:LinkButton ID="btnUpdate" CommandName="Update" CssClass="text-success mr-1" runat="server" ToolTip="Update" OnClientClick="return rmConfirmStatusUpdate(this);"><i class="fas fa-check"></i></asp:LinkButton>
                                 <asp:LinkButton ID="btncancel" CommandName="Cancel" CssClass="text-danger" runat="server" ToolTip="Cancel"><i class="fas fa-times"></i></asp:LinkButton>
                             </EditItemTemplate>
-                            <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="10%" />
-                            <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="10%" />
+                            <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="12%" CssClass="text-center" />
+                            <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="12%" CssClass="text-center" />
                         </asp:TemplateField>
                     </Columns>
                 </asp:GridView>

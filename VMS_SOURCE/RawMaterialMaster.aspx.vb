@@ -51,10 +51,6 @@ Partial Class RawMaterialMaster
 
         Return rawMaterialDetails.ToArray()
     End Function
-    Protected Sub btnCancel_Click(sender As Object, e As EventArgs)
-        Response.Redirect("~/Home.aspx", True)
-    End Sub
-
     Protected Sub btnSubmit_Click(sender As Object, e As EventArgs)
         Dim RawmatObj As New RawMaterialMasterEntity()
         Dim obj As New OPC_VendorClass()
@@ -214,5 +210,15 @@ Partial Class RawMaterialMaster
     Protected Sub gvrawMatDetails_RowCancelingEdit(sender As Object, e As GridViewCancelEditEventArgs) Handles gvrawMatDetails.RowCancelingEdit
         gvrawMatDetails.EditIndex = -1
         BindData()
+    End Sub
+    Protected Sub btnReset_Click(sender As Object, e As EventArgs)
+        Dim path = "~/RawMaterialMaster.aspx"
+
+        If Not (Request.QueryString.Count = 0) Then
+            path += Request.Url.Query
+            Response.Redirect(path)
+        Else
+            Response.Redirect(path)
+        End If
     End Sub
 End Class

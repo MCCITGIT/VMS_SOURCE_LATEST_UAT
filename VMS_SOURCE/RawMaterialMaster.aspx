@@ -85,7 +85,7 @@
                             </div>
                             <asp:HiddenField ID="txtrawmatid" ClientIDMode="Static" runat="server" />
                             <asp:Button ID="btnSubmit" ClientIDMode="Static" runat="server" Text="Submit" CssClass="btn btn-primary btn-sm" OnClick="btnSubmit_Click" />
-                            <asp:Button ID="btnCancel" runat="server" Text="Cancel" CssClass="btn btn-outline-danger btn-sm" OnClick="btnCancel_Click" />
+                            <asp:Button ID="btnReset" runat="server" Text="Reset" CssClass="btn btn-outline-danger btn-sm" OnClick="btnReset_Click" />
                         </div>
                         <asp:AutoCompleteExtender ID="aceRawMaterialSearch" runat="server"
                             TargetControlID="txtSearchText"
@@ -158,16 +158,23 @@
                             <ItemTemplate>
                                 <asp:Label ID="lblrawmatdid" runat="server" Text='<%# (gvrawMatDetails.PageIndex * gvrawMatDetails.PageSize) + Container.DataItemIndex + 1 %>'></asp:Label>
                             </ItemTemplate>
-                            <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="10%" />
-                            <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="10%" />
+                            <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="5%" />
+                            <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="5%" />
+                        </asp:TemplateField>
+                        <asp:TemplateField HeaderText="Raw Material Code" HeaderStyle-HorizontalAlign="Center">
+                            <ItemTemplate>
+                                <asp:Label ID="lblrawmatcode" runat="server" Text='<%# Bind("Raw_Mat_Code") %>'></asp:Label>
+                            </ItemTemplate>
+                            <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="20%" />
+                            <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="20%" />
                         </asp:TemplateField>
                         <asp:TemplateField HeaderText="Raw Material Name" HeaderStyle-HorizontalAlign="Center">
                             <ItemTemplate>
                                 <asp:Label ID="lblrawmatname" runat="server" Text='<%# Bind("Raw_Mat_Name") %>'></asp:Label>
                                 <asp:HiddenField ID="hdnrawmatid" runat="server" Value='<%# Bind("Raw_Mat_Code") %>' />
                             </ItemTemplate>
-                            <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="65%" />
-                            <ItemStyle HorizontalAlign="Left" VerticalAlign="Middle" Width="65%" />
+                            <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="57%" />
+                            <ItemStyle HorizontalAlign="Left" VerticalAlign="Middle" Width="57%" />
                         </asp:TemplateField>
                         <asp:TemplateField HeaderText="Active" HeaderStyle-HorizontalAlign="Center">
                             <ItemTemplate>
@@ -179,8 +186,8 @@
                                     <asp:ListItem Text="Inactive" Value="N"></asp:ListItem>
                                 </asp:DropDownList>
                             </EditItemTemplate>
-                            <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="15%" />
-                            <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="15%" />
+                            <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="12%" />
+                            <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="12%" />
                         </asp:TemplateField>
                         <asp:TemplateField HeaderText="Action" HeaderStyle-HorizontalAlign="Center">
                             <ItemTemplate>
@@ -190,8 +197,8 @@
                                 <asp:LinkButton ID="btnUpdate" CommandName="Update" CssClass="text-success mr-1" runat="server" ToolTip="Update" OnClientClick="return rmConfirmStatusUpdate(this);"><i class="fas fa-check"></i></asp:LinkButton>
                                 <asp:LinkButton ID="btncancel" CommandName="Cancel" CssClass="text-danger" runat="server" ToolTip="Cancel"><i class="fas fa-times"></i></asp:LinkButton>
                             </EditItemTemplate>
-                            <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="10%" />
-                            <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="10%" />
+                            <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="6%" />
+                            <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="6%" />
                         </asp:TemplateField>
                     </Columns>
                 </asp:GridView>

@@ -62,9 +62,19 @@
 
     function toPlain(value) {
         var html = value == null ? "" : String(value);
+        html = html.replace(/<\s*br\s*\/?\s*>/gi, "\n")
+            .replace(/<\/\s*tr\s*>/gi, "\n")
+            .replace(/<\/\s*p\s*>/gi, "\n")
+            .replace(/<\/\s*li\s*>/gi, "\n")
+            .replace(/<\/\s*div\s*>/gi, "\n");
         var holder = document.createElement("div");
         holder.innerHTML = html;
-        return (holder.textContent || holder.innerText || "").replace(/\s+/g, " ").trim();
+        return (holder.textContent || holder.innerText || "")
+            .replace(/\r\n/g, "\n")
+            .replace(/[ \t]+/g, " ")
+            .replace(/ *\n */g, "\n")
+            .replace(/\n{2,}/g, "\n")
+            .trim();
     }
 
     function setDialogMode(mode, title, message, okText) {
