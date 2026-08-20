@@ -6,7 +6,9 @@
 </asp:Content>--%>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
 
-    <link href="includes/GlassBlackGridView.css" rel="stylesheet" type="text/css" />
+    <link href="includes/dashboard-cards.css" rel="stylesheet" type="text/css" />
+
+    <div class="vms-dashboard">
 
     <div class="breadcrumbs">
         <div class="leftFung">
@@ -25,16 +27,16 @@
 
     <asp:UpdatePanel ID="UpdatePanel" runat="server">
         <ContentTemplate>
-            <div class="card">
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-3">
+            <div class="dash-panel">
+                <div class="dash-panel-body">
+                    <div class="dash-filter-grid">
+                        <div class="dash-field">
                             <div class="form-group">
                                 <label class="form-control-label">Source:</label>
                                 <asp:DropDownList ID="ddlUnit" runat="server" CssClass="form-control select2" TabIndex="2" AutoPostBack="True"></asp:DropDownList>
                             </div>
                         </div>
-                        <div class="col-md-2">
+                        <div class="dash-field">
                             <div class="form-group">
                                 <label class="form-control-label">Region:</label>
                                 <asp:DropDownList ID="ddlRegion" runat="server" AutoPostBack="True" CssClass="form-control select2"
@@ -42,7 +44,7 @@
                                 </asp:DropDownList>
                             </div>
                         </div>
-                        <div class="col-md-2">
+                        <div class="dash-field">
                             <div class="form-group">
                                 <label class="form-control-label">Depot:</label>
                                 <asp:DropDownList ID="ddlLocation" runat="server" AutoPostBack="True" CssClass="form-control select2"
@@ -50,7 +52,7 @@
                                 </asp:DropDownList>
                             </div>
                         </div>
-                        <div class="col-md-2">
+                        <div class="dash-field">
                             <div class="form-group">
                                 <label class="form-control-label">Process Year:</label>
                                 <asp:DropDownList ID="ddlYear" runat="server" AutoPostBack="True" CssClass="form-control select2"
@@ -74,7 +76,7 @@
                                 </asp:DropDownList>
                             </div>
                         </div>
-                        <div class="col-md-2">
+                        <div class="dash-field">
                             <div class="form-group">
                                 <label class="form-control-label">Process Month:</label>
                                 <asp:DropDownList ID="ddlMonth" runat="server" AutoPostBack="True" CssClass="form-control select2"
@@ -94,22 +96,24 @@
                                 </asp:DropDownList>
                             </div>
                         </div>
-                        <div class="col-md-1 form-btn-mt">
+                        <div class="dash-field dash-field-action">
                             <div class="form-group">
                                 <%--<asp:ImageButton ID="btnSearch" CssClass="btn btn-primary btn-sm" runat="server" AlternateText="Home" ImageUrl="~/images/search.png" />--%>
-                                <asp:LinkButton ID="btnSearch" CssClass="btn btn-primary btn-sm" runat="server" AlternateText="Home" OnClick="btnSearch_Click">Search</asp:LinkButton>
+                                <asp:LinkButton ID="btnSearch" CssClass="btn btn-primary btn-sm dash-search-btn" runat="server" AlternateText="Home" OnClick="btnSearch_Click"><i class="fas fa-search" aria-hidden="true"></i> Search</asp:LinkButton>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="card">
-                <div class="card-header">
-                    <h6 class="card-title m-0">Source Summary</h6>
-                </div>
-                <div class="card-body">
-                    <div class="dflexCSb">
+            <div class="dash-panel dash-acc">
+                <button type="button" id="dashSourceToggle" class="dash-panel-head dash-acc-toggle" data-toggle="collapse" data-target="#dashSourceBody" aria-expanded="true" aria-controls="dashSourceBody">
+                    <h6 class="dash-panel-title"><i class="fas fa-industry"></i> Source Summary</h6>
+                    <span class="dash-acc-caret" aria-hidden="true"><i class="fas fa-chevron-down"></i></span>
+                </button>
+                <div id="dashSourceBody" class="collapse show">
+                <div class="dash-panel-body">
+                    <div class="dash-toolbar">
                         <div class="form-group row ddlFinYear">
                             <label for="ddlPageSize" class="col-auto form-control-label">
                                 <asp:Label ID="Label4" runat="server" Text="Results Per Page:"></asp:Label>
@@ -118,348 +122,282 @@
                                 <asp:DropDownList ID="ddlPageSize" runat="server" CssClass="form-control select2" AutoPostBack="True"></asp:DropDownList>
                             </div>
                         </div>
-                        <div class="form-group row ddlPageSize">
+                        <div class="form-group row ddlPageSize dash-stock-chip">
                             <label for="ddlPageSize" class="col-auto form-control-label">Last Update Stock As On:</label>
                             <asp:Label ID="lblLaststok" runat="server" CssClass="col-auto font-weight-bold" Text=""></asp:Label>
                         </div>
                     </div>
-                    <div class="table-responsive">
-                        <asp:GridView ID="gvUnitSummery" runat="server" AutoGenerateColumns="false" AllowPaging="True"
-                            BorderWidth="1" CssClass="table table-hover upgradDataGrid" ShowFooter="true" EmptyDataText="No Record Found">
-                            <RowStyle CssClass="tlrowlight" />
-                            <PagerStyle CssClass="PagerGrid" HorizontalAlign="Right" />
-                            <HeaderStyle CssClass="headerGrid" />
-                            <FooterStyle CssClass="footerGrid" />
-                            <Columns>
-                                <asp:BoundField HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center"
-                                    HeaderText="UNIT" DataField="unit" FooterText="Grand Total">
-                                    <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="9%" />
-                                    <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="9%" />
-                                    <FooterStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="9%" />
-                                </asp:BoundField>
-                                <asp:TemplateField HeaderStyle-HorizontalAlign="Center" HeaderText="Select">
-                                    <HeaderTemplate>
-                                        <table style="width: 100%" cellspacing="0">
-                                            <tr>
-                                                <td colspan="2" style="width: 100%; border-bottom: 1px solid #000000;">AUTO INDENT
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td style="width: 50%; border-right: 1px solid #000000">KL
-                                                </td>
-                                                <td style="width: 50%">MT
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    </HeaderTemplate>
-                                    <ItemTemplate>
-                                        <table style="width: 100%" cellspacing="0">
-                                            <tr style="height: 100%;">
-                                                <td style="width: 50%; border-right: 1px solid #000000; text-align: right">
-                                                    <asp:Label ID="lblAutoindent_Kl" runat="server" Text='<%# Bind("autoindent_kl") %>'></asp:Label>
-                                                    &nbsp;
-                                                </td>
-                                                <td style="text-align: right;">
-                                                    <asp:Label ID="lblAutoindent_Mt" runat="server" Text='<%# Bind("autoindent_mt") %>'></asp:Label>
-                                                    &nbsp;
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    </ItemTemplate>
-                                    <FooterTemplate>
-                                        <table style="width: 100%" cellspacing="0">
-                                            <tr style="height: 100%;">
-                                                <td style="width: 50%; border-right: 1px solid #000000; text-align: right">
-                                                    <asp:Label ID="lblAutoindent_Kl_Ftr" runat="server"></asp:Label>
-                                                    &nbsp;
-                                                </td>
-                                                <td style="text-align: right;">
-                                                    <asp:Label ID="lblAutoindent_Mt_Ftr" runat="server"></asp:Label>
-                                                    &nbsp;
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    </FooterTemplate>
-                                    <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="14%" />
-                                    <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="14%" />
-                                    <FooterStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="14%" />
-                                </asp:TemplateField>
-                                <asp:TemplateField HeaderStyle-HorizontalAlign="Center" HeaderText="Select">
-                                    <HeaderTemplate>
-                                        <table style="width: 100%" cellspacing="0">
-                                            <tr>
-                                                <td colspan="2" style="width: 100%; border-bottom: 1px solid #000000;">DEPOT INDENT
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td style="width: 50%; border-right: 1px solid #000000">KL
-                                                </td>
-                                                <td style="width: 50%">MT
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    </HeaderTemplate>
-                                    <ItemTemplate>
-                                        <table style="width: 100%" cellspacing="0">
-                                            <tr style="height: 100%;">
-                                                <td style="width: 50%; border-right: 1px solid #000000; text-align: right">
-                                                    <asp:Label ID="lblDepotindent_Kl" runat="server" Text='<%# Bind("depotindent_kl") %>'></asp:Label>
-                                                    &nbsp;
-                                                </td>
-                                                <td style="text-align: right;">
-                                                    <asp:Label ID="lblDepotindent_Mt" runat="server" Text='<%# Bind("depotindent_mt") %>'></asp:Label>
-                                                    &nbsp;
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    </ItemTemplate>
-                                    <FooterTemplate>
-                                        <table style="width: 100%" cellspacing="0">
-                                            <tr style="height: 100%;">
-                                                <td style="width: 50%; border-right: 1px solid #000000; text-align: right">
-                                                    <asp:Label ID="lblDepotindent_Kl_Ftr" runat="server"></asp:Label>
-                                                    &nbsp;
-                                                </td>
-                                                <td style="text-align: right;">
-                                                    <asp:Label ID="lblDepotindent_Mt_Ftr" runat="server"></asp:Label>
-                                                    &nbsp;
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    </FooterTemplate>
-                                    <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="14%" />
-                                    <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="14%" />
-                                    <FooterStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="14%" />
-                                </asp:TemplateField>
-                                <asp:TemplateField HeaderStyle-HorizontalAlign="Center" HeaderText="Select">
-                                    <HeaderTemplate>
-                                        <table style="width: 100%" cellspacing="0">
-                                            <tr>
-                                                <td colspan="2" style="width: 100%; border-bottom: 1px solid #000000;">TRANSIT STOCK
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td style="width: 50%; border-right: 1px solid #000000">KL
-                                                </td>
-                                                <td style="width: 50%">MT
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    </HeaderTemplate>
-                                    <ItemTemplate>
-                                        <table style="width: 100%" cellspacing="0">
-                                            <tr style="height: 100%;">
-                                                <td style="width: 50%; border-right: 1px solid #000000; text-align: right">
-                                                    <asp:Label ID="lblTransit_Kl" runat="server" Text='<%# Bind("transit_kl") %>'></asp:Label>
-                                                    &nbsp;
-                                                </td>
-                                                <td style="text-align: right;">
-                                                    <asp:Label ID="lblTransit_Mt" runat="server" Text='<%# Bind("transit_mt") %>'></asp:Label>
-                                                    &nbsp;
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    </ItemTemplate>
-                                    <FooterTemplate>
-                                        <table style="width: 100%" cellspacing="0">
-                                            <tr style="height: 100%;">
-                                                <td style="width: 50%; border-right: 1px solid #000000; text-align: right">
-                                                    <asp:Label ID="lblTransit_Kl_Ftr" runat="server"></asp:Label>
-                                                    &nbsp;
-                                                </td>
-                                                <td style="text-align: right;">
-                                                    <asp:Label ID="lblTransit_Mt_Ftr" runat="server"></asp:Label>
-                                                    &nbsp;
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    </FooterTemplate>
-                                    <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="14%" />
-                                    <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="14%" />
-                                    <FooterStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="14%" />
-                                </asp:TemplateField>
-
-                                <asp:TemplateField HeaderStyle-HorizontalAlign="Center" HeaderText="Select">
-                                    <HeaderTemplate>
-                                        <table style="width: 100%" cellspacing="0">
-                                            <tr>
-                                                <td colspan="2" style="width: 100%; border-bottom: 1px solid #000000;">PENDING LOAD
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td style="width: 50%; border-right: 1px solid #000000">KL
-                                                </td>
-                                                <td style="width: 50%">MT
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    </HeaderTemplate>
-                                    <ItemTemplate>
-                                        <table style="width: 100%" cellspacing="0">
-                                            <tr style="height: 100%;">
-                                                <td style="width: 50%; border-right: 1px solid #000000; text-align: right">
-                                                    <asp:Label ID="lblPendingLoad_Kl" runat="server" Text='<%# Bind("pending_kl") %>'></asp:Label>
-                                                    &nbsp;
-                                                </td>
-                                                <td style="text-align: right;">
-                                                    <asp:Label ID="lblPendingLoad_Mt" runat="server" Text='<%# Bind("pending_mt") %>'></asp:Label>
-                                                    &nbsp;
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    </ItemTemplate>
-                                    <FooterTemplate>
-                                        <table style="width: 100%" cellspacing="0">
-                                            <tr style="height: 100%;">
-                                                <td style="width: 50%; border-right: 1px solid #000000; text-align: right">
-                                                    <asp:Label ID="lblPendingLoad_Kl_Ftr" runat="server"></asp:Label>
-                                                    &nbsp;
-                                                </td>
-                                                <td style="text-align: right;">
-                                                    <asp:Label ID="lblPendingLoad_Mt_Ftr" runat="server"></asp:Label>
-                                                    &nbsp;
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    </FooterTemplate>
-                                    <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="14%" />
-                                    <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="14%" />
-                                    <FooterStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="14%" />
-                                </asp:TemplateField>
-
-                                <asp:TemplateField HeaderStyle-HorizontalAlign="Center" HeaderText="Select">
-                                    <HeaderTemplate>
-                                        <table style="width: 100%" cellspacing="0">
-                                            <tr>
-                                                <td colspan="2" style="width: 100%; border-bottom: 1px solid #000000;">MONTH LOAD
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td style="width: 50%; border-right: 1px solid #000000">KL
-                                                </td>
-                                                <td style="width: 50%">MT
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    </HeaderTemplate>
-                                    <ItemTemplate>
-                                        <table style="width: 100%" cellspacing="0">
-                                            <tr style="height: 100%;">
-                                                <td style="width: 50%; border-right: 1px solid #000000; text-align: right">
-                                                    <asp:Label ID="lblMonthLoad_Kl" runat="server" Text='<%# Bind("monthload_kl") %>'></asp:Label>
-                                                    &nbsp;
-                                                </td>
-                                                <td style="text-align: right;">
-                                                    <asp:Label ID="lblMonthLoad_Mt" runat="server" Text='<%# Bind("monthload_mt") %>'></asp:Label>
-                                                    &nbsp;
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    </ItemTemplate>
-                                    <FooterTemplate>
-                                        <table style="width: 100%" cellspacing="0">
-                                            <tr style="height: 100%;">
-                                                <td style="width: 50%; border-right: 1px solid #000000; text-align: right">
-                                                    <asp:Label ID="lblMonthLoad_Kl_Ftr" runat="server"></asp:Label>
-                                                    &nbsp;
-                                                </td>
-                                                <td style="text-align: right;">
-                                                    <asp:Label ID="lblMonthLoad_Mt_Ftr" runat="server"></asp:Label>
-                                                    &nbsp;
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    </FooterTemplate>
-                                    <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="14%" />
-                                    <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="14%" />
-                                    <FooterStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="14%" />
-                                </asp:TemplateField>
-                                <asp:TemplateField HeaderStyle-HorizontalAlign="Center" HeaderText="Select">
-                                    <HeaderTemplate>
-                                        <table style="width: 100%" cellspacing="0">
-                                            <tr>
-                                                <td colspan="2" style="width: 100%; border-bottom: 1px solid #000000;">DESPATCH-TO-DATE
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td style="width: 50%; border-right: 1px solid #000000">KL
-                                                </td>
-                                                <td style="width: 50%">MT
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    </HeaderTemplate>
-                                    <ItemTemplate>
-                                        <table style="width: 100%" cellspacing="0">
-                                            <tr style="height: 100%;">
-                                                <td style="width: 50%; border-right: 1px solid #000000; text-align: right">
-                                                    <asp:Label ID="lblDespatch_Kl" runat="server" Text='<%# Bind("despatch_kl") %>'></asp:Label>
-                                                    &nbsp;
-                                                </td>
-                                                <td style="text-align: right;">
-                                                    <asp:Label ID="lblDespatch_Mt" runat="server" Text='<%# Bind("despatch_mt") %>'></asp:Label>
-                                                    &nbsp;
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    </ItemTemplate>
-                                    <FooterTemplate>
-                                        <table style="width: 100%" cellspacing="0">
-                                            <tr style="height: 100%;">
-                                                <td style="width: 50%; border-right: 1px solid #000000; text-align: right">
-                                                    <asp:Label ID="lblDespatch_Kl_Ftr" runat="server"></asp:Label>
-                                                    &nbsp;
-                                                </td>
-                                                <td style="text-align: right;">
-                                                    <asp:Label ID="lblDespatch_Mt_Ftr" runat="server"></asp:Label>
-                                                    &nbsp;
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    </FooterTemplate>
-                                    <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="14%" />
-                                    <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="14%" />
-                                    <FooterStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="14%" />
-                                </asp:TemplateField>
-                                <asp:TemplateField HeaderStyle-HorizontalAlign="Center" HeaderText="% DESPACHED">
-                                    <ItemTemplate>
-                                        <asp:Label ID="lblTotalDespatch" runat="server" Text='<%# Bind("despatchedPercent") %>'></asp:Label>
-                                        &nbsp; &nbsp;
-                                    </ItemTemplate>
-                                    <FooterTemplate>
-                                        <asp:Label ID="lblTotalDespatch_Ftr" runat="server"></asp:Label>&nbsp; &nbsp;
-                                    </FooterTemplate>
-                                    <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="7%" />
-                                    <ItemStyle HorizontalAlign="Right" VerticalAlign="Middle" Width="7%" />
-                                    <FooterStyle HorizontalAlign="Right" VerticalAlign="Middle" Width="7%" />
-                                </asp:TemplateField>
-                                <%-- <asp:TemplateField HeaderStyle-HorizontalAlign="Center" HeaderText="% PENDING">
-                                                                            <ItemTemplate>
-                                                                                <asp:Label ID="lblTotalSKU" runat="server" Text='<%# Bind("pendingPercent") %>'></asp:Label>&nbsp; &nbsp;
-                                                                            </ItemTemplate>
-                                                                            <FooterTemplate>
-                                                                                <asp:Label ID="lblTotalSKU_Ftr" runat="server"></asp:Label> &nbsp; &nbsp;
-                                                                            </FooterTemplate>
-                                                                            <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="7%" />
-                                                                            <ItemStyle HorizontalAlign="Right" VerticalAlign="Middle" Width="7%" />
-                                                                            <FooterStyle HorizontalAlign="Right" VerticalAlign="Middle" Width="7%" />
-                                                                        </asp:TemplateField>--%>
-                            </Columns>
-                        </asp:GridView>
-                    </div>
+                    <asp:GridView ID="gvUnitSummery" runat="server" AutoGenerateColumns="false" AllowPaging="True"
+                        BorderWidth="0" GridLines="None" ShowHeader="False" CssClass="gv-cards gv-unit-cards" ShowFooter="true" EmptyDataText="No Record Found">
+                        <RowStyle CssClass="tlrowlight" />
+                        <PagerStyle CssClass="PagerGrid" HorizontalAlign="Right" />
+                        <HeaderStyle CssClass="headerGrid" />
+                        <FooterStyle CssClass="footerGrid" />
+                        <Columns>
+                            <asp:TemplateField>
+                                <ItemTemplate>
+                                    <article class="ds-card">
+                                        <header class="ds-card-head">
+                                            <div class="ds-identity">
+                                                <span class="ds-avatar" aria-hidden="true"><i class="fas fa-industry"></i></span>
+                                                <div>
+                                                    <span class="ds-kicker">UNIT</span>
+                                                    <span class="ds-title"><%# Eval("unit") %></span>
+                                                </div>
+                                            </div>
+                                            <div class="ds-pct">
+                                                <span class="ds-pct-value">
+                                                    <asp:Label ID="lblTotalDespatch" runat="server" Text='<%# Bind("despatchedPercent") %>'></asp:Label>
+                                                </span>
+                                                <span class="ds-pct-label">% DESPACHED</span>
+                                            </div>
+                                        </header>
+                                        <div class="ds-metrics">
+                                            <div class="ds-metric ds-m-auto">
+                                                <div class="ds-metric-label"><i class="fas fa-bolt"></i> AUTO INDENT</div>
+                                                <div class="ds-metric-pair">
+                                                    <div class="ds-kv">
+                                                        <span class="ds-kv-unit">KL</span>
+                                                        <span class="ds-kv-value">
+                                                            <asp:Label ID="lblAutoindent_Kl" runat="server" Text='<%# Bind("autoindent_kl") %>'></asp:Label>
+                                                        </span>
+                                                    </div>
+                                                    <div class="ds-kv">
+                                                        <span class="ds-kv-unit">MT</span>
+                                                        <span class="ds-kv-value">
+                                                            <asp:Label ID="lblAutoindent_Mt" runat="server" Text='<%# Bind("autoindent_mt") %>'></asp:Label>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="ds-metric ds-m-depot">
+                                                <div class="ds-metric-label"><i class="fas fa-warehouse"></i> DEPOT INDENT</div>
+                                                <div class="ds-metric-pair">
+                                                    <div class="ds-kv">
+                                                        <span class="ds-kv-unit">KL</span>
+                                                        <span class="ds-kv-value">
+                                                            <asp:Label ID="lblDepotindent_Kl" runat="server" Text='<%# Bind("depotindent_kl") %>'></asp:Label>
+                                                        </span>
+                                                    </div>
+                                                    <div class="ds-kv">
+                                                        <span class="ds-kv-unit">MT</span>
+                                                        <span class="ds-kv-value">
+                                                            <asp:Label ID="lblDepotindent_Mt" runat="server" Text='<%# Bind("depotindent_mt") %>'></asp:Label>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="ds-metric ds-m-transit">
+                                                <div class="ds-metric-label"><i class="fas fa-truck"></i> TRANSIT STOCK</div>
+                                                <div class="ds-metric-pair">
+                                                    <div class="ds-kv">
+                                                        <span class="ds-kv-unit">KL</span>
+                                                        <span class="ds-kv-value">
+                                                            <asp:Label ID="lblTransit_Kl" runat="server" Text='<%# Bind("transit_kl") %>'></asp:Label>
+                                                        </span>
+                                                    </div>
+                                                    <div class="ds-kv">
+                                                        <span class="ds-kv-unit">MT</span>
+                                                        <span class="ds-kv-value">
+                                                            <asp:Label ID="lblTransit_Mt" runat="server" Text='<%# Bind("transit_mt") %>'></asp:Label>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="ds-metric ds-m-pending">
+                                                <div class="ds-metric-label"><i class="fas fa-clock"></i> PENDING LOAD</div>
+                                                <div class="ds-metric-pair">
+                                                    <div class="ds-kv">
+                                                        <span class="ds-kv-unit">KL</span>
+                                                        <span class="ds-kv-value">
+                                                            <asp:Label ID="lblPendingLoad_Kl" runat="server" Text='<%# Bind("pending_kl") %>'></asp:Label>
+                                                        </span>
+                                                    </div>
+                                                    <div class="ds-kv">
+                                                        <span class="ds-kv-unit">MT</span>
+                                                        <span class="ds-kv-value">
+                                                            <asp:Label ID="lblPendingLoad_Mt" runat="server" Text='<%# Bind("pending_mt") %>'></asp:Label>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="ds-metric ds-m-month">
+                                                <div class="ds-metric-label"><i class="fas fa-calendar-alt"></i> MONTH LOAD</div>
+                                                <div class="ds-metric-pair">
+                                                    <div class="ds-kv">
+                                                        <span class="ds-kv-unit">KL</span>
+                                                        <span class="ds-kv-value">
+                                                            <asp:Label ID="lblMonthLoad_Kl" runat="server" Text='<%# Bind("monthload_kl") %>'></asp:Label>
+                                                        </span>
+                                                    </div>
+                                                    <div class="ds-kv">
+                                                        <span class="ds-kv-unit">MT</span>
+                                                        <span class="ds-kv-value">
+                                                            <asp:Label ID="lblMonthLoad_Mt" runat="server" Text='<%# Bind("monthload_mt") %>'></asp:Label>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="ds-metric ds-m-despatch">
+                                                <div class="ds-metric-label"><i class="fas fa-shipping-fast"></i> DESPATCH-TO-DATE</div>
+                                                <div class="ds-metric-pair">
+                                                    <div class="ds-kv">
+                                                        <span class="ds-kv-unit">KL</span>
+                                                        <span class="ds-kv-value">
+                                                            <asp:Label ID="lblDespatch_Kl" runat="server" Text='<%# Bind("despatch_kl") %>'></asp:Label>
+                                                        </span>
+                                                    </div>
+                                                    <div class="ds-kv">
+                                                        <span class="ds-kv-unit">MT</span>
+                                                        <span class="ds-kv-value">
+                                                            <asp:Label ID="lblDespatch_Mt" runat="server" Text='<%# Bind("despatch_mt") %>'></asp:Label>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </article>
+                                </ItemTemplate>
+                                <FooterTemplate>
+                                    <article class="ds-total">
+                                        <header class="ds-card-head">
+                                            <div class="ds-identity">
+                                                <span class="ds-avatar" aria-hidden="true"><i class="fas fa-layer-group"></i></span>
+                                                <div>
+                                                    <span class="ds-kicker">UNIT</span>
+                                                    <span class="ds-title">Grand Total</span>
+                                                </div>
+                                            </div>
+                                            <div class="ds-pct">
+                                                <span class="ds-pct-value">
+                                                    <asp:Label ID="lblTotalDespatch_Ftr" runat="server"></asp:Label>
+                                                </span>
+                                                <span class="ds-pct-label">% DESPACHED</span>
+                                            </div>
+                                        </header>
+                                        <div class="ds-metrics">
+                                            <div class="ds-metric ds-m-auto">
+                                                <div class="ds-metric-label"><i class="fas fa-bolt"></i> AUTO INDENT</div>
+                                                <div class="ds-metric-pair">
+                                                    <div class="ds-kv">
+                                                        <span class="ds-kv-unit">KL</span>
+                                                        <span class="ds-kv-value">
+                                                            <asp:Label ID="lblAutoindent_Kl_Ftr" runat="server"></asp:Label>
+                                                        </span>
+                                                    </div>
+                                                    <div class="ds-kv">
+                                                        <span class="ds-kv-unit">MT</span>
+                                                        <span class="ds-kv-value">
+                                                            <asp:Label ID="lblAutoindent_Mt_Ftr" runat="server"></asp:Label>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="ds-metric ds-m-depot">
+                                                <div class="ds-metric-label"><i class="fas fa-warehouse"></i> DEPOT INDENT</div>
+                                                <div class="ds-metric-pair">
+                                                    <div class="ds-kv">
+                                                        <span class="ds-kv-unit">KL</span>
+                                                        <span class="ds-kv-value">
+                                                            <asp:Label ID="lblDepotindent_Kl_Ftr" runat="server"></asp:Label>
+                                                        </span>
+                                                    </div>
+                                                    <div class="ds-kv">
+                                                        <span class="ds-kv-unit">MT</span>
+                                                        <span class="ds-kv-value">
+                                                            <asp:Label ID="lblDepotindent_Mt_Ftr" runat="server"></asp:Label>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="ds-metric ds-m-transit">
+                                                <div class="ds-metric-label"><i class="fas fa-truck"></i> TRANSIT STOCK</div>
+                                                <div class="ds-metric-pair">
+                                                    <div class="ds-kv">
+                                                        <span class="ds-kv-unit">KL</span>
+                                                        <span class="ds-kv-value">
+                                                            <asp:Label ID="lblTransit_Kl_Ftr" runat="server"></asp:Label>
+                                                        </span>
+                                                    </div>
+                                                    <div class="ds-kv">
+                                                        <span class="ds-kv-unit">MT</span>
+                                                        <span class="ds-kv-value">
+                                                            <asp:Label ID="lblTransit_Mt_Ftr" runat="server"></asp:Label>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="ds-metric ds-m-pending">
+                                                <div class="ds-metric-label"><i class="fas fa-clock"></i> PENDING LOAD</div>
+                                                <div class="ds-metric-pair">
+                                                    <div class="ds-kv">
+                                                        <span class="ds-kv-unit">KL</span>
+                                                        <span class="ds-kv-value">
+                                                            <asp:Label ID="lblPendingLoad_Kl_Ftr" runat="server"></asp:Label>
+                                                        </span>
+                                                    </div>
+                                                    <div class="ds-kv">
+                                                        <span class="ds-kv-unit">MT</span>
+                                                        <span class="ds-kv-value">
+                                                            <asp:Label ID="lblPendingLoad_Mt_Ftr" runat="server"></asp:Label>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="ds-metric ds-m-month">
+                                                <div class="ds-metric-label"><i class="fas fa-calendar-alt"></i> MONTH LOAD</div>
+                                                <div class="ds-metric-pair">
+                                                    <div class="ds-kv">
+                                                        <span class="ds-kv-unit">KL</span>
+                                                        <span class="ds-kv-value">
+                                                            <asp:Label ID="lblMonthLoad_Kl_Ftr" runat="server"></asp:Label>
+                                                        </span>
+                                                    </div>
+                                                    <div class="ds-kv">
+                                                        <span class="ds-kv-unit">MT</span>
+                                                        <span class="ds-kv-value">
+                                                            <asp:Label ID="lblMonthLoad_Mt_Ftr" runat="server"></asp:Label>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="ds-metric ds-m-despatch">
+                                                <div class="ds-metric-label"><i class="fas fa-shipping-fast"></i> DESPATCH-TO-DATE</div>
+                                                <div class="ds-metric-pair">
+                                                    <div class="ds-kv">
+                                                        <span class="ds-kv-unit">KL</span>
+                                                        <span class="ds-kv-value">
+                                                            <asp:Label ID="lblDespatch_Kl_Ftr" runat="server"></asp:Label>
+                                                        </span>
+                                                    </div>
+                                                    <div class="ds-kv">
+                                                        <span class="ds-kv-unit">MT</span>
+                                                        <span class="ds-kv-value">
+                                                            <asp:Label ID="lblDespatch_Mt_Ftr" runat="server"></asp:Label>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </article>
+                                </FooterTemplate>
+                            </asp:TemplateField>
+                        </Columns>
+                    </asp:GridView>
+                </div>
                 </div>
             </div>
 
-            <div class="card">
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-3">
+            <div class="dash-panel">
+                <div class="dash-panel-body">
+                    <div class="dash-filter-grid">
+                        <div class="dash-field">
                             <div class="form-group">
                                 <label class="form-control-label">Source:</label>
                                 <asp:Label ID="lblUnit" runat="server" CssClass="labelDataPoint"></asp:Label>
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="dash-field">
                             <div class="form-group">
                                 <label class="form-control-label">Product:</label>
                                 <asp:DropDownList ID="ddlProduct" runat="server" CssClass="form-control select2" AutoPostBack="true"></asp:DropDownList>
@@ -469,440 +407,324 @@
                 </div>
             </div>
 
-            <div class="card">
-                <div class="card-header">
-                    <h6 class="card-title m-0">Depot Wise Break-Up</h6>
-                </div>
-                <div class="card-body">
-                    <div class="form-group row ddlPageSize">
-                        <label for="ddlPageSize" class="col-auto form-control-label">
-                            <span>Results Per Page:</span>
-                        </label>
-                        <div class="col-md-1">
-                            <asp:DropDownList ID="ddlPageSize0" runat="server" CssClass="form-control select2" AutoPostBack="true"></asp:DropDownList>
+            <div class="dash-panel dash-acc">
+                <button type="button" id="dashDepotToggle" class="dash-panel-head dash-acc-toggle" data-toggle="collapse" data-target="#dashDepotBody" aria-expanded="true" aria-controls="dashDepotBody">
+                    <h6 class="dash-panel-title"><i class="fas fa-warehouse"></i> Depot Wise Break-Up</h6>
+                    <span class="dash-acc-caret" aria-hidden="true"><i class="fas fa-chevron-down"></i></span>
+                </button>
+                <div id="dashDepotBody" class="collapse show">
+                <div class="dash-panel-body">
+                    <div class="dash-toolbar">
+                        <div class="form-group row ddlPageSize">
+                            <label for="ddlPageSize" class="col-auto form-control-label">
+                                <span>Results Per Page:</span>
+                            </label>
+                            <div class="col-auto">
+                                <asp:DropDownList ID="ddlPageSize0" runat="server" CssClass="form-control select2" AutoPostBack="true"></asp:DropDownList>
+                            </div>
                         </div>
                     </div>
-                    <div class="table-responsive">
-                        <asp:GridView ID="gvDepotSummery" runat="server" AutoGenerateColumns="false" AllowPaging="True"
-                            BorderWidth="1" CssClass="table table-hover upgradDataGrid" GridLines="None" ShowFooter="true" EmptyDataText="No Record Found">
-                            <RowStyle CssClass="tlrowlight" />
-                            <PagerStyle CssClass="PagerGrid" HorizontalAlign="Right" />
-                            <HeaderStyle CssClass="headerGrid" />
-                            <FooterStyle CssClass="footerGrid" />
-                            <Columns>
-                                <asp:BoundField HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center"
-                                    HeaderText="DEPOT" DataField="depot" FooterText="Grand Total">
-                                    <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="9%" />
-                                    <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="9%" />
-                                    <FooterStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="9%" />
-                                </asp:BoundField>
-                                <asp:TemplateField HeaderStyle-HorizontalAlign="Center" HeaderText="Select">
-                                    <HeaderTemplate>
-                                        <table style="width: 100%" cellspacing="0">
-                                            <tr>
-                                                <td colspan="2" style="width: 100%; border-bottom: 1px solid #000000;">DEPOT STOCK
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td style="width: 50%; border-right: 1px solid #000000">KL
-                                                </td>
-                                                <td style="width: 50%">MT
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    </HeaderTemplate>
-                                    <ItemTemplate>
-                                        <table style="width: 100%" cellspacing="0">
-                                            <tr style="height: 100%;">
-                                                <td style="width: 50%; border-right: 1px solid #000000; text-align: right">
-                                                    <asp:Label ID="lblStock_Kl" runat="server" Text='<%# Bind("stock_kl") %>'></asp:Label>
-                                                    &nbsp;
-                                                </td>
-                                                <td style="text-align: right;">
-                                                    <asp:Label ID="lblStock_Mt" runat="server" Text='<%# Bind("stock_mt") %>'></asp:Label>
-                                                    &nbsp;
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    </ItemTemplate>
-                                    <FooterTemplate>
-                                        <table style="width: 100%" cellspacing="0">
-                                            <tr style="height: 100%;">
-                                                <td style="width: 50%; border-right: 1px solid #000000; text-align: right">
-                                                    <asp:Label ID="lblStock_Kl_Ftr" runat="server"></asp:Label>
-                                                    &nbsp;
-                                                </td>
-                                                <td style="text-align: right;">&nbsp;
-                                                                                                    <asp:Label ID="lblStock_Mt_Ftr" runat="server"></asp:Label>
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    </FooterTemplate>
-                                    <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="13%" />
-                                    <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="13%" />
-                                    <FooterStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="13%" />
-                                </asp:TemplateField>
-                                <asp:TemplateField HeaderStyle-HorizontalAlign="Center" HeaderText="Select">
-                                    <HeaderTemplate>
-                                        <table style="width: 100%" cellspacing="0">
-                                            <tr>
-                                                <td colspan="2" style="width: 100%; border-bottom: 1px solid #000000;">AUTO INDENT
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td style="width: 50%; border-right: 1px solid #000000">KL
-                                                </td>
-                                                <td style="width: 50%">MT
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    </HeaderTemplate>
-                                    <ItemTemplate>
-                                        <table style="width: 100%" cellspacing="0">
-                                            <tr style="height: 100%;">
-                                                <td style="width: 50%; border-right: 1px solid #000000; text-align: right">
-                                                    <asp:Label ID="lblAutoindent_Kl0" runat="server" Text='<%# Bind("autoindent_kl") %>'></asp:Label>
-                                                    &nbsp;
-                                                </td>
-                                                <td style="text-align: right;">
-                                                    <asp:Label ID="lblAutoindent_Mt0" runat="server" Text='<%# Bind("autoindent_mt") %>'></asp:Label>
-                                                    &nbsp;
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    </ItemTemplate>
-                                    <FooterTemplate>
-                                        <table style="width: 100%" cellspacing="0">
-                                            <tr style="height: 100%;">
-                                                <td style="width: 50%; border-right: 1px solid #000000; text-align: right">
-                                                    <asp:Label ID="lblAutoindent_Kl_Ftr0" runat="server"></asp:Label>
-                                                    &nbsp;
-                                                </td>
-                                                <td style="text-align: right;">
-                                                    <asp:Label ID="lblAutoindent_Mt_Ftr0" runat="server"></asp:Label>
-                                                    &nbsp;
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    </FooterTemplate>
-                                    <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="13%" />
-                                    <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="13%" />
-                                    <FooterStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="13%" />
-                                </asp:TemplateField>
-                                <asp:TemplateField HeaderStyle-HorizontalAlign="Center" HeaderText="Select">
-                                    <HeaderTemplate>
-                                        <table style="width: 100%" cellspacing="0">
-                                            <tr>
-                                                <td colspan="2" style="width: 100%; border-bottom: 1px solid #000000;">DEPOT INDENT
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td style="width: 50%; border-right: 1px solid #000000">KL
-                                                </td>
-                                                <td style="width: 50%">MT
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    </HeaderTemplate>
-                                    <ItemTemplate>
-                                        <table style="width: 100%" cellspacing="0">
-                                            <tr style="height: 100%;">
-                                                <td style="width: 50%; border-right: 1px solid #000000; text-align: right">
-                                                    <asp:Label ID="lblDepotindent_Kl0" runat="server" Text='<%# Bind("depotindent_kl") %>'></asp:Label>
-                                                    &nbsp;
-                                                </td>
-                                                <td style="text-align: right;">
-                                                    <asp:Label ID="lblDepotindent_Mt0" runat="server" Text='<%# Bind("depotindent_mt") %>'></asp:Label>
-                                                    &nbsp;
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    </ItemTemplate>
-                                    <FooterTemplate>
-                                        <table style="width: 100%" cellspacing="0">
-                                            <tr style="height: 100%;">
-                                                <td style="width: 50%; border-right: 1px solid #000000; text-align: right">
-                                                    <asp:Label ID="lblDepotindent_Kl_Ftr0" runat="server"></asp:Label>
-                                                    &nbsp;
-                                                </td>
-                                                <td style="text-align: right;">
-                                                    <asp:Label ID="lblDepotindent_Mt_Ftr0" runat="server"></asp:Label>
-                                                    &nbsp;
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    </FooterTemplate>
-                                    <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="13%" />
-                                    <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="13%" />
-                                    <FooterStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="13%" />
-                                </asp:TemplateField>
-                                <asp:TemplateField HeaderStyle-HorizontalAlign="Center" HeaderText="Select">
-                                    <HeaderTemplate>
-                                        <table style="width: 100%" cellspacing="0">
-                                            <tr>
-                                                <td colspan="2" style="width: 100%; border-bottom: 1px solid #000000;">PENDING LOAD
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td style="width: 50%; border-right: 1px solid #000000">KL
-                                                </td>
-                                                <td style="width: 50%">MT
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    </HeaderTemplate>
-                                    <ItemTemplate>
-                                        <table style="width: 100%" cellspacing="0">
-                                            <tr style="height: 100%;">
-                                                <td style="width: 50%; border-right: 1px solid #000000; text-align: right">
-                                                    <asp:Label ID="lblPendingLoad_Kl0" runat="server" Text='<%# Bind("pending_kl") %>'></asp:Label>
-                                                    &nbsp;
-                                                </td>
-                                                <td style="text-align: right;">
-                                                    <asp:Label ID="lblPendingLoad_Mt0" runat="server" Text='<%# Bind("pending_mt") %>'></asp:Label>
-                                                    &nbsp;
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    </ItemTemplate>
-                                    <FooterTemplate>
-                                        <table style="width: 100%" cellspacing="0">
-                                            <tr style="height: 100%;">
-                                                <td style="width: 50%; border-right: 1px solid #000000; text-align: right">
-                                                    <asp:Label ID="lblPendingLoad_Kl_Ftr" runat="server"></asp:Label>
-                                                    &nbsp;
-                                                </td>
-                                                <td style="text-align: right;">
-                                                    <asp:Label ID="lblPendingLoad_Mt_Ftr" runat="server"></asp:Label>
-                                                    &nbsp;
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    </FooterTemplate>
-                                    <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="13%" />
-                                    <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="13%" />
-                                    <FooterStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="13%" />
-                                </asp:TemplateField>
-                                <asp:TemplateField HeaderStyle-HorizontalAlign="Center" HeaderText="Select">
-                                    <HeaderTemplate>
-                                        <table style="width: 100%" cellspacing="0">
-                                            <tr>
-                                                <td colspan="2" style="width: 100%; border-bottom: 1px solid #000000;">TRANSIT STOCK
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td style="width: 50%; border-right: 1px solid #000000">KL
-                                                </td>
-                                                <td style="width: 50%">MT
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    </HeaderTemplate>
-                                    <ItemTemplate>
-                                        <table style="width: 100%" cellspacing="0">
-                                            <tr style="height: 100%;">
-                                                <td style="width: 50%; border-right: 1px solid #000000; text-align: right">
-                                                    <asp:Label ID="lblTransit_Kl0" runat="server" Text='<%# Bind("transit_kl") %>'></asp:Label>
-                                                    &nbsp;
-                                                </td>
-                                                <td style="text-align: right;">
-                                                    <asp:Label ID="lblTransit_Mt0" runat="server" Text='<%# Bind("transit_mt") %>'></asp:Label>
-                                                    &nbsp;
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    </ItemTemplate>
-                                    <FooterTemplate>
-                                        <table style="width: 100%" cellspacing="0">
-                                            <tr style="height: 100%;">
-                                                <td style="width: 50%; border-right: 1px solid #000000; text-align: right">
-                                                    <asp:Label ID="lblTransit_Kl_Ftr0" runat="server"></asp:Label>
-                                                    &nbsp;
-                                                </td>
-                                                <td style="text-align: right;">
-                                                    <asp:Label ID="lblTransit_Mt_Ftr0" runat="server"></asp:Label>
-                                                    &nbsp;
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    </FooterTemplate>
-                                    <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="13%" />
-                                    <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="13%" />
-                                    <FooterStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="13%" />
-                                </asp:TemplateField>
-                                <asp:TemplateField HeaderStyle-HorizontalAlign="Center" HeaderText="Select">
-                                    <HeaderTemplate>
-                                        <table style="width: 100%" cellspacing="0">
-                                            <tr>
-                                                <td colspan="2" style="width: 100%; border-bottom: 1px solid #000000;">MONTH LOAD
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td style="width: 50%; border-right: 1px solid #000000;">KL
-                                                </td>
-                                                <td style="width: 50%">MT
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    </HeaderTemplate>
-                                    <ItemTemplate>
-                                        <table style="width: 100%" cellspacing="0">
-                                            <tr style="height: 100%;">
-                                                <td style="width: 50%; border-right: 1px solid #000000; text-align: right">
-                                                    <asp:Label ID="lblMonthLoad_Kl" runat="server" Text='<%# Bind("monthload_kl") %>'></asp:Label>
-                                                    &nbsp;
-                                                </td>
-                                                <td style="text-align: right;">
-                                                    <asp:Label ID="lblMonthLoad_Mt" runat="server" Text='<%# Bind("monthload_mt") %>'></asp:Label>
-                                                    &nbsp;
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    </ItemTemplate>
-                                    <FooterTemplate>
-                                        <table style="width: 100%" cellspacing="0">
-                                            <tr style="height: 100%;">
-                                                <td style="width: 50%; border-right: 1px solid #000000; text-align: right">
-                                                    <asp:Label ID="lblMonthLoad_Kl_Ftr" runat="server"></asp:Label>
-                                                    &nbsp;
-                                                </td>
-                                                <td style="text-align: right;">
-                                                    <asp:Label ID="lblMonthLoad_Mt_Ftr" runat="server"></asp:Label>
-                                                    &nbsp;
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    </FooterTemplate>
-                                    <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="13%" />
-                                    <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="13%" />
-                                    <FooterStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="13%" />
-                                </asp:TemplateField>
-                                <asp:TemplateField HeaderStyle-HorizontalAlign="Center" HeaderText="Select">
-                                    <HeaderTemplate>
-                                        <table style="width: 100%" cellspacing="0">
-                                            <tr>
-                                                <td colspan="2" style="width: 100%; border-bottom: 1px solid #000000;">DESPATCH-TO-DATE
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td style="width: 50%; border-right: 1px solid #000000;">KL
-                                                </td>
-                                                <td style="width: 50%">MT
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    </HeaderTemplate>
-                                    <ItemTemplate>
-                                        <table style="width: 100%" cellspacing="0">
-                                            <tr style="height: 100%;">
-                                                <td style="width: 50%; border-right: 1px solid #000000; text-align: right">
-                                                    <asp:Label ID="lblDespatch_Kl0" runat="server" Text='<%# Bind("despatch_kl") %>'></asp:Label>
-                                                    &nbsp;
-                                                </td>
-                                                <td style="text-align: right;">
-                                                    <asp:Label ID="lblDespatch_Mt0" runat="server" Text='<%# Bind("despatch_mt") %>'></asp:Label>
-                                                    &nbsp;
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    </ItemTemplate>
-                                    <FooterTemplate>
-                                        <table style="width: 100%" cellspacing="0">
-                                            <tr style="height: 100%;">
-                                                <td style="width: 50%; border-right: 1px solid #000000; text-align: right">
-                                                    <asp:Label ID="lblDespatch_Kl_Ftr0" runat="server"></asp:Label>
-                                                    &nbsp;
-                                                </td>
-                                                <td style="text-align: right;">
-                                                    <asp:Label ID="lblDespatch_Mt_Ftr0" runat="server"></asp:Label>
-                                                    &nbsp;
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    </FooterTemplate>
-                                    <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="13%" />
-                                    <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="13%" />
-                                    <FooterStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="13%" />
-                                </asp:TemplateField>
-                            </Columns>
-                        </asp:GridView>
-                    </div>
+                    <asp:GridView ID="gvDepotSummery" runat="server" AutoGenerateColumns="false" AllowPaging="True"
+                        BorderWidth="0" GridLines="None" ShowHeader="False" CssClass="gv-cards gv-depot-cards" ShowFooter="true" EmptyDataText="No Record Found">
+                        <RowStyle CssClass="tlrowlight" />
+                        <PagerStyle CssClass="PagerGrid" HorizontalAlign="Right" />
+                        <HeaderStyle CssClass="headerGrid" />
+                        <FooterStyle CssClass="footerGrid" />
+                        <Columns>
+                            <asp:TemplateField>
+                                <ItemTemplate>
+                                    <article class="ds-card">
+                                        <header class="ds-card-head">
+                                            <div class="ds-identity">
+                                                <span class="ds-avatar is-depot" aria-hidden="true"><i class="fas fa-warehouse"></i></span>
+                                                <div>
+                                                    <span class="ds-kicker">DEPOT</span>
+                                                    <span class="ds-title"><%# Eval("depot") %></span>
+                                                </div>
+                                            </div>
+                                        </header>
+                                        <div class="ds-metrics">
+                                            <div class="ds-metric ds-m-stock">
+                                                <div class="ds-metric-label"><i class="fas fa-boxes"></i> DEPOT STOCK</div>
+                                                <div class="ds-metric-pair">
+                                                    <div class="ds-kv">
+                                                        <span class="ds-kv-unit">KL</span>
+                                                        <span class="ds-kv-value">
+                                                            <asp:Label ID="lblStock_Kl" runat="server" Text='<%# Bind("stock_kl") %>'></asp:Label>
+                                                        </span>
+                                                    </div>
+                                                    <div class="ds-kv">
+                                                        <span class="ds-kv-unit">MT</span>
+                                                        <span class="ds-kv-value">
+                                                            <asp:Label ID="lblStock_Mt" runat="server" Text='<%# Bind("stock_mt") %>'></asp:Label>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="ds-metric ds-m-auto">
+                                                <div class="ds-metric-label"><i class="fas fa-bolt"></i> AUTO INDENT</div>
+                                                <div class="ds-metric-pair">
+                                                    <div class="ds-kv">
+                                                        <span class="ds-kv-unit">KL</span>
+                                                        <span class="ds-kv-value">
+                                                            <asp:Label ID="lblAutoindent_Kl0" runat="server" Text='<%# Bind("autoindent_kl") %>'></asp:Label>
+                                                        </span>
+                                                    </div>
+                                                    <div class="ds-kv">
+                                                        <span class="ds-kv-unit">MT</span>
+                                                        <span class="ds-kv-value">
+                                                            <asp:Label ID="lblAutoindent_Mt0" runat="server" Text='<%# Bind("autoindent_mt") %>'></asp:Label>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="ds-metric ds-m-depot">
+                                                <div class="ds-metric-label"><i class="fas fa-clipboard-list"></i> DEPOT INDENT</div>
+                                                <div class="ds-metric-pair">
+                                                    <div class="ds-kv">
+                                                        <span class="ds-kv-unit">KL</span>
+                                                        <span class="ds-kv-value">
+                                                            <asp:Label ID="lblDepotindent_Kl0" runat="server" Text='<%# Bind("depotindent_kl") %>'></asp:Label>
+                                                        </span>
+                                                    </div>
+                                                    <div class="ds-kv">
+                                                        <span class="ds-kv-unit">MT</span>
+                                                        <span class="ds-kv-value">
+                                                            <asp:Label ID="lblDepotindent_Mt0" runat="server" Text='<%# Bind("depotindent_mt") %>'></asp:Label>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="ds-metric ds-m-pending">
+                                                <div class="ds-metric-label"><i class="fas fa-clock"></i> PENDING LOAD</div>
+                                                <div class="ds-metric-pair">
+                                                    <div class="ds-kv">
+                                                        <span class="ds-kv-unit">KL</span>
+                                                        <span class="ds-kv-value">
+                                                            <asp:Label ID="lblPendingLoad_Kl0" runat="server" Text='<%# Bind("pending_kl") %>'></asp:Label>
+                                                        </span>
+                                                    </div>
+                                                    <div class="ds-kv">
+                                                        <span class="ds-kv-unit">MT</span>
+                                                        <span class="ds-kv-value">
+                                                            <asp:Label ID="lblPendingLoad_Mt0" runat="server" Text='<%# Bind("pending_mt") %>'></asp:Label>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="ds-metric ds-m-transit">
+                                                <div class="ds-metric-label"><i class="fas fa-truck"></i> TRANSIT STOCK</div>
+                                                <div class="ds-metric-pair">
+                                                    <div class="ds-kv">
+                                                        <span class="ds-kv-unit">KL</span>
+                                                        <span class="ds-kv-value">
+                                                            <asp:Label ID="lblTransit_Kl0" runat="server" Text='<%# Bind("transit_kl") %>'></asp:Label>
+                                                        </span>
+                                                    </div>
+                                                    <div class="ds-kv">
+                                                        <span class="ds-kv-unit">MT</span>
+                                                        <span class="ds-kv-value">
+                                                            <asp:Label ID="lblTransit_Mt0" runat="server" Text='<%# Bind("transit_mt") %>'></asp:Label>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="ds-metric ds-m-month">
+                                                <div class="ds-metric-label"><i class="fas fa-calendar-alt"></i> MONTH LOAD</div>
+                                                <div class="ds-metric-pair">
+                                                    <div class="ds-kv">
+                                                        <span class="ds-kv-unit">KL</span>
+                                                        <span class="ds-kv-value">
+                                                            <asp:Label ID="lblMonthLoad_Kl" runat="server" Text='<%# Bind("monthload_kl") %>'></asp:Label>
+                                                        </span>
+                                                    </div>
+                                                    <div class="ds-kv">
+                                                        <span class="ds-kv-unit">MT</span>
+                                                        <span class="ds-kv-value">
+                                                            <asp:Label ID="lblMonthLoad_Mt" runat="server" Text='<%# Bind("monthload_mt") %>'></asp:Label>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="ds-metric ds-m-despatch">
+                                                <div class="ds-metric-label"><i class="fas fa-shipping-fast"></i> DESPATCH-TO-DATE</div>
+                                                <div class="ds-metric-pair">
+                                                    <div class="ds-kv">
+                                                        <span class="ds-kv-unit">KL</span>
+                                                        <span class="ds-kv-value">
+                                                            <asp:Label ID="lblDespatch_Kl0" runat="server" Text='<%# Bind("despatch_kl") %>'></asp:Label>
+                                                        </span>
+                                                    </div>
+                                                    <div class="ds-kv">
+                                                        <span class="ds-kv-unit">MT</span>
+                                                        <span class="ds-kv-value">
+                                                            <asp:Label ID="lblDespatch_Mt0" runat="server" Text='<%# Bind("despatch_mt") %>'></asp:Label>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </article>
+                                </ItemTemplate>
+                                <FooterTemplate>
+                                    <article class="ds-total">
+                                        <header class="ds-card-head">
+                                            <div class="ds-identity">
+                                                <span class="ds-avatar is-depot" aria-hidden="true"><i class="fas fa-layer-group"></i></span>
+                                                <div>
+                                                    <span class="ds-kicker">DEPOT</span>
+                                                    <span class="ds-title">Grand Total</span>
+                                                </div>
+                                            </div>
+                                        </header>
+                                        <div class="ds-metrics">
+                                            <div class="ds-metric ds-m-stock">
+                                                <div class="ds-metric-label"><i class="fas fa-boxes"></i> DEPOT STOCK</div>
+                                                <div class="ds-metric-pair">
+                                                    <div class="ds-kv">
+                                                        <span class="ds-kv-unit">KL</span>
+                                                        <span class="ds-kv-value">
+                                                            <asp:Label ID="lblStock_Kl_Ftr" runat="server"></asp:Label>
+                                                        </span>
+                                                    </div>
+                                                    <div class="ds-kv">
+                                                        <span class="ds-kv-unit">MT</span>
+                                                        <span class="ds-kv-value">
+                                                            <asp:Label ID="lblStock_Mt_Ftr" runat="server"></asp:Label>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="ds-metric ds-m-auto">
+                                                <div class="ds-metric-label"><i class="fas fa-bolt"></i> AUTO INDENT</div>
+                                                <div class="ds-metric-pair">
+                                                    <div class="ds-kv">
+                                                        <span class="ds-kv-unit">KL</span>
+                                                        <span class="ds-kv-value">
+                                                            <asp:Label ID="lblAutoindent_Kl_Ftr0" runat="server"></asp:Label>
+                                                        </span>
+                                                    </div>
+                                                    <div class="ds-kv">
+                                                        <span class="ds-kv-unit">MT</span>
+                                                        <span class="ds-kv-value">
+                                                            <asp:Label ID="lblAutoindent_Mt_Ftr0" runat="server"></asp:Label>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="ds-metric ds-m-depot">
+                                                <div class="ds-metric-label"><i class="fas fa-clipboard-list"></i> DEPOT INDENT</div>
+                                                <div class="ds-metric-pair">
+                                                    <div class="ds-kv">
+                                                        <span class="ds-kv-unit">KL</span>
+                                                        <span class="ds-kv-value">
+                                                            <asp:Label ID="lblDepotindent_Kl_Ftr0" runat="server"></asp:Label>
+                                                        </span>
+                                                    </div>
+                                                    <div class="ds-kv">
+                                                        <span class="ds-kv-unit">MT</span>
+                                                        <span class="ds-kv-value">
+                                                            <asp:Label ID="lblDepotindent_Mt_Ftr0" runat="server"></asp:Label>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="ds-metric ds-m-pending">
+                                                <div class="ds-metric-label"><i class="fas fa-clock"></i> PENDING LOAD</div>
+                                                <div class="ds-metric-pair">
+                                                    <div class="ds-kv">
+                                                        <span class="ds-kv-unit">KL</span>
+                                                        <span class="ds-kv-value">
+                                                            <asp:Label ID="lblPendingLoad_Kl_Ftr" runat="server"></asp:Label>
+                                                        </span>
+                                                    </div>
+                                                    <div class="ds-kv">
+                                                        <span class="ds-kv-unit">MT</span>
+                                                        <span class="ds-kv-value">
+                                                            <asp:Label ID="lblPendingLoad_Mt_Ftr" runat="server"></asp:Label>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="ds-metric ds-m-transit">
+                                                <div class="ds-metric-label"><i class="fas fa-truck"></i> TRANSIT STOCK</div>
+                                                <div class="ds-metric-pair">
+                                                    <div class="ds-kv">
+                                                        <span class="ds-kv-unit">KL</span>
+                                                        <span class="ds-kv-value">
+                                                            <asp:Label ID="lblTransit_Kl_Ftr0" runat="server"></asp:Label>
+                                                        </span>
+                                                    </div>
+                                                    <div class="ds-kv">
+                                                        <span class="ds-kv-unit">MT</span>
+                                                        <span class="ds-kv-value">
+                                                            <asp:Label ID="lblTransit_Mt_Ftr0" runat="server"></asp:Label>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="ds-metric ds-m-month">
+                                                <div class="ds-metric-label"><i class="fas fa-calendar-alt"></i> MONTH LOAD</div>
+                                                <div class="ds-metric-pair">
+                                                    <div class="ds-kv">
+                                                        <span class="ds-kv-unit">KL</span>
+                                                        <span class="ds-kv-value">
+                                                            <asp:Label ID="lblMonthLoad_Kl_Ftr" runat="server"></asp:Label>
+                                                        </span>
+                                                    </div>
+                                                    <div class="ds-kv">
+                                                        <span class="ds-kv-unit">MT</span>
+                                                        <span class="ds-kv-value">
+                                                            <asp:Label ID="lblMonthLoad_Mt_Ftr" runat="server"></asp:Label>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="ds-metric ds-m-despatch">
+                                                <div class="ds-metric-label"><i class="fas fa-shipping-fast"></i> DESPATCH-TO-DATE</div>
+                                                <div class="ds-metric-pair">
+                                                    <div class="ds-kv">
+                                                        <span class="ds-kv-unit">KL</span>
+                                                        <span class="ds-kv-value">
+                                                            <asp:Label ID="lblDespatch_Kl_Ftr0" runat="server"></asp:Label>
+                                                        </span>
+                                                    </div>
+                                                    <div class="ds-kv">
+                                                        <span class="ds-kv-unit">MT</span>
+                                                        <span class="ds-kv-value">
+                                                            <asp:Label ID="lblDespatch_Mt_Ftr0" runat="server"></asp:Label>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </article>
+                                </FooterTemplate>
+                            </asp:TemplateField>
+                        </Columns>
+                    </asp:GridView>
+                </div>
                 </div>
             </div>
 
             <asp:UpdatePanel ID="UpdatePanel4" runat="server">
                 <ContentTemplate>
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="table-responsive">
-                                <table class="table table-hover upgradDataGrid">
-                                    <tr>
-                                        <td>
-                                            <ChartDirector:WebChartViewer ID="cv_unit1" runat="server" />
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <ChartDirector:WebChartViewer ID="cv_unit2" runat="server" />
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <ChartDirector:WebChartViewer ID="cv_unit3" runat="server" />
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <ChartDirector:WebChartViewer ID="cv_unit4" runat="server" />
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <ChartDirector:WebChartViewer ID="cv_unit5" runat="server" />
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <ChartDirector:WebChartViewer ID="cv_unit6" runat="server" />
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <ChartDirector:WebChartViewer ID="cv_unit7" runat="server" />
-
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <ChartDirector:WebChartViewer ID="cv_unit8" runat="server" />
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <ChartDirector:WebChartViewer ID="cv_unit9" runat="server" />
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <ChartDirector:WebChartViewer ID="cv_unit10" runat="server" />
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <ChartDirector:WebChartViewer ID="cv_unit11" runat="server" />
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <ChartDirector:WebChartViewer ID="cv_unit12" runat="server" />
-
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <ChartDirector:WebChartViewer ID="cv_unit13" runat="server" /></td>
-                                    </tr>
-                                </table>
+                    <div class="dash-panel">
+                        <div class="dash-panel-body">
+                            <div class="dash-charts">
+                                <div class="dash-chart-frame"><ChartDirector:WebChartViewer ID="cv_unit1" runat="server" /></div>
+                                <div class="dash-chart-frame"><ChartDirector:WebChartViewer ID="cv_unit2" runat="server" /></div>
+                                <div class="dash-chart-frame"><ChartDirector:WebChartViewer ID="cv_unit3" runat="server" /></div>
+                                <div class="dash-chart-frame"><ChartDirector:WebChartViewer ID="cv_unit4" runat="server" /></div>
+                                <div class="dash-chart-frame"><ChartDirector:WebChartViewer ID="cv_unit5" runat="server" /></div>
+                                <div class="dash-chart-frame"><ChartDirector:WebChartViewer ID="cv_unit6" runat="server" /></div>
+                                <div class="dash-chart-frame"><ChartDirector:WebChartViewer ID="cv_unit7" runat="server" /></div>
+                                <div class="dash-chart-frame"><ChartDirector:WebChartViewer ID="cv_unit8" runat="server" /></div>
+                                <div class="dash-chart-frame"><ChartDirector:WebChartViewer ID="cv_unit9" runat="server" /></div>
+                                <div class="dash-chart-frame"><ChartDirector:WebChartViewer ID="cv_unit10" runat="server" /></div>
+                                <div class="dash-chart-frame"><ChartDirector:WebChartViewer ID="cv_unit11" runat="server" /></div>
+                                <div class="dash-chart-frame"><ChartDirector:WebChartViewer ID="cv_unit12" runat="server" /></div>
+                                <div class="dash-chart-frame"><ChartDirector:WebChartViewer ID="cv_unit13" runat="server" /></div>
                             </div>
                             <asp:Label ID="lblErrorMessage" CssClass="errormsg" Visible="true" runat="server"></asp:Label>
                             <div id="divErrorMessage"></div>
@@ -912,4 +734,50 @@
             </asp:UpdatePanel>
         </ContentTemplate>
     </asp:UpdatePanel>
+
+    <script type="text/javascript">
+        (function () {
+            var STORE = { source: 'vmsDashAcc_source', depot: 'vmsDashAcc_depot' };
+            var bound = false;
+
+            function isOpen(key) {
+                try { return sessionStorage.getItem(key) !== '0'; } catch (e) { return true; }
+            }
+            function setOpen(key, open) {
+                try { sessionStorage.setItem(key, open ? '1' : '0'); } catch (e) { }
+            }
+            function sync(toggleSel, bodySel, key) {
+                var $body = $(bodySel);
+                var $toggle = $(toggleSel);
+                if (!$body.length) { return; }
+                var open = isOpen(key);
+                $body.toggleClass('show', open);
+                $toggle.toggleClass('collapsed', !open);
+                $toggle.attr('aria-expanded', open ? 'true' : 'false');
+            }
+            function bind() {
+                if (!window.jQuery) { return; }
+                $('#dashSourceBody').off('shown.bs.collapse.dash hidden.bs.collapse.dash')
+                    .on('shown.bs.collapse.dash', function () { setOpen(STORE.source, true); })
+                    .on('hidden.bs.collapse.dash', function () { setOpen(STORE.source, false); });
+                $('#dashDepotBody').off('shown.bs.collapse.dash hidden.bs.collapse.dash')
+                    .on('shown.bs.collapse.dash', function () { setOpen(STORE.depot, true); })
+                    .on('hidden.bs.collapse.dash', function () { setOpen(STORE.depot, false); });
+                sync('#dashSourceToggle', '#dashSourceBody', STORE.source);
+                sync('#dashDepotToggle', '#dashDepotBody', STORE.depot);
+            }
+            function start() {
+                if (!window.jQuery) { setTimeout(start, 30); return; }
+                bind();
+                if (!bound && window.Sys && Sys.WebForms && Sys.WebForms.PageRequestManager) {
+                    Sys.WebForms.PageRequestManager.getInstance().add_endRequest(bind);
+                    bound = true;
+                }
+            }
+            if (document.readyState === 'complete') { start(); }
+            else { window.addEventListener('load', start); }
+        })();
+    </script>
+
+    </div>
 </asp:Content>
