@@ -2,6 +2,8 @@
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
+    <link href="includes/rm-procurement.css?v=<%= DateTime.Now.Ticks %>" rel="stylesheet" type="text/css" />
+    <div class="rm-module rm-vendor-link">
     <style type="text/css">
         .product-search-group {
             display: flex;
@@ -231,9 +233,12 @@
                                 </asp:AutoCompleteExtender>
                             </div>
                         </div>
-                        <div class="col-md-2 form-btn-mt">
-                            <div class="form-group">
-                                <asp:Button ID="btnAdd" runat="server" Text="Add" CssClass="btn btn-success btn-sm" />
+                        <div class="col-md-2">
+                            <div class="form-group rm-vendor-link-add">
+                                <label class="form-control-label">&nbsp;</label>
+                                <div class="rm-filter-actions">
+                                    <asp:LinkButton ID="btnAdd" runat="server" CssClass="btn btn-success btn-sm rm-btn-icon" ToolTip="Add"><i class="fas fa-plus"></i></asp:LinkButton>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -266,12 +271,12 @@
                                         </asp:TemplateField>
                                         <asp:TemplateField HeaderText="Active" HeaderStyle-HorizontalAlign="Center">
                                             <ItemTemplate>
-                                                <asp:Label ID="lblactiveText" runat="server" Text='<%# IIf(UCase(Trim(CStr(Eval("active")))) = "Y", "Yes", "No") %>'></asp:Label>
+                                                <asp:Label ID="lblactiveText" runat="server" CssClass='<%# IIf(UCase(Trim(CStr(Eval("active")))) = "Y", "rm-status-pill is-active", "rm-status-pill is-inactive") %>' Text='<%# IIf(UCase(Trim(CStr(Eval("active")))) = "Y", "Active", "Inactive") %>'></asp:Label>
                                             </ItemTemplate>
                                             <EditItemTemplate>
-                                                <asp:DropDownList ID="ddlactive" CssClass="form-control form-control-sm" runat="server">
-                                                    <asp:ListItem Text="Yes" Value="Y"></asp:ListItem>
-                                                    <asp:ListItem Text="No" Value="N"></asp:ListItem>
+                                                <asp:DropDownList ID="ddlactive" CssClass="form-control form-control-sm rm-status-ddl" runat="server">
+                                                    <asp:ListItem Text="Active" Value="Y"></asp:ListItem>
+                                                    <asp:ListItem Text="Inactive" Value="N"></asp:ListItem>
                                                 </asp:DropDownList>
                                             </EditItemTemplate>
                                         </asp:TemplateField>
@@ -279,11 +284,13 @@
                                             <ItemTemplate>
                                                 <asp:LinkButton ID="btnEdit" CommandName="Edit" runat="server" CssClass="btn btn-info btn-sm gridBtn mr-1" ToolTip="Edit"
                                                     Visible='<%# (Not String.IsNullOrWhiteSpace(Convert.ToString(Eval("id")))) %>'><i class="fas fa-edit"></i></asp:LinkButton>
-                                                <asp:LinkButton ID="btnDeleteRow" runat="server" CommandName="DeleteRow" CommandArgument='<%# Container.DataItemIndex %>' CssClass="btn btn-danger btn-sm" ToolTip="Delete" OnClientClick="return confirm('Are you sure you want to delete this row?');"><i class="fas fa-trash"></i></asp:LinkButton>
+                                <asp:LinkButton ID="btnDeleteRow" runat="server" CommandName="DeleteRow" CommandArgument='<%# Container.DataItemIndex %>' CssClass="btn btn-danger btn-sm" ToolTip="Delete" OnClientClick="return rmConfirmAction(this, 'delete');"><i class="fas fa-trash"></i></asp:LinkButton>
                                             </ItemTemplate>
                                             <EditItemTemplate>
-                                                <asp:LinkButton ID="btnUpdate" CommandName="Update" CssClass="btn btn-success btn-sm gridBtn mr-1" runat="server" ToolTip="Update" OnClientClick="return confirm('Are you sure you want to update this record?');"><i class="fas fa-check"></i></asp:LinkButton>
-                                                <asp:LinkButton ID="btncancel" CommandName="Cancel" CssClass="btn btn-danger btn-sm gridBtn" runat="server" ToolTip="Cancel"><i class="fas fa-times"></i></asp:LinkButton>
+                                                <div class="rm-edit-actions">
+                                                    <asp:LinkButton ID="btnUpdate" CommandName="Update" CssClass="btn rm-grid-btn rm-grid-btn-save" runat="server" ToolTip="Update" OnClientClick="return rmConfirmStatusUpdate(this);"><i class="fas fa-check"></i></asp:LinkButton>
+                                                    <asp:LinkButton ID="btncancel" CommandName="Cancel" CssClass="btn rm-grid-btn rm-grid-btn-cancel" runat="server" ToolTip="Cancel"><i class="fas fa-times"></i></asp:LinkButton>
+                                                </div>
                                             </EditItemTemplate>
                                         </asp:TemplateField>
                                     </Columns>
@@ -307,5 +314,7 @@
             </div>
         </ContentTemplate>
     </asp:UpdatePanel>
+    </div>
+    <script type="text/javascript" src="Scripts/rm-status-confirm.js?v=<%= DateTime.Now.Ticks %>"></script>
 </asp:Content>
 

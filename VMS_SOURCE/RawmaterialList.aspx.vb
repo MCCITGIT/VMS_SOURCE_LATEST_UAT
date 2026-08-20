@@ -30,20 +30,41 @@ Partial Class RawmaterialList
             Dim obj As New OPC_VendorClass()
             ds = obj.GetRawmaterialList(ddlVendor.SelectedValue)
 
-            If (Not (ds Is Nothing) AndAlso ds.Tables.Count > 0) Then
-                If (Not (ds.Tables(0) Is Nothing) AndAlso ds.Tables(0).Rows.Count > 0) Then
-                    gvRawMatList.DataSource = ds.Tables(0)
-                    gvRawMatList.DataBind()
-                Else
-                    gvRawMatList.DataSource = Nothing
-                    gvRawMatList.DataBind()
-                End If
-            End If
+            Dim table As DataTable = RmGridHelper.GetTable(ds)
+            RmGridHelper.BindPaged(gvRawMatList, table)
+            UpdateSummary(table)
         Catch ex As Exception
             Dim returnUrl As String = "~/ExceptionPage.aspx"
             Session(Constant.SessionKeys.ErrMessage) = ex.ToString()
             Response.Redirect(returnUrl)
         End Try
+    End Sub
+
+    Private Sub UpdateSummary(ByVal sourceTable As DataTable)
+        Dim totalCount As Integer = 0
+        Dim gstCount As Integer = 0
+        Dim emailCount As Integer = 0
+
+        If sourceTable IsNot Nothing Then
+            totalCount = sourceTable.Rows.Count
+            For Each row As DataRow In sourceTable.Rows
+                If sourceTable.Columns.Contains("gst_no") AndAlso Not String.IsNullOrWhiteSpace(Convert.ToString(row("gst_no"))) Then
+                    gstCount += 1
+                End If
+                If sourceTable.Columns.Contains("email") AndAlso Not String.IsNullOrWhiteSpace(Convert.ToString(row("email"))) Then
+                    emailCount += 1
+                End If
+            Next
+        End If
+
+        'lblTotalCount.Text = totalCount.ToString()
+        'lblGstCount.Text = gstCount.ToString()
+        'lblEmailCount.Text = emailCount.ToString()
+    End Sub
+
+    Protected Sub gvRawMatList_PageIndexChanging(sender As Object, e As GridViewPageEventArgs) Handles gvRawMatList.PageIndexChanging
+        gvRawMatList.PageIndex = e.NewPageIndex
+        BindData()
     End Sub
     Private Sub PopulateVendor()
         Dim obj As New OPC_VendorClass()
@@ -60,6 +81,7 @@ Partial Class RawmaterialList
         ddlVendor.Items.Insert(0, New ListItem(Constant.Common.Selec, String.Empty, True))
     End Sub
     Protected Sub ddlVendor_SelectedIndexChanged(sender As Object, e As EventArgs)
+        gvRawMatList.PageIndex = 0
         BindData()
     End Sub
 

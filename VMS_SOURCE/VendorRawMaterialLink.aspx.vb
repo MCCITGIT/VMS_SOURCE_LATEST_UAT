@@ -143,14 +143,14 @@ Partial Class VendorRawMaterialLink
         '    Exit Sub
         'End If
         If String.IsNullOrWhiteSpace(hdnVendorCode.Value) Then
-            lblErrorMessage.ForeColor = System.Drawing.Color.Red
-            lblErrorMessage.Text = "Please enter Vendor."
+            lblErrorMessage.Text = ""
+            RmActionPopup.ShowError(Me, "Please enter Vendor.")
             Exit Sub
         End If
 
         If String.IsNullOrWhiteSpace(txtrawmatid.Value) Then
-            lblErrorMessage.ForeColor = System.Drawing.Color.Red
-            lblErrorMessage.Text = "Please enter Raw Material."
+            lblErrorMessage.Text = ""
+            RmActionPopup.ShowError(Me, "Please enter Raw Material.")
             Exit Sub
         End If
 
@@ -162,8 +162,8 @@ Partial Class VendorRawMaterialLink
         For Each row As DataRow In dt.Rows
             If Convert.ToString(row("vendor_code")).Trim().Equals(selectedVendorCode, StringComparison.OrdinalIgnoreCase) AndAlso
                Convert.ToString(row("rawmat_code")).Trim().Equals(selectedRawMatCode, StringComparison.OrdinalIgnoreCase) Then
-                lblErrorMessage.ForeColor = System.Drawing.Color.Red
-                lblErrorMessage.Text = "Selected Raw Material already added."
+                lblErrorMessage.Text = ""
+                RmActionPopup.ShowError(Me, "Selected Raw Material already added.")
                 Exit Sub
             End If
         Next
@@ -214,8 +214,8 @@ Partial Class VendorRawMaterialLink
                 Dim obj As New OPC_VendorClass()
                 obj.UpdateVendorRawMaterialLink(linkId, "N", userInfo.userIDEntity)
                 Binddata()
-                lblErrorMessage.ForeColor = System.Drawing.Color.Green
-                lblErrorMessage.Text = "Record updated successfully."
+                lblErrorMessage.Text = ""
+                RmActionPopup.ShowSuccess(Me, "Record deleted successfully.")
                 Exit Sub
             Else
                 dt.Rows.RemoveAt(rowIndex)
@@ -292,11 +292,11 @@ Partial Class VendorRawMaterialLink
             Dim obj As New OPC_VendorClass()
             Dim rowsAffected As Integer = obj.UpdateVendorRawMaterialLink(linkId, newActive, userInfo.userIDEntity)
             If rowsAffected > 0 Then
-                lblErrorMessage.ForeColor = System.Drawing.Color.Green
-                lblErrorMessage.Text = "Record updated successfully."
+                lblErrorMessage.Text = ""
+                RmActionPopup.ShowSuccess(Me, "Record updated successfully.")
             Else
-                lblErrorMessage.ForeColor = System.Drawing.Color.Red
-                lblErrorMessage.Text = "Unable to update record."
+                lblErrorMessage.Text = ""
+                RmActionPopup.ShowError(Me, "Unable to update record.")
             End If
         End If
 
@@ -355,16 +355,16 @@ Partial Class VendorRawMaterialLink
             Next
             dt1.AcceptChanges()
             If dt1.Rows.Count <= 0 Then
-                lblErrorMessage.ForeColor = System.Drawing.Color.Red
-                lblErrorMessage.Text = "Please add at least one new Raw Material."
+                lblErrorMessage.Text = ""
+                RmActionPopup.ShowError(Me, "Please add at least one new Raw Material.")
                 Return
             End If
 
             RowsAffectedMstr = obj.InsertVendorRawmaterialLink(userInfo.userIDEntity, dt1)
 
             If RowsAffectedMstr > 0 Then
-                lblErrorMessage.ForeColor = System.Drawing.Color.Green
-                lblErrorMessage.Text = "Submitted Successfully"
+                lblErrorMessage.Text = ""
+                RmActionPopup.ShowSuccess(Me, "Submitted Successfully.")
                 'ddlVendor.SelectedIndex = -1
                 txtVendorSearch.Text = String.Empty
                 txtSearchText.Text = String.Empty
@@ -373,14 +373,14 @@ Partial Class VendorRawMaterialLink
                 gvVendorRawMat.Visible = False
 
             Else
-                lblErrorMessage.ForeColor = System.Drawing.Color.Red
-                lblErrorMessage.Text = "Something went wrong. Try again."
+                lblErrorMessage.Text = ""
+                RmActionPopup.ShowError(Me, "Something went wrong. Try again.")
             End If
 
         Catch ex As SqlException
             If ex.Number = 2627 OrElse ex.Number = 2601 Then
-                lblErrorMessage.ForeColor = System.Drawing.Color.Red
-                lblErrorMessage.Text = "Same Vendor and Raw Material already exists."
+                lblErrorMessage.Text = ""
+                RmActionPopup.ShowError(Me, "Same Vendor and Raw Material already exists.")
                 gvVendorRawMat.EditIndex = -1
                 Binddata()
                 Return

@@ -74,20 +74,22 @@ Partial Class RawMaterialMaster
                     MsgID = obj.InsertUpdateRawMatMasterDtls(RawmatObj)
 
                     If MsgID = 1 Then
-                        lblErrorMessage.ForeColor = System.Drawing.Color.Green
-                        lblErrorMessage.Text = "Raw Material Saved Succssfully."
+                        lblErrorMessage.Text = ""
                         txtSearchText.Text = ""
+                        gvrawMatDetails.PageIndex = 0
                         BindData()
+                        RmActionPopup.ShowSuccess(Me, "Raw Material Saved Successfully.")
                     ElseIf MsgID = 2 Then
-                        lblErrorMessage.ForeColor = System.Drawing.Color.Red
-                        lblErrorMessage.Text = "Raw Material With Samename Already Present."
+                        lblErrorMessage.Text = ""
+                        RmActionPopup.ShowError(Me, "Raw Material with the same name already exists.")
                     Else
-                        lblErrorMessage.Text = "Raw Material Not Save."
+                        lblErrorMessage.Text = ""
+                        RmActionPopup.ShowError(Me, "Raw Material not saved.")
                     End If
                 End If
             Else
-                lblErrorMessage.ForeColor = System.Drawing.Color.Red
-                lblErrorMessage.Text = "Please enter Raw Material name."
+                lblErrorMessage.Text = ""
+                RmActionPopup.ShowError(Me, "Please enter Raw Material name.")
             End If
         Catch ex As Exception
             Dim returnUrl As String = "~/ExceptionPage.aspx"
@@ -104,15 +106,36 @@ Partial Class RawMaterialMaster
         Dim obj As New OPC_VendorClass()
         ds = obj.GetRawmaterialMstrList()
 
-        If (Not (ds Is Nothing) AndAlso ds.Tables.Count > 0) Then
-            If (Not (ds.Tables(0) Is Nothing) AndAlso ds.Tables(0).Rows.Count > 0) Then
-                gvrawMatDetails.DataSource = ds
-                gvrawMatDetails.DataBind()
-            Else
-                gvrawMatDetails.DataSource = Nothing
-                gvrawMatDetails.DataBind()
-            End If
+        Dim table As DataTable = RmGridHelper.GetTable(ds)
+        RmGridHelper.BindPaged(gvrawMatDetails, table)
+        UpdateSummary(table)
+    End Sub
+
+    Private Sub UpdateSummary(ByVal sourceTable As DataTable)
+        Dim totalCount As Integer = 0
+        Dim activeCount As Integer = 0
+        Dim inactiveCount As Integer = 0
+
+        If sourceTable IsNot Nothing Then
+            totalCount = sourceTable.Rows.Count
+            For Each row As DataRow In sourceTable.Rows
+                If NormalizeActiveValue(Convert.ToString(row("active"))) = "Y" Then
+                    activeCount += 1
+                Else
+                    inactiveCount += 1
+                End If
+            Next
         End If
+
+        lblTotalCount.Text = totalCount.ToString()
+        lblActiveCount.Text = activeCount.ToString()
+        lblInactiveCount.Text = inactiveCount.ToString()
+    End Sub
+
+    Protected Sub gvrawMatDetails_PageIndexChanging(sender As Object, e As GridViewPageEventArgs) Handles gvrawMatDetails.PageIndexChanging
+        gvrawMatDetails.EditIndex = -1
+        gvrawMatDetails.PageIndex = e.NewPageIndex
+        BindData()
     End Sub
     Protected Sub gvrawMatDetails_RowEditing(sender As Object, e As GridViewEditEventArgs) Handles gvrawMatDetails.RowEditing
         gvrawMatDetails.EditIndex = e.NewEditIndex
@@ -148,14 +171,15 @@ Partial Class RawMaterialMaster
             MsgID = obj.InsertUpdateRawMatMasterDtls(RawmatObj)
 
             If MsgID = 1 Then
-                lblErrorMessage.ForeColor = System.Drawing.Color.Green
-                lblErrorMessage.Text = "Raw Material Updated Succssfully."
+                lblErrorMessage.Text = ""
                 txtSearchText.Text = ""
                 btnSubmit.Text = Constant.GeneralMessages.btnSubmit
                 gvrawMatDetails.EditIndex = -1
                 BindData()
+                RmActionPopup.ShowSuccess(Me, "Raw Material Updated Successfully.")
             Else
-                lblErrorMessage.Text = "Brand Not Save."
+                lblErrorMessage.Text = ""
+                RmActionPopup.ShowError(Me, "Unable to update raw material.")
             End If
         End If
     End Sub

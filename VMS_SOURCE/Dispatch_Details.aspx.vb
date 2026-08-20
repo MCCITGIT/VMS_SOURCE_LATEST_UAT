@@ -59,11 +59,15 @@ Partial Class Dispatch_Details
         Dim status As String = dispatchStatus.Trim().ToUpper()
 
         If status = "PENDING" Then
+            lblDispatchStatusBadge.Text = "Pending Dispatch"
+            lblDispatchStatusBadge.CssClass = "rm-status-badge is-pending"
             gvMaterials.Columns(4).Visible = True
             gvMaterials.Columns(6).Visible = True
             BindRequestDetails(orhId, vendorCode)
 
         ElseIf status = "DISPATCHED" Then
+            lblDispatchStatusBadge.Text = "Dispatched"
+            lblDispatchStatusBadge.CssClass = "rm-status-badge is-complete"
             btnUploadInvoice.Visible = False
             gvMaterials.Columns(4).Visible = False
             gvMaterials.Columns(6).Visible = False
@@ -138,7 +142,9 @@ Partial Class Dispatch_Details
 
             gvMaterials.DataSource = ds.Tables(1)
             gvMaterials.DataBind()
-
+            UpdateMaterialSummary(ds.Tables(1))
+        Else
+            UpdateMaterialSummary(Nothing)
         End If
 
     End Sub
@@ -272,11 +278,13 @@ Partial Class Dispatch_Details
 
                 gvMaterials.DataSource = ds.Tables(1)
                 gvMaterials.DataBind()
+                UpdateMaterialSummary(ds.Tables(1))
 
             Else
 
                 gvMaterials.DataSource = Nothing
                 gvMaterials.DataBind()
+                UpdateMaterialSummary(Nothing)
 
             End If
 
@@ -329,6 +337,68 @@ Partial Class Dispatch_Details
         btnSubmit.Visible = False
 
     End Sub
+
+    Private Sub UpdateMaterialSummary(ByVal dt As DataTable)
+        Dim totalRequested As Decimal = 0D
+        Dim totalDispatched As Decimal = 0D
+        Dim totalPending As Decimal = 0D
+        Dim itemCount As Integer = 0
+
+        If dt IsNot Nothing Then
+            itemCount = dt.Rows.Count
+            For Each dr As DataRow In dt.Rows
+                Dim requestedQty As Decimal = GetColumnDecimal(dr, "ord_qty", "requested_qty")
+                Dim pendingQty As Decimal = GetColumnDecimal(dr, "pending_qty")
+                Dim dispatchedQty As Decimal = GetColumnDecimal(dr, "dispatch_qty", "already_dispatched_qty", "odd_qty")
+
+                ' Request-level dispatched qty is requested minus pending.
+                ' dispatch_qty on a completed dispatch can be this invoice only, which understates the total.
+                If dt.Columns.Contains("pending_qty") Then
+                    dispatchedQty = requestedQty - pendingQty
+                    If dispatchedQty < 0D Then
+                        dispatchedQty = 0D
+                    End If
+                End If
+
+                totalRequested += requestedQty
+                totalDispatched += dispatchedQty
+                totalPending += pendingQty
+            Next
+        End If
+
+        lblTotalRequested.Text = totalRequested.ToString("0.00")
+        lblTotalDispatched.Text = totalDispatched.ToString("0.00")
+        lblTotalPending.Text = totalPending.ToString("0.00")
+        lblItemCount.Text = itemCount.ToString()
+        lblMaterialCountBadge.Text = itemCount.ToString() & If(itemCount = 1, " Material", " Materials")
+    End Sub
+
+    Private Function GetColumnDecimal(ByVal dr As DataRow, ByVal ParamArray columnNames() As String) As Decimal
+        If dr Is Nothing OrElse dr.Table Is Nothing Then
+            Return 0D
+        End If
+
+        For Each columnName As String In columnNames
+            If dr.Table.Columns.Contains(columnName) Then
+                Return ToDecimalValue(dr(columnName))
+            End If
+        Next
+
+        Return 0D
+    End Function
+
+    Private Function ToDecimalValue(ByVal value As Object) As Decimal
+        If value Is Nothing OrElse value Is DBNull.Value Then
+            Return 0D
+        End If
+
+        Dim parsed As Decimal
+        If Decimal.TryParse(value.ToString(), parsed) Then
+            Return parsed
+        End If
+
+        Return 0D
+    End Function
 
     Public Function GetFormattedDate(ByVal value As Object) As String
 
@@ -906,25 +976,15 @@ Partial Class Dispatch_Details
 
 
             If MsgID = 1 Then
-
-                mpeSuccess.Show()
-
+                RmActionPopup.ShowSuccess(Me, "Dispatch submitted successfully.", "Dispatch_List.aspx")
             Else
-
-                pnlMessage.Visible = True
-
-                lblMessage.CssClass =
-                "alert alert-danger d-block"
-
-                lblMessage.Text =
-                If(
-                    String.IsNullOrEmpty(
+                Dim errorText As String =
+                    If(
+                        String.IsNullOrEmpty(dispatchEntity.Message),
+                        "Dispatch not saved.",
                         dispatchEntity.Message
-                    ),
-                    "Dispatch not saved.",
-                    dispatchEntity.Message
-                )
-
+                    )
+                RmActionPopup.ShowError(Me, errorText)
             End If
 
 

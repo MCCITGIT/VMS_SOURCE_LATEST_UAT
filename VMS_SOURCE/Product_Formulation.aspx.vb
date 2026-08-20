@@ -128,6 +128,27 @@ Partial Class Product_Formulation
         gvVendorRawMat.DataBind()
     End Sub
 
+    Protected Sub gvVendorRawMat_RowCommand(sender As Object, e As GridViewCommandEventArgs) Handles gvVendorRawMat.RowCommand
+        If e.CommandName <> "DeleteRow" Then
+            Exit Sub
+        End If
+
+        Dim rowIndex As Integer = 0
+        If Not Integer.TryParse(Convert.ToString(e.CommandArgument), rowIndex) Then
+            Exit Sub
+        End If
+
+        Dim dt As DataTable = GetGridTable()
+        If rowIndex >= 0 AndAlso rowIndex < dt.Rows.Count Then
+            dt.Rows.RemoveAt(rowIndex)
+            ViewState(GridTableKey) = dt
+        End If
+
+        gvVendorRawMat.EditIndex = -1
+        BindRawMatGrid()
+        btnSubmit.Visible = dt.Rows.Count > 0
+    End Sub
+
     Protected Sub gvVendorRawMat_RowDataBound(sender As Object, e As GridViewRowEventArgs)
         If e.Row.RowType = DataControlRowType.Header Then
             e.Row.TableSection = TableRowSection.TableHeader
@@ -172,26 +193,26 @@ Partial Class Product_Formulation
         btnSubmit.Visible = True
 
         If ddlBrand.SelectedIndex <= 0 Then
-            lblErrorMessage.ForeColor = System.Drawing.Color.Red
-            lblErrorMessage.Text = "Please select Brand."
+            lblErrorMessage.Text = ""
+            RmActionPopup.ShowError(Me, "Please select Brand.")
             Exit Sub
         End If
 
         If String.IsNullOrWhiteSpace(hdnProductCode.Value) Then
-            lblErrorMessage.ForeColor = System.Drawing.Color.Red
-            lblErrorMessage.Text = "Please enter Product."
+            lblErrorMessage.Text = ""
+            RmActionPopup.ShowError(Me, "Please enter Product.")
             Exit Sub
         End If
 
         If String.IsNullOrWhiteSpace(txtrawmatid.Value) Then
-            lblErrorMessage.ForeColor = System.Drawing.Color.Red
-            lblErrorMessage.Text = "Please enter Raw Material."
+            lblErrorMessage.Text = ""
+            RmActionPopup.ShowError(Me, "Please enter Raw Material.")
             Exit Sub
         End If
 
         If String.IsNullOrWhiteSpace(txtRatio.Text) Then
-            lblErrorMessage.ForeColor = System.Drawing.Color.Red
-            lblErrorMessage.Text = "Please enter Consumption Ratio."
+            lblErrorMessage.Text = ""
+            RmActionPopup.ShowError(Me, "Please enter Consumption Ratio.")
             Exit Sub
         End If
 
@@ -209,8 +230,8 @@ Partial Class Product_Formulation
         For Each row As DataRow In dt.Rows
             If Convert.ToString(row("brand_code")).Trim().Equals(selectedbrandCode, StringComparison.OrdinalIgnoreCase) AndAlso
                Convert.ToString(row("rawmat_code")).Trim().Equals(selectedRawMatCode, StringComparison.OrdinalIgnoreCase) Then
-                lblErrorMessage.ForeColor = System.Drawing.Color.Red
-                lblErrorMessage.Text = "Selected Raw Material already added."
+                lblErrorMessage.Text = ""
+                RmActionPopup.ShowError(Me, "Selected Raw Material already added.")
                 Exit Sub
             End If
         Next
@@ -293,14 +314,14 @@ Partial Class Product_Formulation
         Dim totalRatio As Integer = 0
         Try
             If ddlBrand.SelectedIndex <= 0 Then
-                lblErrorMessage.ForeColor = System.Drawing.Color.Red
-                lblErrorMessage.Text = "Please select Brand."
+                lblErrorMessage.Text = ""
+                RmActionPopup.ShowError(Me, "Please select Brand.")
                 Exit Sub
             End If
 
             If String.IsNullOrWhiteSpace(hdnProductCode.Value) Then
-                lblErrorMessage.ForeColor = System.Drawing.Color.Red
-                lblErrorMessage.Text = "Please enter Product."
+                lblErrorMessage.Text = ""
+                RmActionPopup.ShowError(Me, "Please enter Product.")
                 Exit Sub
             End If
 
@@ -324,8 +345,8 @@ Partial Class Product_Formulation
 
                 Dim ratioValue As Integer = 0
                 If Not Integer.TryParse(ratioText, ratioValue) Then
-                    lblErrorMessage.ForeColor = System.Drawing.Color.Red
-                    lblErrorMessage.Text = "Please enter valid integer Consumption Ratio."
+                    lblErrorMessage.Text = ""
+                    RmActionPopup.ShowError(Me, "Please enter valid integer Consumption Ratio.")
                     Exit Sub
                 End If
 
@@ -338,16 +359,16 @@ Partial Class Product_Formulation
                 dt.Rows.Add(dr)
             Next
             If totalRatio <> 100 Then
-                lblErrorMessage.ForeColor = System.Drawing.Color.Red
-                lblErrorMessage.Text = "Total Consumption Ratio should be equal 100%."
+                lblErrorMessage.Text = ""
+                RmActionPopup.ShowError(Me, "Total Consumption Ratio should be equal 100%.")
                 Exit Sub
             End If
 
             rowsAffected = obj.Insert_Formulation(Val(hdnId.Value), ddlBrand.SelectedValue, hdnProductCode.Value.Trim(), dt, userInfo.userIDEntity)
 
             If rowsAffected > 0 Then
-                lblErrorMessage.ForeColor = System.Drawing.Color.Green
-                lblErrorMessage.Text = "Submitted Successfully."
+                lblErrorMessage.Text = ""
+                RmActionPopup.ShowSuccess(Me, "Submitted Successfully.")
                 ddlBrand.SelectedIndex = 0
                 txtProductSearch.Text = String.Empty
                 hdnProductCode.Value = String.Empty
@@ -355,8 +376,8 @@ Partial Class Product_Formulation
                 gvVendorRawMat.DataSource = Nothing
                 gvVendorRawMat.DataBind()
             Else
-                lblErrorMessage.ForeColor = System.Drawing.Color.Red
-                lblErrorMessage.Text = "Something went wrong. Try again."
+                lblErrorMessage.Text = ""
+                RmActionPopup.ShowError(Me, "Something went wrong. Try again.")
             End If
         Catch ex As Exception
             Dim returnUrl As String = "~/ExceptionPage.aspx"
@@ -474,8 +495,8 @@ Partial Class Product_Formulation
 
             Dim ds As DataSet = OPC_VendorClass.PostApiWithHeadersToDataSet(apiUrl, postData).Result
             If ds Is Nothing OrElse ds.Tables.Count = 0 OrElse ds.Tables(0) Is Nothing OrElse ds.Tables(0).Rows.Count = 0 Then
-                lblErrorMessage.ForeColor = Drawing.Color.Red
-                lblErrorMessage.Text = "Recipe details were not returned from API. Please try again."
+                lblErrorMessage.Text = ""
+                RmActionPopup.ShowError(Me, "Recipe details were not returned from API. Please try again.")
                 Return
             End If
 
@@ -483,8 +504,8 @@ Partial Class Product_Formulation
             BindRawMatGrid()
             btnSubmit.Visible = True
         Catch ex As Exception
-            lblErrorMessage.ForeColor = Drawing.Color.Red
-            lblErrorMessage.Text = "Unable to load recipe ingredients. Please try again."
+            lblErrorMessage.Text = ""
+            RmActionPopup.ShowError(Me, "Unable to load recipe ingredients. Please try again.")
         End Try
     End Sub
 
