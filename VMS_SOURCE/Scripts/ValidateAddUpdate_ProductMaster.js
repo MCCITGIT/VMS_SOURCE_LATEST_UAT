@@ -4,7 +4,6 @@ function validateInputs() {
     //debugger;
     firstErrorControl = "";
     errMsg = "";
-
     ValidateRequired("txtBrandName", "Please enter Brand Name.");
 
     if (firstErrorControl != "") {

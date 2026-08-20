@@ -9,6 +9,12 @@ Partial Class Product_Formulation
     Dim userInfo As VMSUserEntity = New VMSUserEntity()
     Private Const GridTableKey As String = "VendorRawMatGridTable"
     Private gridRatioTotal As Decimal = 0D
+    Protected Sub Page_PreRender(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.PreRender
+        If Not txtProductSearch.Enabled OrElse String.Equals(txtProductSearch.Attributes("readonly"), "readonly", StringComparison.OrdinalIgnoreCase) Then
+            ScriptManager.RegisterStartupScript(Me, Me.GetType(), "lockProductSearch", "syncProductResetButtonState();", True)
+        End If
+    End Sub
+
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
         CheckLogin()
         'btnSubmit.Attributes.Add("onclick", "return validateInputs();")
@@ -16,6 +22,7 @@ Partial Class Product_Formulation
 
         If Not IsPostBack Then
             BrandDetailsListLoad()
+            VendorDetailsListLoad()
             InitializeGridTable()
             If Not String.IsNullOrWhiteSpace(Request.QueryString("brandcode")) AndAlso
                Not String.IsNullOrWhiteSpace(Request.QueryString("producode")) AndAlso
@@ -96,6 +103,8 @@ Partial Class Product_Formulation
         Dim dt As DataTable = New DataTable()
         dt.Columns.Add(New DataColumn("brand_code", GetType(String)))
         dt.Columns.Add(New DataColumn("brand_name", GetType(String)))
+        dt.Columns.Add(New DataColumn("vendor_code", GetType(String)))
+        dt.Columns.Add(New DataColumn("vendor_name", GetType(String)))
         dt.Columns.Add(New DataColumn("product_code", GetType(String)))
         dt.Columns.Add(New DataColumn("product_name", GetType(String)))
         dt.Columns.Add(New DataColumn("rawmat_code", GetType(String)))
@@ -119,6 +128,14 @@ Partial Class Product_Formulation
         If dt Is Nothing Then
             InitializeGridTable()
             dt = TryCast(ViewState(GridTableKey), DataTable)
+        Else
+            If Not dt.Columns.Contains("vendor_code") Then
+                dt.Columns.Add("vendor_code", GetType(String))
+            End If
+            If Not dt.Columns.Contains("vendor_name") Then
+                dt.Columns.Add("vendor_name", GetType(String))
+            End If
+            ViewState(GridTableKey) = dt
         End If
         Return dt
     End Function
@@ -128,28 +145,7 @@ Partial Class Product_Formulation
         gvVendorRawMat.DataBind()
     End Sub
 
-    Protected Sub gvVendorRawMat_RowCommand(sender As Object, e As GridViewCommandEventArgs) Handles gvVendorRawMat.RowCommand
-        If e.CommandName <> "DeleteRow" Then
-            Exit Sub
-        End If
-
-        Dim rowIndex As Integer = 0
-        If Not Integer.TryParse(Convert.ToString(e.CommandArgument), rowIndex) Then
-            Exit Sub
-        End If
-
-        Dim dt As DataTable = GetGridTable()
-        If rowIndex >= 0 AndAlso rowIndex < dt.Rows.Count Then
-            dt.Rows.RemoveAt(rowIndex)
-            ViewState(GridTableKey) = dt
-        End If
-
-        gvVendorRawMat.EditIndex = -1
-        BindRawMatGrid()
-        btnSubmit.Visible = dt.Rows.Count > 0
-    End Sub
-
-    Protected Sub gvVendorRawMat_RowDataBound(sender As Object, e As GridViewRowEventArgs)
+    Protected Sub gvVendorRawMat_RowDataBound(sender As Object, e As GridViewRowEventArgs) Handles gvVendorRawMat.RowDataBound
         If e.Row.RowType = DataControlRowType.Header Then
             e.Row.TableSection = TableRowSection.TableHeader
         ElseIf e.Row.RowType = DataControlRowType.DataRow Then
@@ -184,6 +180,11 @@ Partial Class Product_Formulation
             End If
         End If
     End Sub
+    Private Sub ShowValidation(ByVal message As String)
+        lblErrorMessage.Text = ""
+        RmActionPopup.ShowError(Me, message)
+    End Sub
+
     Protected Sub btnAdd_Click(sender As Object, e As EventArgs)
         If gvVendorRawMat.EditIndex >= 0 Then
             gvVendorRawMat.EditIndex = -1
@@ -193,26 +194,26 @@ Partial Class Product_Formulation
         btnSubmit.Visible = True
 
         If ddlBrand.SelectedIndex <= 0 Then
-            lblErrorMessage.Text = ""
-            RmActionPopup.ShowError(Me, "Please select Brand.")
+            ShowValidation("Please select Brand.")
             Exit Sub
         End If
 
         If String.IsNullOrWhiteSpace(hdnProductCode.Value) Then
-            lblErrorMessage.Text = ""
-            RmActionPopup.ShowError(Me, "Please enter Product.")
+            ShowValidation("Please enter Product.")
+            Exit Sub
+        End If
+        If ddlvendor.SelectedIndex <= 0 Then
+            ShowValidation("Please select Vendor.")
             Exit Sub
         End If
 
         If String.IsNullOrWhiteSpace(txtrawmatid.Value) Then
-            lblErrorMessage.Text = ""
-            RmActionPopup.ShowError(Me, "Please enter Raw Material.")
+            ShowValidation("Please enter Raw Material.")
             Exit Sub
         End If
 
         If String.IsNullOrWhiteSpace(txtRatio.Text) Then
-            lblErrorMessage.Text = ""
-            RmActionPopup.ShowError(Me, "Please enter Consumption Ratio.")
+            ShowValidation("Please enter Consumption Ratio.")
             Exit Sub
         End If
 
@@ -224,14 +225,15 @@ Partial Class Product_Formulation
 
         Dim dt As DataTable = GetGridTable()
         Dim selectedbrandCode As String = ddlBrand.SelectedValue.Trim()
+        Dim selectedVendorCode As String = ddlvendor.SelectedValue.Trim()
         Dim selectedProductCode As String = hdnProductCode.Value.Trim()
         Dim selectedRawMatCode As String = txtrawmatid.Value.Trim()
 
         For Each row As DataRow In dt.Rows
             If Convert.ToString(row("brand_code")).Trim().Equals(selectedbrandCode, StringComparison.OrdinalIgnoreCase) AndAlso
+               Convert.ToString(row("vendor_code")).Trim().Equals(selectedVendorCode, StringComparison.OrdinalIgnoreCase) AndAlso
                Convert.ToString(row("rawmat_code")).Trim().Equals(selectedRawMatCode, StringComparison.OrdinalIgnoreCase) Then
-                lblErrorMessage.Text = ""
-                RmActionPopup.ShowError(Me, "Selected Raw Material already added.")
+                ShowValidation("Selected Raw Material already added.")
                 Exit Sub
             End If
         Next
@@ -254,6 +256,9 @@ Partial Class Product_Formulation
 
         dr("brand_code") = ddlBrand.SelectedValue
         dr("brand_name") = ddlBrand.SelectedItem.Text
+
+        dr("vendor_code") = ddlvendor.SelectedValue
+        dr("vendor_name") = ddlvendor.SelectedItem.Text
 
         dr("product_code") = hdnProductCode.Value
         dr("product_name") = hdnProductName.Value
@@ -280,6 +285,36 @@ Partial Class Product_Formulation
         txtProductSearch.Text = productNameToKeep
         txtProductSearch.Enabled = False
     End Sub
+
+    Protected Sub gvVendorRawMat_RowCommand(sender As Object, e As GridViewCommandEventArgs) Handles gvVendorRawMat.RowCommand
+        If e.CommandName <> "DeleteRow" Then
+            Exit Sub
+        End If
+
+        Dim rowIndex As Integer = 0
+        If Not Integer.TryParse(Convert.ToString(e.CommandArgument), rowIndex) Then
+            Exit Sub
+        End If
+
+        If gvVendorRawMat.EditIndex >= 0 Then
+            gvVendorRawMat.EditIndex = -1
+        End If
+
+        Dim dt As DataTable = GetGridTable()
+        If rowIndex < 0 OrElse rowIndex >= dt.Rows.Count Then
+            Exit Sub
+        End If
+
+        dt.Rows.RemoveAt(rowIndex)
+        dt.AcceptChanges()
+        ViewState(GridTableKey) = dt
+
+        BindRawMatGrid()
+        btnSubmit.Visible = dt.Rows.Count > 0
+        lblErrorMessage.Text = ""
+        RmActionPopup.ShowSuccess(Me, "Record deleted successfully.")
+    End Sub
+
     Private Sub ClearControl()
         txtSearchText.Text = String.Empty
         txtrawmatid.Value = String.Empty
@@ -290,7 +325,7 @@ Partial Class Product_Formulation
     Private Sub BrandDetailsListLoad()
         Dim ds As DataSet
         Dim obj As New OPC_VendorClass()
-        ds = obj.GetBrandMasterList()
+        ds = obj.BindBrandMasterList()
 
         If (Not (ds Is Nothing) AndAlso ds.Tables.Count > 0) Then
             If (Not (ds.Tables(0) Is Nothing) AndAlso ds.Tables(0).Rows.Count > 0) Then
@@ -305,8 +340,32 @@ Partial Class Product_Formulation
             ddlBrand.Items.Insert(0, New ListItem(Constant.Common.Selec, String.Empty, True))
         End If
     End Sub
+
+    Private Sub VendorDetailsListLoad()
+        Dim ds As DataSet
+        Dim obj As New OPC_VendorClass()
+        ds = obj.GetUnitName(Constant.Common.ActiveStatus)
+
+        If (Not (ds Is Nothing) AndAlso ds.Tables.Count > 0) Then
+            If (Not (ds.Tables(0) Is Nothing) AndAlso ds.Tables(0).Rows.Count > 0) Then
+                ddlvendor.DataSource = ds
+                ddlvendor.DataTextField = "unit_name"
+                ddlvendor.DataValueField = "unit_code"
+                ddlvendor.DataBind()
+            Else
+                ddlvendor.DataSource = Nothing
+                ddlvendor.DataBind()
+            End If
+            ddlvendor.Items.Insert(0, New ListItem(Constant.Common.Selec, String.Empty, True))
+        End If
+    End Sub
+
     Protected Sub ddlBrand_SelectedIndexChanged(sender As Object, e As EventArgs)
         ddlBrand.Enabled = False
+    End Sub
+
+    Protected Sub ddlvendor_SelectedIndexChanged(sender As Object, e As EventArgs)
+        ddlvendor.Enabled = False
     End Sub
     Protected Sub btnSubmit_Click(sender As Object, e As EventArgs) Handles btnSubmit.Click
         Dim obj As New OPC_VendorClass()
@@ -314,14 +373,17 @@ Partial Class Product_Formulation
         Dim totalRatio As Integer = 0
         Try
             If ddlBrand.SelectedIndex <= 0 Then
-                lblErrorMessage.Text = ""
-                RmActionPopup.ShowError(Me, "Please select Brand.")
+                ShowValidation("Please select Brand.")
+                Exit Sub
+            End If
+
+            If ddlvendor.SelectedIndex <= 0 Then
+                ShowValidation("Please select Vendor.")
                 Exit Sub
             End If
 
             If String.IsNullOrWhiteSpace(hdnProductCode.Value) Then
-                lblErrorMessage.Text = ""
-                RmActionPopup.ShowError(Me, "Please enter Product.")
+                ShowValidation("Please enter Product.")
                 Exit Sub
             End If
 
@@ -345,8 +407,7 @@ Partial Class Product_Formulation
 
                 Dim ratioValue As Integer = 0
                 If Not Integer.TryParse(ratioText, ratioValue) Then
-                    lblErrorMessage.Text = ""
-                    RmActionPopup.ShowError(Me, "Please enter valid integer Consumption Ratio.")
+                    ShowValidation("Please enter valid integer Consumption Ratio.")
                     Exit Sub
                 End If
 
@@ -359,16 +420,15 @@ Partial Class Product_Formulation
                 dt.Rows.Add(dr)
             Next
             If totalRatio <> 100 Then
-                lblErrorMessage.Text = ""
-                RmActionPopup.ShowError(Me, "Total Consumption Ratio should be equal 100%.")
+                ShowValidation("Total Consumption Ratio should be equal 100%.")
                 Exit Sub
             End If
 
-            rowsAffected = obj.Insert_Formulation(Val(hdnId.Value), ddlBrand.SelectedValue, hdnProductCode.Value.Trim(), dt, userInfo.userIDEntity)
+            rowsAffected = obj.Insert_Formulation(Val(hdnId.Value), ddlBrand.SelectedValue, ddlvendor.SelectedValue, hdnProductCode.Value.Trim(), dt, userInfo.userIDEntity)
 
             If rowsAffected > 0 Then
                 lblErrorMessage.Text = ""
-                RmActionPopup.ShowSuccess(Me, "Submitted Successfully.")
+                RmActionPopup.ShowSuccess(Me, "Submitted Successfully.", "FormulationMstrList.aspx")
                 ddlBrand.SelectedIndex = 0
                 txtProductSearch.Text = String.Empty
                 hdnProductCode.Value = String.Empty
@@ -409,17 +469,26 @@ Partial Class Product_Formulation
             If ddlBrand.Items.FindByValue(hdrBrandCode) IsNot Nothing Then
                 ddlBrand.SelectedValue = hdrBrandCode
             End If
+
+            Dim hdrVendorCode As String = GetHeaderColumnValue(hdrRow, "vendor_code", "Vendor_Code", "unit_code")
+            If Not String.IsNullOrWhiteSpace(hdrVendorCode) AndAlso ddlvendor.Items.FindByValue(hdrVendorCode) IsNot Nothing Then
+                ddlvendor.SelectedValue = hdrVendorCode
+            End If
+
             hdnProductCode.Value = hdrProductCode
             txtProductSearch.Text = hdrProductDesc & " (" & hdrProductCode & ")"
 
             ddlBrand.Enabled = False
+            ddlvendor.Enabled = False
             txtProductSearch.Enabled = False
             'btnSubmit.Visible = True
             'btnSubmit.Text = "Update"
         End If
 
         If ds.Tables.Count > 1 AndAlso Not (ds.Tables(1) Is Nothing) AndAlso ds.Tables(1).Rows.Count > 0 Then
-            ViewState(GridTableKey) = ds.Tables(1)
+            Dim dtGrid As DataTable = ds.Tables(1).Copy()
+            ApplyVendorToGridTable(dtGrid)
+            ViewState(GridTableKey) = dtGrid
             BindRawMatGrid()
         Else
             gvVendorRawMat.DataSource = Nothing
@@ -495,8 +564,7 @@ Partial Class Product_Formulation
 
             Dim ds As DataSet = OPC_VendorClass.PostApiWithHeadersToDataSet(apiUrl, postData).Result
             If ds Is Nothing OrElse ds.Tables.Count = 0 OrElse ds.Tables(0) Is Nothing OrElse ds.Tables(0).Rows.Count = 0 Then
-                lblErrorMessage.Text = ""
-                RmActionPopup.ShowError(Me, "Recipe details were not returned from API. Please try again.")
+                ShowValidation("Recipe details were not returned from API. Please try again.")
                 Return
             End If
 
@@ -504,8 +572,7 @@ Partial Class Product_Formulation
             BindRawMatGrid()
             btnSubmit.Visible = True
         Catch ex As Exception
-            lblErrorMessage.Text = ""
-            RmActionPopup.ShowError(Me, "Unable to load recipe ingredients. Please try again.")
+            ShowValidation("Unable to load recipe ingredients. Please try again.")
         End Try
     End Sub
 
@@ -515,6 +582,8 @@ Partial Class Product_Formulation
 
         Dim brandCode As String = If(ddlBrand.SelectedIndex > 0, ddlBrand.SelectedValue.Trim(), String.Empty)
         Dim brandName As String = If(ddlBrand.SelectedIndex > 0, ddlBrand.SelectedItem.Text.Trim(), String.Empty)
+        Dim vendorCode As String = If(ddlvendor.SelectedIndex > 0, ddlvendor.SelectedValue.Trim(), String.Empty)
+        Dim vendorName As String = If(ddlvendor.SelectedIndex > 0, ddlvendor.SelectedItem.Text.Trim(), String.Empty)
         Dim productCode As String = hdnProductCode.Value.Trim()
         Dim productName As String = hdnProductName.Value.Trim()
 
@@ -539,6 +608,8 @@ Partial Class Product_Formulation
             Dim dr As DataRow = dt.NewRow()
             dr("brand_code") = brandCode
             dr("brand_name") = brandName
+            dr("vendor_code") = vendorCode
+            dr("vendor_name") = vendorName
             dr("product_code") = productCode
             dr("product_name") = productName
             dr("rawmat_code") = rawMatCode
@@ -621,6 +692,41 @@ Partial Class Product_Formulation
     Private Shared Function GetApiColumnValue(ByVal row As DataRow, ByVal table As DataTable, ParamArray columnNames As String()) As String
         For Each columnName As String In columnNames
             If table.Columns.Contains(columnName) AndAlso Not IsDBNull(row(columnName)) Then
+                Return Convert.ToString(row(columnName)).Trim()
+            End If
+        Next
+
+        Return String.Empty
+    End Function
+
+    Private Sub ApplyVendorToGridTable(ByVal dtGrid As DataTable)
+        If dtGrid Is Nothing Then
+            Return
+        End If
+
+        If Not dtGrid.Columns.Contains("vendor_code") Then
+            dtGrid.Columns.Add("vendor_code", GetType(String))
+        End If
+        If Not dtGrid.Columns.Contains("vendor_name") Then
+            dtGrid.Columns.Add("vendor_name", GetType(String))
+        End If
+
+        Dim vendorCode As String = If(ddlvendor.SelectedIndex > 0, ddlvendor.SelectedValue.Trim(), String.Empty)
+        Dim vendorName As String = If(ddlvendor.SelectedIndex > 0, ddlvendor.SelectedItem.Text.Trim(), String.Empty)
+
+        For Each row As DataRow In dtGrid.Rows
+            If String.IsNullOrWhiteSpace(Convert.ToString(row("vendor_code"))) Then
+                row("vendor_code") = vendorCode
+            End If
+            If String.IsNullOrWhiteSpace(Convert.ToString(row("vendor_name"))) Then
+                row("vendor_name") = vendorName
+            End If
+        Next
+    End Sub
+
+    Private Shared Function GetHeaderColumnValue(ByVal row As DataRow, ParamArray columnNames As String()) As String
+        For Each columnName As String In columnNames
+            If row.Table.Columns.Contains(columnName) AndAlso Not IsDBNull(row(columnName)) Then
                 Return Convert.ToString(row(columnName)).Trim()
             End If
         Next
