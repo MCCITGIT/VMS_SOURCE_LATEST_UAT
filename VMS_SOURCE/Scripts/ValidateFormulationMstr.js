@@ -63,6 +63,9 @@ function validateInputs() {
     errMsg = "";
 
     ValidateDropDown1("ddlBrand", "Please Select Brand.");
+    if (document.getElementById("ddlvendor")) {
+        ValidateDropDown1("ddlvendor", "Please select Vendor.");
+    }
     ValidateDropDown1("ddlRawMat", "Please Select Raw Material.");
     if (!document.getElementById("hdnProductCode") || (document.getElementById("hdnProductCode").value || "").trim() === "") {
         if (firstErrorControl == "") {
@@ -126,20 +129,11 @@ function validateInputs() {
 
     if (firstErrorControl != "") {
         SetControlFocus(firstErrorControl);
-        errMsg = "<table>" + errMsg + "</table>";
-        document.getElementById("lblErrorMessage").innerHTML = errMsg;
-        return false;
+        return rmFailValidation(errMsg);
     }
     else {
         document.getElementById("lblErrorMessage").innerHTML = '';
-        if (confirm("Are you sure to submit?")) {
-            document.getElementById("btnSubmit").disabled = true;
-            __doPostBack(document.getElementById("btnSubmit").name, '');
-            return true;
-        }
-        else {
-            return false;
-        }
+        return rmConfirmPostback("btnSubmit", "submit");
     }
 }
 
@@ -189,106 +183,142 @@ document.addEventListener("DOMContentLoaded", function () {
     updateVendorRawMatRatioTotal();
 });
 function validateAddRawMaterial() {
-    var errors = [];
+    firstErrorControl = "";
+    errMsg = "";
 
     var lblErrorMessage = document.getElementById("lblErrorMessage");
     var ddlBrand = document.getElementById("ddlBrand");
+    var ddlvendor = document.getElementById("ddlvendor");
     var hdnProductCode = document.getElementById("hdnProductCode");
     var txtrawmatid = document.getElementById("txtrawmatid");
     var txtRatio = document.getElementById("txtRatio");
-    var txtmeasurement = document.getElementById("txtmeasurement");
     var ratio = NaN;
     var totalRatio = getVendorRawMatGridRatioTotal();
 
-    // Clear previous error
     if (lblErrorMessage) {
         lblErrorMessage.innerHTML = "";
-        lblErrorMessage.style.color = "";
     }
 
-    // Brand
     if (!ddlBrand || ddlBrand.value === "" || ddlBrand.selectedIndex <= 0) {
-        errors.push("Please select Brand.");
+        if (firstErrorControl === "") {
+            firstErrorControl = "ddlBrand";
+        }
+        errMsg += GetErrorRow("ddlBrand", "Please select Brand.");
     }
 
-    // Product
-    if (!hdnProductCode || hdnProductCode.value.trim() === "") {
-        errors.push("Please enter Product.");
+    if (!ddlvendor || ddlvendor.value === "" || ddlvendor.selectedIndex <= 0) {
+        if (firstErrorControl === "") {
+            firstErrorControl = "ddlvendor";
+        }
+        errMsg += GetErrorRow("ddlvendor", "Please select Vendor.");
     }
 
-    // Raw Material
-    if (!txtrawmatid || txtrawmatid.value.trim() === "") {
-        errors.push("Please enter Raw Material.");
+    if (!hdnProductCode || (hdnProductCode.value || "").trim() === "") {
+        if (firstErrorControl === "") {
+            firstErrorControl = "txtProductSearch";
+        }
+        errMsg += GetErrorRow("txtProductSearch", "Please enter Product.");
     }
 
-    // Consumption Ratio
-    if (!txtRatio || txtRatio.value.trim() === "") {
-        errors.push("Please enter Consumption Ratio.");
+    if (!txtrawmatid || (txtrawmatid.value || "").trim() === "") {
+        if (firstErrorControl === "") {
+            firstErrorControl = "txtSearchText";
+        }
+        errMsg += GetErrorRow("txtSearchText", "Please enter Raw Material.");
     }
-    else {
-        ratio = parseFloat(txtRatio.value.trim());
+
+    if (!txtRatio || (txtRatio.value || "").trim() === "") {
+        if (firstErrorControl === "") {
+            firstErrorControl = "txtRatio";
+        }
+        errMsg += GetErrorRow("txtRatio", "Please enter Consumption Ratio.");
+    } else {
+        ratio = parseFloat((txtRatio.value || "").trim());
 
         if (isNaN(ratio)) {
-            errors.push("Please enter a valid Consumption Ratio.");
-        }
-        else if (ratio <= 0) {
-            errors.push("Consumption Ratio must be greater than 0.");
-        }
-        else {
+            if (firstErrorControl === "") {
+                firstErrorControl = "txtRatio";
+            }
+            errMsg += GetErrorRow("txtRatio", "Please enter a valid Consumption Ratio.");
+        } else if (ratio <= 0) {
+            if (firstErrorControl === "") {
+                firstErrorControl = "txtRatio";
+            }
+            errMsg += GetErrorRow("txtRatio", "Consumption Ratio must be greater than 0.");
+        } else {
             totalRatio = Math.round((totalRatio + ratio) * 100) / 100;
-
             if (totalRatio > 100) {
-                errors.push("Total Consumption Ratio should not be greater than 100%.");
+                if (firstErrorControl === "") {
+                    firstErrorControl = "txtRatio";
+                }
+                errMsg += GetErrorRow("txtRatio", "Total Consumption Ratio should not be greater than 100%.");
             }
         }
     }
 
-    // Unit
-    //if (!txtmeasurement || txtmeasurement.value.trim() === "") {
-    //    errors.push("Please enter Unit of Measurement.");
-    //}
-
-    // Show all errors
-    if (errors.length > 0) {
-
-        if (lblErrorMessage) {
-            lblErrorMessage.style.color = "#dc3545";
-            lblErrorMessage.innerHTML = errors.join("<br>");
-        }
-
-        return false;
+    if (firstErrorControl !== "") {
+        SetControlFocus(firstErrorControl);
+        return rmFailValidation(errMsg);
     }
 
-    // Confirmation
-    return confirm("Are you sure you want to add this record?");
+    return rmConfirmPostback("btnAdd", "add");
 }
 
 function validateFormulationSubmit() {
+    firstErrorControl = "";
+    errMsg = "";
+
     var lblErrorMessage = document.getElementById("lblErrorMessage");
+    var ddlBrand = document.getElementById("ddlBrand");
+    var ddlvendor = document.getElementById("ddlvendor");
+    var hdnProductCode = document.getElementById("hdnProductCode");
     var totalRatio = getVendorRawMatGridRatioTotal();
     var grid = document.getElementById("gvVendorRawMat");
     var ratioLabels = grid ? grid.querySelectorAll("tbody tr.tlrowlight span[id$='lblRatio']") : [];
 
     if (lblErrorMessage) {
         lblErrorMessage.innerHTML = "";
-        lblErrorMessage.style.color = "";
+    }
+
+    if (!ddlBrand || ddlBrand.value === "" || ddlBrand.selectedIndex <= 0) {
+        if (firstErrorControl === "") {
+            firstErrorControl = "ddlBrand";
+        }
+        errMsg += GetErrorRow("ddlBrand", "Please select Brand.");
+    }
+
+    if (!ddlvendor || ddlvendor.value === "" || ddlvendor.selectedIndex <= 0) {
+        if (firstErrorControl === "") {
+            firstErrorControl = "ddlvendor";
+        }
+        errMsg += GetErrorRow("ddlvendor", "Please select Vendor.");
+    }
+
+    if (!hdnProductCode || (hdnProductCode.value || "").trim() === "") {
+        if (firstErrorControl === "") {
+            firstErrorControl = "txtProductSearch";
+        }
+        errMsg += GetErrorRow("txtProductSearch", "Please enter Product.");
     }
 
     if (!ratioLabels || ratioLabels.length === 0) {
-        if (lblErrorMessage) {
-            lblErrorMessage.style.color = "#dc3545";
-            lblErrorMessage.innerHTML = "Please enter at least one record in the grid.";
+        if (firstErrorControl === "") {
+            firstErrorControl = "gvVendorRawMat";
         }
-        return false;
+        errMsg += GetErrorRow("gvVendorRawMat", "Please enter at least one record in the grid.");
     }
 
-    if (totalRatio !== 100) {
-        if (lblErrorMessage) {
-            lblErrorMessage.style.color = "#dc3545";
-            lblErrorMessage.innerHTML = "Total Consumption Ratio should be equal 100%.";
+    if (ratioLabels && ratioLabels.length > 0 && totalRatio !== 100) {
+        if (firstErrorControl === "") {
+            firstErrorControl = "gvVendorRawMat";
         }
-        return false;
+        errMsg += GetErrorRow("gvVendorRawMat", "Total Consumption Ratio should be equal 100%.");
     }
 
-    return confirm("Are you sure you want to submit this record?");
+    if (firstErrorControl !== "") {
+        SetControlFocus(firstErrorControl);
+        return rmFailValidation(errMsg);
+    }
+
+    return rmConfirmPostback("btnSubmit", "submit");
 }

@@ -12,9 +12,7 @@ function validateAdjustment() {
         var quant = new Number(document.getElementById("txtQtyPop").value);
         if (quant.toString() !== "NaN") {
             if (quant <= 0) {
-                alert("Receive Quantity can not be 0 or Negative.");
-                document.getElementById("txtQtyPop").value = "";
-                return false;
+                return rmFailValidation("Receive Quantity can not be 0 or Negative.");
             }
             else if (validatereceivequantitycheck("txtQtyPop", "lblDespopQty") === false) {
                 firstErrorControl = "txtQtyPop";
@@ -25,15 +23,7 @@ function validateAdjustment() {
 
     if (firstErrorControl !== "") {
         SetControlFocus(firstErrorControl);
-        errMsg = "<table>" + errMsg + "</table>";
-        var lblError = document.getElementById("lblError");
-        if (!lblError) {
-            lblError = document.getElementById("ctl00_ContentPlaceHolder1_lblError");
-        }
-        if (lblError) {
-            lblError.innerHTML = errMsg;
-        }
-        return false;
+        return rmFailValidation(errMsg);
     }
 
     var lblErrorClear = document.getElementById("lblError");
@@ -43,7 +33,7 @@ function validateAdjustment() {
     if (lblErrorClear) {
         lblErrorClear.innerHTML = "";
     }
-    return true;
+    return rmConfirmPostback("btnAdd", "add");
 }
 
 function validatereceivequantitycheck(despatchquant, requestquant) {
@@ -56,33 +46,27 @@ function validatereceivequantitycheck(despatchquant, requestquant) {
             document.getElementById(despatchquant).value = val;
             if (val > 0) {
                 if (val > requestQty) {
-                    alert("Receive quantity can not greater than Balance Quantity");
                     document.getElementById(despatchquant).value = "";
-                    return false;
+                    return rmFailValidation("Receive quantity can not greater than Balance Quantity");
                 }
                 return true;
             }
-            alert("Receive Quantity can not be 0 or Negative");
             document.getElementById(despatchquant).value = "";
-            return false;
+            return rmFailValidation("Receive Quantity can not be 0 or Negative");
         }
-        alert("Value entered is not a number. Please enter a numeric value.");
         document.getElementById(despatchquant).value = "";
-        return false;
+        return rmFailValidation("Value entered is not a number. Please enter a numeric value.");
     }
     return true;
 }
 
 function validateReceive() {
-    debugger
-
     firstErrorControl = "";
     errMsg = "";
     var count = 0;
     var objgridview = document.getElementById("gvVendorRawMat");
     if (objgridview == null) {
-        alert("No item found for receipt.");
-        return false;
+        return rmFailValidation("No item found for receipt.");
     }
 
     //for (var i = 1; i < objgridview.rows.length; i++) {
@@ -150,20 +134,12 @@ function validateReceive() {
 
     if (firstErrorControl !== "") {
         SetControlFocus(firstErrorControl);
-        errMsg = "<table>" + errMsg + "</table>";
-        var lblMsg = document.getElementById("lblErrorMessage");
-        if (lblMsg) {
-            lblMsg.innerHTML = errMsg;
-        }
-        return false;
+        return rmFailValidation(errMsg);
     }
 
     var lblMsgClear = document.getElementById("lblErrorMessage");
     if (lblMsgClear) {
         lblMsgClear.innerHTML = "";
     }
-    if (confirm("Are you sure to submit ?")) {
-        return true;
-    }
-    return false;
+    return rmConfirmPostback("btnSubmit", "submit");
 }

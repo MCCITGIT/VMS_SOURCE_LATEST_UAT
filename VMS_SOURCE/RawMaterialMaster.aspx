@@ -3,6 +3,8 @@
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
+    <link href="includes/rm-procurement.css?v=<%= DateTime.Now.Ticks %>" rel="stylesheet" type="text/css" />
+    <div class="rm-module rm-compact rm-rawmat-master">
     <%-- AutoComplete suggestion list styling now lives in includes/upgrad-style.css
          (.vmsAutoComplete / .vmsAutoCompleteItem / .vmsAutoCompleteItemHighlight) --%>
     <script type="text/javascript">
@@ -69,27 +71,22 @@
     </div>
 
     <div class="card">
-        <div class="mst-panel-header">
-            <div class="mst-panel-header-left">
-                <span class="mst-panel-icon"><i class="fas fa-plus"></i></span>
-                <div>
-                    <h5 class="mst-panel-title">Add Raw Material</h5>
-                    <p class="mst-panel-subtitle">Enter a new Raw Material name to add it to the master list</p>
-                </div>
-            </div>
-        </div>
         <div class="card-body">
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group pb-0">
+            <div class="rm-add-stats-row">
+                <div class="rm-add-form">
+                    <div class="form-group pb-0 mb-0">
                         <label class="form-control-label">Search Raw Material:<span id="Span2" class="mandatory">*</span></label>
-                        <div class="input-group product-search-group">
-                            <asp:TextBox ID="txtSearchText" ClientIDMode="Static" class="form-control" runat="server" AutoComplete="Off" onkeyup="clearRawMaterialSelection();" Placeholder="Enter Here"></asp:TextBox>
-                            <div class="input-group-append">
-                                <button type="button" class="btn btn-outline-secondary product-reset-btn" onclick="resetProductField(); return false;" title="Reset SKU"><i class="fas fa-sync-alt fa-xs"></i></button>
+                        <div class="rm-add-form-controls">
+                            <div class="input-group product-search-group" style="flex: 1 1 auto; min-width: 0;">
+                                <asp:TextBox ID="txtSearchText" ClientIDMode="Static" class="form-control" runat="server" AutoComplete="Off" onkeyup="clearRawMaterialSelection();" Placeholder="Enter Here"></asp:TextBox>
+                                <div class="input-group-append">
+                                    <button type="button" class="btn btn-outline-secondary product-reset-btn" onclick="resetProductField(); return false;" title="Reset SKU"><i class="fas fa-sync-alt fa-xs"></i></button>
+                                </div>
                             </div>
+                            <asp:HiddenField ID="txtrawmatid" ClientIDMode="Static" runat="server" />
+                            <asp:Button ID="btnSubmit" ClientIDMode="Static" runat="server" Text="Submit" CssClass="btn btn-primary btn-sm" OnClick="btnSubmit_Click" />
+                            <asp:Button ID="btnReset" runat="server" Text="Reset" CssClass="btn btn-outline-danger btn-sm" OnClick="btnReset_Click" />
                         </div>
-                        <asp:HiddenField ID="txtrawmatid" ClientIDMode="Static" runat="server" />
                         <asp:AutoCompleteExtender ID="aceRawMaterialSearch" runat="server"
                             TargetControlID="txtSearchText"
                             ServiceMethod="RawMaterialSearch"
@@ -104,9 +101,28 @@
                         </asp:AutoCompleteExtender>
                     </div>
                 </div>
-                <div class="col-md-4 form-btn-mt">
-                    <asp:Button ID="btnSubmit" ClientIDMode="Static" runat="server" Text="Submit" CssClass="btn btn-primary btn-sm" OnClick="btnSubmit_Click" />
-                    <asp:Button ID="btnCancel" runat="server" Text="Cancel" CssClass="btn btn-outline-danger btn-sm" OnClick="btnCancel_Click" />
+                <div class="rm-stat-row">
+                    <div class="rm-stat-card">
+                        <div class="rm-stat-icon is-blue"><i class="fas fa-layer-group"></i></div>
+                        <div>
+                            <p class="rm-stat-label">Total</p>
+                            <p class="rm-stat-value"><asp:Label ID="lblTotalCount" runat="server" Text="0"></asp:Label></p>
+                        </div>
+                    </div>
+                    <div class="rm-stat-card">
+                        <div class="rm-stat-icon is-green"><i class="fas fa-check-circle"></i></div>
+                        <div>
+                            <p class="rm-stat-label">Active</p>
+                            <p class="rm-stat-value is-green"><asp:Label ID="lblActiveCount" runat="server" Text="0"></asp:Label></p>
+                        </div>
+                    </div>
+                    <div class="rm-stat-card">
+                        <div class="rm-stat-icon is-red"><i class="fas fa-times-circle"></i></div>
+                        <div>
+                            <p class="rm-stat-label">Inactive</p>
+                            <p class="rm-stat-value is-red"><asp:Label ID="lblInactiveCount" runat="server" Text="0"></asp:Label></p>
+                        </div>
+                    </div>
                 </div>
             </div>
             <asp:UpdatePanel ID="UpdatePanel5" runat="server">
@@ -117,7 +133,7 @@
         </div>
     </div>
 
-    <div class="card">
+    <div class="card rm-list-fill">
         <div class="mst-panel-header">
             <div class="mst-panel-header-left">
                 <span class="mst-panel-icon"><i class="fas fa-list"></i></span>
@@ -128,10 +144,11 @@
             </div>
         </div>
         <div class="card-body">
-            <div class="table-responsive">
+            <div class="table-responsive rm-grid-scroll">
                 <asp:GridView BorderWidth="1" CssClass="table table-hover upgradDataGrid" CellSpacing="0" CellPadding="0"
-                    ID="gvrawMatDetails" runat="server" AutoGenerateColumns="false" AllowPaging="false" Visible="true"
-                    ShowFooter="false" GridLines="both">
+                    ID="gvrawMatDetails" runat="server" AutoGenerateColumns="false" AllowPaging="true" PageSize="10" Visible="true"
+                    ShowFooter="false" GridLines="both" PagerSettings-Mode="NumericFirstLast" PagerSettings-PageButtonCount="5"
+                    PagerSettings-FirstPageText="First" PagerSettings-LastPageText="Last">
                     <RowStyle CssClass="tlrowlight" />
                     <PagerStyle CssClass="PagerGrid" HorizontalAlign="Right" />
                     <HeaderStyle CssClass="headerGrid" />
@@ -139,47 +156,56 @@
                     <Columns>
                         <asp:TemplateField HeaderText="Sl No" HeaderStyle-HorizontalAlign="Center">
                             <ItemTemplate>
-                                <asp:Label ID="lblrawmatdid" runat="server" Text='<%# Container.DataItemIndex + 1 %>'></asp:Label>
+                                <asp:Label ID="lblrawmatdid" runat="server" Text='<%# (gvrawMatDetails.PageIndex * gvrawMatDetails.PageSize) + Container.DataItemIndex + 1 %>'></asp:Label>
                             </ItemTemplate>
-                            <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="10%" />
-                            <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="10%" />
+                            <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="5%" />
+                            <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="5%" />
+                        </asp:TemplateField>
+                        <asp:TemplateField HeaderText="Raw Material Code" HeaderStyle-HorizontalAlign="Center">
+                            <ItemTemplate>
+                                <asp:Label ID="lblrawmatcode" runat="server" Text='<%# Bind("Raw_Mat_Code") %>'></asp:Label>
+                            </ItemTemplate>
+                            <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="20%" />
+                            <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="20%" />
                         </asp:TemplateField>
                         <asp:TemplateField HeaderText="Raw Material Name" HeaderStyle-HorizontalAlign="Center">
                             <ItemTemplate>
                                 <asp:Label ID="lblrawmatname" runat="server" Text='<%# Bind("Raw_Mat_Name") %>'></asp:Label>
                                 <asp:HiddenField ID="hdnrawmatid" runat="server" Value='<%# Bind("Raw_Mat_Code") %>' />
                             </ItemTemplate>
-                            <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="65%" />
-                            <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="65%" />
+                            <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="57%" />
+                            <ItemStyle HorizontalAlign="Left" VerticalAlign="Middle" Width="57%" />
                         </asp:TemplateField>
                         <asp:TemplateField HeaderText="Active" HeaderStyle-HorizontalAlign="Center">
                             <ItemTemplate>
-                                <asp:Label ID="lblactiveText" runat="server" Text='<%# IIf(UCase(Trim(CStr(Eval("active")))) = "Y", "Yes", "No") %>'></asp:Label>
+                                <asp:Label ID="lblactiveText" runat="server" CssClass='<%# IIf(UCase(Trim(CStr(Eval("active")))) = "Y", "rm-status-pill is-active", "rm-status-pill is-inactive") %>' Text='<%# IIf(UCase(Trim(CStr(Eval("active")))) = "Y", "Active", "Inactive") %>'></asp:Label>
                             </ItemTemplate>
                             <EditItemTemplate>
-                                <asp:DropDownList ID="ddlactive" CssClass="form-control form-control-sm" runat="server">
-                                    <asp:ListItem Text="Yes" Value="Y"></asp:ListItem>
-                                    <asp:ListItem Text="No" Value="N"></asp:ListItem>
+                                <asp:DropDownList ID="ddlactive" CssClass="form-control form-control-sm rm-status-ddl" runat="server">
+                                    <asp:ListItem Text="Active" Value="Y"></asp:ListItem>
+                                    <asp:ListItem Text="Inactive" Value="N"></asp:ListItem>
                                 </asp:DropDownList>
                             </EditItemTemplate>
-                            <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="15%" />
-                            <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="15%" />
+                            <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="12%" />
+                            <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="12%" />
                         </asp:TemplateField>
                         <asp:TemplateField HeaderText="Action" HeaderStyle-HorizontalAlign="Center">
                             <ItemTemplate>
                                 <asp:LinkButton ID="btnEdit" CommandName="Edit" runat="server" CssClass="text-info" ToolTip="Edit"><i class="fas fa-edit"></i></asp:LinkButton>
                             </ItemTemplate>
                             <EditItemTemplate>
-                                <asp:LinkButton ID="btnUpdate" CommandName="Update" CssClass="text-success mr-1" runat="server" ToolTip="Update" OnClientClick="return confirm('Are you sure you want to update this record?');"><i class="fas fa-check"></i></asp:LinkButton>
+                                <asp:LinkButton ID="btnUpdate" CommandName="Update" CssClass="text-success mr-1" runat="server" ToolTip="Update" OnClientClick="return rmConfirmStatusUpdate(this);"><i class="fas fa-check"></i></asp:LinkButton>
                                 <asp:LinkButton ID="btncancel" CommandName="Cancel" CssClass="text-danger" runat="server" ToolTip="Cancel"><i class="fas fa-times"></i></asp:LinkButton>
                             </EditItemTemplate>
-                            <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="10%" />
-                            <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="10%" />
+                            <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="6%" />
+                            <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="6%" />
                         </asp:TemplateField>
                     </Columns>
                 </asp:GridView>
             </div>
         </div>
     </div>
+    </div>
+    <script type="text/javascript" src="Scripts/rm-status-confirm.js?v=<%= DateTime.Now.Ticks %>"></script>
 </asp:Content>
 

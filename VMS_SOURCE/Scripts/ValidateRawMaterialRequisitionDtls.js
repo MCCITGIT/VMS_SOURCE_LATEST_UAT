@@ -144,17 +144,11 @@ function validateRawMaterialRequisitionSubmit() {
 
     if (firstErrorControl !== "") {
         SetControlFocus(firstErrorControl);
-        errMsg = "<table>" + errMsg + "</table>";
-        document.getElementById("lblErrorMessage").innerHTML = errMsg;
-        return false;
+        return rmFailValidation(errMsg);
     }
 
     document.getElementById("lblErrorMessage").innerHTML = "";
-    if (confirm("Are you sure to submit?")) {
-        return true;
-    }
-
-    return false;
+    return rmConfirmPostback("btnSubmit", "submit");
 }
 
 function validateRawMaterialRequisitionApprove() {
@@ -185,30 +179,17 @@ function validateRawMaterialRequisitionApprove() {
 
         if (!hasSelected) {
             firstErrorControl = "gvRequisition";
-            if (typeof GetErrorRow === "function") {
-                errMsg += GetErrorRow("gvRequisition", "Please select at least one pending requisition to approve.");
-                errMsg = "<table>" + errMsg + "</table>";
-            } else {
-                errMsg = "Please select at least one pending requisition to approve.";
-            }
-            if (typeof SetControlFocus === "function") {
-                SetControlFocus(firstErrorControl);
-            }
-            if (lblError) {
-                lblError.innerHTML = errMsg;
-            } else {
-                alert("Please select at least one pending requisition to approve.");
-            }
-            return false;
+            return rmFailValidation("Please select at least one pending requisition to approve.");
         }
 
         if (lblError) {
             lblError.innerHTML = "";
         }
 
-        return confirm("Are you sure you want to approve the selected requisition(s)?");
+        var approveBtn = document.getElementById("btnApprove");
+        return rmConfirmAction(approveBtn, "approve");
     } catch (ex) {
-        // Do not block server click if client validation script fails.
-        return confirm("Are you sure you want to approve the selected requisition(s)?");
+        var approveBtnCatch = document.getElementById("btnApprove");
+        return rmConfirmAction(approveBtnCatch, "approve");
     }
 }

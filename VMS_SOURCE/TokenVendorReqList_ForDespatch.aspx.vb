@@ -245,8 +245,11 @@ Partial Class TokenVendorReqList_ForDespatch
 
     End Sub
 
-    Protected Sub imgbtnSearch_Click(sender As Object, e As ImageClickEventArgs) Handles imgbtnSearch.Click
+    'Protected Sub imgbtnSearch_Click(sender As Object, e As ImageClickEventArgs) Handles imgbtnSearch.Click
+    '    BindGrid()
+    'End Sub
+
+    Protected Sub imgbtnSearch_Click(sender As Object, e As EventArgs) Handles imgbtnSearch.Click
         BindGrid()
     End Sub
-
 End Class

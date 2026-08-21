@@ -22,6 +22,7 @@ Partial Class RawMaterialRequisitionList
         If Not IsPostBack Then
             BindDropDown()
             BindData()
+            ShowPendingActionResult()
         End If
     End Sub
     Private Sub BindDropDown()
@@ -32,6 +33,7 @@ Partial Class RawMaterialRequisitionList
 
     Protected Sub imgbtnSearch_Click(sender As Object, e As EventArgs)
         lblErrorMessage.Text = ""
+        gvRequisition.PageIndex = 0
         BindData()
     End Sub
 
@@ -42,6 +44,7 @@ Partial Class RawMaterialRequisitionList
         ddlvendor.SelectedIndex = 0
         ddlRawMatvendor.SelectedIndex = 0
         ddlApprovalstatus.SelectedIndex = 0
+        gvRequisition.PageIndex = 0
         BindData()
     End Sub
 
@@ -130,8 +133,8 @@ Partial Class RawMaterialRequisitionList
             Next
 
             If dtApprove.Rows.Count = 0 Then
-                lblErrorMessage.ForeColor = Drawing.Color.Red
-                lblErrorMessage.Text = "Please select at least one pending requisition to approve."
+                lblErrorMessage.Text = ""
+                RmActionPopup.ShowError(Me, "Please select at least one pending requisition to approve.")
                 Return
             End If
 
@@ -154,22 +157,22 @@ Partial Class RawMaterialRequisitionList
                     End If
                 Next
 
-                lblErrorMessage.ForeColor = Drawing.Color.Green
-                lblErrorMessage.Text = approvedCount.ToString() & " requisition(s) approved successfully."
+                Dim successMessage As String = approvedCount.ToString() & " requisition(s) approved successfully."
                 If mailSentCount > 0 OrElse mailFailedCount > 0 OrElse mailMissingCount > 0 Then
-                    'lblErrorMessage.Text &= " Link has been sent to the concern vendor for despatch : " & mailSentCount.ToString() & "."
-                    lblErrorMessage.Text &= " Link has been sent to the concern vendor for despatch ."
+                    successMessage &= " Link has been sent to the concern vendor for despatch."
                     If mailMissingCount > 0 Then
-                        lblErrorMessage.Text &= " Mail ID not found: " & mailMissingCount.ToString() & "."
+                        successMessage &= " Mail ID not found: " & mailMissingCount.ToString() & "."
                     End If
                     If mailFailedCount > 0 Then
-                        lblErrorMessage.Text &= " Mail failed: " & mailFailedCount.ToString() & "."
+                        successMessage &= " Mail failed: " & mailFailedCount.ToString() & "."
                     End If
                 End If
+                lblErrorMessage.Text = ""
+                RmActionPopup.ShowSuccess(Me, successMessage)
                 BindData()
             Else
-                lblErrorMessage.ForeColor = Drawing.Color.Red
-                lblErrorMessage.Text = "Unable to approve the selected requisition(s)."
+                lblErrorMessage.Text = ""
+                RmActionPopup.ShowError(Me, "Unable to approve the selected requisition(s).")
             End If
         Catch ex As Exception
             Dim returnUrl As String = "~/ExceptionPage.aspx"
@@ -284,21 +287,40 @@ Partial Class RawMaterialRequisitionList
                 btnApprove.Visible = True
             End If
             Dim ds As DataSet = obj.GetRawMaterialRequestList(ddlvendor.SelectedValue, ddlRawMatvendor.SelectedValue, ddlApprovalstatus.SelectedValue)
-
-            If (Not (ds Is Nothing) AndAlso ds.Tables.Count > 0) Then
-                If (Not (ds.Tables(0) Is Nothing) AndAlso ds.Tables(0).Rows.Count > 0) Then
-                    gvRequisition.DataSource = ds.Tables(0)
-                    gvRequisition.DataBind()
-                Else
-                    gvRequisition.DataSource = Nothing
-                    gvRequisition.DataBind()
-                End If
-            End If
+            Dim table As DataTable = RmGridHelper.GetTable(ds)
+            RmGridHelper.BindPaged(gvRequisition, table)
+            UpdateSummary(table)
         Catch ex As Exception
             Dim returnUrl As String = "~/ExceptionPage.aspx"
             Session(Constant.SessionKeys.ErrMessage) = ex.ToString()
             Response.Redirect(returnUrl)
         End Try
+    End Sub
+
+    Private Sub UpdateSummary(ByVal sourceTable As DataTable)
+        Dim totalCount As Integer = 0
+        Dim pendingCount As Integer = 0
+        Dim approvedCount As Integer = 0
+
+        If sourceTable IsNot Nothing Then
+            totalCount = sourceTable.Rows.Count
+            For Each row As DataRow In sourceTable.Rows
+                If RmGridHelper.IsYes(row("approval_status")) Then
+                    approvedCount += 1
+                Else
+                    pendingCount += 1
+                End If
+            Next
+        End If
+
+        lblTotalCount.Text = totalCount.ToString()
+        lblPendingCount.Text = pendingCount.ToString()
+        lblApprovedCount.Text = approvedCount.ToString()
+    End Sub
+
+    Protected Sub gvRequisition_PageIndexChanging(sender As Object, e As GridViewPageEventArgs) Handles gvRequisition.PageIndexChanging
+        gvRequisition.PageIndex = e.NewPageIndex
+        BindData()
     End Sub
 
     Private Sub PopulateRawMatVendor()
@@ -341,4 +363,13 @@ Partial Class RawMaterialRequisitionList
         End If
     End Sub
 #End Region
+
+    Private Sub ShowPendingActionResult()
+        Dim saveMessage As String = Convert.ToString(Session("RmActionResultMsg"))
+        If Not String.IsNullOrWhiteSpace(saveMessage) Then
+            lblErrorMessage.Text = ""
+            RmActionPopup.ShowSuccess(Me, saveMessage)
+            Session.Remove("RmActionResultMsg")
+        End If
+    End Sub
 End Class

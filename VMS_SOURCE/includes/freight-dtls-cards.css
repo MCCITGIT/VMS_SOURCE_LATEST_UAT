@@ -1,0 +1,553 @@
+/* Freight Details List — itinerary card layout (visual only)
+   Scoped to .fd-page so master/grid styles are not affected elsewhere. */
+
+.fd-page {
+    --fd-bg: #f3f6fb;
+    --fd-surface: #ffffff;
+    --fd-ink: #10243a;
+    --fd-muted: #5b6b7c;
+    --fd-line: #e3ebf3;
+    --fd-shadow: 0 1px 2px rgba(16, 56, 90, 0.05), 0 8px 18px rgba(16, 56, 90, 0.06);
+    --fd-shadow-hover: 0 8px 20px rgba(16, 56, 90, 0.12);
+    --fd-radius: 14px;
+    --fd-primary: #1b5a8c;
+    --fd-primary-deep: #10385a;
+    --fd-accent: #0f8a7a;
+    --fd-rate: #0b6e62;
+    font-size: 12.5px;
+    color: var(--fd-ink);
+}
+
+.fd-page .fd-panel,
+.fd-page .card.fd-panel {
+    background: var(--fd-surface);
+    border: 1px solid var(--fd-line);
+    border-radius: var(--fd-radius);
+    box-shadow: var(--fd-shadow);
+    margin-bottom: 10px;
+    overflow: visible;
+}
+
+.fd-page .fd-panel-body,
+.fd-page .card.fd-panel > .card-body.fd-panel-body {
+    padding: 12px 14px;
+}
+
+.fd-page .fd-panel-body .errormsg {
+    display: block;
+    margin: 0 0 8px;
+}
+
+.fd-page .fd-panel-body .errormsg:empty {
+    display: none;
+    margin: 0;
+}
+
+/* ---- Filter toolbar ---- */
+.fd-page .fd-filter-grid {
+    display: grid;
+    grid-template-columns: minmax(180px, 1.2fr) minmax(160px, 1fr) auto minmax(200px, 1.1fr) auto;
+    gap: 10px 12px;
+    align-items: end;
+}
+
+.fd-page .fd-field .form-group,
+.fd-page .fd-actions .form-group {
+    margin-bottom: 0;
+}
+
+.fd-page .fd-field .form-control-label {
+    color: var(--fd-muted);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+}
+
+.fd-page .fd-field .form-control,
+.fd-page .fd-field .select2-container .select2-selection--single {
+    height: 36px;
+    min-height: 36px;
+    border-radius: 10px;
+    border-color: #d3deea;
+}
+
+.fd-page .fd-field .select2-container {
+    width: 100% !important;
+}
+
+.fd-page .fd-field .select2-container--default .select2-selection--single {
+    border-radius: 10px;
+    border-color: #d3deea;
+}
+
+.fd-page .fd-field .select2-container--default .select2-selection--single .select2-selection__rendered {
+    line-height: 34px;
+    padding-left: 10px;
+}
+
+.fd-page .fd-field .select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 34px;
+}
+
+.fd-page .fd-field input[type="file"].form-control {
+    height: auto;
+    min-height: 36px;
+    padding: 5px 8px;
+    font-size: 12px;
+    line-height: 1.3;
+    background: #f8fbfd;
+}
+
+.fd-page .fd-actions .form-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+}
+
+.fd-page .fd-actions .btn,
+.fd-page .fd-submit-bar .btn {
+    min-height: 36px;
+    min-width: 44px;
+    padding: 6px 14px !important;
+    border-radius: 10px !important;
+    font-size: 12.5px;
+    font-weight: 650;
+    letter-spacing: 0.2px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 3px 8px rgba(16, 56, 90, 0.12);
+    transition: transform 0.12s ease, box-shadow 0.18s ease, filter 0.18s ease;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.fd-page .fd-actions .btn-primary {
+    background: linear-gradient(180deg, #2270ad 0%, #1b5a8c 100%) !important;
+    border: 0 !important;
+}
+
+.fd-page .fd-actions .btn-success,
+.fd-page .fd-submit-bar .btn-success {
+    background: linear-gradient(180deg, #17a089 0%, #0f8a7a 100%) !important;
+    border: 0 !important;
+}
+
+.fd-page .fd-actions .btn-info {
+    background: linear-gradient(180deg, #3a8fd4 0%, #2b73b0 100%) !important;
+    border: 0 !important;
+    color: #fff !important;
+}
+
+.fd-page .fd-actions .btn:hover,
+.fd-page .fd-actions .btn:focus,
+.fd-page .fd-submit-bar .btn:hover,
+.fd-page .fd-submit-bar .btn:focus {
+    filter: brightness(1.05);
+    box-shadow: 0 6px 14px rgba(16, 56, 90, 0.18);
+    text-decoration: none;
+}
+
+.fd-page .fd-actions .btn:active,
+.fd-page .fd-submit-bar .btn:active {
+    transform: scale(0.97);
+}
+
+.fd-page .fd-actions .btn:focus-visible,
+.fd-page .fd-submit-bar .btn:focus-visible,
+.fd-page .fd-rate .form-control:focus-visible {
+    outline: 2px solid var(--fd-primary);
+    outline-offset: 2px;
+}
+
+/* ---- GridView → itinerary card grid ---- */
+.fd-page .fd-card-list {
+    overflow-y: auto;
+    max-height: calc(100vh - 290px);
+    padding: 2px 2px 6px;
+    -webkit-overflow-scrolling: touch;
+}
+
+.fd-page table.gv-cards {
+    display: block;
+    width: 100% !important;
+    max-width: 100%;
+    border: 0 !important;
+    border-collapse: separate !important;
+    border-spacing: 0;
+    background: transparent !important;
+    margin: 0;
+}
+
+.fd-page table.gv-cards > tbody {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 292px), 1fr));
+    gap: 10px;
+    width: 100%;
+}
+
+.fd-page table.gv-cards > tbody > tr.headerGrid,
+.fd-page table.gv-cards > thead {
+    display: none !important;
+}
+
+.fd-page table.gv-cards > tbody > tr.tlrowlight {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    background: transparent !important;
+    height: 100%;
+}
+
+.fd-page table.gv-cards > tbody > tr.tlrowlight:hover {
+    background: transparent !important;
+}
+
+.fd-page table.gv-cards > tbody > tr.tlrowlight > td {
+    display: block;
+    width: 100% !important;
+    max-width: 100%;
+    height: 100%;
+    padding: 0 !important;
+    border: 0 !important;
+    background: transparent !important;
+    vertical-align: top;
+}
+
+.fd-page table.gv-cards > tbody > tr:has(> td[colspan]) {
+    grid-column: 1 / -1;
+}
+
+.fd-page table.gv-cards > tbody > tr td[colspan] {
+    text-align: center;
+    padding: 22px 14px !important;
+    color: var(--fd-muted);
+    background: #f8fafc !important;
+    border: 1px dashed #d5e0ea !important;
+    border-radius: 12px;
+    font-weight: 600;
+}
+
+/* ---- Route ticket card (portrait itinerary, not a table row) ---- */
+.fd-card {
+    height: 100%;
+    display: grid;
+    grid-template-columns: 54px 1fr;
+    grid-template-rows: 1fr auto;
+    background: var(--fd-surface);
+    border: 1px solid var(--fd-line);
+    border-radius: 14px;
+    box-shadow: var(--fd-shadow);
+    overflow: hidden;
+    position: relative;
+    transition: transform 0.16s ease, box-shadow 0.16s ease, border-color 0.16s ease;
+}
+
+.fd-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--fd-shadow-hover);
+    border-color: #c9d8e8;
+}
+
+.fd-card:focus-within {
+    border-color: #9ec3e0;
+    box-shadow: 0 0 0 3px rgba(27, 90, 140, 0.12), var(--fd-shadow-hover);
+}
+
+.fd-card-srl {
+    grid-column: 1;
+    grid-row: 1 / -1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 10px 6px;
+    background: linear-gradient(180deg, #1b5a8c 0%, #0f8a7a 100%);
+    color: #fff;
+    text-align: center;
+}
+
+.fd-srl-label {
+    font-size: 8px;
+    font-weight: 750;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    opacity: 0.82;
+    line-height: 1.1;
+}
+
+.fd-srl-value {
+    font-size: 16px;
+    font-weight: 800;
+    letter-spacing: 0.2px;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+}
+
+.fd-srl-value span {
+    color: inherit;
+    font: inherit;
+}
+
+.fd-card-main {
+    grid-column: 2;
+    grid-row: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    padding: 10px 12px 6px;
+    background: linear-gradient(180deg, #f7fafc 0%, #ffffff 55%);
+}
+
+.fd-route {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    min-width: 0;
+}
+
+.fd-stop {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    min-width: 0;
+}
+
+.fd-stop-icon {
+    flex: 0 0 auto;
+    width: 26px;
+    height: 26px;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #e8f1f8;
+    color: var(--fd-primary);
+    font-size: 11px;
+    margin-top: 1px;
+}
+
+.fd-stop-icon.is-depot {
+    background: #e7f6f3;
+    color: var(--fd-accent);
+}
+
+.fd-stop-copy {
+    min-width: 0;
+    flex: 1 1 auto;
+}
+
+.fd-kicker {
+    display: block;
+    font-size: 9px;
+    font-weight: 750;
+    letter-spacing: 0.45px;
+    text-transform: uppercase;
+    color: #8a9aab;
+    line-height: 1.2;
+    margin-bottom: 1px;
+}
+
+.fd-stop-name {
+    display: block;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--fd-primary-deep);
+    line-height: 1.25;
+    word-break: break-word;
+}
+
+.fd-stop-name span {
+    color: inherit;
+    font: inherit;
+}
+
+.fd-route-connector {
+    width: 2px;
+    height: 12px;
+    margin: 3px 0 3px 12px;
+    border-radius: 2px;
+    background: repeating-linear-gradient(
+        180deg,
+        #b7c9d8 0 3px,
+        transparent 3px 6px
+    );
+}
+
+.fd-rate {
+    grid-column: 2;
+    grid-row: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 8px 12px 10px;
+    background: linear-gradient(180deg, #f3fbf8 0%, #eef8f5 100%);
+    border-top: 1px solid #dceee8;
+}
+
+.fd-rate > .fd-kicker {
+    color: #3d7a72;
+}
+
+.fd-rate .form-control {
+    height: 36px;
+    min-height: 36px;
+    border-radius: 10px;
+    border-color: #c5ddd7;
+    background: #fff;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--fd-rate);
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    padding: 4px 10px;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.fd-rate .form-control:hover {
+    border-color: #9ec9bf;
+}
+
+.fd-rate .form-control:focus {
+    border-color: var(--fd-accent);
+    box-shadow: 0 0 0 3px rgba(15, 138, 122, 0.16);
+    outline: none;
+}
+
+.fd-rate-value {
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-end;
+    min-height: 36px;
+    padding: 4px 12px;
+    border-radius: 10px;
+    background: #fff;
+    border: 1px solid #c5ddd7;
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--fd-rate);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.2px;
+}
+
+.fd-rate-value span {
+    color: inherit;
+    font: inherit;
+}
+
+/* Preview cards have no serial column */
+.fd-card.is-preview {
+    grid-template-columns: 1fr;
+}
+
+.fd-card.is-preview .fd-card-main,
+.fd-card.is-preview .fd-rate {
+    grid-column: 1;
+}
+
+.fd-card.is-preview::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: linear-gradient(180deg, var(--fd-primary) 0%, var(--fd-accent) 100%);
+}
+
+.fd-card.is-preview .fd-card-main {
+    padding-left: 16px;
+}
+
+.fd-card.is-preview .fd-rate {
+    padding-left: 16px;
+}
+
+.fd-submit-bar {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 12px;
+    padding-top: 10px;
+    border-top: 1px solid var(--fd-line);
+}
+
+.fd-submit-bar .btn {
+    min-width: 120px;
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 1199px) {
+    .fd-page .fd-filter-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .fd-page .fd-actions,
+    .fd-page .fd-upload-btn {
+        justify-self: start;
+    }
+}
+
+@media (max-width: 767px) {
+    .fd-page .fd-panel-body,
+    .fd-page .card.fd-panel > .card-body.fd-panel-body {
+        padding: 10px;
+    }
+
+    .fd-page .fd-filter-grid {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+
+    .fd-page .fd-actions .form-group,
+    .fd-page .fd-upload-btn .form-group {
+        width: 100%;
+    }
+
+    .fd-page .fd-actions .btn,
+    .fd-page .fd-upload-btn .btn {
+        flex: 1 1 auto;
+        min-height: 40px;
+    }
+
+    .fd-page table.gv-cards > tbody {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+
+    .fd-page .fd-card-list {
+        max-height: none;
+        overflow: visible;
+    }
+
+    .fd-card {
+        grid-template-columns: 46px 1fr;
+        border-radius: 12px;
+    }
+
+    .fd-stop-name {
+        font-size: 13.5px;
+    }
+
+    .fd-rate .form-control,
+    .fd-rate-value {
+        min-height: 40px;
+        height: 40px;
+        font-size: 16px;
+    }
+
+    .fd-submit-bar .btn {
+        flex: 1 1 140px;
+        min-height: 42px;
+    }
+}
+
+@media (hover: none) {
+    .fd-card:hover {
+        transform: none;
+    }
+}

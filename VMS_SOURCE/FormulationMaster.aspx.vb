@@ -136,20 +136,20 @@ Partial Class FormulationMaster
 
         Try
             If String.IsNullOrWhiteSpace(ddlBrand.SelectedValue) Then
-                lblErrorMessage.ForeColor = System.Drawing.Color.Red
-                lblErrorMessage.Text = "Please Select Brand."
+                lblErrorMessage.Text = ""
+                RmActionPopup.ShowError(Me, "Please Select Brand.")
                 Exit Sub
             End If
 
             If String.IsNullOrWhiteSpace(hdnProductCode.Value) Then
-                lblErrorMessage.ForeColor = System.Drawing.Color.Red
-                lblErrorMessage.Text = "Please Select Product."
+                lblErrorMessage.Text = ""
+                RmActionPopup.ShowError(Me, "Please Select Product.")
                 Exit Sub
             End If
 
             If String.IsNullOrWhiteSpace(ddlRawMat.SelectedValue) Then
-                lblErrorMessage.ForeColor = System.Drawing.Color.Red
-                lblErrorMessage.Text = "Please Select Raw Material."
+                lblErrorMessage.Text = ""
+                RmActionPopup.ShowError(Me, "Please Select Raw Material.")
                 Exit Sub
             End If
 
@@ -178,21 +178,21 @@ Partial Class FormulationMaster
                 End If
 
                 If String.IsNullOrWhiteSpace(ratioText) Then
-                    lblErrorMessage.ForeColor = System.Drawing.Color.Red
-                    lblErrorMessage.Text = "Please enter Consumption Ratio for all entered records."
+                    lblErrorMessage.Text = ""
+                    RmActionPopup.ShowError(Me, "Please enter Consumption Ratio for all entered records.")
                     Exit Sub
                 End If
 
                 If String.IsNullOrWhiteSpace(measurement) Then
-                    lblErrorMessage.ForeColor = System.Drawing.Color.Red
-                    lblErrorMessage.Text = "Please enter Unit of Measurement for all entered records."
+                    lblErrorMessage.Text = ""
+                    RmActionPopup.ShowError(Me, "Please enter Unit of Measurement for all entered records.")
                     Exit Sub
                 End If
 
                 Dim ratioValue As Integer = 0
                 If Not Integer.TryParse(ratioText, ratioValue) Then
-                    lblErrorMessage.ForeColor = System.Drawing.Color.Red
-                    lblErrorMessage.Text = "Please enter valid integer Consumption Ratio."
+                    lblErrorMessage.Text = ""
+                    RmActionPopup.ShowError(Me, "Please enter valid integer Consumption Ratio.")
                     Exit Sub
                 End If
 
@@ -206,22 +206,22 @@ Partial Class FormulationMaster
             Next
 
             If dtFormulation.Rows.Count = 0 Then
-                lblErrorMessage.ForeColor = System.Drawing.Color.Red
-                lblErrorMessage.Text = "Please enter at least one record in the grid."
+                lblErrorMessage.Text = ""
+                RmActionPopup.ShowError(Me, "Please enter at least one record in the grid.")
                 Exit Sub
             End If
 
             If totalRatio > 100 Then
-                lblErrorMessage.ForeColor = System.Drawing.Color.Red
-                lblErrorMessage.Text = "Total Consumption Ratio should be within 100%."
+                lblErrorMessage.Text = ""
+                RmActionPopup.ShowError(Me, "Total Consumption Ratio should be within 100%.")
                 Exit Sub
             End If
 
             rowsAffected = obj.InsertFormulation(Val(hdnId.Value), ddlBrand.SelectedValue, ddlRawMat.SelectedValue, hdnProductCode.Value.Trim(), userInfo.userIDEntity, dtFormulation)
 
             If rowsAffected > 0 Then
-                lblErrorMessage.ForeColor = System.Drawing.Color.Green
-                lblErrorMessage.Text = "Submitted Successfully."
+                lblErrorMessage.Text = ""
+                RmActionPopup.ShowSuccess(Me, "Submitted Successfully.")
                 ddlBrand.SelectedIndex = 0
                 ddlRawMat.SelectedIndex = 0
                 txtProductSearch.Text = String.Empty
@@ -229,8 +229,8 @@ Partial Class FormulationMaster
                 gdShadedtls.DataSource = Nothing
                 gdShadedtls.DataBind()
             Else
-                lblErrorMessage.ForeColor = System.Drawing.Color.Red
-                lblErrorMessage.Text = "Something went wrong. Try again."
+                lblErrorMessage.Text = ""
+                RmActionPopup.ShowError(Me, "Something went wrong. Try again.")
             End If
         Catch ex As Exception
             Dim returnUrl As String = "~/ExceptionPage.aspx"

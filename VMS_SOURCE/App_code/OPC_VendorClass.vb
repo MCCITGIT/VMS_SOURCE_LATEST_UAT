@@ -80,6 +80,11 @@ Public Class OPC_VendorClass
         DS = DBFactory.GetHelper().ExecuteDataSet("[dbo].[opc_get_brand_master_list]", Data.CommandType.StoredProcedure)
         Return DS
     End Function
+    Function BindBrandMasterList() As DataSet
+        Dim DS As System.Data.DataSet
+        DS = DBFactory.GetHelper().ExecuteDataSet("[dbo].[opc_bind_brand_list]", Data.CommandType.StoredProcedure)
+        Return DS
+    End Function
 #End Region
 
 #Region "Raw Material Master"
@@ -430,9 +435,9 @@ Public Class OPC_VendorClass
         Return numRowsAffected
 
     End Function
-    Function GetFormulationDataList(ByVal brandcode As String, ByVal rawmatcode As String, ByVal productcode As String) As DataSet
+    Function GetFormulationDataList(ByVal brandcode As String, ByVal rawmatcode As String, ByVal productcode As String, ByVal vendorcode As String) As DataSet
         Dim DS As System.Data.DataSet
-        Dim sqlParams(2) As SqlParameter
+        Dim sqlParams(3) As SqlParameter
 
         sqlParams(0) = New SqlParameter()
         sqlParams(0).ParameterName = "@brand_code"
@@ -451,6 +456,12 @@ Public Class OPC_VendorClass
         sqlParams(2).DbType = DbType.String
         sqlParams(2).Direction = Data.ParameterDirection.Input
         sqlParams(2).Value = If(Not String.IsNullOrWhiteSpace(productcode), CObj(productcode.Trim()), DBNull.Value)
+
+        sqlParams(3) = New SqlParameter()
+        sqlParams(3).ParameterName = "@vendor_code"
+        sqlParams(3).DbType = DbType.String
+        sqlParams(3).Direction = Data.ParameterDirection.Input
+        sqlParams(3).Value = If(Not String.IsNullOrWhiteSpace(vendorcode), CObj(vendorcode.Trim()), DBNull.Value)
 
         DS = DBFactory.GetHelper().ExecuteDataSet("[dbo].[getformulation_datalist]", Data.CommandType.StoredProcedure, sqlParams)
         Return DS
@@ -482,7 +493,7 @@ Public Class OPC_VendorClass
         Return DS
     End Function
 
-    Public Function Insert_Formulation(ByVal headerid As Integer, ByVal brandCode As String, ByVal productCode As String, ByVal tbl As DataTable, ByVal user_id As String) As Integer
+    Public Function Insert_Formulation(ByVal headerid As Integer, ByVal brandCode As String, ByVal UnitCode As String, ByVal productCode As String, ByVal tbl As DataTable, ByVal user_id As String) As Integer
 
         Dim sqlConn As SqlConnection = Nothing
         Dim sqlTrans As SqlTransaction = Nothing
@@ -490,7 +501,7 @@ Public Class OPC_VendorClass
 
         sqlConn = DBFactory.GetHelper.OpenConnection
         sqlTrans = sqlConn.BeginTransaction
-        Dim sqlParams(4) As SqlParameter
+        Dim sqlParams(5) As SqlParameter
 
         Try
             sqlParams(0) = New SqlParameter()
@@ -506,23 +517,29 @@ Public Class OPC_VendorClass
             sqlParams(1).Value = brandCode
 
             sqlParams(2) = New SqlParameter()
-            sqlParams(2).ParameterName = "@opc_product_code"
+            sqlParams(2).ParameterName = "@unit_code"
             sqlParams(2).SqlDbType = SqlDbType.VarChar
             sqlParams(2).Direction = ParameterDirection.Input
-            sqlParams(2).Value = productCode
+            sqlParams(2).Value = UnitCode
 
             sqlParams(3) = New SqlParameter()
-            sqlParams(3).ParameterName = "@FormulationDetails"
-            sqlParams(3).SqlDbType = SqlDbType.Structured
-            sqlParams(3).TypeName = "dbo.tbl_opc_formula_dtls"
+            sqlParams(3).ParameterName = "@opc_product_code"
+            sqlParams(3).SqlDbType = SqlDbType.VarChar
             sqlParams(3).Direction = ParameterDirection.Input
-            sqlParams(3).Value = tbl
+            sqlParams(3).Value = productCode
 
             sqlParams(4) = New SqlParameter()
-            sqlParams(4).ParameterName = "@created_user"
-            sqlParams(4).SqlDbType = SqlDbType.VarChar
+            sqlParams(4).ParameterName = "@FormulationDetails"
+            sqlParams(4).SqlDbType = SqlDbType.Structured
+            sqlParams(4).TypeName = "dbo.tbl_opc_formula_dtls"
             sqlParams(4).Direction = ParameterDirection.Input
-            sqlParams(4).Value = user_id
+            sqlParams(4).Value = tbl
+
+            sqlParams(5) = New SqlParameter()
+            sqlParams(5).ParameterName = "@created_user"
+            sqlParams(5).SqlDbType = SqlDbType.VarChar
+            sqlParams(5).Direction = ParameterDirection.Input
+            sqlParams(5).Value = user_id
 
             Dim sqlCmd As New SqlCommand()
             sqlCmd.Connection = sqlConn
@@ -858,7 +875,6 @@ Public Class OPC_VendorClass
         DS = DBFactory.GetHelper().ExecuteDataSet("[dbo].[getrawmaterial_requisition_editdata]", Data.CommandType.StoredProcedure, sqlParams)
         Return DS
     End Function
-
     Function ApproveRawMaterialRequest(ByVal userId As String, ByVal dtApprove As DataTable) As Integer
         Dim sqlConn As SqlConnection = Nothing
         Dim outputCode As Integer = 0
@@ -909,6 +925,21 @@ Public Class OPC_VendorClass
         End Try
 
         Return outputCode
+    End Function
+    Public Function GetUnitName(ByVal active As String) As DataSet
+        Dim PrjectList As DataSet
+
+        Dim sqlParams(0) As SqlParameter
+
+        sqlParams(0) = New SqlParameter()
+        sqlParams(0).ParameterName = "@active"
+        sqlParams(0).DbType = DbType.String
+        sqlParams(0).Direction = Data.ParameterDirection.Input
+        sqlParams(0).Value = active
+
+        PrjectList = DBFactory.GetHelper().ExecuteDataSet("[dbo].[GetUnitList]", Data.CommandType.StoredProcedure, sqlParams)
+        Return PrjectList
+
     End Function
 #End Region
 #Region "Receipt Raw Material"
@@ -1023,6 +1054,123 @@ Public Class OPC_VendorClass
         End Try
 
         Return receiveId
+    End Function
+#End Region
+
+#Region "formulation matrix"
+    Function GetFormulationMatrixList(ByVal productcode As String, ByVal rawmatcode As String, ByVal brandcode As String, ByVal vendorcode As String) As DataSet
+        Dim DS As System.Data.DataSet
+        Dim sqlParams(3) As SqlParameter
+
+        sqlParams(0) = New SqlParameter()
+        sqlParams(0).ParameterName = "@product_code"
+        sqlParams(0).DbType = DbType.String
+        sqlParams(0).Direction = Data.ParameterDirection.Input
+        sqlParams(0).Value = If(Not String.IsNullOrWhiteSpace(productcode), CObj(productcode.Trim()), DBNull.Value)
+
+        sqlParams(1) = New SqlParameter()
+        sqlParams(1).ParameterName = "@rawmat_code"
+        sqlParams(1).DbType = DbType.Int32
+        sqlParams(1).Direction = Data.ParameterDirection.Input
+        sqlParams(1).Value = If(Not String.IsNullOrWhiteSpace(rawmatcode), CObj(rawmatcode.Trim()), DBNull.Value)
+
+        sqlParams(2) = New SqlParameter()
+        sqlParams(2).ParameterName = "@vendor_code"
+        sqlParams(2).DbType = DbType.String
+        sqlParams(2).Direction = Data.ParameterDirection.Input
+        sqlParams(2).Value = If(Not String.IsNullOrWhiteSpace(vendorcode), CObj(vendorcode.Trim()), DBNull.Value)
+
+        sqlParams(3) = New SqlParameter()
+        sqlParams(3).ParameterName = "@brand_code"
+        sqlParams(3).DbType = DbType.String
+        sqlParams(3).Direction = Data.ParameterDirection.Input
+        sqlParams(3).Value = If(Not String.IsNullOrWhiteSpace(brandcode), CObj(brandcode.Trim()), DBNull.Value)
+
+        DS = DBFactory.GetHelper().ExecuteDataSet("[dbo].[getformulation_matrix_list]", Data.CommandType.StoredProcedure, sqlParams)
+        Return DS
+    End Function
+
+    Function InsertFormulationMatrix(ByVal userId As String, ByVal tbl As DataTable) As Integer
+        Dim sqlConn As SqlConnection = Nothing
+        Dim outputCode As Integer = 0
+        Dim sqlParams(2) As SqlParameter
+
+        Try
+            If tbl Is Nothing OrElse tbl.Rows.Count = 0 Then
+                Return 0
+            End If
+
+            sqlConn = DBFactory.GetHelper.OpenConnection()
+
+            sqlParams(0) = New SqlParameter()
+            sqlParams(0).ParameterName = "@tbl"
+            sqlParams(0).SqlDbType = SqlDbType.Structured
+            sqlParams(0).TypeName = "dbo.tbl_opc_formulation_matrix"
+            sqlParams(0).Direction = ParameterDirection.Input
+            sqlParams(0).Value = tbl
+
+            sqlParams(1) = New SqlParameter()
+            sqlParams(1).ParameterName = "@userid"
+            sqlParams(1).SqlDbType = SqlDbType.VarChar
+            sqlParams(1).Size = 50
+            sqlParams(1).Direction = ParameterDirection.Input
+            sqlParams(1).Value = userId
+
+            sqlParams(2) = New SqlParameter()
+            sqlParams(2).ParameterName = "@outputCode"
+            sqlParams(2).SqlDbType = SqlDbType.BigInt
+            sqlParams(2).Direction = ParameterDirection.Output
+
+            Dim sqlCmd As New SqlCommand()
+            sqlCmd.Connection = sqlConn
+            sqlCmd.CommandType = CommandType.StoredProcedure
+            sqlCmd.CommandText = "[dbo].[opc_formulationmatrix_insert]"
+            sqlCmd.Parameters.AddRange(sqlParams)
+            sqlCmd.ExecuteNonQuery()
+
+            If sqlParams(2).Value IsNot Nothing AndAlso Not IsDBNull(sqlParams(2).Value) Then
+                outputCode = Convert.ToInt32(sqlParams(2).Value)
+            End If
+        Catch ex As Exception
+            Throw
+        Finally
+            If sqlConn IsNot Nothing Then
+                sqlConn.Close()
+            End If
+        End Try
+
+        Return outputCode
+    End Function
+
+    Function UpdateFormulationMatrix(ByVal matrixId As Integer, ByVal rate As String, ByVal userId As String) As Integer
+        Dim sqlConn As SqlConnection = Nothing
+        Dim rowsAffected As Integer = 0
+
+        Try
+            sqlConn = DBFactory.GetHelper.OpenConnection()
+
+            Dim sqlCmd As New SqlCommand()
+            sqlCmd.Connection = sqlConn
+            sqlCmd.CommandType = CommandType.StoredProcedure
+            sqlCmd.CommandText = "[dbo].[opc_formulationmatrix_update]"
+            sqlCmd.Parameters.AddWithValue("@id", matrixId)
+            sqlCmd.Parameters.AddWithValue("@rate", If(String.IsNullOrWhiteSpace(rate), CObj(DBNull.Value), rate.Trim()))
+            sqlCmd.Parameters.AddWithValue("@user_id", userId)
+
+            Using dr As SqlDataReader = sqlCmd.ExecuteReader()
+                If dr.Read() AndAlso Not IsDBNull(dr("Status")) Then
+                    rowsAffected = Convert.ToInt32(dr("Status"))
+                End If
+            End Using
+        Catch ex As Exception
+            Throw
+        Finally
+            If sqlConn IsNot Nothing Then
+                sqlConn.Close()
+            End If
+        End Try
+
+        Return rowsAffected
     End Function
 #End Region
 End Class

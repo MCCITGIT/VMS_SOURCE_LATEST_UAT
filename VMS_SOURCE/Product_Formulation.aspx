@@ -3,7 +3,8 @@
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
-
+    <link href="includes/rm-procurement.css?v=<%= DateTime.Now.Ticks %>" rel="stylesheet" type="text/css" />
+    <div class="rm-module">
     <script type="text/javascript" src="Scripts/FunctionValidator.js"></script>
     <script type="text/javascript" src="Scripts/ValidateFormulationMstr.js?time=<%= DateTime.Now.ToString("yyyy.MM.dd-HH.mm.ss.fff") %>"></script>
     <script type="text/javascript">
@@ -23,6 +24,19 @@
             }
         }
 
+        function setProductSearchState(isLocked) {
+            var txtProduct = document.getElementById('txtProductSearch');
+            var btnReset = document.getElementById('btnResetProduct');
+
+            if (btnReset) {
+                btnReset.disabled = !!isLocked;
+            }
+
+            if (txtProduct && isLocked) {
+                txtProduct.setAttribute('readonly', 'readonly');
+            }
+        }
+
         function onProductSelected(sender, e) {
             //debugger;
             var value = e.get_value();
@@ -37,12 +51,10 @@
             document.getElementById('<%=hdnProductCode.ClientID%>').value = productCode;
             <%-- document.getElementById('<%=txtProductSearch.ClientID%>').value = text + " (" + productCode + ")";
             document.getElementById('<%=hdnProductName.ClientID%>').value = text + " (" + productCode + ")";--%>
-             document.getElementById('<%=txtProductSearch.ClientID%>').value = text ;
+            document.getElementById('<%=txtProductSearch.ClientID%>').value = text;
             document.getElementById('<%=hdnProductName.ClientID%>').value = text;
             document.getElementById('<%=hdnSkucode.ClientID%>').value = skuCode
-            // Disable Product textbox after selection
-            <%--document.getElementById('<%=txtProductSearch.ClientID%>').readOnly = true;--%>
-
+            setProductSearchState(true);
 
             //sender.get_element().value = text + " (" + productCode + ")";
             sender.get_element().value = text;
@@ -57,10 +69,46 @@
         }
 
         function resetProductField() {
-            document.getElementById('<%=txtProductSearch.ClientID%>').value = '';
-            document.getElementById('<%=hdnProductCode.ClientID%>').value = '';
+            var txtProduct = document.getElementById('txtProductSearch');
+            var hdnProductCode = document.getElementById('<%=hdnProductCode.ClientID%>');
+            var hdnProductName = document.getElementById('<%=hdnProductName.ClientID%>');
+            var hdnSkucode = document.getElementById('<%=hdnSkucode.ClientID%>');
+
+            if (txtProduct) {
+                txtProduct.value = '';
+                txtProduct.disabled = false;
+                txtProduct.removeAttribute('readonly');
+            }
+            if (hdnProductCode) {
+                hdnProductCode.value = '';
+            }
+            if (hdnProductName) {
+                hdnProductName.value = '';
+            }
+            if (hdnSkucode) {
+                hdnSkucode.value = '';
+            }
+
+            setProductSearchState(false);
             __doPostBack('<%=btnLoadShade.UniqueID%>', '');
         }
+
+        function syncProductResetButtonState() {
+            var txtProduct = document.getElementById('txtProductSearch');
+            var btnReset = document.getElementById('btnResetProduct');
+
+            if (!txtProduct || !btnReset) {
+                return;
+            }
+
+            var isLocked = txtProduct.disabled ||
+                txtProduct.readOnly ||
+                txtProduct.getAttribute('readonly') === 'readonly';
+
+            btnReset.disabled = isLocked;
+        }
+
+        document.addEventListener('DOMContentLoaded', syncProductResetButtonState);
         function onRawMaterialSelected(sender, e) {
             var value = e.get_value();
             var text = e.get_text();
@@ -142,12 +190,19 @@
                 </div>
                 <div class="col-md-3">
                     <div class="form-group">
+                        <label class="form-control-label">Vendor:<span id="Span2" class="mandatory">*</span></label>
+                        <asp:DropDownList ID="ddlvendor" ClientIDMode="Static" CssClass="form-control select2" TabIndex="2" runat="server" AutoPostBack="true" OnSelectedIndexChanged="ddlvendor_SelectedIndexChanged"></asp:DropDownList>
+                        <asp:HiddenField ID="HiddenField1" runat="server" ClientIDMode="Static" />
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
                         <label class="form-control-label">Product:<span class="mandatory">*</span></label>
                         <div class="input-group product-search-group">
-                            <asp:TextBox ID="txtProductSearch" ClientIDMode="Static" CssClass="form-control" TabIndex="2" runat="server" AutoComplete="Off" Placeholder="Enter Product" onkeyup="clearProductSelection();" OnTextChanged="txtProductSearch_TextChanged" AutoPostBack="true">
+                            <asp:TextBox ID="txtProductSearch" ClientIDMode="Static" CssClass="form-control" TabIndex="3" runat="server" AutoComplete="Off" Placeholder="Enter Product" onkeyup="clearProductSelection();" OnTextChanged="txtProductSearch_TextChanged" AutoPostBack="true">
                             </asp:TextBox>
                             <div class="input-group-append">
-                                <button type="button" class="btn btn-outline-secondary product-reset-btn" onclick="resetProductField(); return false;" title="Reset Product">
+                                 <button type="button" id="btnResetProduct" class="btn btn-outline-secondary product-reset-btn" onclick="resetProductField(); return false;" title="Reset Product">
                                     <i class="fas fa-sync-alt fa-xs"></i>
                                 </button>
                             </div>
@@ -208,7 +263,7 @@
             </div>
             <div class="row">
                 <div class="col-md-12 text-center">
-                    <asp:Button ID="btnAdd" runat="server" Text="Add" CssClass="btn btn-success btn-sm" OnClick="btnAdd_Click" />
+                    <asp:Button ID="btnAdd" runat="server" Text="Add" CssClass="btn btn-success btn-sm" ClientIDMode="Static" OnClick="btnAdd_Click" />
                 </div>
             </div>
             <asp:UpdatePanel ID="UpdatePanel5" runat="server">
@@ -240,10 +295,17 @@
                         <asp:TemplateField HeaderText="Brand">
                             <ItemTemplate>
                                 <%--<asp:HiddenField ID="hdnId" runat="server" Value='<%# Bind("id") %>' />--%>
-                                <asp:Label ID="lblVendorName" runat="server" Text='<%# Bind("brand_name") %>'></asp:Label>
+                                <asp:Label ID="lblBrandName" runat="server" Text='<%# Bind("brand_name") %>'></asp:Label>
                                 <asp:HiddenField ID="hdnBrandCode" runat="server" Value='<%# Bind("brand_code") %>' />
                                 <asp:HiddenField ID="hdnProductCode" runat="server" Value='<%# Bind("product_code") %>' />
-                                <asp:HiddenField ID="hdnRawMatCode" runat="server" Value='<%# Bind("rawmat_code") %>' />
+                                <asp:HiddenField ID="hdnRawMatCode" runat="server" Value='<%# Bind("rawmat_code") %>' />                                
+                            </ItemTemplate>
+                        </asp:TemplateField>
+
+                        <asp:TemplateField HeaderText="Vendor">
+                            <ItemTemplate>
+                                <asp:Label ID="lblVendorName" runat="server" Text='<%# Bind("vendor_name") %>'></asp:Label>
+                                <asp:HiddenField ID="hdnVendorCode" runat="server" Value='<%# Bind("vendor_code") %>' />
                             </ItemTemplate>
                         </asp:TemplateField>
 
@@ -281,10 +343,10 @@
 
                         <asp:TemplateField HeaderText="Action">
                             <ItemTemplate>
-                                <asp:LinkButton ID="btnDeleteRow" runat="server" CommandName="DeleteRow" CommandArgument='<%# Container.DataItemIndex %>' CssClass="text-danger" ToolTip="Delete" OnClientClick="return confirm('Are you sure you want to delete this row?');"><i class="fas fa-trash"></i></asp:LinkButton>
+                                <asp:LinkButton ID="btnDeleteRow" runat="server" CommandName="DeleteRow" CommandArgument='<%# Container.DataItemIndex %>' CausesValidation="false" CssClass="text-danger" ToolTip="Delete" OnClientClick="return rmConfirmAction(this, 'delete');"><i class="fas fa-trash"></i></asp:LinkButton>
                             </ItemTemplate>
                             <EditItemTemplate>
-                                <asp:LinkButton ID="btnUpdate" CommandName="Update" CssClass="text-success mr-1" runat="server" ToolTip="Update" OnClientClick="return confirm('Are you sure you want to update this record?');"><i class="fas fa-check"></i></asp:LinkButton>
+                                <asp:LinkButton ID="btnUpdate" CommandName="Update" CssClass="text-success mr-1" runat="server" ToolTip="Update" OnClientClick="return rmConfirmAction(this, 'update');"><i class="fas fa-check"></i></asp:LinkButton>
                                 <asp:LinkButton ID="btncancel" CommandName="Cancel" CssClass="text-danger" runat="server" ToolTip="Cancel"><i class="fas fa-times"></i></asp:LinkButton>
                             </EditItemTemplate>
                         </asp:TemplateField>
@@ -300,5 +362,7 @@
             </div>
         </div>
     </div>
+    </div>
+    <script type="text/javascript" src="Scripts/rm-status-confirm.js?v=<%= DateTime.Now.Ticks %>"></script>
 </asp:Content>
 

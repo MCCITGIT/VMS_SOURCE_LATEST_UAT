@@ -80,7 +80,8 @@ Partial Class UnitApplicableVendorAssign
         Catch ex As Exception
             Dim returnUrl As String = "~/ExceptionPage.aspx"
             Session(Constant.SessionKeys.ErrMessage) = Constant.ErrorMessages.GeneralError
-            Server.Transfer(returnUrl)
+            'Server.Transfer(returnUrl)
+            Response.Redirect(returnUrl)
         End Try
 
     End Sub
@@ -109,7 +110,8 @@ Partial Class UnitApplicableVendorAssign
         Catch ex As Exception
             Dim returnUrl As String = "~/ExceptionPage.aspx"
             Session(Constant.SessionKeys.ErrMessage) = Constant.ErrorMessages.GeneralError
-            Server.Transfer(returnUrl)
+            'Server.Transfer(returnUrl)
+            Response.Redirect(returnUrl)
         End Try
     End Sub
 
@@ -132,7 +134,8 @@ Partial Class UnitApplicableVendorAssign
         Catch ex As Exception
             Dim returnUrl As String = "~/ExceptionPage.aspx"
             Session(Constant.SessionKeys.ErrMessage) = Constant.ErrorMessages.GeneralError
-            Server.Transfer(returnUrl)
+            'Server.Transfer(returnUrl)
+            Response.Redirect(returnUrl)
         End Try
 
     End Sub
@@ -146,10 +149,12 @@ Partial Class UnitApplicableVendorAssign
         gvTokenVendorList.PageIndex = e.NewPageIndex
         BindGrid()
     End Sub
-    Protected Sub imgbtnSearch_Click(sender As Object, e As ImageClickEventArgs) Handles imgbtnSearch.Click
+    'Protected Sub imgbtnSearch_Click(sender As Object, e As ImageClickEventArgs) Handles imgbtnSearch.Click
+    '    BindGrid()
+    'End Sub
+    Protected Sub imgbtnSearch_Click(sender As Object, e As EventArgs) Handles imgbtnSearch.Click
         BindGrid()
     End Sub
-
 
 
 
@@ -174,7 +179,8 @@ Partial Class UnitApplicableVendorAssign
         Catch ex As Exception
             Dim returnUrl As String = "~/ExceptionPage.aspx"
             Session(Constant.SessionKeys.ErrMessage) = Constant.ErrorMessages.GeneralError
-            Server.Transfer(returnUrl)
+            'Server.Transfer(returnUrl)
+            Response.Redirect(returnUrl)
         End Try
 
     End Sub
