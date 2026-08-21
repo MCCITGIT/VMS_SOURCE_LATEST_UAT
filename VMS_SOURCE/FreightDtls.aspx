@@ -250,9 +250,11 @@
                             </Triggers>--%>
                         </asp:UpdatePanel>
                     </div>
-                    <div class="fd-submit-bar">
-                        <asp:Button ID="btnSave" CssClass="btn btn-success btn-sm" runat="server" Text="Confirm" OnClientClick="return confirm('Are you sure you want to submit?');" />
-                        <asp:Button ID="btnReset" CssClass="btn btn-success btn-sm" runat="server" Text="Reset" Visible="false" />
+                    <div class="row">
+                        <div class="col-md-12 text-center">
+                            <asp:Button ID="btnSave" CssClass="btn btn-success btn-sm" runat="server" Text="Confirm" OnClientClick="return confirm('Are you sure you want to submit?');" />
+                            <asp:Button ID="btnReset" CssClass="btn btn-success btn-sm" runat="server" Text="Reset" Visible="false" />
+                        </div>
                     </div>
                 </div>
             </div>

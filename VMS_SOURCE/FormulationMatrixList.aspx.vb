@@ -132,15 +132,19 @@ Partial Class FormulationMatrixList
             productCode = hdnProductCode.Value.Trim()
         End If
 
-        Dim ds As DataSet = obj.GetFormulationMatrixList(productCode, txtrawmatid.Value, ddlBrand.SelectedValue, ddlvendor.SelectedValue)
-        If (ds Is Nothing OrElse ds.Tables.Count = 0) AndAlso hdnSkucode.Value.Trim() <> "" AndAlso hdnProductCode.Value.Trim() <> "" AndAlso
-           Not hdnSkucode.Value.Trim().Equals(hdnProductCode.Value.Trim(), StringComparison.OrdinalIgnoreCase) Then
-            ds = obj.GetFormulationMatrixList(hdnProductCode.Value.Trim(), txtrawmatid.Value, ddlBrand.SelectedValue, ddlvendor.SelectedValue)
+        'Dim ds As DataSet = obj.GetFormulationMatrixList(productCode, ddlBrand.SelectedValue, ddlvendor.SelectedValue)
+        Dim ds As DataSet = obj.GetFormulationMatrixList(hdnProductCode.Value.Trim(), ddlBrand.SelectedValue, ddlvendor.SelectedValue)
+        'If (ds Is Nothing OrElse ds.Tables.Count = 0) AndAlso hdnSkucode.Value.Trim() <> "" AndAlso hdnProductCode.Value.Trim() <> "" AndAlso
+        '   Not hdnSkucode.Value.Trim().Equals(hdnProductCode.Value.Trim(), StringComparison.OrdinalIgnoreCase) Then
+        '    ds = obj.GetFormulationMatrixList(hdnProductCode.Value.Trim(), ddlBrand.SelectedValue, ddlvendor.SelectedValue)
+        'End If
+        If (Not (ds Is Nothing) AndAlso ds.Tables.Count > 0) Then
+            If (Not (ds.Tables(0) Is Nothing) AndAlso ds.Tables(0).Rows.Count > 0) Then
+                Dim table As DataTable = RmGridHelper.GetTable(ds)
+                ApplyLookupNames(table)
+                RmGridHelper.BindPaged(gvFormulationMatrixList, table)
+            End If
         End If
-
-        Dim table As DataTable = RmGridHelper.GetTable(ds)
-        ApplyLookupNames(table)
-        RmGridHelper.BindPaged(gvFormulationMatrixList, table)
     End Sub
 
     Private Sub ApplyLookupNames(ByVal table As DataTable)
@@ -239,11 +243,13 @@ Partial Class FormulationMatrixList
 
             Dim hdnGridProductCode As HiddenField = CType(row.FindControl("hdnGridProductCode"), HiddenField)
             Dim lblProduct As Label = CType(row.FindControl("lblProduct"), Label)
+            Dim hdnhdrid As HiddenField = CType(row.FindControl("hdnheaderid"), HiddenField)
 
             Dim produCode As String = If(hdnGridProductCode Is Nothing, String.Empty, Convert.ToString(hdnGridProductCode.Value).Trim())
-            Dim produName As String = If(lblProduct Is Nothing, String.Empty, Convert.ToString(lblProduct.Text).Trim())
+            'Dim produName As String = If(lblProduct Is Nothing, String.Empty, Convert.ToString(lblProduct.Text).Trim())
+            Dim headerid As String = If(hdnhdrid Is Nothing, String.Empty, Convert.ToString(hdnhdrid.Value).Trim())
 
-            Dim redirectUrl = "FormulationMatrix.aspx?producode=" & Server.UrlEncode(produCode) & "&produname=" & Server.UrlEncode(produName) & "&skucode=" & Server.UrlEncode(produCode)
+            Dim redirectUrl = "FormulationMatrix.aspx?producode=" & Server.UrlEncode(produCode) & "&id=" & Server.UrlEncode(headerid)
             Response.Redirect(redirectUrl, False)
             Context.ApplicationInstance.CompleteRequest()
         Catch ex As System.Threading.ThreadAbortException

@@ -877,7 +877,8 @@ Public Class UnitDespatchClassVr1
 
         Try
 
-            Dim sqlParams(23) As SqlParameter
+            'Modified-by MUKESH BHAGAT on 20-08-2026 : restored Indent feature from old UAT source
+            Dim sqlParams(25) As SqlParameter
 
             sqlParams(0) = New SqlParameter()
             sqlParams(0).ParameterName = "@desph_desp_unit"
@@ -1024,7 +1025,20 @@ Public Class UnitDespatchClassVr1
             sqlParams(23).Direction = Data.ParameterDirection.Input
             sqlParams(23).Value = IIf(DespEntity.ValidUptoDt <> SqlDateTime.MinValue, DespEntity.ValidUptoDt, DBNull.Value)
 
-            'sqlCmd is the object instance of the SqlCommand 
+            'Modified-by MUKESH BHAGAT on 20-08-2026 : restored Indent feature from old UAT source
+            sqlParams(24) = New SqlParameter()
+            sqlParams(24).ParameterName = "@desph_third_party_indent_yn"
+            sqlParams(24).DbType = DbType.String
+            sqlParams(24).Direction = Data.ParameterDirection.Input
+            sqlParams(24).Value = IIf(DespEntity.ThirdPartyIndentYn <> String.Empty, DespEntity.ThirdPartyIndentYn, DBNull.Value)
+
+            sqlParams(25) = New SqlParameter()
+            sqlParams(25).ParameterName = "@desph_third_party_indent"
+            sqlParams(25).DbType = DbType.String
+            sqlParams(25).Direction = Data.ParameterDirection.Input
+            sqlParams(25).Value = IIf(DespEntity.ThirdPartyIndent <> String.Empty, DespEntity.ThirdPartyIndent, DBNull.Value)
+
+            'sqlCmd is the object instance of the SqlCommand
             Dim sqlCmd As New SqlCommand()
             sqlCmd.Connection = sqlConn
             sqlCmd.Transaction = sqlTrans

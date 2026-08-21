@@ -103,6 +103,8 @@
     <asp:HiddenField ID="hdnMaxDespLimit" runat="server" />
     <asp:HiddenField ID="hdnLotNo" runat="server" />
     <asp:HiddenField ID="hdnUnitOracleId" runat="server" />
+    <%-- Modified-by MUKESH BHAGAT on 20-08-2026 : restored Indent feature from old UAT source --%>
+    <asp:HiddenField ID="hdnindentyn" runat="server" />
     <asp:HiddenField ID="hdnUnitCode" runat="server" />
 
     <asp:UpdatePanel ID="UpdatePanel1" runat="server">
@@ -173,6 +175,18 @@
                                     <ContentTemplate>
                                         <asp:DropDownList ID="ddlDeliveryDepot" runat="server" AutoPostBack="True" CssClass="form-control select2"
                                             TabIndex="3">
+                                        </asp:DropDownList>
+                                    </ContentTemplate>
+                                </asp:UpdatePanel>
+                            </div>
+                        </div>
+                        <%-- Modified-by MUKESH BHAGAT on 20-08-2026 : restored Indent feature from old UAT source --%>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label class="form-control-label">Indent:<span class="mandatory">*</span></label>
+                                <asp:UpdatePanel ID="UpdatePanel_Indent" runat="server">
+                                    <ContentTemplate>
+                                        <asp:DropDownList ID="ddlIndent" runat="server" CssClass="form-control select2" AutoPostBack="true" Enabled="false">
                                         </asp:DropDownList>
                                     </ContentTemplate>
                                 </asp:UpdatePanel>
