@@ -1,4 +1,4 @@
-﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="Dispatch_Details.aspx.vb" Inherits="Dispatch_Details" %>
+<%@ Page Language="VB" AutoEventWireup="false" CodeFile="Dispatch_Details.aspx.vb" Inherits="Dispatch_Details" ResponseEncoding="utf-8" %>
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="ajaxToolkit" %>
 
@@ -16,15 +16,12 @@
     <link href="includes/bootstrap.min.css" rel="stylesheet" type="text/css" />
 
     <link href="includes/upgrad-style.css?v=<%= DateTime.Now.Ticks %>" rel="stylesheet" type="text/css" />
+    <link href="includes/rm-procurement.css?v=<%= DateTime.Now.Ticks %>" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
 
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
     <style type="text/css">
-        /* ==========================================================
-           STANDALONE PAGE - SAME UI FAMILY AS DISPATCH LIST
-        ========================================================== */
-
-        html,
-        body {
+        html, body {
             margin: 0;
             padding: 0;
             width: 100%;
@@ -32,299 +29,443 @@
         }
 
         body {
-            background: #ffffff;
-            font-family: Arial, Helvetica, sans-serif;
-            color: #343a40;
+            background: #f4efe8 !important;
+            font-family: "Inter", Arial, Helvetica, sans-serif;
+            color: #1f2937;
         }
 
         .contentMainBody {
             margin: 0 !important;
-            padding: 14px 16px 30px !important;
+            padding: 22px 28px 40px !important;
             width: 100% !important;
             max-width: 100% !important;
             min-height: 100vh;
             box-sizing: border-box;
-            background: #ffffff;
+            background: #f4efe8 !important;
         }
 
-        /* ==========================================================
-           PAGE HEADER
-        ========================================================== */
-
-        .standalone-breadcrumbs {
-            position: relative;
-            width: 100%;
-            min-height: 68px;
-            padding: 9px 20px 9px 24px;
+        .rm-page-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            box-sizing: border-box;
-            background: #f8fbfe;
-            border: 1px solid #dde7f0;
-            border-radius: 16px;
-            margin-bottom: 14px;
-            box-shadow: 0 2px 5px rgba(31, 55, 78, 0.08), 0 5px 12px rgba(31, 55, 78, 0.04);
+            gap: 16px;
+            background: #ffffff;
+            border: 1px solid #eee8de;
+            border-radius: 18px;
+            padding: 18px 22px;
+            margin-bottom: 16px;
+            box-shadow: 0 8px 22px rgba(80, 60, 30, 0.05);
         }
 
-            .standalone-breadcrumbs::before {
-                content: "";
-                position: absolute;
-                left: 9px;
-                top: 14px;
-                bottom: 14px;
-                width: 4px;
-                background: #154872;
-                border-radius: 4px;
-            }
+        .rm-page-header-left {
+            display: flex;
+            align-items: center;
+            min-width: 0;
+        }
 
-            .standalone-breadcrumbs .leftFung {
-                display: flex;
-                align-items: center;
-                min-width: 0;
-            }
-
-        .home-link {
-            width: 46px;
-            height: 46px;
-            min-width: 46px;
+        .rm-header-icon {
+            width: 44px;
+            height: 44px;
+            min-width: 44px;
+            margin-right: 14px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            background: #eef4fa;
-            border: 1px solid #d6e3ef;
+            background: #e8f0ff;
             border-radius: 12px;
-            color: #154872 !important;
+            color: #2f6fed;
             font-size: 18px;
-            text-decoration: none !important;
-            transition: all 0.2s ease;
         }
 
-            .home-link:hover {
-                background: #e6eff8;
-                border-color: #cbdbea;
-                color: #10385a !important;
-            }
-
-        .diveider {
-            margin: 0 11px;
-            color: #b5c3d0;
-            font-size: 18px;
-            font-weight: 400;
-        }
-
-        .pageTitleWrap {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-
-        .pageTitle {
+        .rm-page-title {
             margin: 0 0 3px 0;
-            color: #153d60;
-            font-size: 18px !important;
-            line-height: 22px;
-            font-weight: 700;
+            color: #111827;
+            font-size: 22px;
+            line-height: 1.2;
+            font-weight: 800;
         }
 
-        .pageSubTitle {
+        .rm-page-subtitle {
             margin: 0;
-            color: #61758f;
-            font-size: 13px !important;
-            line-height: 17px;
+            color: #8a93a3;
+            font-size: 13px;
             font-weight: 400;
         }
 
-        .rightFung {
-            display: flex;
+        .rm-status-badge {
+            display: inline-flex;
             align-items: center;
-            gap: 5px;
+            gap: 8px;
+            padding: 7px 14px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 700;
             white-space: nowrap;
+            transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
         }
 
-        .welcome-text,
-        .rm-vendor-label {
-            color: #154872;
-            font-size: 16px !important;
-            font-weight: 700 !important;
+        .rm-status-badge:before {
+            content: "";
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: currentColor;
         }
 
-        /* ==========================================================
-           CARDS
-        ========================================================== */
+        .rm-status-badge.is-pending {
+            background: #fff4e5;
+            color: #d9822b;
+        }
 
-        .contentMainBody .card,
-        .contentMainBody .details-card {
-            width: 100%;
-            margin-bottom: 14px;
+        .rm-status-badge.is-complete {
+            background: #e8f8ee;
+            color: #1f9d57;
+        }
+
+        .rm-meta-bar {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
             background: #ffffff;
-            border: 1px solid #dcdcdc;
+            border: 1px solid #eee8de;
             border-radius: 16px;
-            /*overflow: hidden;*/
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.07);
+            overflow: hidden;
+            margin-bottom: 16px;
+            box-shadow: 0 8px 22px rgba(80, 60, 30, 0.05);
         }
 
-        .contentMainBody .card-body {
-            padding: 16px 18px 18px;
+        .rm-meta-item {
+            padding: 16px 20px;
+            border-right: 1px solid #f0ece4;
         }
 
-        /* ==========================================================
-           SECTION HEADERS
-        ========================================================== */
+        .rm-meta-item:last-child {
+            border-right: 0;
+        }
 
-        .mst-panel-header {
-            padding: 15px 16px 9px;
-            display: flex;
+        .rm-meta-item.is-vendor {
+            background: #eef4ff;
+        }
+
+        .rm-meta-label {
+            display: block;
+            margin-bottom: 6px;
+            color: #9aa3b2;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .rm-meta-value,
+        .rm-meta-item .detail-value {
+            color: #111827;
+            font-size: 18px;
+            font-weight: 800;
+            line-height: 1.2;
+        }
+
+        .rm-meta-value-id {
+            color: #2f6fed !important;
+        }
+
+        .rm-vendor-name {
+            display: inline-flex;
             align-items: center;
-            justify-content: space-between;
+            gap: 8px;
+            color: #111827;
+            font-size: 18px;
+            font-weight: 800;
+        }
+
+        .rm-vendor-name i {
+            color: #2f6fed;
+            font-size: 14px;
+        }
+
+        .rm-two-col {
+            margin-left: -8px;
+            margin-right: -8px;
+            margin-bottom: 8px;
+        }
+
+        .rm-two-col > [class*="col-"] {
+            padding-left: 8px;
+            padding-right: 8px;
+        }
+
+        .rm-card {
             background: #ffffff;
-            border-bottom: 0;
+            border: 1px solid #eee8de;
+            border-radius: 18px;
+            box-shadow: 0 8px 22px rgba(80, 60, 30, 0.05);
+            padding: 20px 22px 22px;
+            margin-bottom: 16px;
+            height: 100%;
+            transition: box-shadow 0.22s ease, border-color 0.22s ease;
         }
 
-        .mst-panel-header-left {
+        .rm-card-head {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+        .rm-card-head-left {
             display: flex;
             align-items: center;
+            min-width: 0;
         }
 
-        .mst-panel-icon {
-            width: 42px;
-            height: 42px;
-            min-width: 42px;
+        .rm-card-icon {
+            width: 36px;
+            height: 36px;
+            min-width: 36px;
             margin-right: 12px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            background: #eaf1ff;
-            border-radius: 11px;
-            color: #154872;
-            font-size: 18px;
+            background: #e8f0ff;
+            border-radius: 10px;
+            color: #2f6fed;
+            font-size: 15px;
         }
 
-        .mst-panel-title {
+        .rm-card-title {
             margin: 0 0 2px 0;
-            color: #414141;
-            font-size: 16px !important;
-            font-weight: 700;
+            color: #111827;
+            font-size: 16px;
+            font-weight: 800;
         }
 
-        .mst-panel-subtitle {
+        .rm-card-subtitle {
             margin: 0;
-            color: #61758f;
-            font-size: 13px !important;
-            font-weight: 400;
+            color: #8a93a3;
+            font-size: 12px;
         }
 
-        /* Existing Bootstrap card-header fallback */
-        .details-card .card-header {
-            padding: 14px 18px;
-            background: #ffffff;
-            border-bottom: 1px solid #eef1f4;
+        .rm-count-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 6px 12px;
+            background: #e8f0ff;
+            border-radius: 999px;
+            color: #2f6fed;
+            font-size: 12px;
+            font-weight: 700;
+            white-space: nowrap;
         }
-
-            .details-card .card-header h5 {
-                margin: 0;
-                color: #414141;
-                font-size: 16px;
-                font-weight: 700;
-            }
-
-        /* ==========================================================
-           FORM
-        ========================================================== */
 
         .form-group {
-            margin-bottom: 0;
-        }
-
-        .row .form-group {
-            margin-bottom: 4px;
+            margin-bottom: 14px;
         }
 
         .form-control-label {
             display: block;
-            margin-bottom: 5px;
-            color: #3e3e3e;
+            margin-bottom: 6px;
+            color: #334155;
             font-size: 13px !important;
             font-weight: 600;
         }
 
-        .form-control {
-            min-height: 38px;
-            padding: 7px 11px;
-            background: #ffffff;
-            border: 1px solid #aeb4ba;
-            border-radius: 12px;
-            color: #333333;
+        .req-star {
+            color: #e11d48;
+            font-weight: 700;
+        }
+
+        .form-control,
+        select.form-control {
+            min-height: 42px;
+            height: 42px;
+            padding: 8px 12px;
+            background: #f7f8fa;
+            border: 1px solid #e4e7ec;
+            border-radius: 10px;
+            color: #111827;
             font-size: 14px !important;
             box-shadow: none !important;
+            transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, color 0.2s ease;
         }
 
-            .form-control:focus {
-                border-color: #7899b8;
-                box-shadow: 0 0 0 2px rgba(21, 72, 114, 0.07) !important;
-            }
+        .form-control:focus {
+            background: #ffffff;
+            border-color: #8fb0ea;
+            box-shadow: 0 0 0 3px rgba(47, 111, 237, 0.12) !important;
+        }
 
-        .detail-value {
-            min-height: 40px;
+        .field-hint {
             display: flex;
             align-items: center;
-            background: #f8fbfe;
-            border-color: #dbe3ea;
-            color: #26394b;
-            font-size: 14px !important;
+            gap: 6px;
+            margin-top: 8px;
+            color: #2f6fed;
+            font-size: 12px;
+        }
+
+        .rm-subhead {
+            margin: 6px 0 12px;
+            color: #111827;
+            font-size: 14px;
+            font-weight: 800;
+        }
+
+        .rm-courier-block {
+            margin-top: 4px;
+        }
+
+        .rm-upload-box {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 14px;
+            background: #f7f9fc;
+            border: 1px dashed #cfd8e6;
+            border-radius: 12px;
+            min-height: 72px;
+            transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .rm-upload-icon {
+            width: 36px;
+            height: 36px;
+            min-width: 36px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: #64748b;
+            font-size: 18px;
+        }
+
+        .rm-upload-title {
+            margin: 0;
+            color: #111827;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .rm-upload-hint {
+            margin: 2px 0 0;
+            color: #8a93a3;
+            font-size: 11px;
+        }
+
+        .rm-upload-name {
+            display: block;
+            margin-top: 3px;
+            color: #2f6fed;
+            font-size: 11px;
             font-weight: 600;
+            word-break: break-all;
         }
 
-        input[type="file"].form-control {
-            height: 40px;
-            padding: 7px 10px;
+        .rm-choose-btn {
+            margin-left: auto;
+            height: 34px;
+            padding: 0 14px;
+            background: #ffffff;
+            border: 1px solid #d7dde6;
+            border-radius: 8px;
+            color: #334155;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            position: relative;
+            z-index: 1;
+            pointer-events: none;
         }
 
-        /* ==========================================================
-           BUTTONS
-        ========================================================== */
-
-        .btn {
-            font-size: 14px !important;
-            font-weight: 600;
+        .rm-file-input {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+            z-index: 2;
         }
 
+        .rm-file-input:disabled {
+            pointer-events: none;
+            cursor: default;
+        }
+
+        .rm-extract-btn,
         .btn-primary {
-            background: #154872 !important;
-            border-color: #154872 !important;
+            background: #2f6fed !important;
+            border-color: #2f6fed !important;
             color: #ffffff !important;
-            border-radius: 18px !important;
-            padding: 6px 17px !important;
+            border-radius: 10px !important;
+            padding: 8px 16px !important;
+            font-size: 13px !important;
+            font-weight: 700 !important;
+            cursor: pointer;
+            transition: background-color 0.18s ease, border-color 0.18s ease, color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
         }
 
-            .btn-primary:hover,
-            .btn-primary:focus {
-                background: #10385a !important;
-                border-color: #10385a !important;
-                color: #ffffff !important;
-            }
+        .rm-extract-btn {
+            margin-top: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
 
-        .btn-secondary {
-            background: #6c757d !important;
-            border-color: #6c757d !important;
+        .btn-primary:hover,
+        .btn-primary:focus,
+        .rm-extract-btn:hover,
+        .rm-extract-btn:focus {
+            background: #1f5bd6 !important;
+            border-color: #1f5bd6 !important;
             color: #ffffff !important;
-            border-radius: 18px !important;
-            padding: 6px 17px !important;
+            transform: translateY(-1px);
+            box-shadow: 0 8px 18px rgba(47, 111, 237, 0.28) !important;
         }
 
-        .button-section {
-            margin-top: 18px;
-            text-align: center;
+        .rm-metric-row {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 12px;
+            margin-bottom: 16px;
         }
 
-            .button-section .btn {
-                min-width: 92px;
-                margin: 0 4px;
-            }
+        .rm-metric-card {
+            background: #ffffff;
+            border: 1px solid #eef1f5;
+            border-radius: 14px;
+            padding: 14px 16px;
+            transition: box-shadow 0.22s ease, border-color 0.22s ease, transform 0.22s ease;
+        }
 
-        /* ==========================================================
-           MATERIAL GRID
-        ========================================================== */
+        .rm-metric-icon {
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+
+        .rm-metric-icon.is-blue { color: #2f6fed; }
+        .rm-metric-icon.is-green { color: #22a35a; }
+        .rm-metric-icon.is-orange { color: #e7a23a; }
+
+        .rm-metric-label {
+            margin: 0 0 4px;
+            color: #9aa3b2;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.07em;
+            text-transform: uppercase;
+        }
+
+        .rm-metric-value {
+            margin: 0;
+            color: #111827;
+            font-size: 22px;
+            font-weight: 800;
+            line-height: 1;
+        }
+
+        .rm-metric-value.is-green { color: #22a35a; }
+        .rm-metric-value.is-orange { color: #e7a23a; }
 
         .table-responsive {
             width: 100%;
@@ -335,104 +476,233 @@
             width: 100% !important;
             margin-bottom: 0 !important;
             border-collapse: collapse !important;
-            border: 1px solid #d9d9d9 !important;
-            background: #ffffff;
-            color: #333333;
-            font-size: 14px !important;
+            border: 0 !important;
+            background: transparent;
+            color: #1f2937;
+            font-size: 13px !important;
         }
 
-            .upgradDataGrid th {
-                padding: 9px 9px !important;
-                background: #eff2f5 !important;
-                color: #4e4e56 !important;
-                border: 1px solid #d9d9d9 !important;
-                font-size: 13px !important;
-                font-weight: 700 !important;
-                vertical-align: middle !important;
-                white-space: normal;
-            }
-
-            .upgradDataGrid td {
-                padding: 8px 9px !important;
-                background: #ffffff;
-                color: #222222;
-                border: 1px solid #dddddd !important;
-                font-size: 13px !important;
-                line-height: 1.35;
-                font-weight: 500;
-                vertical-align: middle !important;
-            }
-
-            .upgradDataGrid tr:hover td {
-                background: #f9fbfd !important;
-            }
-
-        .materialGrid {
-            width: 100%;
-            table-layout: fixed;
+        .upgradDataGrid th {
+            padding: 12px 10px !important;
+            background: transparent !important;
+            color: #9aa3b2 !important;
+            border: 0 !important;
+            border-bottom: 1px solid #eef1f5 !important;
+            font-size: 11px !important;
+            font-weight: 700 !important;
+            letter-spacing: 0.06em;
+            text-transform: uppercase !important;
+            vertical-align: middle !important;
+            white-space: normal;
         }
 
-            .materialGrid th,
-            .materialGrid td {
-                vertical-align: middle !important;
-                text-align: center;
-                word-wrap: break-word;
-            }
-
-        .qty-value {
-            color: #26394b;
-            font-weight: 600;
+        .upgradDataGrid td {
+            padding: 12px 10px !important;
+            background: transparent;
+            color: #1f2937;
+            border: 0 !important;
+            border-bottom: 1px solid #f1f4f8 !important;
+            font-size: 13px !important;
+            line-height: 1.35;
+            font-weight: 500;
+            vertical-align: middle !important;
         }
 
-        .pending-qty {
-            color: #b46b00;
+        .upgradDataGrid tr:hover td {
+            background: #fafbfd !important;
+        }
+
+        .materialGrid th,
+        .materialGrid td {
+            vertical-align: middle !important;
+            text-align: center;
+            word-wrap: break-word;
+        }
+
+        .sr-pill {
+            width: 28px;
+            height: 28px;
+            margin: 0 auto;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: #eef1f5;
+            border-radius: 50%;
+            color: #334155;
+            font-size: 12px;
             font-weight: 700;
         }
 
+        .rm-code-cell {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #111827;
+            font-weight: 800;
+        }
+
+        .rm-code-cell i {
+            color: #2f6fed;
+        }
+
+        .qty-value {
+            color: #111827;
+            font-weight: 800;
+        }
+
+        .dispatch-pill,
+        .pending-qty {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 54px;
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-weight: 800;
+        }
+
+        .dispatch-pill {
+            background: #e8f8ee;
+            color: #22a35a;
+        }
+
+        .pending-qty {
+            background: #fff4e5;
+            color: #d9822b;
+        }
+
         .qtyDispatchBox {
-            width: 105px !important;
-            height: 38px;
-            min-height: 38px;
+            width: 88px !important;
+            height: 36px !important;
+            min-height: 36px !important;
             margin: 0 auto;
             text-align: center;
             padding: 5px 7px;
-            font-weight: 600;
+            font-weight: 700;
+            background: #ffffff !important;
+            border: 1px solid #d7dde6 !important;
+            border-radius: 10px !important;
         }
 
-        /* Chrome, Edge, Safari */
         .no-spinner::-webkit-outer-spin-button,
         .no-spinner::-webkit-inner-spin-button {
             -webkit-appearance: none;
             margin: 0;
         }
 
-        /* Firefox */
         .no-spinner {
             -moz-appearance: textfield;
         }
 
-        /* ==========================================================
-           MESSAGE
-        ========================================================== */
+        .rm-footer-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-top: 16px;
+            padding: 14px 16px;
+            background: #f7f8fa;
+            border-radius: 14px;
+        }
+
+        .rm-footer-hint {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        .rm-footer-hint i {
+            margin-top: 3px;
+            color: #2f6fed;
+        }
+
+        .rm-footer-hint strong {
+            color: #111827;
+        }
+
+        .rm-footer-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+
+        .btn-back,
+        .btn-secondary {
+            background: #ffffff !important;
+            border: 1px solid #d7dde6 !important;
+            color: #334155 !important;
+            border-radius: 999px !important;
+            padding: 8px 16px !important;
+            font-size: 13px !important;
+            font-weight: 700 !important;
+            cursor: pointer;
+            transition: background-color 0.18s ease, border-color 0.18s ease, color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+        }
+
+        .btn-back::before {
+            content: "\f060";
+            font-family: "Font Awesome 5 Free";
+            font-weight: 900;
+            margin-right: 6px;
+        }
+
+        .btn-back:hover,
+        .btn-back:focus,
+        .btn-secondary:hover,
+        .btn-secondary:focus {
+            background: #eef4ff !important;
+            border-color: #2f6fed !important;
+            color: #1f5bd6 !important;
+            transform: translateY(-1px);
+            box-shadow: 0 8px 18px rgba(47, 111, 237, 0.14) !important;
+        }
+
+        .btn-submit-dispatch {
+            background: #2f6fed !important;
+            border: 1px solid #2f6fed !important;
+            color: #ffffff !important;
+            border-radius: 999px !important;
+            padding: 8px 18px !important;
+            font-size: 13px !important;
+            font-weight: 700 !important;
+            cursor: pointer;
+            transition: background-color 0.18s ease, border-color 0.18s ease, color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+        }
+
+        .btn-submit-dispatch::after {
+            content: "\f061";
+            font-family: "Font Awesome 5 Free";
+            font-weight: 900;
+            margin-left: 6px;
+        }
+
+        .btn-submit-dispatch:hover,
+        .btn-submit-dispatch:focus {
+            background: #1f5bd6 !important;
+            border-color: #1f5bd6 !important;
+            color: #ffffff !important;
+            transform: translateY(-1px);
+            box-shadow: 0 8px 18px rgba(47, 111, 237, 0.28) !important;
+        }
 
         .message-box {
             margin-bottom: 14px;
         }
 
-            .message-box .alert {
-                margin-bottom: 0;
-                border-radius: 12px;
-                font-size: 14px;
-            }
+        .message-box .alert {
+            margin-bottom: 0;
+            border-radius: 12px;
+            font-size: 14px;
+        }
 
         #divMessage {
             font-size: 13px;
             font-weight: 600;
+            margin-top: 8px;
         }
-
-        /* ==========================================================
-           POPUPS
-        ========================================================== */
 
         .modalBackground {
             background-color: #000;
@@ -447,30 +717,24 @@
             border-radius: 14px;
             overflow: hidden;
             box-shadow: 0 8px 28px rgba(0,0,0,0.28);
+            animation: rm-fade-in-up 0.28s ease;
         }
 
-        .success-popup {
-            width: 360px;
-            max-width: 90%;
-        }
-
-        .validation-popup {
-            width: 450px;
-            max-width: 90%;
-        }
+        .success-popup { width: 360px; max-width: 90%; }
+        .validation-popup { width: 450px; max-width: 90%; }
 
         .success-popup .success-popup-header {
-            background-color: #28a745;
+            background-color: #22a35a;
             color: #fff;
             padding: 13px 18px;
         }
 
-            .success-popup .success-popup-header h5,
-            .validation-popup-header h5 {
-                margin: 0;
-                font-size: 16px;
-                font-weight: 700;
-            }
+        .success-popup .success-popup-header h5,
+        .validation-popup-header h5 {
+            margin: 0;
+            font-size: 16px;
+            font-weight: 700;
+        }
 
         .success-popup .success-popup-body {
             padding: 22px 18px;
@@ -499,121 +763,79 @@
             font-size: 14px;
         }
 
-            .validation-popup-body ul {
-                margin: 0;
-                padding-left: 20px;
-            }
+        .validation-popup-body ul {
+            margin: 0;
+            padding-left: 20px;
+        }
 
-            .validation-popup-body li {
-                margin-bottom: 7px;
-                color: #dc3545;
-                font-weight: 500;
-            }
-
-        /* ==========================================================
-           RESPONSIVE
-        ========================================================== */
+        .validation-popup-body li {
+            margin-bottom: 7px;
+            color: #dc3545;
+            font-weight: 500;
+        }
 
         @media (max-width: 991px) {
-            .rightFung {
-                max-width: 42%;
-                white-space: normal;
-                text-align: right;
+            .rm-meta-bar,
+            .rm-metric-row {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .rm-footer-bar {
+                flex-direction: column;
+                align-items: stretch;
             }
         }
 
         @media (max-width: 767px) {
             .contentMainBody {
-                padding: 10px !important;
+                padding: 12px !important;
             }
 
-            .standalone-breadcrumbs {
-                min-height: 64px;
-                padding: 8px 12px 8px 20px;
-                border-radius: 12px;
+            .standalone-breadcrumbs,
+            .rm-meta-bar,
+            .rm-metric-row {
+                display: block;
             }
 
-            .home-link {
-                width: 40px;
-                height: 40px;
-                min-width: 40px;
-                border-radius: 10px;
-                font-size: 16px;
+            .standalone-breadcrumbs .pageTitle {
+                font-size: 13px !important;
             }
 
-            .pageTitle {
-                font-size: 17px !important;
+            .rm-meta-item {
+                border-right: 0;
+                border-bottom: 1px solid #f0ece4;
             }
 
-            .pageSubTitle {
-                font-size: 12px !important;
-            }
-
-            .rightFung {
-                display: none;
-            }
-
-            .contentMainBody .card,
-            .contentMainBody .details-card {
-                border-radius: 12px;
-            }
-
-            .contentMainBody .card-body {
-                padding: 13px;
-            }
-
-            .mst-panel-header {
-                padding: 12px 12px 8px;
-            }
-
-            .mst-panel-icon {
-                width: 38px;
-                height: 38px;
-                min-width: 38px;
-                font-size: 16px;
-            }
-
-            .mst-panel-title {
-                font-size: 15px !important;
-            }
-
-            .mst-panel-subtitle {
-                font-size: 12px !important;
-            }
-
-            .row > [class*="col-md-"] {
-                margin-bottom: 12px;
-            }
-
-            .button-section .btn {
+            .rm-footer-actions .btn,
+            .rm-footer-actions input {
+                width: 100%;
                 margin-bottom: 6px;
             }
         }
     </style>
 
+
 </head>
 
-<body>
+<body class="rm-module">
 
     <form id="form1" runat="server" autocomplete="off">
         <ajaxToolkit:ToolkitScriptManager ID="ToolkitScriptManager1" runat="server"></ajaxToolkit:ToolkitScriptManager>
         <div class="contentMainBody">
 
-            <div class="standalone-breadcrumbs">
+            <div class="breadcrumbs standalone-breadcrumbs">
                 <div class="leftFung">
-                    <a href="Dispatch_List.aspx" class="home-link" title="Dispatch List">
-                        <i class="fas fa-home"></i>
-                    </a>
-
-                    <div class="diveider">/</div>
-
                     <div class="pageTitleWrap">
                         <h3 class="pageTitle">Request Details</h3>
-                        <p class="pageSubTitle">Review request information and complete dispatch details</p>
+                        <p class="pageSubTitle">Review request information and create dispatch details</p>
                     </div>
                 </div>
+                <div class="rightFung">
+                    <asp:Label ID="lblDispatchStatusBadge" runat="server" CssClass="rm-status-badge is-pending" Text="Pending Dispatch"></asp:Label>
+                </div>
             </div>
-            <asp:Panel ID="pnlMessage" runat="server" Visible="false" CssClass="message-box">
+
+<asp:Panel ID="pnlMessage" runat="server" Visible="false" CssClass="message-box">
                 <asp:Label ID="lblMessage" runat="server" CssClass="alert alert-danger d-block"></asp:Label>
             </asp:Panel>
             <asp:Button ID="btnPopupTarget" runat="server" Style="display: none;" />
@@ -690,624 +912,411 @@
 
             </asp:Panel>
 
-            <div class="card details-card">
-
-                <div class="mst-panel-header">
-                    <div class="mst-panel-header-left">
-                        <span class="mst-panel-icon">
-                            <i class="fas fa-file-alt"></i>
-                        </span>
-                        <div>
-                            <h5 class="mst-panel-title">Request Information</h5>
-                            <p class="mst-panel-subtitle">Basic request and vendor information</p>
-                        </div>
-                    </div>
+            <div class="rm-meta-bar">
+                <div class="rm-meta-item">
+                    <span class="rm-meta-label">Request ID</span>
+                    <asp:Label ID="lblRequestID" runat="server" CssClass="rm-meta-value rm-meta-value-id"></asp:Label>
+                    <asp:HiddenField ID="hdnRawMaterialVendorCode" runat="server" />
                 </div>
-
-
-                <div class="card-body">
-
-                    <div class="row">
-
-                        <div class="col-md-3">
-
-                            <div class="form-group">
-
-                                <label class="form-control-label">
-                                    Request ID:
-                               
-                                </label>
-
-                                <asp:Label
-                                    ID="lblRequestID"
-                                    runat="server"
-                                    CssClass="form-control detail-value">
-                                </asp:Label>
-                                <asp:HiddenField ID="hdnRawMaterialVendorCode" runat="server" />
-
-                            </div>
-
-                        </div>
-
-                        <div class="col-md-3">
-
-                            <div class="form-group">
-
-                                <label class="form-control-label">
-                                    Request Date:
-                               
-                                </label>
-
-                                <asp:Label
-                                    ID="lblRequestDate"
-                                    runat="server"
-                                    CssClass="form-control detail-value">
-                                </asp:Label>
-
-                            </div>
-
-                        </div>
-
-                        <div class="col-md-3">
-
-                            <div class="form-group">
-
-                                <label class="form-control-label">
-                                    Vendor Code:
-                               
-                                </label>
-
-                                <asp:Label
-                                    ID="lblVendorCode"
-                                    runat="server"
-                                    CssClass="form-control detail-value">
-                                </asp:Label>
-
-                            </div>
-
-                        </div>
-
-                        <div class="col-md-3">
-
-                            <div class="form-group">
-
-                                <label class="form-control-label">
-                                    Vendor Name:
-                               
-                                </label>
-
-                                <asp:Label
-                                    ID="lblVendorName"
-                                    runat="server"
-                                    CssClass="form-control detail-value">
-                                </asp:Label>
-
-                            </div>
-
-                        </div>
-
-
-                    </div>
-
+                <div class="rm-meta-item">
+                    <span class="rm-meta-label">Request Date</span>
+                    <asp:Label ID="lblRequestDate" runat="server" CssClass="rm-meta-value"></asp:Label>
                 </div>
-
-            </div>
-
-            <div class="card details-card">
-                <div class="mst-panel-header">
-                    <div class="mst-panel-header-left">
-                        <span class="mst-panel-icon">
-                            <i class="fas fa-shipping-fast"></i>
-                        </span>
-                        <div>
-                            <h5 class="mst-panel-title">Dispatch Information</h5>
-                            <p class="mst-panel-subtitle">Select how the material will be dispatched</p>
-                        </div>
-                    </div>
+                <div class="rm-meta-item">
+                    <span class="rm-meta-label">Vendor Code</span>
+                    <asp:Label ID="lblVendorCode" runat="server" CssClass="rm-meta-value"></asp:Label>
                 </div>
-
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label class="form-control-label">
-                                    Delivery Type:
-                               
-                                </label>
-                                <asp:DropDownList
-                                    ID="ddlDelType"
-                                    runat="server"
-                                    ClientIDMode="Static"
-                                    CssClass="form-control select2"
-                                    AutoPostBack="true"
-                                    OnSelectedIndexChanged="ddlDelType_SelectedIndexChanged">
-                                </asp:DropDownList>
-                            </div>
-                        </div>
-                    </div>
+                <div class="rm-meta-item is-vendor">
+                    <span class="rm-meta-label">Vendor Name</span>
+                    <span class="rm-vendor-name">
+                        <i class="fas fa-building"></i>
+                        <asp:Label ID="lblVendorName" runat="server"></asp:Label>
+                    </span>
                 </div>
             </div>
 
-            <asp:Panel
-                ID="pnlCourierCard"
-                runat="server"
-                CssClass="card details-card"
-                Visible="false">
+            <div class="row rm-two-col">
+                <div class="col-lg-6">
+                    <div class="rm-card">
+                        <div class="rm-card-head">
+                            <div class="rm-card-head-left">
+                                <span class="rm-card-icon">
+                                    <i class="fas fa-truck"></i>
+                                </span>
+                                <div>
+                                    <h5 class="rm-card-title">Delivery Information</h5>
+                                    <p class="rm-card-subtitle">Select how this order will be delivered</p>
+                                </div>
+                            </div>
+                        </div>
 
-                <div class="mst-panel-header">
-                    <div class="mst-panel-header-left">
-                        <span class="mst-panel-icon">
-                            <i class="fas fa-truck"></i>
-                        </span>
-                        <div>
-                            <h5 class="mst-panel-title">
+                        <div class="form-group">
+                            <label class="form-control-label">
+                                Delivery Type <span class="req-star">*</span>
+                            </label>
+                            <asp:DropDownList
+                                ID="ddlDelType"
+                                runat="server"
+                                ClientIDMode="Static"
+                                CssClass="form-control"
+                                AutoPostBack="true"
+                                OnSelectedIndexChanged="ddlDelType_SelectedIndexChanged">
+                            </asp:DropDownList>
+                            <div class="field-hint">
+                                <i class="fas fa-info-circle"></i>
+                                Select the applicable delivery method
+                            </div>
+                        </div>
+
+                        <asp:Panel ID="pnlCourierCard" runat="server" CssClass="rm-courier-block" Visible="false">
+                            <h6 class="rm-subhead">
                                 <asp:Label ID="lblCourierCardHeader" runat="server" Text="Courier Information"></asp:Label>
-                            </h5>
-                            <p class="mst-panel-subtitle">Enter courier or transport dispatch information</p>
-                        </div>
+                            </h6>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-control-label">
+                                            <asp:Label ID="lblCourierNoLabel" runat="server" Text="POD No:"></asp:Label>
+                                        </label>
+                                        <asp:TextBox
+                                            ID="txtCouNo"
+                                            runat="server"
+                                            ClientIDMode="Static"
+                                            CssClass="form-control"
+                                            placeholder="Enter POD No.">
+                                        </asp:TextBox>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-control-label">
+                                            <asp:Label ID="lblTranNameLabel" runat="server" Text="Courier Name:"></asp:Label>
+                                        </label>
+                                        <asp:TextBox
+                                            ID="txtTranName"
+                                            runat="server"
+                                            ClientIDMode="Static"
+                                            CssClass="form-control"
+                                            placeholder="Enter Courier Name.">
+                                        </asp:TextBox>
+                                    </div>
+                                </div>
+                                <div id="divLrNo" class="col-md-6" runat="server">
+                                    <div class="form-group">
+                                        <label class="form-control-label">LR/Consignment No:</label>
+                                        <asp:TextBox
+                                            ID="txtLRNo"
+                                            runat="server"
+                                            ClientIDMode="Static"
+                                            CssClass="form-control"
+                                            placeholder="Enter LR/Consignment No.">
+                                        </asp:TextBox>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-control-label">
+                                            <asp:Label ID="lblLrDate" runat="server" Text="Courier Date:"></asp:Label>
+                                        </label>
+                                        <asp:TextBox
+                                            ID="txtLRDate"
+                                            runat="server"
+                                            CssClass="form-control"
+                                            autocomplete="off"
+                                            placeholder="Select Courier Date."
+                                            onkeydown="return handleDateKeyDown(event, this);"
+                                            onpaste="return true;"
+                                            ondrop="return true;">
+                                        </asp:TextBox>
+                                        <ajaxToolkit:CalendarExtender
+                                            ID="calLRDate"
+                                            runat="server"
+                                            TargetControlID="txtLRDate"
+                                            Format="dd-MM-yyyy">
+                                        </ajaxToolkit:CalendarExtender>
+                                    </div>
+                                </div>
+                                <div id="divVehNo" class="col-md-6" runat="server">
+                                    <div class="form-group">
+                                        <label class="form-control-label">Vehicle No:</label>
+                                        <asp:TextBox
+                                            ID="txtVehNo"
+                                            runat="server"
+                                            ClientIDMode="Static"
+                                            CssClass="form-control"
+                                            placeholder="Enter Vehicle No.">
+                                        </asp:TextBox>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label class="form-control-label">LR Doc:</label>
+                                        <div class="rm-upload-box">
+                                            <span class="rm-upload-icon"><i class="fas fa-file-pdf"></i></span>
+                                            <div>
+                                                <p class="rm-upload-title">Upload LR Document</p>
+                                                <p class="rm-upload-hint">PDF file only</p>
+                                                <span id="lrFileName" class="rm-upload-name"></span>
+                                            </div>
+                                            <button type="button" class="rm-choose-btn" onclick="document.getElementById('fuLrDoc').click(); return false;">Choose File</button>
+                                            <asp:FileUpload
+                                                ID="fuLrDoc"
+                                                runat="server"
+                                                ClientIDMode="Static"
+                                                accept=".pdf,application/pdf"
+                                                CssClass="rm-file-input" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </asp:Panel>
                     </div>
                 </div>
 
-                <div class="card-body">
-
-                    <div class="row">
-
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label class="form-control-label">
-                                    <asp:Label ID="lblCourierNoLabel" runat="server" Text="POD No:"></asp:Label>
-                                </label>
-                                <asp:TextBox
-                                    ID="txtCouNo"
-                                    runat="server"
-                                    ClientIDMode="Static"
-                                    CssClass="form-control"
-                                    placeholder="Enter POD No.">
-                                </asp:TextBox>
+                <div class="col-lg-6">
+                    <div class="rm-card">
+                        <div class="rm-card-head">
+                            <div class="rm-card-head-left">
+                                <span class="rm-card-icon">
+                                    <i class="fas fa-file-invoice"></i>
+                                </span>
+                                <div>
+                                    <h5 class="rm-card-title">Invoice Information</h5>
+                                    <p class="rm-card-subtitle">Enter or extract invoice details</p>
+                                </div>
                             </div>
                         </div>
 
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label class="form-control-label">
-                                    <asp:Label ID="lblTranNameLabel" runat="server" Text="Courier Name:"></asp:Label>
-                                </label>
-                                <asp:TextBox
-                                    ID="txtTranName"
-                                    runat="server"
-                                    ClientIDMode="Static"
-                                    CssClass="form-control"
-                                    placeholder="Enter Courier Name.">
-                                </asp:TextBox>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-control-label">Invoice No. <span class="req-star">*</span></label>
+                                    <asp:TextBox
+                                        ID="txtInvNo"
+                                        runat="server"
+                                        ClientIDMode="Static"
+                                        CssClass="form-control"
+                                        placeholder="Enter invoice no.">
+                                    </asp:TextBox>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-control-label">Invoice Date <span class="req-star">*</span></label>
+                                    <asp:TextBox
+                                        ID="txtInvDate"
+                                        runat="server"
+                                        CssClass="form-control"
+                                        autocomplete="off"
+                                        placeholder="dd-mm-yyyy"
+                                        onkeydown="return handleDateKeyDown(event, this);"
+                                        onpaste="return false;"
+                                        ondrop="return false;">
+                                    </asp:TextBox>
+                                    <ajaxToolkit:CalendarExtender
+                                        ID="calInvDate"
+                                        runat="server"
+                                        TargetControlID="txtInvDate"
+                                        Format="dd-MM-yyyy">
+                                    </ajaxToolkit:CalendarExtender>
+                                </div>
                             </div>
                         </div>
 
-                        <div id="divLrNo" class="col-md-3" runat="server">
-                            <div class="form-group">
-                                <label class="form-control-label">
-                                    LR/Consignment No:
-                               
-                                </label>
-                                <asp:TextBox
-                                    ID="txtLRNo"
-                                    runat="server"
-                                    ClientIDMode="Static"
-                                    CssClass="form-control"
-                                    placeholder="Enter LR/Consignment No.">
-                                </asp:TextBox>
-                            </div>
-                        </div>
-
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label class="form-control-label">
-                                    <asp:Label ID="lblLrDate" runat="server" Text="Courier Date:"></asp:Label>
-                                </label>
-                                <asp:TextBox
-                                    ID="txtLRDate"
-                                    runat="server"
-                                    CssClass="form-control"
-                                    autocomplete="off"
-                                    placeholder="Select Courier Date."
-                                    onkeydown="return handleDateKeyDown(event, this);"
-                                    onpaste="return true;"
-                                    ondrop="return true;">
-                                </asp:TextBox>
-                                <ajaxToolkit:CalendarExtender
-                                    ID="calLRDate"
-                                    runat="server"
-                                    TargetControlID="txtLRDate"
-                                    Format="dd-MM-yyyy">
-                                </ajaxToolkit:CalendarExtender>
-                            </div>
-                        </div>
-
-                        <div id="divVehNo" class="col-md-3" runat="server">
-                            <div class="form-group">
-                                <label class="form-control-label">
-                                    Vehicle No:
-                               
-                                </label>
-                                <asp:TextBox
-                                    ID="txtVehNo"
-                                    runat="server"
-                                    ClientIDMode="Static"
-                                    CssClass="form-control"
-                                    placeholder="Enter Vehicle No.">
-                                </asp:TextBox>
-                            </div>
-                        </div>
-
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label class="form-control-label">
-                                    LR Doc:
-                               
-                                </label>
-                                <asp:FileUpload
-                                    ID="fuLrDoc"
-                                    runat="server"
-                                    ClientIDMode="Static"
-                                    accept=".pdf,application/pdf"
-                                    CssClass="form-control" />
-                            </div>
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </asp:Panel>
-
-            <div class="card details-card">
-
-                <div class="mst-panel-header">
-                    <div class="mst-panel-header-left">
-                        <span class="mst-panel-icon">
-                            <i class="fas fa-file-invoice"></i>
-                        </span>
-                        <div>
-                            <h5 class="mst-panel-title">Invoice Information</h5>
-                            <p class="mst-panel-subtitle">Upload the invoice and verify extracted invoice details</p>
-                        </div>
-                    </div>
-                </div>
-
-
-                <div class="card-body">
-
-                    <div class="row">
-
-                        <div class="col-md-3">
-
-                            <div class="form-group">
-
-                                <label class="form-control-label">
-                                    Invoice Doc:
-                               
-                                </label>
-
+                        <div class="form-group">
+                            <label class="form-control-label">Invoice Document</label>
+                            <div class="rm-upload-box">
+                                <span class="rm-upload-icon"><i class="fas fa-file-alt"></i></span>
+                                <div>
+                                    <p class="rm-upload-title">Upload Invoice</p>
+                                    <p class="rm-upload-hint">PDF file only &bull; Max 5 MB</p>
+                                    <span id="invoiceFileName" class="rm-upload-name"></span>
+                                </div>
+                                <button type="button" class="rm-choose-btn" onclick="document.getElementById('fuInv').click(); return false;">Choose File</button>
                                 <asp:FileUpload
                                     ID="fuInv"
                                     runat="server"
                                     ClientIDMode="Static"
                                     accept=".pdf,application/pdf"
-                                    CssClass="form-control" />
-
-                                <button type="button" id="btnUploadInvoice" class="btn btn-primary btn-sm mt-2" runat="server">
-                                    Upload &amp; Extract
-       
-                               
-                                </button>
-                                <div id="divMessage" class="mt-2"></div>
+                                    CssClass="rm-file-input" />
                             </div>
-
                         </div>
 
-                        <div class="col-md-3">
-
-                            <div class="form-group">
-
-                                <label class="form-control-label">
-                                    Invoice No:
-                               
-                                </label>
-
-                                <asp:TextBox
-                                    ID="txtInvNo"
-                                    runat="server"
-                                    ClientIDMode="Static"
-                                    CssClass="form-control"
-                                    placeholder="Enter Invoice No.">
-                                </asp:TextBox>
-
-                            </div>
-
-                        </div>
-
-                        <div class="col-md-3">
-
-                            <div class="form-group">
-
-                                <label class="form-control-label">
-                                    Invoice Date:
-                               
-                                </label>
-
-                                <%--<asp:TextBox
-                                    ID="txtInvDate"
-                                    runat="server"
-                                    ClientIDMode="Static"
-                                    CssClass="form-control">
-                                </asp:TextBox>--%>
-                                <asp:TextBox
-                                    ID="txtInvDate"
-                                    runat="server"
-                                    CssClass="form-control"
-                                    autocomplete="off"
-                                    placeholder="Select Invoice Date."
-                                    onkeydown="return handleDateKeyDown(event, this);"
-                                    onpaste="return false;"
-                                    ondrop="return false;">
-                                </asp:TextBox>
-                                <ajaxToolkit:CalendarExtender
-                                    ID="calInvDate"
-                                    runat="server"
-                                    TargetControlID="txtInvDate"
-                                    Format="dd-MM-yyyy">
-                                </ajaxToolkit:CalendarExtender>
-
-                            </div>
-
-                        </div>
-
+                        <button type="button" id="btnUploadInvoice" class="btn btn-primary rm-extract-btn" runat="server">
+                            <i class="fas fa-magic"></i>
+                            Upload &amp; Extract
+                        </button>
+                        <div id="divMessage"></div>
                     </div>
-
                 </div>
-
             </div>
 
-            <div class="card details-card">
-
-                <div class="mst-panel-header">
-                    <div class="mst-panel-header-left">
-                        <span class="mst-panel-icon">
-                            <i class="fas fa-list"></i>
+            <div class="rm-card">
+                <div class="rm-card-head">
+                    <div class="rm-card-head-left">
+                        <span class="rm-card-icon">
+                            <i class="fas fa-cube"></i>
                         </span>
                         <div>
-                            <h5 class="mst-panel-title">Material Request Details</h5>
-                            <p class="mst-panel-subtitle">Review requested quantities and enter quantity to dispatch</p>
+                            <h5 class="rm-card-title">Material Request Details</h5>
+                            <p class="rm-card-subtitle">Enter quantity against materials being dispatched</p>
                         </div>
+                    </div>
+                    <asp:Label ID="lblMaterialCountBadge" runat="server" CssClass="rm-count-badge" Text="0 Materials"></asp:Label>
+                </div>
+
+                <div class="rm-metric-row">
+                    <div class="rm-metric-card">
+                        <div class="rm-metric-icon is-blue"><i class="fas fa-cube"></i></div>
+                        <p class="rm-metric-label">Total Requested</p>
+                        <p class="rm-metric-value">
+                            <asp:Label ID="lblTotalRequested" runat="server" Text="0.00"></asp:Label>
+                        </p>
+                    </div>
+                    <div class="rm-metric-card">
+                        <div class="rm-metric-icon is-green"><i class="fas fa-check-circle"></i></div>
+                        <p class="rm-metric-label">Total Dispatched</p>
+                        <p class="rm-metric-value is-green">
+                            <asp:Label ID="lblTotalDispatched" runat="server" Text="0.00"></asp:Label>
+                        </p>
+                    </div>
+                    <div class="rm-metric-card">
+                        <div class="rm-metric-icon is-orange"><i class="far fa-clock"></i></div>
+                        <p class="rm-metric-label">Total Pending</p>
+                        <p class="rm-metric-value is-orange">
+                            <asp:Label ID="lblTotalPending" runat="server" Text="0.00"></asp:Label>
+                        </p>
+                    </div>
+                    <div class="rm-metric-card">
+                        <div class="rm-metric-icon is-blue"><i class="fas fa-box"></i></div>
+                        <p class="rm-metric-label">Items</p>
+                        <p class="rm-metric-value">
+                            <asp:Label ID="lblItemCount" runat="server" Text="0"></asp:Label>
+                        </p>
                     </div>
                 </div>
 
+                <div class="table-responsive">
+                    <asp:GridView
+                        ID="gvMaterials"
+                        runat="server"
+                        AutoGenerateColumns="false"
+                        BorderWidth="0"
+                        CssClass="table table-hover upgradDataGrid materialGrid"
+                        EmptyDataText="No request details found.">
 
-                <div class="card-body">
+                        <RowStyle CssClass="tlrowlight" />
+                        <HeaderStyle CssClass="headerGrid" />
+                        <FooterStyle CssClass="footerGrid" />
 
+                        <Columns>
+                            <asp:TemplateField HeaderText="SR NO.">
+                                <ItemTemplate>
+                                    <span class="sr-pill">
+                                        <asp:Label ID="lblSrl" runat="server" Text='<%# Container.DataItemIndex + 1 %>'></asp:Label>
+                                    </span>
+                                    <asp:HiddenField ID="hdnOrdID" runat="server" Value='<%# Eval("ord_id") %>' />
+                                </ItemTemplate>
+                                <HeaderStyle HorizontalAlign="Center" Width="6%" />
+                                <ItemStyle HorizontalAlign="Center" Width="6%" />
+                            </asp:TemplateField>
 
-                    <div class="table-responsive">
+                            <asp:TemplateField HeaderText="RAW MATERIAL CODE">
+                                <ItemTemplate>
+                                    <span class="rm-code-cell">
+                                        <i class="fas fa-cube"></i>
+                                        <asp:Label ID="lblRmCode" runat="server" Text='<%# Eval("ord_rawmaterial_code") %>'></asp:Label>
+                                    </span>
+                                </ItemTemplate>
+                                <HeaderStyle HorizontalAlign="Center" Width="18%" />
+                                <ItemStyle HorizontalAlign="Center" Width="18%" />
+                            </asp:TemplateField>
 
-                        <asp:GridView
-                            ID="gvMaterials"
+                            <asp:TemplateField HeaderText="REQUIRED DELIVERY DATE">
+                                <ItemTemplate>
+                                    <asp:Label ID="lblDeliveryDate" runat="server" Text='<%# Eval("ord_req_delivery_date", "{0:dd-MM-yyyy}") %>'></asp:Label>
+                                </ItemTemplate>
+                                <HeaderStyle HorizontalAlign="Center" Width="16%" />
+                                <ItemStyle HorizontalAlign="Center" Width="16%" />
+                            </asp:TemplateField>
+
+                            <asp:TemplateField HeaderText="REQUESTED QUANTITY">
+                                <ItemTemplate>
+                                    <asp:Label ID="lblRequestedQty" runat="server" CssClass="qty-value" Text='<%# Eval("ord_qty") %>'></asp:Label>
+                                </ItemTemplate>
+                                <HeaderStyle HorizontalAlign="Center" Width="14%" />
+                                <ItemStyle HorizontalAlign="Center" Width="14%" />
+                            </asp:TemplateField>
+
+                            <asp:TemplateField HeaderText="TOTAL DISPATCHED QUANTITY">
+                                <ItemTemplate>
+                                    <asp:Label ID="lblDispatchQty" runat="server" CssClass="dispatch-pill" Text='<%# Eval("dispatch_qty") %>'></asp:Label>
+                                </ItemTemplate>
+                                <HeaderStyle HorizontalAlign="Center" Width="15%" />
+                                <ItemStyle HorizontalAlign="Center" Width="15%" />
+                            </asp:TemplateField>
+
+                            <asp:TemplateField HeaderText="PENDING QUANTITY">
+                                <ItemTemplate>
+                                    <asp:Label ID="lblPendingQty" runat="server" CssClass="pending-qty" Text='<%# Eval("pending_qty") %>'></asp:Label>
+                                </ItemTemplate>
+                                <HeaderStyle HorizontalAlign="Center" Width="13%" />
+                                <ItemStyle HorizontalAlign="Center" Width="13%" />
+                            </asp:TemplateField>
+
+                            <asp:TemplateField HeaderText="QUANTITY TO DISPATCH">
+                                <ItemTemplate>
+                                    <asp:TextBox
+                                        ID="txtQtyToDispatch"
+                                        runat="server"
+                                        CssClass="form-control qtyDispatchBox no-spinner"
+                                        Text="0"
+                                        MaxLength="10"
+                                        inputmode="decimal"
+                                        onkeypress="return allowDecimal(this, event);"
+                                        oninput="validateDecimal(this);">
+                                    </asp:TextBox>
+                                </ItemTemplate>
+                                <HeaderStyle HorizontalAlign="Center" Width="18%" />
+                                <ItemStyle HorizontalAlign="Center" Width="18%" />
+                            </asp:TemplateField>
+                        </Columns>
+                    </asp:GridView>
+                </div>
+
+                <div class="rm-footer-bar">
+                    <div class="rm-footer-hint">
+                        <i class="fas fa-info-circle"></i>
+                        <div>
+                            <strong>Ready to submit?</strong>
+                            Verify invoice and dispatch quantities before submitting.
+                        </div>
+                    </div>
+                    <div class="rm-footer-actions">
+                        <asp:Button
+                            ID="btnBack"
                             runat="server"
-                            AutoGenerateColumns="false"
-                            BorderWidth="1"
-                            CssClass="table table-hover upgradDataGrid materialGrid"
-                            EmptyDataText="No request details found.">
-
-                            <RowStyle CssClass="tlrowlight" />
-                            <HeaderStyle CssClass="headerGrid" />
-                            <FooterStyle CssClass="footerGrid" />
-
-                            <Columns>
-                                <asp:TemplateField HeaderText="Srl No.">
-
-                                    <ItemTemplate>
-
-                                        <asp:Label
-                                            ID="lblSrl"
-                                            runat="server"
-                                            Text='<%# Container.DataItemIndex + 1 %>'>
-                                        </asp:Label>
-
-                                        <asp:HiddenField
-                                            ID="hdnOrdID"
-                                            runat="server"
-                                            Value='<%# Eval("ord_id") %>' />
-
-                                    </ItemTemplate>
-
-                                    <HeaderStyle
-                                        HorizontalAlign="Center"
-                                        Width="6%" />
-
-                                    <ItemStyle
-                                        HorizontalAlign="Center"
-                                        Width="6%" />
-
-                                </asp:TemplateField>
-
-                                <asp:TemplateField HeaderText="Raw Material Code">
-
-                                    <ItemTemplate>
-
-                                        <asp:Label
-                                            ID="lblRmCode"
-                                            runat="server"
-                                            Text='<%# Eval("ord_rawmaterial_code") %>'>
-                                        </asp:Label>
-
-                                    </ItemTemplate>
-
-                                    <HeaderStyle
-                                        HorizontalAlign="Center"
-                                        Width="18%" />
-
-                                    <ItemStyle
-                                        HorizontalAlign="Center"
-                                        Width="18%" />
-
-                                </asp:TemplateField>
-
-                                <asp:TemplateField HeaderText="Required Delivery Date">
-
-                                    <ItemTemplate>
-
-                                        <asp:Label
-                                            ID="lblDeliveryDate"
-                                            runat="server"
-                                            Text='<%# Eval("ord_req_delivery_date", "{0:dd-MM-yyyy}") %>'>
-                                        </asp:Label>
-
-                                    </ItemTemplate>
-
-                                    <HeaderStyle
-                                        HorizontalAlign="Center"
-                                        Width="16%" />
-
-                                    <ItemStyle
-                                        HorizontalAlign="Center"
-                                        Width="16%" />
-
-                                </asp:TemplateField>
-
-                                <asp:TemplateField HeaderText="Requested Quantity">
-
-                                    <ItemTemplate>
-
-                                        <asp:Label
-                                            ID="lblRequestedQty"
-                                            runat="server"
-                                            CssClass="qty-value"
-                                            Text='<%# Eval("ord_qty") %>'>
-                                        </asp:Label>
-
-                                    </ItemTemplate>
-
-                                    <HeaderStyle
-                                        HorizontalAlign="Center"
-                                        Width="14%" />
-
-                                    <ItemStyle
-                                        HorizontalAlign="Center"
-                                        Width="14%" />
-
-                                </asp:TemplateField>
-
-                                <asp:TemplateField HeaderText="Total Dispatched Quantity">
-
-                                    <ItemTemplate>
-
-                                        <asp:Label
-                                            ID="lblDispatchQty"
-                                            runat="server"
-                                            CssClass="qty-value"
-                                            Text='<%# Eval("dispatch_qty") %>'>
-                                        </asp:Label>
-
-                                    </ItemTemplate>
-
-                                    <HeaderStyle
-                                        HorizontalAlign="Center"
-                                        Width="15%" />
-
-                                    <ItemStyle
-                                        HorizontalAlign="Center"
-                                        Width="15%" />
-
-                                </asp:TemplateField>
-
-                                <asp:TemplateField HeaderText="Pending Quantity">
-
-                                    <ItemTemplate>
-
-                                        <asp:Label
-                                            ID="lblPendingQty"
-                                            runat="server"
-                                            CssClass="pending-qty"
-                                            Text='<%# Eval("pending_qty") %>'>
-                                        </asp:Label>
-
-                                    </ItemTemplate>
-
-                                    <HeaderStyle
-                                        HorizontalAlign="Center"
-                                        Width="13%" />
-
-                                    <ItemStyle
-                                        HorizontalAlign="Center"
-                                        Width="13%" />
-
-                                </asp:TemplateField>
-
-                                <asp:TemplateField HeaderText="Quantity To Dispatch">
-
-                                    <ItemTemplate>
-
-                                        <asp:TextBox
-                                            ID="txtQtyToDispatch"
-                                            runat="server"
-                                            CssClass="form-control qtyDispatchBox"
-                                            Text="0"
-                                            MaxLength="10"
-                                            inputmode="decimal"
-                                            onkeypress="return allowDecimal(this, event);"
-                                            oninput="validateDecimal(this);">
-                                        </asp:TextBox>
-
-                                    </ItemTemplate>
-
-                                    <HeaderStyle
-                                        HorizontalAlign="Center"
-                                        Width="18%" />
-
-                                    <ItemStyle
-                                        HorizontalAlign="Center"
-                                        Width="18%" />
-
-                                </asp:TemplateField>
-
-                            </Columns>
-
-                        </asp:GridView>
-
+                            OnClick="btnBack_Click"
+                            Text="Back"
+                            CssClass="btn btn-secondary btn-sm btn-back"
+                            CausesValidation="false" />
+                        <asp:Button
+                            ID="btnSubmit"
+                            runat="server"
+                            Text="Submit Dispatch"
+                            OnClick="btnSubmit_Click"
+                            OnClientClick="return validateDispatchForm();"
+                            CssClass="btn btn-primary btn-sm btn-submit-dispatch"
+                            CausesValidation="false" />
                     </div>
-
-                    <div class="row button-section">
-
-                        <div class="col-md-12">
-
-                            <asp:Button
-                                ID="btnSubmit"
-                                runat="server"
-                                Text="Submit"
-                                OnClick="btnSubmit_Click"
-                                OnClientClick="return validateDispatchForm();"
-                                CssClass="btn btn-primary btn-sm"
-                                CausesValidation="false" />
-
-                            <asp:Button
-                                ID="btnBack"
-                                runat="server"
-                                OnClick="btnBack_Click"
-                                Text="Back"
-                                CssClass="btn btn-secondary btn-sm"
-                                CausesValidation="false" />
-
-                        </div>
-
-                    </div>
-
-
                 </div>
-
             </div>
-
 
         </div>
 
     </form>
-
+    <script type="text/javascript" src="Scripts/rm-status-confirm.js?v=<%= DateTime.Now.Ticks %>"></script>
     <script type="text/javascript">
 
         function allowDecimal(control, evt) {
@@ -1713,32 +1722,11 @@
             // ========================================
 
             if (errors.length > 0) {
-
-                var message =
-                    '<ul>';
-
-                for (var j = 0; j < errors.length; j++) {
-                    message += '<li>' + errors[j] + '</li>';
-                }
-
-                message += '</ul>';
-
-                document.getElementById(
-                '<%= lblValidationMessage.ClientID %>'
-                ).innerHTML = message;
-
-                var popup =
-                    $find('mpeValidationBehavior');
-
-                if (popup) {
-                    popup.show();
-                }
-
-                return false;
+                return rmFailValidation(errors.join(" "));
             }
 
 
-            return true;
+            return rmConfirmAction(document.getElementById("btnSubmit"), "submit");
         }
 
 
@@ -2105,40 +2093,14 @@
             // Show Validation Modal
             // ========================================
             if (errors.length > 0) {
-
-                var message = '<ul>';
-
-                for (var j = 0; j < errors.length; j++) {
-
-                    message +=
-                        '<li>' +
-                        errors[j] +
-                        '</li>';
-                }
-
-                message += '</ul>';
-
-
-                document.getElementById(
-                '<%= lblValidationMessage.ClientID %>'
-                ).innerHTML = message;
-
-
-                var popup =
-                    $find('mpeValidationBehavior');
-
-                if (popup) {
-                    popup.show();
-                }
-
-                return false;
+                return rmFailValidation(errors.join(" "));
             }
 
 
             // ========================================
             // All validations passed
             // ========================================
-            return true;
+            return rmConfirmAction(document.getElementById("btnSubmit"), "submit");
         }
 
 
@@ -2206,7 +2168,22 @@
                 welcomeVendorName.textContent =
                     (vendorName.innerText || vendorName.textContent || '').trim();
             }
+
+            bindFileNameDisplay('fuInv', 'invoiceFileName');
+            bindFileNameDisplay('fuLrDoc', 'lrFileName');
         });
+
+        function bindFileNameDisplay(inputId, labelId) {
+            var input = document.getElementById(inputId);
+            var label = document.getElementById(labelId);
+            if (!input || !label) {
+                return;
+            }
+
+            input.addEventListener('change', function () {
+                label.textContent = (input.files && input.files.length) ? input.files[0].name : '';
+            });
+        }
     </script>
 
     <script type="text/javascript">

@@ -4,7 +4,7 @@
 /* Scrollbar Styling */
 ::-webkit-scrollbar {
     width: 6px;
-    height:6px;
+    height: 6px;
 }
 
 ::-webkit-scrollbar-track {
@@ -71,8 +71,8 @@ body {
 }
 
 /* ==========================================================================
-   Page header / breadcrumb bar - touch optimised
-   Light surface card with a deep-blue accent bar, 44px minimum tap targets,
+   Page header / breadcrumb bar - compact
+   Light surface card with a deep-blue accent bar, tight padding, and a
    page title with a supporting subtitle underneath.
    ========================================================================== */
 .breadcrumbs {
@@ -81,27 +81,27 @@ body {
     background: -webkit-linear-gradient(top,rgba(255, 255, 255, 1) 0%, rgba(245, 248, 252, 1) 100%);
     background: linear-gradient(180deg,rgba(255, 255, 255, 1) 0%, rgba(245, 248, 252, 1) 100%);
     border: 1px solid #e4eaf2;
-    border-radius: 16px;
-    box-shadow: 0px 1px 2px rgba(16, 56, 90, 0.05), 0px 6px 18px rgba(16, 56, 90, 0.06);
-    margin: 0px 0px 12px 0px;
-    padding: 8px 12px 8px 22px;
-    min-height: 62px;
+    border-radius: 10px;
+    box-shadow: 0px 1px 2px rgba(16, 56, 90, 0.05), 0px 4px 12px rgba(16, 56, 90, 0.05);
+    margin: 0px 0px 8px 0px;
+    padding: 4px 10px 4px 16px;
+    min-height: 40px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 6px;
 }
 
     /* Accent bar */
     .breadcrumbs::before {
         content: "";
         position: absolute;
-        left: 9px;
-        top: 12px;
-        bottom: 12px;
-        width: 4px;
-        border-radius: 4px;
+        left: 7px;
+        top: 7px;
+        bottom: 7px;
+        width: 3px;
+        border-radius: 3px;
         background: #1b5a8c;
         background: linear-gradient(180deg,rgba(27, 90, 140, 1) 0%, rgba(16, 56, 90, 1) 100%);
     }
@@ -109,8 +109,9 @@ body {
 .leftFung {
     display: flex;
     align-items: center;
-    flex: 1 1 260px;
+    flex: 1 1 220px;
     min-width: 0;
+    gap: 0;
 }
 
 .rightFung {
@@ -118,23 +119,29 @@ body {
     align-items: center;
     flex-wrap: wrap;
     justify-content: flex-end;
-    gap: 8px;
+    gap: 6px;
     color: #48586b;
     font-size: 12px;
-    line-height: 16px;
+    line-height: 14px;
 }
 
-/* Home - touch target */
+.rightFung:empty {
+    display: none;
+}
+
+/* Home button */
 .breadcrumbs .leftFung > a {
     flex: 0 0 auto;
-    min-width: 44px;
-    min-height: 44px;
+    width: 28px;
+    height: 28px;
+    min-width: 28px;
+    min-height: 28px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    margin-right: 2px;
+    margin-right: 0;
     border: 1px solid #dbe6f1;
-    border-radius: 12px;
+    border-radius: 8px;
     background: #eef4fa;
     text-decoration: none;
     -webkit-tap-highlight-color: transparent;
@@ -159,17 +166,17 @@ body {
     }
 
 .breadcrumbs .fa-home {
-    font-size: 17px;
+    font-size: 13px;
     color: #10385a;
     line-height: 1;
 }
 
 .diveider {
     flex: 0 0 auto;
-    margin: 0px 8px;
+    margin: 0px 6px;
     padding: 0px;
     color: #c3cfdd;
-    font-size: 16px;
+    font-size: 13px;
     font-weight: 300;
     line-height: 1;
 }
@@ -184,17 +191,17 @@ body {
 
 /* Pages without a home link (help / FAQ / contact) */
 .leftFung > .pageTitleWrap:first-child {
-    margin-left: 6px;
+    margin-left: 4px;
 }
 
 .pageTitle {
     color: #10385a;
-    font-size: 16px;
-    line-height: 20px;
+    font-size: 14px;
+    line-height: 17px;
     font-weight: 600;
-    letter-spacing: 0.2px;
+    letter-spacing: 0.1px;
     margin: 0px;
-    padding: 0px;
+    padding: 1px 0px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -202,26 +209,26 @@ body {
 
 .pageSubTitle {
     color: #6b7b8f;
-    font-size: 11.5px;
-    line-height: 15px;
+    font-size: 11px;
+    line-height: 13px;
     font-weight: 400;
-    letter-spacing: 0.2px;
-    margin: 1px 0px 0px 0px;
+    letter-spacing: 0.1px;
+    margin: 0px;
     padding: 0px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
-/* Action buttons in the bar - touch sized */
+/* Action buttons in the bar */
 .breadcrumbs .rightFung .btn {
-    min-height: 40px;
-    padding: 10px 18px;
-    border-radius: 10px;
+    min-height: 28px;
+    padding: 4px 12px;
+    border-radius: 8px;
     font-size: 12px;
     font-weight: 600;
-    line-height: 18px;
-    letter-spacing: 0.3px;
+    line-height: 16px;
+    letter-spacing: 0.2px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -239,8 +246,9 @@ body {
 
 @media (max-width: 767px) {
     .breadcrumbs {
-        padding: 8px 10px 8px 20px;
+        padding: 4px 8px 4px 14px;
         min-height: 0px;
+        gap: 4px;
     }
 
     .leftFung {
@@ -248,8 +256,8 @@ body {
     }
 
     .pageTitle {
-        font-size: 14px;
-        line-height: 18px;
+        font-size: 13px;
+        line-height: 16px;
         white-space: normal;
     }
 
@@ -262,7 +270,8 @@ body {
     }
 
     .breadcrumbs .rightFung .btn {
-        min-height: 44px;
+        min-height: 32px;
+        padding: 5px 12px;
     }
 }
 
@@ -509,7 +518,7 @@ body {
             font-weight: 500;
             font-weight: 500;
             color: #495057;
-            font-size: 13px;
+            font-size: 12px;
             line-height: 15px;
             margin: 0px;
             padding: 0px 10px 0px 4px;
@@ -2262,26 +2271,26 @@ body {
     transition: background-color .15s ease, color .15s ease, box-shadow .15s ease;
 }
 
-/* Keyboard selected / hovered / touched row */
-.vmsAutoCompleteItemHighlight,
-.autoCompleteFlyoutHighLightedItem,
-.autocomplete_highlightedListItem,
-.vmsAutoCompleteItem:hover,
-.autoCompleteFlyoutItem:hover,
-.vmsAutoCompleteItem:focus,
-.autoCompleteFlyoutItem:focus {
-    background: #eaf1ff;
-    color: #10385a;
-    box-shadow: inset 3px 0 0 0 #1b5a8c;
-    outline: none;
-}
+    /* Keyboard selected / hovered / touched row */
+    .vmsAutoCompleteItemHighlight,
+    .autoCompleteFlyoutHighLightedItem,
+    .autocomplete_highlightedListItem,
+    .vmsAutoCompleteItem:hover,
+    .autoCompleteFlyoutItem:hover,
+    .vmsAutoCompleteItem:focus,
+    .autoCompleteFlyoutItem:focus {
+        background: #eaf1ff;
+        color: #10385a;
+        box-shadow: inset 3px 0 0 0 #1b5a8c;
+        outline: none;
+    }
 
-.vmsAutoCompleteItem:active,
-.vmsAutoCompleteItemHighlight:active,
-.autoCompleteFlyoutItem:active,
-.autoCompleteFlyoutHighLightedItem:active {
-    background: #dce7fb;
-}
+        .vmsAutoCompleteItem:active,
+        .vmsAutoCompleteItemHighlight:active,
+        .autoCompleteFlyoutItem:active,
+        .autoCompleteFlyoutHighLightedItem:active {
+            background: #dce7fb;
+        }
 
 @media (max-width: 991.98px) {
     .vmsAutoComplete,

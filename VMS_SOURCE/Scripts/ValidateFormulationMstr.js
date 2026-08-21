@@ -126,20 +126,11 @@ function validateInputs() {
 
     if (firstErrorControl != "") {
         SetControlFocus(firstErrorControl);
-        errMsg = "<table>" + errMsg + "</table>";
-        document.getElementById("lblErrorMessage").innerHTML = errMsg;
-        return false;
+        return rmFailValidation(errMsg);
     }
     else {
         document.getElementById("lblErrorMessage").innerHTML = '';
-        if (confirm("Are you sure to submit?")) {
-            document.getElementById("btnSubmit").disabled = true;
-            __doPostBack(document.getElementById("btnSubmit").name, '');
-            return true;
-        }
-        else {
-            return false;
-        }
+        return rmConfirmPostback("btnSubmit", "submit");
     }
 }
 
@@ -250,17 +241,10 @@ function validateAddRawMaterial() {
 
     // Show all errors
     if (errors.length > 0) {
-
-        if (lblErrorMessage) {
-            lblErrorMessage.style.color = "#dc3545";
-            lblErrorMessage.innerHTML = errors.join("<br>");
-        }
-
-        return false;
+        return rmFailValidation(errors.join(" "));
     }
 
-    // Confirmation
-    return confirm("Are you sure you want to add this record?");
+    return rmConfirmPostback("btnAdd", "add");
 }
 
 function validateFormulationSubmit() {
@@ -275,20 +259,13 @@ function validateFormulationSubmit() {
     }
 
     if (!ratioLabels || ratioLabels.length === 0) {
-        if (lblErrorMessage) {
-            lblErrorMessage.style.color = "#dc3545";
-            lblErrorMessage.innerHTML = "Please enter at least one record in the grid.";
-        }
-        return false;
+        return rmFailValidation("Please enter at least one record in the grid.");
     }
 
     if (totalRatio !== 100) {
-        if (lblErrorMessage) {
-            lblErrorMessage.style.color = "#dc3545";
-            lblErrorMessage.innerHTML = "Total Consumption Ratio should be equal 100%.";
-        }
-        return false;
+        return rmFailValidation("Total Consumption Ratio should be equal 100%.");
     }
 
-    return confirm("Are you sure you want to submit this record?");
+    var submitBtn = document.getElementById("btnSubmit");
+    return rmConfirmAction(submitBtn, "submit");
 }

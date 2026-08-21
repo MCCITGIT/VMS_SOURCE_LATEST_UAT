@@ -16,23 +16,10 @@ function validateInputs() {
 
     if (firstErrorControl != "") {
         SetControlFocus(firstErrorControl);
-        errMsg = errMsg;
-        document.getElementById("lblErrorMessage").innerHTML = errMsg;
-        return false;
+        return rmFailValidation(errMsg);
     }
     else {
-
         document.getElementById("lblErrorMessage").innerHTML = '';
-        if (confirm("Are you sure to submit?")) {
-            document.getElementById("btnSubmit").disabled = true;
-            //document.getElementById("ctl00_ContentPlaceHolder1_btnReset").disabled = true;
-            //document.getElementById(btnSave).click();
-            __doPostBack(document.getElementById("btnSubmit").name, '');
-            //document.getElementById(btnSave).disabled = true;
-            return true;
-        }
-        else {
-            return false;
-        }
+        return rmConfirmPostback("btnSubmit", "submit");
     }
 }

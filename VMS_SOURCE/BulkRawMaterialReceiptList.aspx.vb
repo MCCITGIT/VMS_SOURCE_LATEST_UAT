@@ -48,6 +48,7 @@ Partial Class BulkRawMaterialReceiptList
 
     Protected Sub imgbtnSearch_Click(sender As Object, e As EventArgs)
         lblErrorMessage.Text = String.Empty
+        gvReceipt.PageIndex = 0
         BindData()
     End Sub
 
@@ -102,18 +103,49 @@ Partial Class BulkRawMaterialReceiptList
         Try
             Dim obj As New OPC_VendorClass()
             Dim ds As DataSet = obj.GetRawMaterialReceiptList(ddlRawMatvendor.SelectedValue, ddlStatus.SelectedValue)
-
-            If (Not (ds Is Nothing) AndAlso ds.Tables.Count > 0 AndAlso Not (ds.Tables(0) Is Nothing) AndAlso ds.Tables(0).Rows.Count > 0) Then
-                gvReceipt.DataSource = ds.Tables(0)
-                gvReceipt.DataBind()
-            Else
-                gvReceipt.DataSource = Nothing
-                gvReceipt.DataBind()
-            End If
+            Dim table As DataTable = RmGridHelper.GetTable(ds)
+            RmGridHelper.BindPaged(gvReceipt, table)
+            UpdateSummary(table)
         Catch ex As Exception
             Dim returnUrl As String = "~/ExceptionPage.aspx"
             Session(Constant.SessionKeys.ErrMessage) = ex.ToString()
             Response.Redirect(returnUrl)
         End Try
+    End Sub
+
+    Private Sub UpdateSummary(ByVal sourceTable As DataTable)
+        Dim totalCount As Integer = 0
+        Dim pendingCount As Integer = 0
+        Dim receivedCount As Integer = 0
+
+        If sourceTable IsNot Nothing Then
+            totalCount = sourceTable.Rows.Count
+            For Each row As DataRow In sourceTable.Rows
+                Dim receivedId As String = String.Empty
+                If sourceTable.Columns.Contains("received_id") Then
+                    receivedId = Convert.ToString(row("received_id")).Trim()
+                End If
+
+                Dim isReceived As Boolean = Not String.IsNullOrWhiteSpace(receivedId)
+                If Not isReceived AndAlso sourceTable.Columns.Contains("status") Then
+                    isReceived = RmGridHelper.IsYes(row("status"))
+                End If
+
+                If isReceived Then
+                    receivedCount += 1
+                Else
+                    pendingCount += 1
+                End If
+            Next
+        End If
+
+        lblTotalCount.Text = totalCount.ToString()
+        lblPendingCount.Text = pendingCount.ToString()
+        lblReceivedCount.Text = receivedCount.ToString()
+    End Sub
+
+    Protected Sub gvReceipt_PageIndexChanging(sender As Object, e As GridViewPageEventArgs) Handles gvReceipt.PageIndexChanging
+        gvReceipt.PageIndex = e.NewPageIndex
+        BindData()
     End Sub
 End Class

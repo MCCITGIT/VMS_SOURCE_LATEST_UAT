@@ -1,4 +1,4 @@
-/* Maximum Despatch Limit — landscape card layout (visual only)
+/* Maximum Despatch Limit — compact landscape cards (visual only)
    Scoped to .mdl-page so master/grid styles are not affected elsewhere.
    GridView columns stay intact (S.No, Unit, Code, Limit) for existing JS/code-behind. */
 
@@ -8,15 +8,56 @@
     --mdl-ink: #10243a;
     --mdl-muted: #5b6b7c;
     --mdl-line: #e3ebf3;
-    --mdl-shadow: 0 1px 2px rgba(16, 56, 90, 0.05), 0 8px 18px rgba(16, 56, 90, 0.06);
-    --mdl-shadow-hover: 0 8px 20px rgba(16, 56, 90, 0.12);
-    --mdl-radius: 14px;
+    --mdl-shadow: 0 1px 2px rgba(16, 56, 90, 0.05), 0 6px 14px rgba(16, 56, 90, 0.05);
+    --mdl-shadow-hover: 0 6px 16px rgba(16, 56, 90, 0.1);
+    --mdl-radius: 10px;
     --mdl-primary: #1b5a8c;
     --mdl-primary-deep: #10385a;
     --mdl-accent: #0f8a7a;
     --mdl-soft: #eef6fb;
-    font-size: 12.5px;
+    font-size: 12px;
     color: var(--mdl-ink);
+}
+
+.mdl-page .breadcrumbs {
+    padding: 4px 10px 4px 16px !important;
+    min-height: 40px;
+    margin-bottom: 8px !important;
+    border-radius: 10px;
+}
+
+.mdl-page .breadcrumbs::before {
+    top: 7px;
+    bottom: 7px;
+    width: 3px;
+}
+
+.mdl-page .breadcrumbs .leftFung > a {
+    min-width: 28px;
+    min-height: 28px;
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+}
+
+.mdl-page .breadcrumbs .fa-home {
+    font-size: 13px;
+}
+
+.mdl-page .diveider {
+    margin: 0 6px;
+    font-size: 13px;
+}
+
+.mdl-page .pageTitle {
+    font-size: 14px !important;
+    line-height: 17px;
+}
+
+.mdl-page .pageSubTitle {
+    font-size: 11px !important;
+    line-height: 13px;
+    margin-top: 0;
 }
 
 .mdl-page .mdl-panel,
@@ -25,19 +66,19 @@
     border: 1px solid var(--mdl-line);
     border-radius: var(--mdl-radius);
     box-shadow: var(--mdl-shadow);
-    margin-bottom: 10px;
+    margin-bottom: 8px;
     overflow: visible;
 }
 
 .mdl-page .mdl-panel-body,
 .mdl-page .card.mdl-panel > .card-body.mdl-panel-body {
-    padding: 12px;
+    padding: 8px !important;
 }
 
 .mdl-page .mdl-panel-body .errormsg,
 .mdl-page #divErrorMessage {
     display: block;
-    margin: 8px 0 0;
+    margin: 6px 0 0;
 }
 
 .mdl-page .mdl-panel-body .errormsg:empty,
@@ -50,7 +91,7 @@
     width: 100%;
 }
 
-/* ---- GridView → responsive landscape card grid ---- */
+/* ---- GridView → compact single-row card grid ---- */
 .mdl-page table.mdl-cards {
     display: block;
     width: 100% !important;
@@ -64,8 +105,8 @@
 
 .mdl-page table.mdl-cards > tbody {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(min(100%, 360px), 1fr));
-    gap: 10px;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
+    gap: 6px;
     width: 100%;
 }
 
@@ -76,14 +117,14 @@
 
 .mdl-page table.mdl-cards > tbody > tr.tlrowlight {
     display: grid;
-    grid-template-columns: 52px minmax(0, 1fr) minmax(118px, 38%);
-    grid-template-rows: auto auto;
+    grid-template-columns: 36px minmax(0, 1fr) auto minmax(92px, 30%);
+    grid-template-rows: auto;
     align-items: stretch;
     min-width: 0;
     height: 100%;
     background: var(--mdl-surface);
     border: 1px solid var(--mdl-line);
-    border-radius: 12px;
+    border-radius: 8px;
     box-shadow: var(--mdl-shadow);
     overflow: hidden;
     position: relative;
@@ -102,7 +143,7 @@
 }
 
 .mdl-page table.mdl-cards > tbody > tr.tlrowlight:hover {
-    transform: translateY(-2px);
+    transform: translateY(-1px);
     box-shadow: var(--mdl-shadow-hover);
     border-color: #c9d8e8;
     background: var(--mdl-surface);
@@ -110,8 +151,8 @@
 
 .mdl-page table.mdl-cards > tbody > tr.tlrowlight:focus-within {
     border-color: #9bbcd6;
-    box-shadow: 0 0 0 3px rgba(27, 90, 140, 0.12), var(--mdl-shadow-hover);
-    transform: translateY(-1px);
+    box-shadow: 0 0 0 2px rgba(27, 90, 140, 0.12), var(--mdl-shadow-hover);
+    transform: none;
 }
 
 .mdl-page table.mdl-cards > tbody > tr.tlrowlight > td {
@@ -124,19 +165,19 @@
     min-width: 0;
 }
 
-/* S.No — vertical index rail */
+/* S.No — compact index rail */
 .mdl-page table.mdl-cards > tbody > tr.tlrowlight > td:nth-child(1) {
     grid-column: 1;
-    grid-row: 1 / 3;
+    grid-row: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 2px;
-    padding: 10px 6px 10px 10px !important;
+    gap: 1px;
+    padding: 6px 4px 6px 8px !important;
     background: linear-gradient(180deg, #f4f8fc 0%, #eaf3f9 100%) !important;
     border-right: 1px solid var(--mdl-line) !important;
-    font-size: 16px;
+    font-size: 13px;
     font-weight: 800;
     letter-spacing: -0.3px;
     color: var(--mdl-primary-deep);
@@ -146,81 +187,70 @@
 
 .mdl-page table.mdl-cards > tbody > tr.tlrowlight > td:nth-child(1)::before {
     content: "S.No";
-    font-size: 8px;
+    font-size: 7px;
     font-weight: 750;
-    letter-spacing: 0.4px;
+    letter-spacing: 0.3px;
     text-transform: uppercase;
     color: #7d8d9e;
 }
 
-/* Unit — title block */
+/* Unit — name only, same row */
 .mdl-page table.mdl-cards > tbody > tr.tlrowlight > td:nth-child(2) {
     grid-column: 2;
     grid-row: 1;
-    padding: 10px 10px 2px 12px !important;
+    display: flex;
+    align-items: center;
+    padding: 6px 8px !important;
 }
 
 .mdl-page .mdl-identity {
     display: flex;
-    flex-direction: column;
-    gap: 2px;
+    flex-direction: row;
+    align-items: center;
+    gap: 6px;
     min-width: 0;
 }
 
 .mdl-page .mdl-kicker {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    font-size: 9px;
-    font-weight: 750;
-    letter-spacing: 0.4px;
-    text-transform: uppercase;
-    color: #7d8d9e;
-    line-height: 1.2;
-}
-
-.mdl-page .mdl-kicker i {
-    font-size: 10px;
-    color: var(--mdl-primary);
-    width: 12px;
-    text-align: center;
+    display: none;
 }
 
 .mdl-page .mdl-unit-name,
 .mdl-page .mdl-unit-name span {
     display: block;
-    font-size: 13.5px;
+    font-size: 12.5px;
     font-weight: 750;
     color: var(--mdl-primary-deep);
-    line-height: 1.25;
+    line-height: 1.2;
     word-break: break-word;
 }
 
-/* Code — compact badge under the unit */
+/* Code — badge inline */
 .mdl-page table.mdl-cards > tbody > tr.tlrowlight > td:nth-child(3) {
-    grid-column: 2;
-    grid-row: 2;
-    padding: 0 10px 10px 12px !important;
-    align-self: start;
+    grid-column: 3;
+    grid-row: 1;
+    display: flex;
+    align-items: center;
+    padding: 6px 6px 6px 0 !important;
 }
 
 .mdl-page .mdl-code-wrap {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
+    gap: 0;
     min-width: 0;
 }
 
 .mdl-page .mdl-code-badge {
     display: inline-flex;
     align-items: center;
-    min-height: 22px;
-    padding: 1px 8px;
+    min-height: 20px;
+    padding: 0 7px;
     border-radius: 999px;
     background: #eef6f4;
     border: 1px solid #cfe6e0;
     color: var(--mdl-accent);
-    font-size: 11px;
+    font-size: 10.5px;
     font-weight: 750;
     letter-spacing: 0.2px;
     line-height: 1.2;
@@ -231,13 +261,13 @@
     font: inherit;
 }
 
-/* Limit — hero editor on the right */
+/* Limit — compact editor */
 .mdl-page table.mdl-cards > tbody > tr.tlrowlight > td:nth-child(4) {
-    grid-column: 3;
-    grid-row: 1 / 3;
+    grid-column: 4;
+    grid-row: 1;
     display: flex;
     align-items: stretch;
-    padding: 8px 8px 8px 0 !important;
+    padding: 4px !important;
     background: linear-gradient(180deg, #f7fbfc 0%, #f3f8f6 100%) !important;
     border-left: 1px dashed #d7e6e2 !important;
 }
@@ -246,33 +276,33 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    gap: 4px;
+    gap: 1px;
     width: 100%;
-    padding: 4px 8px;
+    padding: 0 4px;
 }
 
 .mdl-page .mdl-limit::before {
     content: "Limit";
-    font-size: 9px;
+    font-size: 8px;
     font-weight: 750;
-    letter-spacing: 0.4px;
+    letter-spacing: 0.3px;
     text-transform: uppercase;
     color: #5d7083;
 }
 
 .mdl-page table.mdl-cards tr.tlrowlight td .form-control,
 .mdl-page .mdl-limit .form-control {
-    height: 40px;
-    min-height: 40px;
-    padding: 6px 10px;
-    border-radius: 10px;
+    height: 30px;
+    min-height: 30px;
+    padding: 2px 8px;
+    border-radius: 6px;
     border: 1px solid #c9dce8;
     background: #fff;
-    font-size: 15px;
+    font-size: 13px;
     font-weight: 700;
     color: var(--mdl-primary-deep);
     font-variant-numeric: tabular-nums;
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    box-shadow: none;
     transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
@@ -284,7 +314,7 @@
 .mdl-page table.mdl-cards tr.tlrowlight td .form-control:focus,
 .mdl-page .mdl-limit .form-control:focus {
     border-color: var(--mdl-accent);
-    box-shadow: 0 0 0 3px rgba(15, 138, 122, 0.16);
+    box-shadow: 0 0 0 2px rgba(15, 138, 122, 0.16);
     outline: none;
 }
 
@@ -297,37 +327,37 @@
 .mdl-page table.mdl-cards > tbody > tr td[colspan] {
     display: block;
     text-align: center;
-    padding: 22px 14px !important;
+    padding: 14px 10px !important;
     color: var(--mdl-muted);
     background: #f8fafc !important;
     border: 1px dashed #d5e0ea !important;
-    border-radius: 12px;
+    border-radius: 8px;
     font-weight: 650;
 }
 
 /* ---- Actions ---- */
 .mdl-page .mdl-actions {
-    margin: 12px 0 0;
-    padding: 10px 8px 2px;
+    margin: 8px 0 0;
+    padding: 8px 4px 0;
     border-top: 1px solid var(--mdl-line);
 }
 
 .mdl-page .mdl-actions .btn {
-    min-height: 40px;
-    min-width: 108px;
-    padding: 8px 18px;
-    border-radius: 10px;
-    font-size: 12.5px;
+    min-height: 32px;
+    min-width: 88px;
+    padding: 4px 14px;
+    border-radius: 8px;
+    font-size: 12px;
     font-weight: 650;
     letter-spacing: 0.2px;
-    box-shadow: 0 1px 2px rgba(16, 56, 90, 0.08);
+    box-shadow: none;
     transition: transform 0.12s ease, box-shadow 0.12s ease, filter 0.12s ease;
 }
 
 .mdl-page .mdl-actions .btn:hover,
 .mdl-page .mdl-actions .btn:focus {
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(16, 56, 90, 0.16);
+    box-shadow: 0 3px 8px rgba(16, 56, 90, 0.14);
 }
 
 .mdl-page .mdl-actions .btn:active {
@@ -349,44 +379,45 @@
 @media (max-width: 720px) {
     .mdl-page .mdl-panel-body,
     .mdl-page .card.mdl-panel > .card-body.mdl-panel-body {
-        padding: 10px;
+        padding: 6px !important;
     }
 
     .mdl-page table.mdl-cards > tbody {
         grid-template-columns: 1fr;
-        gap: 8px;
+        gap: 6px;
     }
 }
 
 @media (max-width: 560px) {
     .mdl-page table.mdl-cards > tbody > tr.tlrowlight {
-        grid-template-columns: 46px minmax(0, 1fr);
-        grid-template-rows: auto auto auto;
+        grid-template-columns: 32px minmax(0, 1fr) auto;
+        grid-template-rows: auto auto;
     }
 
     .mdl-page table.mdl-cards > tbody > tr.tlrowlight > td:nth-child(1) {
         grid-row: 1 / 3;
+        padding: 6px 4px 6px 8px !important;
     }
 
     .mdl-page table.mdl-cards > tbody > tr.tlrowlight > td:nth-child(4) {
         grid-column: 1 / -1;
-        grid-row: 3;
+        grid-row: 2;
         border-left: 0 !important;
         border-top: 1px dashed #d7e6e2 !important;
-        padding: 8px !important;
+        padding: 6px !important;
     }
 
     .mdl-page .mdl-limit {
         flex-direction: row;
         align-items: center;
         justify-content: space-between;
-        gap: 10px;
+        gap: 8px;
         padding: 0;
     }
 
     .mdl-page .mdl-limit .form-control {
         flex: 1 1 auto;
-        max-width: 180px;
+        max-width: 160px;
         margin-left: auto;
     }
 
@@ -406,11 +437,11 @@
         grid-row: auto;
         flex-direction: row;
         justify-content: flex-start;
-        gap: 8px;
-        padding: 8px 10px 0 12px !important;
+        gap: 6px;
+        padding: 6px 8px 0 10px !important;
         background: transparent !important;
         border-right: 0 !important;
-        font-size: 13px;
+        font-size: 12px;
     }
 
     .mdl-page table.mdl-cards > tbody > tr.tlrowlight > td:nth-child(2),
@@ -418,8 +449,8 @@
     .mdl-page table.mdl-cards > tbody > tr.tlrowlight > td:nth-child(4) {
         grid-column: 1;
         grid-row: auto;
-        padding-left: 12px !important;
-        padding-right: 10px !important;
+        padding-left: 10px !important;
+        padding-right: 8px !important;
     }
 
     .mdl-page .mdl-limit {

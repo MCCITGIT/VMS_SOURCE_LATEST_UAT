@@ -62,8 +62,8 @@ Partial Class BulkRawMaterialReceiptDtls
             Dim despatchId As Integer = 0
             Integer.TryParse(Convert.ToString(Request.QueryString("despatch_id")), despatchId)
             If despatchId <= 0 Then
-                lblErrorMessage.ForeColor = Drawing.Color.Red
-                lblErrorMessage.Text = "Invalid despatch id."
+                lblErrorMessage.Text = ""
+                RmActionPopup.ShowError(Me, "Invalid despatch id.")
                 btnSubmit.Visible = False
                 Return
             End If
@@ -72,8 +72,8 @@ Partial Class BulkRawMaterialReceiptDtls
             Dim ds As DataSet = obj.GetRawMaterial_DespatchHdrList(despatchId.ToString())
 
             If ds Is Nothing OrElse ds.Tables.Count = 0 Then
-                lblErrorMessage.ForeColor = Drawing.Color.Red
-                lblErrorMessage.Text = "Despatch data not found."
+                lblErrorMessage.Text = ""
+                RmActionPopup.ShowError(Me, "Despatch data not found.")
                 gvVendorRawMat.DataSource = Nothing
                 gvVendorRawMat.DataBind()
                 btnSubmit.Visible = False
@@ -124,8 +124,8 @@ Partial Class BulkRawMaterialReceiptDtls
                 gvVendorRawMat.DataSource = Nothing
                 gvVendorRawMat.DataBind()
                 btnSubmit.Visible = False
-                lblErrorMessage.ForeColor = Drawing.Color.Red
-                lblErrorMessage.Text = "No pending raw material found for receipt."
+                lblErrorMessage.Text = ""
+                RmActionPopup.ShowError(Me, "No pending raw material found for receipt.")
             End If
             SetReceiptMode(False)
         Catch ex As Exception
@@ -140,8 +140,8 @@ Partial Class BulkRawMaterialReceiptDtls
             Dim receiveId As Integer = 0
             Integer.TryParse(Convert.ToString(Request.QueryString("receive_id")), receiveId)
             If receiveId <= 0 Then
-                lblErrorMessage.ForeColor = Drawing.Color.Red
-                lblErrorMessage.Text = "Invalid receive id."
+                lblErrorMessage.Text = ""
+                RmActionPopup.ShowError(Me, "Invalid receive id.")
                 SetReceiptMode(True)
                 Return
             End If
@@ -150,8 +150,8 @@ Partial Class BulkRawMaterialReceiptDtls
             Dim ds As DataSet = obj.GetRawMaterial_ReceivedHdrList(receiveId.ToString())
 
             If ds Is Nothing OrElse ds.Tables.Count = 0 OrElse ds.Tables(0) Is Nothing OrElse ds.Tables(0).Rows.Count = 0 Then
-                lblErrorMessage.ForeColor = Drawing.Color.Red
-                lblErrorMessage.Text = "Received data not found."
+                lblErrorMessage.Text = ""
+                RmActionPopup.ShowError(Me, "Received data not found.")
                 SetReceiptMode(True)
                 Return
             End If
@@ -399,7 +399,8 @@ Partial Class BulkRawMaterialReceiptDtls
             Dim condi As String = "item_code = '" & hdnItemCodePop.Value.Replace("'", "''") & "' AND item_type_code = 'G' AND sub_inventory_code = '" & ddlSubInventoryPop.SelectedValue.Replace("'", "''") & "' AND locator_code = '" & ddlLocatorPop.SelectedValue.Replace("'", "''") & "'"
             Dim itmrow As DataRow() = dtItmDtls.Select(condi)
             If itmrow.Length > 0 Then
-                lblmsg.Text = "You have already added this sub inventory and locator"
+                lblmsg.Text = ""
+                RmActionPopup.ShowError(Me, "You have already added this sub inventory and locator.")
             Else
                 AppendAdjustLine(dtItmDtls)
             End If
@@ -846,16 +847,12 @@ Partial Class BulkRawMaterialReceiptDtls
     End Function
 
     Private Sub ShowSubmitMessage(ByVal message As String, ByVal isSuccess As Boolean)
-        lblPopMessageShow.Text = message
+        lblErrorMessage.Text = ""
         If isSuccess Then
-            lblPopMessageShow.ForeColor = Drawing.Color.Green
-            lblErrorMessage.ForeColor = Drawing.Color.Green
+            RmActionPopup.ShowSuccess(Me, message, "BulkRawMaterialReceiptList.aspx")
         Else
-            lblPopMessageShow.ForeColor = Drawing.Color.Red
-            lblErrorMessage.ForeColor = Drawing.Color.Red
+            RmActionPopup.ShowError(Me, message)
         End If
-        lblErrorMessage.Text = message
-        mpSuccess.Show()
     End Sub
 
     Protected Sub lbtnExit2_Click(sender As Object, e As EventArgs)

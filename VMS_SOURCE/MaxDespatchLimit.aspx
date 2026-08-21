@@ -5,7 +5,7 @@
 </asp:Content>--%>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
 
-    <link href="includes/max-despatch-limit-cards.css" rel="stylesheet" type="text/css" />
+    <link href="includes/max-despatch-limit-cards.css?v=<%= DateTime.Now.Ticks %>" rel="stylesheet" type="text/css" />
     <script src="Scripts/ValidateMaxDespLimit.js" type="text/javascript"></script>
     <script type="text/javascript">
         function disableBackButton() {

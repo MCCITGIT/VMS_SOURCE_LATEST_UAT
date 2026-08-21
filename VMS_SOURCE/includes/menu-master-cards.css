@@ -252,7 +252,7 @@
 
 .mm-title {
     display: block;
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 700;
     color: var(--mm-primary-deep);
     line-height: 1.2;
@@ -517,11 +517,12 @@
     transition: transform 0.12s ease, box-shadow 0.18s ease, filter 0.18s ease, background 0.15s ease;
 }
 
+.mm-page table.gv-cards .btn-outline-primary.gridBtn,
 .mm-page table.gv-cards .btn-primary.gridBtn {
-    background: linear-gradient(180deg, #2270ad 0%, #1b5a8c 100%) !important;
-    border: 0 !important;
-    box-shadow: 0 4px 10px rgba(27, 90, 140, 0.22);
-    color: #fff !important;
+    background: #ffffff !important;
+    border: 1.5px solid #2f6fed !important;
+    box-shadow: none !important;
+    color: #2f6fed !important;
 }
 
 .mm-page table.gv-cards .btn-success.gridBtn {
@@ -544,9 +545,15 @@
     text-decoration: none;
 }
 
+.mm-page table.gv-cards .btn-outline-primary.gridBtn:hover,
+.mm-page table.gv-cards .btn-outline-primary.gridBtn:focus,
 .mm-page table.gv-cards .btn-primary.gridBtn:hover,
 .mm-page table.gv-cards .btn-primary.gridBtn:focus {
-    box-shadow: 0 8px 18px rgba(27, 90, 140, 0.34);
+    background: #eef4ff !important;
+    border-color: #1f5bd6 !important;
+    color: #1f5bd6 !important;
+    box-shadow: none !important;
+    filter: none;
 }
 
 .mm-page table.gv-cards .btn-success.gridBtn:hover,

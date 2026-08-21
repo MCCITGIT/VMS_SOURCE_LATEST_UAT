@@ -902,10 +902,10 @@ Partial Class Home
                         gvTop3Vend.DataSource = ds.Tables(3)
                         gvTop3Vend.DataBind()
                     End If
-                    If (ds.Tables(4).Rows.Count > 0) Then
-                        gvVendorDespatch.DataSource = ds.Tables(4)
-                        gvVendorDespatch.DataBind()
-                    End If
+                    'If (ds.Tables(4).Rows.Count > 0) Then
+                    '    gvVendorDespatch.DataSource = ds.Tables(4)
+                    '    gvVendorDespatch.DataBind()
+                    'End If
                 End If
             ElseIf userInfo.userGroupCodeEntity.Equals("UNIT", StringComparison.InvariantCultureIgnoreCase) Then
                 divHo.Visible = False

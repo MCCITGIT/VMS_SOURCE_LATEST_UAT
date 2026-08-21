@@ -66,15 +66,9 @@ function validateRawMaterialVendorInputs() {
 
     if (firstErrorControl != "") {
         SetControlFocus(firstErrorControl);
-        errMsg = "<table>" + errMsg + "</table>";
-        document.getElementById("lblErrorMessage").innerHTML = errMsg;
-        return false;
+        return rmFailValidation(errMsg);
     }
 
     document.getElementById("lblErrorMessage").innerHTML = "";
-    if (confirm("Are you sure to submit?")) {
-        return true;
-    }
-
-    return false;
+    return rmConfirmPostback("btnSubmit", "submit");
 }

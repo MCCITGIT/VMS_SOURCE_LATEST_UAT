@@ -3,7 +3,8 @@
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
-
+    <link href="includes/rm-procurement.css?v=<%= DateTime.Now.Ticks %>" rel="stylesheet" type="text/css" />
+    <div class="rm-module">
     <script type="text/javascript" src="Scripts/FunctionValidator.js"></script>
     <script type="text/javascript" src="Scripts/ValidateFormulationMstr.js?time=<%= DateTime.Now.ToString("yyyy.MM.dd-HH.mm.ss.fff") %>"></script>
     <script type="text/javascript">
@@ -208,7 +209,7 @@
             </div>
             <div class="row">
                 <div class="col-md-12 text-center">
-                    <asp:Button ID="btnAdd" runat="server" Text="Add" CssClass="btn btn-success btn-sm" OnClick="btnAdd_Click" />
+                    <asp:Button ID="btnAdd" runat="server" Text="Add" CssClass="btn btn-success btn-sm" ClientIDMode="Static" OnClick="btnAdd_Click" />
                 </div>
             </div>
             <asp:UpdatePanel ID="UpdatePanel5" runat="server">
@@ -281,10 +282,10 @@
 
                         <asp:TemplateField HeaderText="Action">
                             <ItemTemplate>
-                                <asp:LinkButton ID="btnDeleteRow" runat="server" CommandName="DeleteRow" CommandArgument='<%# Container.DataItemIndex %>' CssClass="text-danger" ToolTip="Delete" OnClientClick="return confirm('Are you sure you want to delete this row?');"><i class="fas fa-trash"></i></asp:LinkButton>
+                                <asp:LinkButton ID="btnDeleteRow" runat="server" CommandName="DeleteRow" CommandArgument='<%# Container.DataItemIndex %>' CssClass="text-danger" ToolTip="Delete" OnClientClick="return rmConfirmAction(this, 'delete');"><i class="fas fa-trash"></i></asp:LinkButton>
                             </ItemTemplate>
                             <EditItemTemplate>
-                                <asp:LinkButton ID="btnUpdate" CommandName="Update" CssClass="text-success mr-1" runat="server" ToolTip="Update" OnClientClick="return confirm('Are you sure you want to update this record?');"><i class="fas fa-check"></i></asp:LinkButton>
+                                <asp:LinkButton ID="btnUpdate" CommandName="Update" CssClass="text-success mr-1" runat="server" ToolTip="Update" OnClientClick="return rmConfirmAction(this, 'update');"><i class="fas fa-check"></i></asp:LinkButton>
                                 <asp:LinkButton ID="btncancel" CommandName="Cancel" CssClass="text-danger" runat="server" ToolTip="Cancel"><i class="fas fa-times"></i></asp:LinkButton>
                             </EditItemTemplate>
                         </asp:TemplateField>
@@ -300,5 +301,7 @@
             </div>
         </div>
     </div>
+    </div>
+    <script type="text/javascript" src="Scripts/rm-status-confirm.js?v=<%= DateTime.Now.Ticks %>"></script>
 </asp:Content>
 

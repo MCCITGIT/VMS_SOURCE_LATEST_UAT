@@ -133,8 +133,8 @@
     border: 1px solid #d5e4f2;
     color: var(--dash-primary-deep);
     border-radius: 999px;
-    padding: 4px 12px;
-    min-height: 32px;
+    padding: 2px 10px;
+    min-height: 26px;
     font-weight: 600;
     letter-spacing: 0.2px;
 }
@@ -490,10 +490,10 @@
     color: #3d8f80;
 }
 
-/* Metric mosaic — 2-up, stacked pairs (not a table row) */
+/* Metric mosaic — 3-up, stacked pairs (not a table row) */
 .ds-metrics {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
     gap: 8px;
     padding: 10px;
     flex: 1 1 auto;

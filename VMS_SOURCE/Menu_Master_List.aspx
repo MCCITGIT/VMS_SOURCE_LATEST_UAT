@@ -83,7 +83,7 @@
                                                 <asp:Label ID="lblActive" runat="server" Text='<%# Bind("active") %>'></asp:Label>
                                             </span>
                                         </div>
-                                        <asp:LinkButton ID="btnEdit" CommandName="edit" runat="server" CssClass="btn btn-primary gridBtn">Edit</asp:LinkButton>
+                                        <asp:LinkButton ID="btnEdit" CommandName="edit" runat="server" CssClass="btn btn-outline-primary gridBtn">Edit</asp:LinkButton>
                                     </div>
                                 </header>
                                 <div class="mm-card-body">

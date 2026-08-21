@@ -2,7 +2,8 @@
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
-
+    <link href="includes/rm-procurement.css?v=<%= DateTime.Now.Ticks %>" rel="stylesheet" type="text/css" />
+    <div class="rm-module">
     <script type="text/javascript" src="Scripts/FunctionValidator.js"></script>
     <script type="text/javascript" src="Scripts/ValidateFormulationMstr.js?time=<%= DateTime.Now.ToString("yyyy.MM.dd-HH.mm.ss.fff") %>"></script>
     <%-- <script type="text/javascript">
@@ -51,6 +52,8 @@
     <div class="breadcrumbs">
         <div class="leftFung">
             <a href="Home.aspx" title="Home"><i class="fas fa-home"></i></a>
+            <div class="diveider">/</div>
+            <a href="FormulationMstrList.aspx" class="rm-crumb-link">Formulation List</a>
             <div class="diveider">/</div>
             <div class="pageTitleWrap">
                 <h3 class="pageTitle">Product Formulation Master</h3>
@@ -168,5 +171,7 @@
             </div>
         </div>
     </div>
+    </div>
+    <script type="text/javascript" src="Scripts/rm-status-confirm.js?v=<%= DateTime.Now.Ticks %>"></script>
 </asp:Content>
 

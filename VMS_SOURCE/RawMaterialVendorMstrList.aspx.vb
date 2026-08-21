@@ -17,6 +17,7 @@ Partial Class RawMaterialVendorMstrList
     End Sub
     Protected Sub btnReset_Click(sender As Object, e As EventArgs)
         ddlVendor.SelectedIndex = 0
+        gvRawMatVendorDetails.PageIndex = 0
         BindData()
     End Sub
 
@@ -25,6 +26,7 @@ Partial Class RawMaterialVendorMstrList
     End Sub
 
     Protected Sub imgbtnSearch_Click(sender As Object, e As EventArgs)
+        gvRawMatVendorDetails.PageIndex = 0
         BindData()
     End Sub
 
@@ -76,20 +78,40 @@ Partial Class RawMaterialVendorMstrList
             Dim obj As New OPC_VendorClass()
             ds = obj.GetRawMaterialVendorMasterList(ddlVendor.SelectedValue)
 
-            If (Not (ds Is Nothing) AndAlso ds.Tables.Count > 0) Then
-                If (Not (ds.Tables(0) Is Nothing) AndAlso ds.Tables(0).Rows.Count > 0) Then
-                    gvRawMatVendorDetails.DataSource = ds.Tables(0)
-                    gvRawMatVendorDetails.DataBind()
-                Else
-                    gvRawMatVendorDetails.DataSource = Nothing
-                    gvRawMatVendorDetails.DataBind()
-                End If
-            End If
+            Dim table As DataTable = RmGridHelper.GetTable(ds)
+            RmGridHelper.BindPaged(gvRawMatVendorDetails, table)
+            UpdateSummary(table)
         Catch ex As Exception
             Dim returnUrl As String = "~/ExceptionPage.aspx"
             Session(Constant.SessionKeys.ErrMessage) = ex.ToString()
             Response.Redirect(returnUrl)
         End Try
+    End Sub
+
+    Private Sub UpdateSummary(ByVal sourceTable As DataTable)
+        Dim totalCount As Integer = 0
+        Dim activeCount As Integer = 0
+        Dim inactiveCount As Integer = 0
+
+        If sourceTable IsNot Nothing Then
+            totalCount = sourceTable.Rows.Count
+            For Each row As DataRow In sourceTable.Rows
+                If RmGridHelper.IsYes(row("active")) Then
+                    activeCount += 1
+                Else
+                    inactiveCount += 1
+                End If
+            Next
+        End If
+
+        lblTotalCount.Text = totalCount.ToString()
+        lblActiveCount.Text = activeCount.ToString()
+        lblInactiveCount.Text = inactiveCount.ToString()
+    End Sub
+
+    Protected Sub gvRawMatVendorDetails_PageIndexChanging(sender As Object, e As GridViewPageEventArgs) Handles gvRawMatVendorDetails.PageIndexChanging
+        gvRawMatVendorDetails.PageIndex = e.NewPageIndex
+        BindData()
     End Sub
 
     Private Sub PopulateVendor()

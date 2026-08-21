@@ -7,6 +7,76 @@
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
 
     <link href="includes/dashboard-cards.css" rel="stylesheet" type="text/css" />
+    <style type="text/css">
+        /* Compact inner cards — Source Summary & Depot Wise Break-Up only */
+        .vms-dashboard table.gv-cards > tbody {
+            gap: 10px;
+        }
+        .vms-dashboard .ds-card,
+        .vms-dashboard .ds-total {
+            border-radius: 12px;
+        }
+        .vms-dashboard .ds-card:hover {
+            transform: translateY(-2px);
+        }
+        .vms-dashboard .ds-card-head {
+            padding: 8px 10px;
+            gap: 8px;
+        }
+        .vms-dashboard .ds-identity {
+            gap: 8px;
+        }
+        .vms-dashboard .ds-avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            font-size: 12px;
+            box-shadow: 0 2px 6px rgba(27, 90, 140, 0.22);
+        }
+        .vms-dashboard .ds-kicker {
+            margin-bottom: 2px;
+            font-size: 9px;
+            letter-spacing: 0.5px;
+        }
+        .vms-dashboard .ds-title {
+            font-size: 13px;
+        }
+        .vms-dashboard .ds-pct {
+            min-width: 64px;
+            padding: 3px 8px;
+            border-radius: 8px;
+        }
+        .vms-dashboard .ds-pct-value {
+            font-size: 14px;
+        }
+        .vms-dashboard .ds-metrics {
+            gap: 6px;
+            padding: 8px;
+        }
+        .vms-dashboard .ds-metric {
+            padding: 5px 7px;
+            border-radius: 8px;
+        }
+        .vms-dashboard .ds-metric-label {
+            gap: 4px;
+            font-size: 9px;
+            margin-bottom: 3px;
+        }
+        .vms-dashboard .ds-metric-label i {
+            font-size: 10px;
+            width: 14px;
+        }
+        .vms-dashboard .ds-metric-pair {
+            gap: 4px;
+        }
+        .vms-dashboard .ds-kv-value {
+            font-size: 12px;
+        }
+        .vms-dashboard .ds-total .ds-metrics {
+            padding: 8px;
+            gap: 6px;
+        }
+    </style>
 
     <div class="vms-dashboard">
 
