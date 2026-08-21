@@ -38,10 +38,10 @@
 
             function clearRawMaterialSelection() {
                 document.getElementById('<%=txtrawmatid.ClientID%>').value = '';
-        }
+            }
 
-        function resetProductField() {
-            var rawMatText = document.getElementById('<%=txtSearchText.ClientID%>');
+            function resetProductField() {
+                var rawMatText = document.getElementById('<%=txtSearchText.ClientID%>');
             var rawMatCode = document.getElementById('<%=txtrawmatid.ClientID%>');
 
             if (rawMatText) {
@@ -52,69 +52,6 @@
             }
 
             return false;
-        }
-
-        function allowRateTwoDecimal(evt, control) {
-            var charCode = evt.which ? evt.which : evt.keyCode;
-
-            if (charCode === 8 || charCode === 9 || charCode === 13 || charCode === 37 || charCode === 39 || charCode === 46) {
-                return true;
-            }
-
-            var charValue = String.fromCharCode(charCode);
-            if (!/[0-9.]/.test(charValue)) {
-                return false;
-            }
-
-            var value = control.value || "";
-            if (charValue === ".") {
-                return value.indexOf(".") === -1;
-            }
-
-            var dotIndex = value.indexOf(".");
-            if (dotIndex !== -1) {
-                var decimals = value.substring(dotIndex + 1);
-                var hasSelection = control.selectionStart !== control.selectionEnd;
-                if (!hasSelection && control.selectionStart > dotIndex && decimals.length >= 2) {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
-        function sanitizeRateTwoDecimal(control) {
-            var value = control.value || "";
-            value = value.replace(/[^0-9.]/g, "");
-
-            if (value.indexOf(".") !== -1) {
-                var parts = value.split(".");
-                value = parts[0] + "." + parts.slice(1).join("");
-            }
-
-            var dotIndex = value.indexOf(".");
-            if (dotIndex !== -1) {
-                var intPart = value.substring(0, dotIndex);
-                var decPart = value.substring(dotIndex + 1, dotIndex + 3);
-                value = intPart + "." + decPart;
-            }
-
-            control.value = value;
-        }
-
-        function formatRateTwoDecimal(control) {
-            var value = (control.value || "").trim();
-            if (value === "") {
-                return;
-            }
-
-            var numValue = parseFloat(value);
-            if (isNaN(numValue)) {
-                control.value = "";
-                return;
-            }
-
-            control.value = numValue.toFixed(2);
         }
         </script>
         <script type="text/javascript">
@@ -128,10 +65,10 @@
 
             function clearProductSelection() {
                 document.getElementById('<%=hdnVendorCode.ClientID%>').value = '';
-     }
+            }
 
-     function resetProductField() {
-         document.getElementById('<%=txtVendorSearch.ClientID%>').value = '';
+            function resetProductField() {
+                document.getElementById('<%=txtVendorSearch.ClientID%>').value = '';
          document.getElementById('<%=hdnVendorCode.ClientID%>').value = '';
      }
         </script>
@@ -217,7 +154,13 @@
                                 <div class="form-group rm-vendor-link-add">
                                     <label class="form-control-label">&nbsp;</label>
                                     <div class="rm-filter-actions">
-                                        <asp:LinkButton ID="btnAdd" runat="server" CssClass="btn btn-success btn-sm rm-btn-icon" ToolTip="Add"><i class="fas fa-plus"></i></asp:LinkButton>
+                                        <%--<asp:LinkButton ID="btnAdd" runat="server" CssClass="btn btn-success btn-sm rm-btn-icon" ToolTip="Add"><i class="fas fa-plus"></i></asp:LinkButton>--%>
+                                        <asp:Button
+                                            ID="btnAdd"
+                                            runat="server"
+                                            Text="+"
+                                            CssClass="btn btn-success btn-sm rm-btn-icon"
+                                            ToolTip="Add" />
                                     </div>
                                 </div>
                             </div>
@@ -239,16 +182,6 @@
                                             </asp:TemplateField>
                                             <asp:BoundField DataField="rawmat_code" HeaderText="Raw Material Code" ReadOnly="true" />
                                             <asp:BoundField DataField="rawmat_name" HeaderText="Raw Material Name" ReadOnly="true" />
-                                            <asp:TemplateField HeaderText="Rate">
-                                                <ItemTemplate>
-                                                    <asp:TextBox ID="txtRate" runat="server" CssClass="form-control form-control-sm text-right" Text='<%# Bind("rate") %>' AutoComplete="Off"
-                                                        onkeypress="return allowRateTwoDecimal(event, this);"
-                                                        oninput="sanitizeRateTwoDecimal(this);"
-                                                        onblur="formatRateTwoDecimal(this);"></asp:TextBox>
-                                                </ItemTemplate>
-                                                <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" />
-                                                <ItemStyle HorizontalAlign="Right" VerticalAlign="Middle" />
-                                            </asp:TemplateField>
                                             <asp:TemplateField HeaderText="Active" HeaderStyle-HorizontalAlign="Center">
                                                 <ItemTemplate>
                                                     <asp:Label ID="lblactiveText" runat="server" CssClass='<%# IIf(UCase(Trim(CStr(Eval("active")))) = "Y", "rm-status-pill is-active", "rm-status-pill is-inactive") %>' Text='<%# IIf(UCase(Trim(CStr(Eval("active")))) = "Y", "Active", "Inactive") %>'></asp:Label>

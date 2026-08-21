@@ -60,6 +60,9 @@ function validateFormulationMatrixSubmit() {
 
 function validateFormulationMatrixUpdate(el) {
     var source = el || (window.event ? window.event.srcElement : null);
+    if (source && source.closest) {
+        source = source.closest("a") || source;
+    }
     var row = source ? source.closest("tr") : null;
     var rateInput = row ? row.querySelector("input[id$='txtRate']") : null;
     var rateValue = rateInput ? (rateInput.value || "").trim() : "";
@@ -73,5 +76,7 @@ function validateFormulationMatrixUpdate(el) {
         return rmFailValidation("Please enter a valid Rate greater than 0.");
     }
 
-    return rmConfirmAction(source, "update");
+    var hdnId = row ? row.querySelector("input[id$='hdnId']") : null;
+    var matrixId = hdnId ? parseInt(hdnId.value || "0", 10) : 0;
+    return rmConfirmAction(source, matrixId > 0 ? "update" : "submit");
 }

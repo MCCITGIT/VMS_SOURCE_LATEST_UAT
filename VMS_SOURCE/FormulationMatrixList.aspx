@@ -32,7 +32,7 @@
                 return false;
             }
 
-            function onRawMaterialSelected(sender, e) {
+            <%-- function onRawMaterialSelected(sender, e) {
                 var value = e.get_value();
                 var text = e.get_text();
                 document.getElementById('<%=txtrawmatid.ClientID%>').value = value;
@@ -48,7 +48,7 @@
                 document.getElementById('<%=txtSearchText.ClientID%>').value = '';
                 document.getElementById('<%=txtrawmatid.ClientID%>').value = '';
                 return false;
-            }
+            }--%>
         </script>
         <div class="breadcrumbs">
             <div class="leftFung">
@@ -71,14 +71,14 @@
                                 <div class="row">
                                     <div class="col-md-3">
                                         <div class="form-group">
-                                            <label class="form-control-label">Brand:</label>
-                                            <asp:DropDownList ID="ddlBrand" ClientIDMode="Static" CssClass="form-control select2" TabIndex="1" runat="server"></asp:DropDownList>
+                                            <label class="form-control-label">Vendor:</label>
+                                            <asp:DropDownList ID="ddlvendor" ClientIDMode="Static" CssClass="form-control select2" TabIndex="2" runat="server"></asp:DropDownList>
                                         </div>
                                     </div>
                                     <div class="col-md-3">
                                         <div class="form-group">
-                                            <label class="form-control-label">Vendor:</label>
-                                            <asp:DropDownList ID="ddlvendor" ClientIDMode="Static" CssClass="form-control select2" TabIndex="2" runat="server"></asp:DropDownList>
+                                            <label class="form-control-label">Brand:</label>
+                                            <asp:DropDownList ID="ddlBrand" ClientIDMode="Static" CssClass="form-control select2" TabIndex="1" runat="server"></asp:DropDownList>
                                         </div>
                                     </div>
                                     <div class="col-md-3">
@@ -107,7 +107,7 @@
                                             </asp:AutoCompleteExtender>
                                         </div>
                                     </div>
-                                    <div class="col-md-3">
+                                    <%--<div class="col-md-3">
                                         <div class="form-group">
                                             <label class="form-control-label">Raw Material:</label>
                                             <div class="input-group product-search-group">
@@ -130,7 +130,7 @@
                                                 CompletionListHighlightedItemCssClass="vmsAutoCompleteItemHighlight">
                                             </asp:AutoCompleteExtender>
                                         </div>
-                                    </div>
+                                    </div>--%>
                                     <div class="col-md-12 text-center">
                                         <div class="rm-filter-actions">
                                             <asp:LinkButton CssClass="btn btn-primary btn-sm rm-btn-icon" ID="imgbtnSearch" runat="server" ClientIDMode="Static" ToolTip="Search"><i class="fas fa-search"></i></asp:LinkButton>
@@ -173,16 +173,14 @@
                                                 <HeaderStyle HorizontalAlign="Center" />
                                                 <ItemStyle HorizontalAlign="Center" Width="6%" />
                                             </asp:TemplateField>
-                                            <asp:TemplateField HeaderText="Brand">
+                                            <asp:TemplateField HeaderText="Formula Set">
                                                 <ItemTemplate>
-                                                    <asp:Label ID="lblbrand" Text='<%# Bind("brand_name") %>' runat="server" />
-                                                    <asp:HiddenField runat="server" ID="hdnbrandcode" Value='<%# Bind("brand_code") %>' />
-                                                    <asp:HiddenField runat="server" ID="hdnid" Value='<%# Bind("id") %>' />
-                                                    <asp:HiddenField runat="server" ID="hdnheaderid" Value='<%# Bind("header_id") %>' />
+                                                    <asp:Label ID="lblformulaset" Text='<%# Bind("formula_set_no") %>' runat="server" />
                                                 </ItemTemplate>
                                                 <HeaderStyle HorizontalAlign="Center" />
                                                 <ItemStyle HorizontalAlign="Left" Width="12%" />
                                             </asp:TemplateField>
+
                                             <asp:TemplateField HeaderText="Vendor">
                                                 <ItemTemplate>
                                                     <asp:Label ID="lblvendor" Text='<%# Bind("vendor_name") %>' runat="server" />
@@ -191,6 +189,18 @@
                                                 <HeaderStyle HorizontalAlign="Center" />
                                                 <ItemStyle HorizontalAlign="Left" Width="12%" />
                                             </asp:TemplateField>
+
+                                            <asp:TemplateField HeaderText="Brand">
+                                                <ItemTemplate>
+                                                    <asp:Label ID="lblbrand" Text='<%# Bind("brand_name") %>' runat="server" />
+                                                    <asp:HiddenField runat="server" ID="hdnbrandcode" Value='<%# Bind("brand_code") %>' />
+                                                    <%--<asp:HiddenField runat="server" ID="hdnid" Value='<%# Bind("id") %>' />--%>
+                                                    <asp:HiddenField runat="server" ID="hdnheaderid" Value='<%# Bind("header_id") %>' />
+                                                </ItemTemplate>
+                                                <HeaderStyle HorizontalAlign="Center" />
+                                                <ItemStyle HorizontalAlign="Left" Width="12%" />
+                                            </asp:TemplateField>
+
                                             <asp:TemplateField HeaderText="Product">
                                                 <ItemTemplate>
                                                     <asp:Label ID="lblProduct" Text='<%# Bind("product_name")%>' runat="server" />
@@ -201,19 +211,13 @@
                                             </asp:TemplateField>
                                             <asp:TemplateField HeaderText="Raw Material">
                                                 <ItemTemplate>
-                                                    <asp:Label ID="lblraw" Text='<%# Bind("rawmat_name")%>' runat="server" />
-                                                    <asp:HiddenField runat="server" ID="hdnRawCode" Value='<%# Bind("rawmat_code") %>' />
+                                                    <asp:Label ID="lblraw" Text='<%# Bind("raw_material_details")%>' runat="server" />
+                                                    <%--<asp:HiddenField runat="server" ID="hdnRawCode" Value='<%# Bind("rawmat_code") %>' />--%>
                                                 </ItemTemplate>
                                                 <HeaderStyle HorizontalAlign="Center" />
                                                 <ItemStyle HorizontalAlign="Left" Width="18%" />
                                             </asp:TemplateField>
-                                            <asp:TemplateField HeaderText="Consumption Ratio">
-                                                <ItemTemplate>
-                                                    <asp:Label ID="lblRatio" Text='<%# Bind("ratio")%>' runat="server" />
-                                                </ItemTemplate>
-                                                <HeaderStyle HorizontalAlign="Center" />
-                                                <ItemStyle HorizontalAlign="Center" Width="10%" />
-                                            </asp:TemplateField>
+
                                             <asp:TemplateField HeaderText="Rate">
                                                 <ItemTemplate>
                                                     <asp:Label ID="lblRate" Text='<%# Bind("rate")%>' runat="server" />

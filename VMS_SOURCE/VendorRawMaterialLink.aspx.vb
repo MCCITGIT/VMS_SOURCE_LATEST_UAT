@@ -63,7 +63,6 @@ Partial Class VendorRawMaterialLink
         dt.Columns.Add(New DataColumn("vendor_name", GetType(String)))
         dt.Columns.Add(New DataColumn("rawmat_code", GetType(String)))
         dt.Columns.Add(New DataColumn("rawmat_name", GetType(String)))
-        dt.Columns.Add(New DataColumn("rate", GetType(String)))
         dt.Columns.Add(New DataColumn("active", GetType(String)))
         ViewState(GridTableKey) = dt
     End Sub
@@ -81,16 +80,6 @@ Partial Class VendorRawMaterialLink
         'End If
         gvVendorRawMat.DataSource = GetGridTable()
         gvVendorRawMat.DataBind()
-    End Sub
-    Private Sub CaptureGridRates()
-        Dim dt As DataTable = GetGridTable()
-        For i As Integer = 0 To gvVendorRawMat.Rows.Count - 1
-            Dim txtRate As TextBox = CType(gvVendorRawMat.Rows(i).FindControl("txtRate"), TextBox)
-            If i < dt.Rows.Count AndAlso Not txtRate Is Nothing Then
-                dt.Rows(i)("rate") = Convert.ToString(txtRate.Text).Trim()
-            End If
-        Next
-        ViewState(GridTableKey) = dt
     End Sub
     <System.Web.Script.Services.ScriptMethod(),
     System.Web.Services.WebMethod()>
@@ -134,7 +123,6 @@ Partial Class VendorRawMaterialLink
             gvVendorRawMat.EditIndex = -1
         End If
 
-        CaptureGridRates()
         btnSubmit.Visible = True
 
         'If ddlVendor.SelectedIndex <= 0 Then
@@ -181,7 +169,6 @@ Partial Class VendorRawMaterialLink
         dr("vendor_name") = txtVendorSearch.Text
         dr("rawmat_code") = selectedRawMatCode
         dr("rawmat_name") = rawMatName
-        dr("rate") = String.Empty
         dr("active") = "Y"
         dt.Rows.Add(dr)
         ViewState(GridTableKey) = dt
@@ -197,9 +184,6 @@ Partial Class VendorRawMaterialLink
         If e.CommandName <> "DeleteRow" Then
             Exit Sub
         End If
-
-        CaptureGridRates()
-        'btnSubmit.Visible = False
 
         Dim rowIndex As Integer = 0
         If Not Integer.TryParse(Convert.ToString(e.CommandArgument), rowIndex) Then
@@ -225,7 +209,6 @@ Partial Class VendorRawMaterialLink
         BindRawMatGrid()
     End Sub
     Protected Sub gvVendorRawMat_RowEditing(sender As Object, e As GridViewEditEventArgs) Handles gvVendorRawMat.RowEditing
-        CaptureGridRates()
         gvVendorRawMat.EditIndex = e.NewEditIndex
         BindRawMatGrid()
     End Sub
@@ -238,19 +221,6 @@ Partial Class VendorRawMaterialLink
 
         Dim rowView As DataRowView = TryCast(e.Row.DataItem, DataRowView)
         If rowView Is Nothing Then Exit Sub
-
-        Dim txtRate As TextBox = CType(e.Row.FindControl("txtRate"), TextBox)
-        Dim hdnId As HiddenField = CType(e.Row.FindControl("hdnId"), HiddenField)
-        Dim rowId As String = String.Empty
-        If Not hdnId Is Nothing Then
-            rowId = Convert.ToString(hdnId.Value).Trim()
-        End If
-
-        ' Existing DB rows should not allow rate edit; only active status can be changed in edit mode.
-        If Not txtRate Is Nothing AndAlso rowId <> "" Then
-            txtRate.ReadOnly = True
-            txtRate.Enabled = False
-        End If
 
         If (e.Row.RowState And DataControlRowState.Edit) = DataControlRowState.Edit Then
             Dim ddlactive As DropDownList = CType(e.Row.FindControl("ddlactive"), DropDownList)
@@ -265,11 +235,9 @@ Partial Class VendorRawMaterialLink
         End If
     End Sub
     Protected Sub gvVendorRawMat_RowUpdating(sender As Object, e As GridViewUpdateEventArgs) Handles gvVendorRawMat.RowUpdating
-        CaptureGridRates()
         Dim row As GridViewRow = gvVendorRawMat.Rows(e.RowIndex)
         Dim hdnId As HiddenField = CType(row.FindControl("hdnId"), HiddenField)
         Dim ddlactive As DropDownList = CType(row.FindControl("ddlactive"), DropDownList)
-        Dim txtRate As TextBox = CType(row.FindControl("txtRate"), TextBox)
 
         Dim newActive As String = "N"
         If Not ddlactive Is Nothing Then
@@ -279,9 +247,6 @@ Partial Class VendorRawMaterialLink
         Dim dt As DataTable = GetGridTable()
         If e.RowIndex >= 0 AndAlso e.RowIndex < dt.Rows.Count Then
             dt.Rows(e.RowIndex)("active") = newActive
-            If Not txtRate Is Nothing Then
-                dt.Rows(e.RowIndex)("rate") = Convert.ToString(txtRate.Text).Trim()
-            End If
             ViewState(GridTableKey) = dt
         End If
 
@@ -334,7 +299,6 @@ Partial Class VendorRawMaterialLink
             '    Return
             'End If
 
-            CaptureGridRates()
             Dim dtGrid As DataTable = GetGridTable()
             Dim dt1 As DataTable = New DataTable()
 
@@ -349,7 +313,7 @@ Partial Class VendorRawMaterialLink
                     Dim dr1 As DataRow = dt1.NewRow()
                     dr1.Item("vendor_code") = Convert.ToString(gridRow("vendor_code")).Trim()
                     dr1.Item("rawmat_code") = Convert.ToString(gridRow("rawmat_code")).Trim()
-                    dr1.Item("rate") = Convert.ToString(gridRow("rate")).Trim()
+                    dr1.Item("rate") = "0"
                     dt1.Rows.Add(dr1)
                 End If
             Next
@@ -364,7 +328,7 @@ Partial Class VendorRawMaterialLink
 
             If RowsAffectedMstr > 0 Then
                 lblErrorMessage.Text = ""
-                RmActionPopup.ShowSuccess(Me, "Submitted Successfully.")
+                RmActionPopup.ShowSuccess(Me, "Submitted Successfully.", "RawmaterialList.aspx")
                 'ddlVendor.SelectedIndex = -1
                 txtVendorSearch.Text = String.Empty
                 txtSearchText.Text = String.Empty
@@ -431,7 +395,6 @@ Partial Class VendorRawMaterialLink
                 dr("vendor_name") = Convert.ToString(dbRow("vendor_name"))
                 dr("rawmat_code") = Convert.ToString(dbRow("rawmat_code"))
                 dr("rawmat_name") = Convert.ToString(dbRow("rawmat_name"))
-                dr("rate") = Convert.ToString(dbRow("rate"))
                 dr("active") = NormalizeActiveValue(dbRow("active"))
                 dt.Rows.Add(dr)
             Next
