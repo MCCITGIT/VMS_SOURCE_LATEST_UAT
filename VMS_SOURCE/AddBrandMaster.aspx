@@ -3,7 +3,9 @@
 <%--<asp:Content ID="Content1" ContentPlaceHolderID="Head1" runat="Server">
 </asp:Content>--%>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
-    
+    <link href="includes/rm-procurement.css?v=<%= DateTime.Now.Ticks %>" rel="stylesheet" type="text/css" />
+    <link href="includes/add-brand-master-cards.css?v=<%= DateTime.Now.Ticks %>" rel="stylesheet" type="text/css" />
+
     <script type="text/javascript">
         document.onkeydown = checkValue;
         function checkValue() {
@@ -28,6 +30,8 @@
     <script type="text/javascript" src="Scripts/FunctionValidator.js"></script>
     <script type="text/javascript" src="Scripts/ValidateAddUpdateBrandMaster.js?time=<%= DateTime.Now.ToString("yyyy.MM.dd-HH.mm.ss.fff") %>"></script>
 
+    <div class="rm-module rm-compact abm-page">
+
     <div class="breadcrumbs">
         <div class="leftFung">
             <a href="Home.aspx" title="Home"><i class="fas fa-home"></i></a>
@@ -42,18 +46,16 @@
 
     <div class="card">
         <div class="card-body">
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="form-group pb-0">
-                        <label class="form-control-label">Brand Name:<span id="Span12" class="mandatory">*</span></label>
-                        <asp:TextBox ID="txtBrandName" ClientIDMode="Static" class="form-control" runat="server"></asp:TextBox>
+            <div class="rm-add-form">
+                <div class="form-group pb-0 mb-0">
+                    <label class="form-control-label">Brand Name:<span id="Span12" class="mandatory">*</span></label>
+                    <div class="rm-add-form-controls">
+                        <asp:TextBox ID="txtBrandName" ClientIDMode="Static" class="form-control" runat="server" AutoComplete="Off" Placeholder="Enter Here"></asp:TextBox>
                         <asp:HiddenField ID="txtBrandId" ClientIDMode="Static" runat="server" />
+                        <asp:Button ID="btnSubmit" ClientIDMode="Static" runat="server" Text="Submit" CssClass="btn btn-primary btn-sm" />
+                        <asp:Button ID="btnCancel" runat="server" Text="Cancel" CssClass="btn btn-outline-danger btn-sm" />
+                        <asp:Button ID="btnReset" runat="server" Text="Reset" CssClass="btn btn-warning btn-sm" />
                     </div>
-                </div>
-                <div class="col-md-8 form-btn-mt">
-                    <asp:Button ID="btnSubmit" ClientIDMode="Static" runat="server" Text="Submit" CssClass="btn btn-primary btn-sm"  />
-                    <asp:Button ID="btnCancel" runat="server" Text="Cancel" CssClass="btn btn-secondary btn-sm" />
-                    <asp:Button ID="btnReset" runat="server" Text="Reset" CssClass="btn btn-warning btn-sm" />
                 </div>
             </div>
             <asp:UpdatePanel ID="UpdatePanel5" runat="server">
@@ -64,10 +66,19 @@
         </div>
     </div>
 
-    <div class="card">
-        <div class="card-body">
-            <div class="table-responsive">
-                <asp:GridView BorderWidth="1" CssClass="table table-hover upgradDataGrid" CellSpacing="0" CellPadding="0" ID="gvbrandDetails" runat="server" AutoGenerateColumns="false" AllowPaging="false" Visible="true" ShowFooter="true" GridLines="both">
+    <div class="card rm-list-fill">
+        <div class="mst-panel-header">
+            <div class="mst-panel-header-left">
+                <span class="mst-panel-icon"><i class="fas fa-tags"></i></span>
+                <div>
+                    <h5 class="mst-panel-title">Brand List</h5>
+                    <p class="mst-panel-subtitle">All brands currently available</p>
+                </div>
+            </div>
+        </div>
+        <div class="card-body abm-panel-body">
+            <div class="abm-card-wrap">
+                <asp:GridView BorderWidth="0" CssClass="gv-cards" CellSpacing="0" CellPadding="0" ID="gvbrandDetails" runat="server" AutoGenerateColumns="false" AllowPaging="false" Visible="true" ShowFooter="true" ShowHeader="false" GridLines="None">
                     <RowStyle CssClass="tlrowlight" />
                     <PagerStyle CssClass="PagerGrid" HorizontalAlign="Right" />
                     <HeaderStyle CssClass="headerGrid" />
@@ -75,21 +86,34 @@
                     <Columns>
                         <asp:TemplateField HeaderText="SlNo" HeaderStyle-HorizontalAlign="Center">
                             <ItemTemplate>
-                                <asp:Label ID="lblbrandid" runat="server" Text='<%# Container.DataItemIndex + 1 %>'></asp:Label>
+                                <span class="abm-serial">
+                                    <span class="abm-serial-icon" aria-hidden="true"><i class="fas fa-tag"></i></span>
+                                    <span class="abm-serial-label">SlNo</span>
+                                    <span class="abm-serial-num">
+                                        <asp:Label ID="lblbrandid" runat="server" Text='<%# Container.DataItemIndex + 1 %>'></asp:Label>
+                                    </span>
+                                </span>
                             </ItemTemplate>
                             <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="10%" />
                             <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="10%" />
                         </asp:TemplateField>
                         <asp:TemplateField HeaderText="Brand Name" HeaderStyle-HorizontalAlign="Center">
                             <ItemTemplate>
-                                <asp:Label ID="lblbrandname" runat="server" Text='<%# Bind("brand_name") %>'></asp:Label>
+                                <span class="abm-brand">
+                                    <span class="abm-brand-kicker">Brand Name</span>
+                                    <span class="abm-brand-name">
+                                        <asp:Label ID="lblbrandname" runat="server" Text='<%# Bind("brand_name") %>'></asp:Label>
+                                    </span>
+                                </span>
                             </ItemTemplate>
                             <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="80%" />
                             <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="80%" />
                         </asp:TemplateField>
                         <asp:TemplateField HeaderText="" HeaderStyle-HorizontalAlign="Center" Visible="true">
                             <ItemTemplate>
-                                <asp:Button ID="btnEditRow" CommandName="EditRow" Visible="true" runat="server" CssClass="btn btn-info gridBtn" Text="Edit" title="Edit" ToolTip="Click To Edit" CommandArgument='<%# Bind("brand_id")%>'></asp:Button>
+                                <span class="abm-card-action">
+                                    <asp:Button ID="btnEditRow" CommandName="EditRow" Visible="true" runat="server" CssClass="btn btn-outline-primary gridBtn" Text="Edit" title="Edit" ToolTip="Click To Edit" CommandArgument='<%# Bind("brand_id")%>'></asp:Button>
+                                </span>
                             </ItemTemplate>
                             <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="10%" />
                             <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="10%" />
@@ -98,5 +122,7 @@
                 </asp:GridView>
             </div>
         </div>
+    </div>
+
     </div>
 </asp:Content>

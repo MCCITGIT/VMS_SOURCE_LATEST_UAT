@@ -104,9 +104,9 @@
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
+
     <div class="card" style="margin: 0 auto; width: 65%;">
         <div class="card-body" >
             <div class="table-responsive">

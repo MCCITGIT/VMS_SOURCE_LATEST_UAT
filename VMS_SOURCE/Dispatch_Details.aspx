@@ -798,7 +798,7 @@
             }
 
             .standalone-breadcrumbs .pageTitle {
-                font-size: 18px !important;
+                font-size: 13px !important;
             }
 
             .rm-meta-item {

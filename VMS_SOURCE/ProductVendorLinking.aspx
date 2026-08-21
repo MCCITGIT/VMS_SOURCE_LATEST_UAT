@@ -72,7 +72,7 @@
                             <div class="form-group">
                                 <div class="CheckBoxList">
                                     <asp:CheckBox ID="CheckBox1" Enabled="false" runat="server" CssClass="checkAll" Text="Select All" onclick="checkAllProduct(this)" />
-                                    <asp:CheckBoxList ID="chkbxListApplProducts" Enabled="false" runat="server" TabIndex="14" RepeatColumns="4"
+                                    <asp:CheckBoxList ID="chkbxListApplProducts" Enabled="false" runat="server" TabIndex="14" RepeatColumns="3"
                                         RepeatDirection="Horizontal" Width="100%" AutoPostBack="False">
                                     </asp:CheckBoxList>
                                 </div>
