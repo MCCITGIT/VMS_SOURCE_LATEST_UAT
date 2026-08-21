@@ -22,11 +22,16 @@ Partial Class UnitDespatchPlanAddUpdateVr1
             txtTranspoterName.Enabled = False
             btnResetdealerDetails.Enabled = False
             txtTransporter.Enabled = True
+            'Modified-by MUKESH BHAGAT on 20-08-2026 : restored Indent feature from old UAT source
+            CheckLogin()
+            hdnindentyn.Value = False
 
             lblErrorMessage.Text = String.Empty
             If Not Request.QueryString(Constant.SessionKeys.Challan_No) Is Nothing Then
                 PopulateUpdateMode(Request.QueryString(Constant.SessionKeys.Challan_No), Request.QueryString(Constant.SessionKeys.Process_Year), Request.QueryString(Constant.SessionKeys.UnitCode))
+                IsIndentAvailableForUnit(Request.QueryString(Constant.SessionKeys.UnitCode))
             Else
+                IsIndentAvailableForUnit(userInfo.userBranchEntity)
                 btnSubmit.Enabled = False
                 btnDelete.Visible = False
                 txtChallanDt.Text = DateTime.Now.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture())
@@ -47,6 +52,35 @@ Partial Class UnitDespatchPlanAddUpdateVr1
 #End Region
 
 #Region "Event Handler"
+    'Modified-by MUKESH BHAGAT on 20-08-2026 : restored Indent feature from old UAT source
+#Region "Check Indent Availability and Handle"
+    Public Function IsIndentAvailableForUnit(ByVal unitCode As String) As Boolean
+        Dim indentAvailable As Boolean = False
+        Try
+            Dim despatchObj As New UnitDespatchClass()
+
+            indentAvailable = despatchObj.CheckIndentAvailable(unitCode)
+
+            If indentAvailable Then
+                hdnindentyn.Value = True
+                ddlIndent.Enabled = True
+                PopulateIndent()
+            Else
+                hdnindentyn.Value = False
+                ddlIndent.Enabled = False
+                ddlIndent.ClearSelection()
+                ClearIndentDetails()
+            End If
+
+        Catch ex As Exception
+            lblErrorMessage.Text = "Error while checking indent availability: " & ex.Message
+            lblErrorMessage.ForeColor = Drawing.Color.Red
+        End Try
+
+        Return indentAvailable
+    End Function
+
+#End Region
     'Protected Sub ddlLocation_SelectedIndexChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles ddlLocation.SelectedIndexChanged
     '    PopulateProduct()
     '    PopulateDeliveryDepotName()
@@ -264,8 +298,14 @@ Partial Class UnitDespatchPlanAddUpdateVr1
                 Exit Sub
             End If
 
-
-
+            'Modified-by MUKESH BHAGAT on 20-08-2026 : restored Indent feature from old UAT source
+            If hdnindentyn.Value Then
+                If String.IsNullOrEmpty(ddlIndent.SelectedValue) Then
+                    ScriptManager.RegisterStartupScript(Me.Page, Me.GetType(), "alert", "alert('Please select an Indent since Indent Available is checked.');", True)
+                    ddlIndent.Focus()
+                    Exit Sub
+                End If
+            End If
 
 
             If Not (ddlSite.SelectedValue = String.Empty Or ddlPONo.SelectedValue = String.Empty Or txtTransporter.Text = String.Empty Or txtTruckNo.Text = String.Empty) Then
@@ -367,6 +407,22 @@ Partial Class UnitDespatchPlanAddUpdateVr1
             ddlRegion.DataValueField = "Lov_Code"
             ddlRegion.DataBind()
             ddlRegion.Items.Insert(0, New ListItem("ALL", "", True))
+        End If
+    End Sub
+    'Modified-by MUKESH BHAGAT on 20-08-2026 : restored Indent feature from old UAT source
+    Public Sub PopulateIndent()
+        CheckLogin()
+        Dim StockObj As New UnitDespatchClass
+        Dim RegionDS As New DataSet
+        Dim RegiontypeDS As DataSet = StockObj.GetPandoInvoice(ddlDeliveryDepot.SelectedValue, userInfo.userIDEntity, Val(hdnChallanno.Value), lblYear.Text)
+        If Not (RegiontypeDS Is Nothing) Then
+            ddlIndent.DataSource = RegiontypeDS
+            ddlIndent.DataTextField = "indentIdDisplay"
+            ddlIndent.DataValueField = "indentId"
+            ddlIndent.DataBind()
+            ddlIndent.Items.Insert(0, New ListItem("Select", "", True))
+        Else
+            ddlIndent.Items.Insert(0, New ListItem("Select", "", True))
         End If
     End Sub
     Public Sub PopulateDepotName()
@@ -655,6 +711,10 @@ Partial Class UnitDespatchPlanAddUpdateVr1
         hdrEntity.EwayBillDt = IIf(txtEwayBillDate.Text <> String.Empty, FormatDate(txtEwayBillDate.Text), SqlDateTime.MinValue)
         hdrEntity.ValidUptoDt = IIf(txtValidUpto.Text <> String.Empty, FormatDate(txtValidUpto.Text), SqlDateTime.MinValue)
 
+        'Modified-by MUKESH BHAGAT on 20-08-2026 : restored Indent feature from old UAT source
+        'hdrEntity.ThirdPartyIndentYn = If(chkIndentAvailable.Checked, "Y", "N")
+        hdrEntity.ThirdPartyIndent = ddlIndent.SelectedValue
+
         If String.IsNullOrEmpty(ddlSite.SelectedValue) Then
             lblErrorMessage.Text = "Please select site name."
             Exit Sub
@@ -837,7 +897,8 @@ Partial Class UnitDespatchPlanAddUpdateVr1
             lblUnit.Text = DespatchDS.Tables(0).Rows(0)("desph_desp_unit").ToString
             lblYear.Text = DespatchDS.Tables(0).Rows(0)("desph_challan_fin_year").ToString
             ddlDeliveryDepot.SelectedValue = DespatchDS.Tables(0).Rows(0)("desph_delivery_depot").ToString
-
+            'Modified-by MUKESH BHAGAT on 20-08-2026 : restored Indent feature from old UAT source
+            PopulateIndent()
             PopulateSiteDetails()
             ddlSite.SelectedValue = DespatchDS.Tables(0).Rows(0)("desph_site_id").ToString
             PopulatePONo()
@@ -866,6 +927,9 @@ Partial Class UnitDespatchPlanAddUpdateVr1
             txtEwayBillNo.Text = DespatchDS.Tables(0).Rows(0)("desph_eway_bill_no").ToString
             txtEwayBillDate.Text = DespatchDS.Tables(0).Rows(0)("desph_eway_bill_dt").ToString
             txtValidUpto.Text = DespatchDS.Tables(0).Rows(0)("desph_valid_upto_dt").ToString
+            'Modified-by MUKESH BHAGAT on 20-08-2026 : restored Indent feature from old UAT source
+            ddlIndent.SelectedValue = DespatchDS.Tables(0).Rows(0)("desph_third_party_indent_no").ToString
+            ddlIndent.Enabled = False
             If DespatchDS.Tables(0).Rows(0)("desph_approved_yn").ToString = "Y" Then
                 Aproved_yn = True
                 btnSubmit.Enabled = False
@@ -1095,6 +1159,8 @@ System.Web.Services.WebMethod()>
     Private Sub ddlDeliveryDepot_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ddlDeliveryDepot.SelectedIndexChanged
         PopulateSiteDetails()
         PopulatePONo()
+        'Modified-by MUKESH BHAGAT on 20-08-2026 : restored Indent feature from old UAT source
+        PopulateIndent()
         BindGrid()
     End Sub
 
@@ -1200,5 +1266,52 @@ System.Web.Services.WebMethod()>
         PopulateSiteDetails()
         PopulatePONo()
         BindGrid()
+    End Sub
+
+    'Modified-by MUKESH BHAGAT on 20-08-2026 : restored Indent feature from old UAT source
+    Protected Sub ddlIndent_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ddlIndent.SelectedIndexChanged
+        If ddlIndent.SelectedValue <> String.Empty Then
+            PopulateIndentDetails(ddlIndent.SelectedValue)
+        Else
+            ClearIndentDetails()
+        End If
+    End Sub
+
+
+    Private Sub PopulateIndentDetails(ByVal indentId As String)
+        Try
+            CheckLogin()
+            Dim indentObj As New UnitDespatchClass
+            Dim ds As DataSet = indentObj.GetIndentDetailsPando(indentId)
+
+            If ds IsNot Nothing AndAlso ds.Tables.Count > 0 AndAlso ds.Tables(0).Rows.Count > 0 Then
+                Dim dr As DataRow = ds.Tables(0).Rows(0)
+
+                'chkApprovedTranspoterYN.Checked = True
+                'chkApprovedTranspoterYN_CheckedChanged(Nothing, Nothing)
+
+                txtTruckNo.Text = dr("vehicle_number").ToString()
+                txtTransporter.Text = dr("transporter_name").ToString()
+                'hdnTranspoterId.Value = dr("transporter_code").ToString()
+                'txtTranspoterName.Text = dr("transporter_name_code").ToString()
+
+
+            Else
+                ClearIndentDetails()
+
+                'chkApprovedTranspoterYN.Checked = False
+            End If
+
+        Catch ex As Exception
+            lblErrorMessage.Text = "Error while fetching indent details."
+            lblErrorMessage.ForeColor = Drawing.Color.Red
+        End Try
+    End Sub
+
+    Private Sub ClearIndentDetails()
+        txtTruckNo.Text = String.Empty
+        txtTransporter.Text = String.Empty
+        hdnTranspoterId.Value = String.Empty
+        txtTranspoterName.Text = String.Empty
     End Sub
 End Class

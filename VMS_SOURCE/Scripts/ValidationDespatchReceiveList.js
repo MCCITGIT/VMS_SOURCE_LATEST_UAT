@@ -15,7 +15,7 @@
 
 function rwslctToggleSelect(clkdCheckBox, hdnLtr, hdnKg, txtRecvLtr, txtRecvKg, txtRecvDate) {
 
-    var theGridView = document.getElementById("gvDespatchRecvList");
+    var theGridView = document.getElementById("ctl00_ContentPlaceHolder1_gvDespatchRecvList");
 
     var flag = 0;
 
@@ -53,13 +53,13 @@ function rwslctToggleSelect(clkdCheckBox, hdnLtr, hdnKg, txtRecvLtr, txtRecvKg, 
     }
 
     if (flag == 0) {
-        if (document.getElementById("btnSubmit").disabled == false) {
-            document.getElementById("btnSubmit").disabled = true;
+        if (document.getElementById("ctl00_ContentPlaceHolder1_btnSubmit").disabled == false) {
+            document.getElementById("ctl00_ContentPlaceHolder1_btnSubmit").disabled = true;
         }
     }
     else {
-        if (document.getElementById("btnSubmit").disabled == true) {
-            document.getElementById("btnSubmit").disabled = false;
+        if (document.getElementById("ctl00_ContentPlaceHolder1_btnSubmit").disabled == true) {
+            document.getElementById("ctl00_ContentPlaceHolder1_btnSubmit").disabled = false;
         }
     }
 
@@ -74,7 +74,7 @@ function validateGrid() {
     firstErrorControl = "";
     errMsg = "";
 
-    var theGridView = document.getElementById("gvDespatchRecvList");
+    var theGridView = document.getElementById("ctl00_ContentPlaceHolder1_gvDespatchRecvList");
 
 
     for (var rowno = 1; rowno < theGridView.rows.length; rowno++)
@@ -101,16 +101,16 @@ function validateGrid() {
     if (firstErrorControl != "") {
         SetControlFocus(firstErrorControl);
         errMsg = "<table>" + errMsg + "</table>";
-        document.getElementById("lblErrorMessage").innerHTML = errMsg;
+        document.getElementById("ctl00_ContentPlaceHolder1_lblErrorMessage").innerHTML = errMsg;
         return false;
     }
     else {
 
         if (confirm("Are you sure to Submit?"))
         {
-            document.getElementById("btnSubmit").disabled = true;
-            __doPostBack(document.getElementById("btnSubmit").name, '');
-            document.getElementById("lblErrorMessage").innerHTML = "";
+            document.getElementById("ctl00_ContentPlaceHolder1_btnSubmit").disabled = true;
+            __doPostBack(document.getElementById("ctl00_ContentPlaceHolder1_btnSubmit").name, '');
+            document.getElementById("ctl00_ContentPlaceHolder1_lblErrorMessage").innerHTML = "";
         }
         else {
             return false;

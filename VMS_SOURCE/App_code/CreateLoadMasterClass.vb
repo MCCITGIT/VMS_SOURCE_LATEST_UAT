@@ -193,4 +193,21 @@ Public Class CreateLoadMasterClass
 
 #End Region
 
+    'Modified-by MUKESH BHAGAT on 20-08-2026 : restored from old UAT source
+#Region "Get Load Master Data For Mail"
+    Public Function GetLoadMasterDataForMail() As DataSet
+        Dim ds As DataSet
+        Try
+            ds = DBFactory.GetHelper().ExecuteDataSet("[dbo].[Get_Load_Master_Data_For_Mail]", Data.CommandType.StoredProcedure)
+        Catch ex As Exception
+            Throw ex
+        End Try
+        Return ds
+    End Function
+
+    Public Function GetLoadMasterMailIds() As DataSet
+        Return DBFactory.GetHelper().ExecuteDataSet("[dbo].[Get_Load_Master_Data_Recipient_MailId]", Data.CommandType.StoredProcedure)
+    End Function
+#End Region
+
 End Class

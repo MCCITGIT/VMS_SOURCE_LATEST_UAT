@@ -35,6 +35,9 @@ Public Class DespatchHeaderEntity
     Private desph_eway_bill_no As String
     Private desph_eway_bill_dt As SqlDateTime
     Private desph_valid_upto_dt As SqlDateTime
+    'Modified-by MUKESH BHAGAT on 20-08-2026 : restored Indent feature from old UAT source
+    Private desph_third_party_indent_yn As String
+    Private desph_third_party_indent As String
 
     Public Sub New()
         desph_desp_unit = String.Empty
@@ -71,6 +74,9 @@ Public Class DespatchHeaderEntity
         desph_eway_bill_no = String.Empty
         desph_eway_bill_dt = SqlDateTime.MinValue
         desph_valid_upto_dt = SqlDateTime.MinValue
+        'Modified-by MUKESH BHAGAT on 20-08-2026 : restored Indent feature from old UAT source
+        desph_third_party_indent = String.Empty
+        desph_third_party_indent_yn = String.Empty
 
     End Sub
     Public Property DespUnit() As String
@@ -334,6 +340,25 @@ Public Class DespatchHeaderEntity
         End Get
         Set(ByVal value As SqlDateTime)
             desph_valid_upto_dt = value
+        End Set
+    End Property
+
+    'Modified-by MUKESH BHAGAT on 20-08-2026 : restored Indent feature from old UAT source
+    Public Property ThirdPartyIndentYn() As String
+        Get
+            Return desph_third_party_indent_yn
+        End Get
+        Set(ByVal value As String)
+            desph_third_party_indent_yn = value
+        End Set
+    End Property
+
+    Public Property ThirdPartyIndent() As String
+        Get
+            Return desph_third_party_indent
+        End Get
+        Set(ByVal value As String)
+            desph_third_party_indent = value
         End Set
     End Property
 End Class

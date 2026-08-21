@@ -7,6 +7,7 @@
 'Description	: Code behind for Change Password Page
 
 'Modified By       Modified On       Version         Reason
+'Modified-by MUKESH BHAGAT on 20-08-2026 : restored from old UAT source (Cancel button and Status-driven redirect)
 
 '****************************************************************
 
@@ -32,7 +33,8 @@ Partial Class Change_Password
             If (Not (Request.QueryString("Status") Is Nothing)) Then
 
                 Dim UserStatus As String = Request.QueryString("Status")
-                'hdnStatus.Value = Request.QueryString("Status")
+                'Modified-by MUKESH BHAGAT on 20-08-2026 : restored from old UAT source
+                hdnStatus.Value = Request.QueryString("Status")
 
                 If (UserStatus = "FirstTimeEntry") Then
 
@@ -42,7 +44,8 @@ Partial Class Change_Password
 
             End If
 
-            'hdnOldPwd.Value = userInfo.userPWDEntity.ToString
+            'Modified-by MUKESH BHAGAT on 20-08-2026 : restored from old UAT source
+            hdnOldPwd.Value = userInfo.userPWDEntity.ToString
             'hdnOldPwd.Value = Session("PWD")
             AddAttributes()
             txtOldPwd.Focus()
@@ -106,15 +109,16 @@ Partial Class Change_Password
 
 
 #Region "btnCancel_Click"
-    'Protected Sub btnCancel_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnCancel.Click
-    '    If (hdnStatus.Value.Equals("FirstTimeEntry")) Then
-    '        Response.Redirect("~/Login.aspx")
-    '    ElseIf (hdnStatus.Value.Equals("PasswordExpired")) Then
-    '        Response.Redirect("~/Login.aspx")
-    '    Else
-    '        Response.Redirect("~/Home.aspx")
-    '    End If
-    'End Sub
+    'Modified-by MUKESH BHAGAT on 20-08-2026 : restored from old UAT source
+    Protected Sub btnCancel_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnCancel.Click
+        If (hdnStatus.Value.Equals("FirstTimeEntry")) Then
+            Response.Redirect("~/Login.aspx")
+        ElseIf (hdnStatus.Value.Equals("PasswordExpired")) Then
+            Response.Redirect("~/Login.aspx")
+        Else
+            Response.Redirect("~/Home.aspx")
+        End If
+    End Sub
 #End Region
 
 End Class

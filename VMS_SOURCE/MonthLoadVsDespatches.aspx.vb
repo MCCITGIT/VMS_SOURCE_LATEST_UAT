@@ -200,11 +200,11 @@ Partial Class MonthLoadVsDespatches
                 Dim UserId As String = ConfigurationManager.AppSettings.Get("ServerUserID")
                 Dim Domain As String = ConfigurationManager.AppSettings.Get("ServerDomain")
                 Dim Password As String = ConfigurationManager.AppSettings.Get("ServerPassword")
-                'If impersonateValidUser(UserId, Domain, Password) Then
-                'ExportToExcelSheet(dsDailyReportCollection_Due, Response)
+                If impersonateValidUser(UserId, Domain, Password) Then
+                    'ExportToExcelSheet(dsDailyReportCollection_Due, Response)
 
 
-                Dim company As String = userInfo.userCompanyEntity
+                    Dim company As String = userInfo.userCompanyEntity
                     Dim region As String = ddlRegion.SelectedValue
                     Dim depot As String = ddlDepot.SelectedValue
                     Dim unit As String = ddlUnit.SelectedValue
@@ -255,9 +255,9 @@ Partial Class MonthLoadVsDespatches
                     Else
                         lblErrMsg.Text = "No Data Found"
                     End If
-                    'End If
-                    '    undoImpersonation()
-                    'End If
+
+                    undoImpersonation()
+                End If
                     'Else
 
 
@@ -453,13 +453,13 @@ Partial Class MonthLoadVsDespatches
         'for Excel Format <begin>
 
         If Datagrd.Items.Count > 0 Then
-            sFile = Server.MapPath(Request.ApplicationPath) & "Excel_Reports\Month_Load_Vs_Despatches" + DateString + ".xls"
-            sTemplate = Server.MapPath(Request.ApplicationPath) & "Templates\Month_Load_Vs_Despatches.xls"
+            sFile = Server.MapPath(Request.ApplicationPath) & "\Excel_Reports\Month_Load_Vs_Despatches" + DateString + ".xls"
+            sTemplate = Server.MapPath(Request.ApplicationPath) & "\Templates\Month_Load_Vs_Despatches.xls"
             oExcel.Visible = False
             oExcel.DisplayAlerts = False
 
             oBooks = oExcel.Workbooks
-            oBooks.Open(Server.MapPath(Request.ApplicationPath) & "Templates\Month_Load_Vs_Despatches.xls") 'Load colorful template with chart 
+            oBooks.Open(Server.MapPath(Request.ApplicationPath) & "\Templates\Month_Load_Vs_Despatches.xls") 'Load colorful template with chart 
             oBook = oBooks.Item(1)
             oSheets = oBook.Worksheets
             oSheet = CType(oSheets.Item(1), Microsoft.Office.Interop.Excel.Worksheet)

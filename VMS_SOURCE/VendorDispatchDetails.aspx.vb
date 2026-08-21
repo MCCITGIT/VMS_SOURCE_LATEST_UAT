@@ -196,8 +196,18 @@ Partial Class VendorDispatchDetails
             Dim Obj1 As New UnitDespatchClassVr1
 
             Dim DocPath As String = Format(Date.Now, "dd_MM_yyyy")
-            Dim DocsFileName As String = sch_fld1.FileName
+            'Dim DocsFileName As String = sch_fld1.FileName
+            'Dim DocsOrgFileName As String = sch_fld1.FileName
             Dim DocsOrgFileName As String = sch_fld1.FileName
+
+            Dim fileNameWithoutExt As String = System.IO.Path.GetFileNameWithoutExtension(DocsOrgFileName)
+            Dim fileExt As String = System.IO.Path.GetExtension(DocsOrgFileName)
+
+            Dim uniqueId As String = Guid.NewGuid().ToString("N")
+
+            Dim DocsFileName As String = fileNameWithoutExt & "_" & uniqueId & fileExt
+
+            DocsOrgFileName = fileNameWithoutExt & "_" & uniqueId & fileExt
 
             Dim Obj As VendorDispatchClass = New VendorDispatchClass()
             Dim Objunit As New UnitDespatchClassVr1
@@ -300,7 +310,8 @@ Partial Class VendorDispatchDetails
                 If RowsAffected > 0 Then
                     If Not sch_fld1.PostedFile Is Nothing And sch_fld1.PostedFile.ContentLength > 0 Then
                         Dim projectPath As String = ConfigurationManager.AppSettings.Get("UPLOAD_DOCS_FOLDER_ABS_PATH") & userInfo.userCompanyEntity & "\" & "Direct_Despatch_Docs" & "\" & DocPath
-                        Dim fn As String = System.IO.Path.GetFileName(sch_fld1.PostedFile.FileName)
+                        'Dim fn As String = System.IO.Path.GetFileName(sch_fld1.PostedFile.FileName)
+                        Dim fn As String = DocsFileName
                         Dim saveLocation As String = projectPath & "\" & fn
                         Dim file As System.IO.FileInfo = New System.IO.FileInfo(saveLocation)
                         If Not (Directory.Exists(projectPath)) Then

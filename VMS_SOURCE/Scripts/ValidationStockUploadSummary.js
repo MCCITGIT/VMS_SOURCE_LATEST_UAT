@@ -7,15 +7,15 @@ function ValidateStckUpldSmmry(TopFin,LastFin) {
     firstErrorControl = "";
     errMsg = "";
 
-    ValidateRequired("txtProcessYear", "Enter Process Year");
-    ValidateRequired("txtProcessMonth", "Enter Process Month");
-    ValidateMonth("txtProcessMonth", "Enter Month should not be Less than 1 and Greater than 12.");
-    ValidateYear("txtProcessYear",TopFin,LastFin,"Enter Year Not Found In FinYear")
+    ValidateRequired("ctl00_ContentPlaceHolder1_txtProcessYear", "Enter Process Year");
+    ValidateRequired("ctl00_ContentPlaceHolder1_txtProcessMonth", "Enter Process Month");
+    ValidateMonth("ctl00_ContentPlaceHolder1_txtProcessMonth", "Enter Month should not be Less than 1 and Greater than 12.");
+    ValidateYear("ctl00_ContentPlaceHolder1_txtProcessYear",TopFin,LastFin,"Enter Year Not Found In FinYear")
     
         if (firstErrorControl != "") {
             SetControlFocus(firstErrorControl);
             errMsg = "<table>" + errMsg + "</table>";
-            document.getElementById("lblErrMsg").innerHTML = errMsg;
+            document.getElementById("ctl00_ContentPlaceHolder1_lblErrMsg").innerHTML = errMsg;
             return false;
         }
         else
