@@ -137,7 +137,12 @@ Partial Class VendorInvoiceAc_ReleaseDtls
         End Try
     End Sub
 #End Region
-    Protected Sub ImgbtnSearch_Click(sender As Object, e As ImageClickEventArgs) Handles ImgbtnSearch.Click
+    'Protected Sub ImgbtnSearch_Click(sender As Object, e As ImageClickEventArgs) Handles ImgbtnSearch.Click
+    '    gvVendorInvoiceDtls.PageIndex = 0
+    '    BindGrid()
+    'End Sub
+
+    Protected Sub ImgbtnSearch_Click(sender As Object, e As EventArgs) Handles ImgbtnSearch.Click
         gvVendorInvoiceDtls.PageIndex = 0
         BindGrid()
     End Sub

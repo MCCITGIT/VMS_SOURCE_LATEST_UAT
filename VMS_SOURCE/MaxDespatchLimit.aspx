@@ -5,12 +5,15 @@
 </asp:Content>--%>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
 
+    <link href="includes/max-despatch-limit-cards.css?v=<%= DateTime.Now.Ticks %>" rel="stylesheet" type="text/css" />
     <script src="Scripts/ValidateMaxDespLimit.js" type="text/javascript"></script>
     <script type="text/javascript">
         function disableBackButton() {
             window.history.forward(1);
         }
     </script>
+
+    <div class="mdl-page">
 
     <div class="breadcrumbs">
         <div class="leftFung">
@@ -24,11 +27,11 @@
         <div class="rightFung"></div>
     </div>
 
-    <div class="card">
-        <div class="card-body">
-            <div class="table-responsive">
+    <div class="card mdl-panel">
+        <div class="card-body mdl-panel-body">
+            <div class="mdl-card-wrap">
                 <asp:GridView ID="gvDespDtl" runat="server" AutoGenerateColumns="false" AllowPaging="false"
-                    Visible="true" BorderWidth="1" CssClass="table table-hover upgradDataGrid" EmptyDataText="No Record Found">
+                    Visible="true" BorderWidth="0" GridLines="None" CssClass="table table-hover upgradDataGrid mdl-cards" EmptyDataText="No Record Found">
                     <RowStyle CssClass="tlrowlight" />
                     <PagerStyle CssClass="PagerGrid" HorizontalAlign="Right" />
                     <HeaderStyle CssClass="headerGrid" />
@@ -41,7 +44,12 @@
                         </asp:BoundField>
                         <asp:TemplateField HeaderStyle-HorizontalAlign="Center" HeaderText="Unit">
                             <ItemTemplate>
-                                <asp:Label ID="lblUnit" runat="server" Text='<%# Bind("name") %>'></asp:Label>
+                                <span class="mdl-identity">
+                                    <span class="mdl-kicker"><i class="fas fa-industry" aria-hidden="true"></i> Unit</span>
+                                    <span class="mdl-unit-name">
+                                        <asp:Label ID="lblUnit" runat="server" Text='<%# Bind("name") %>'></asp:Label>
+                                    </span>
+                                </span>
                             </ItemTemplate>
                             <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="60%" />
                             <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="60%" />
@@ -49,7 +57,12 @@
                         </asp:TemplateField>
                         <asp:TemplateField HeaderStyle-HorizontalAlign="Center" HeaderText="Code">
                             <ItemTemplate>
-                                <asp:Label ID="lblUnitCode" runat="server" Text='<%# Bind("mdl_unit") %>'></asp:Label>
+                                <span class="mdl-code-wrap">
+                                    <span class="mdl-kicker">Code</span>
+                                    <span class="mdl-code-badge">
+                                        <asp:Label ID="lblUnitCode" runat="server" Text='<%# Bind("mdl_unit") %>'></asp:Label>
+                                    </span>
+                                </span>
                             </ItemTemplate>
                             <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="15%" />
                             <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="15%" />
@@ -57,7 +70,9 @@
                         </asp:TemplateField>
                         <asp:TemplateField HeaderStyle-HorizontalAlign="Center" HeaderText="Limit">
                             <ItemTemplate>
-                                <asp:TextBox ID="txtLimit" runat="server" Text='<%# Bind("mdl_limit") %>' CssClass="form-control" Style="text-align: right;"></asp:TextBox>
+                                <span class="mdl-limit">
+                                    <asp:TextBox ID="txtLimit" runat="server" Text='<%# Bind("mdl_limit") %>' CssClass="form-control" Style="text-align: right;"></asp:TextBox>
+                                </span>
                             </ItemTemplate>
                             <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="15%" />
                             <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="15%" />
@@ -66,7 +81,7 @@
                     </Columns>
                 </asp:GridView>
             </div>
-            <div class="row">
+            <div class="row mdl-actions">
                 <div class="col-md-12 text-center">
                     <asp:Button ID="btnSubmit" CssClass="btn btn-success btn-sm" runat="server" Text="Submit" />
                     <asp:Button ID="btnCancel" CssClass="btn btn-secondary btn-sm" runat="server" Text="Cancel" PostBackUrl="~/Home.aspx" />
@@ -75,5 +90,7 @@
             <asp:Label ID="lblErrorMessage" CssClass="errormsg" Visible="true" runat="server"></asp:Label>
             <div id="divErrorMessage"></div>
         </div>
+    </div>
+
     </div>
 </asp:Content>

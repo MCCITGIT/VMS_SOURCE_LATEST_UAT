@@ -1,0 +1,652 @@
+/* Form Menu Master — card layout (visual only)
+   Scoped to .mm-page so master/grid styles are not affected elsewhere. */
+
+.mm-page {
+    --mm-bg: #f3f6fb;
+    --mm-surface: #ffffff;
+    --mm-ink: #10243a;
+    --mm-muted: #5b6b7c;
+    --mm-line: #e3ebf3;
+    --mm-shadow: 0 1px 2px rgba(16, 56, 90, 0.05), 0 8px 18px rgba(16, 56, 90, 0.06);
+    --mm-shadow-hover: 0 6px 16px rgba(16, 56, 90, 0.12);
+    --mm-radius: 12px;
+    --mm-primary: #1b5a8c;
+    --mm-primary-deep: #10385a;
+    --mm-accent: #0f8a7a;
+    --mm-yes: #067647;
+    --mm-no: #b42318;
+    font-size: 12.5px;
+    color: var(--mm-ink);
+}
+
+.mm-page .mm-panel,
+.mm-page .card.mm-panel {
+    background: var(--mm-surface);
+    border: 1px solid var(--mm-line);
+    border-radius: var(--mm-radius);
+    box-shadow: var(--mm-shadow);
+    margin-bottom: 8px;
+    overflow: visible;
+}
+
+.mm-page .mm-panel-body,
+.mm-page .card.mm-panel > .card-body.mm-panel-body {
+    padding: 8px 10px;
+}
+
+.mm-page .mm-panel-body .errormsg,
+.mm-page .mm-panel-body span[style*="color: Red"],
+.mm-page #divErrorMessage {
+    display: block;
+    margin: 0 0 6px;
+}
+
+.mm-page .mm-panel-body .errormsg:empty,
+.mm-page #divErrorMessage:empty,
+.mm-page .mm-panel-body span[style*="color: Red"]:empty {
+    display: none;
+    margin: 0;
+}
+
+/* ---- Filter ---- */
+.mm-page .mm-filter-grid {
+    display: grid;
+    grid-template-columns: minmax(200px, 300px);
+    gap: 8px;
+    align-items: end;
+}
+
+.mm-page .mm-field .form-group {
+    margin-bottom: 0;
+}
+
+.mm-page .mm-field .form-control-label {
+    color: var(--mm-muted);
+    font-size: 10px;
+    font-weight: 650;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+}
+
+.mm-page .mm-field .form-control,
+.mm-page .mm-field .select2-container .select2-selection--single {
+    height: 32px;
+    min-height: 32px;
+    border-radius: 8px;
+    border-color: #d3deea;
+}
+
+.mm-page .mm-field .select2-container {
+    width: 100% !important;
+}
+
+.mm-page .mm-field .select2-container--default .select2-selection--single {
+    border-radius: 8px;
+    border-color: #d3deea;
+}
+
+.mm-page .mm-field .select2-container--default .select2-selection--single .select2-selection__rendered {
+    line-height: 30px;
+    padding-left: 10px;
+}
+
+.mm-page .mm-field .select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 30px;
+}
+
+/* ---- GridView → CSS card grid ---- */
+.mm-page table.gv-cards {
+    display: block;
+    width: 100% !important;
+    max-width: 100%;
+    border: 0 !important;
+    border-collapse: separate !important;
+    border-spacing: 0;
+    background: transparent !important;
+    margin: 0;
+}
+
+.mm-page table.gv-cards > tbody {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+    gap: 8px;
+    width: 100%;
+}
+
+.mm-page table.gv-cards > tbody > tr.headerGrid,
+.mm-page table.gv-cards > thead {
+    display: none !important;
+}
+
+.mm-page table.gv-cards > tbody > tr.tlrowlight {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    background: transparent;
+    height: 100%;
+}
+
+.mm-page table.gv-cards > tbody > tr.tlrowlight:hover {
+    background: transparent;
+}
+
+.mm-page table.gv-cards > tbody > tr.tlrowlight > td {
+    display: block;
+    width: 100% !important;
+    max-width: 100%;
+    height: 100%;
+    padding: 0 !important;
+    border: 0 !important;
+    background: transparent !important;
+    vertical-align: top;
+}
+
+.mm-page table.gv-cards > tbody > tr.footerGrid {
+    grid-column: 1 / -1;
+    display: block;
+}
+
+.mm-page table.gv-cards > tbody > tr.footerGrid > td {
+    display: block;
+    width: 100% !important;
+    padding: 0 !important;
+    border: 0 !important;
+    background: transparent !important;
+}
+
+.mm-page table.gv-cards > tbody > tr td[colspan] {
+    text-align: center;
+    padding: 16px 12px !important;
+    color: var(--mm-muted);
+    background: #f8fafc !important;
+    border: 1px dashed #d5e0ea !important;
+    border-radius: 10px;
+    font-weight: 600;
+}
+
+/* ---- Portrait menu card (stacked, not a table row) ---- */
+.mm-card {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background: var(--mm-surface);
+    border: 1px solid var(--mm-line);
+    border-radius: 12px;
+    box-shadow: var(--mm-shadow);
+    overflow: hidden;
+    position: relative;
+    transition: transform 0.16s ease, box-shadow 0.16s ease, border-color 0.16s ease;
+}
+
+.mm-card::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: linear-gradient(180deg, var(--mm-primary) 0%, var(--mm-accent) 100%);
+}
+
+.mm-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--mm-shadow-hover);
+    border-color: #c9d8e8;
+}
+
+.mm-card-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 8px 8px 6px 12px;
+    background: linear-gradient(135deg, #f4f8fc 0%, #ffffff 62%);
+}
+
+.mm-identity {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+    flex: 1 1 auto;
+}
+
+.mm-avatar {
+    flex: 0 0 auto;
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 12px;
+    background: linear-gradient(180deg, #2a78b5 0%, #1b5a8c 100%);
+    box-shadow: 0 2px 6px rgba(27, 90, 140, 0.22);
+}
+
+.mm-kicker {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    color: #8a9aab;
+    margin-right: 5px;
+}
+
+.mm-parent {
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--mm-muted);
+    line-height: 1.2;
+    margin-top: 1px;
+    word-break: break-word;
+}
+
+.mm-parent > span:not(.mm-kicker) {
+    color: inherit;
+    font: inherit;
+}
+
+.mm-title {
+    display: block;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--mm-primary-deep);
+    line-height: 1.2;
+    word-break: break-word;
+}
+
+.mm-title span {
+    color: inherit;
+    font: inherit;
+}
+
+.mm-head-meta {
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 6px;
+}
+
+.mm-seq {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 4px;
+    min-width: 0;
+    text-align: left;
+    padding: 2px 7px;
+    border-radius: 8px;
+    background: #eef5fb;
+    border: 1px solid #d5e4f2;
+}
+
+.mm-seq-value {
+    font-size: 12px;
+    font-weight: 800;
+    color: var(--mm-primary-deep);
+    line-height: 1.2;
+    font-variant-numeric: tabular-nums;
+}
+
+.mm-seq-value span {
+    color: inherit;
+    font: inherit;
+}
+
+.mm-seq-label {
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+    color: #5d7083;
+}
+
+.mm-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 20px;
+    padding: 1px 8px;
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+    background: #f3f6fb;
+    border: 1px solid #dbe4ee;
+    color: var(--mm-muted);
+}
+
+.mm-badge span {
+    color: inherit;
+    font: inherit;
+    font-weight: inherit;
+}
+
+.mm-status[data-state="Yes"] .mm-badge {
+    background: #ecfdf3;
+    border-color: #ccebd8;
+    color: var(--mm-yes);
+}
+
+.mm-status[data-state="No"] .mm-badge {
+    background: #fff1f2;
+    border-color: #f8d5da;
+    color: var(--mm-no);
+}
+
+.mm-card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    padding: 0 8px 8px 12px;
+    flex: 1 1 auto;
+}
+
+.mm-link-tile {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 4px 8px;
+    min-width: 0;
+    padding: 5px 8px;
+    border-radius: 8px;
+    background: #f7fafc;
+    border: 1px solid #edf2f7;
+}
+
+.mm-field-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    flex: 0 0 auto;
+    font-size: 9px;
+    font-weight: 750;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+    color: #5d7083;
+    margin: 0;
+    line-height: 1.2;
+}
+
+.mm-field-label i {
+    font-size: 10px;
+    width: 12px;
+    text-align: center;
+    color: var(--mm-primary);
+}
+
+.mm-link-value {
+    display: inline;
+    font-size: 12px;
+    font-weight: 650;
+    color: var(--mm-ink);
+    line-height: 1.25;
+    word-break: break-all;
+}
+
+.mm-link-value span {
+    color: inherit;
+    font: inherit;
+}
+
+.mm-card-foot {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 6px;
+    padding: 6px 8px 8px 12px;
+    border-top: 1px solid var(--mm-line);
+    background: #fbfcfe;
+}
+
+/* ---- Edit card (stacked form) ---- */
+.mm-card.is-edit {
+    border-color: #bcd2e6;
+    box-shadow: 0 8px 22px rgba(16, 56, 90, 0.12);
+}
+
+.mm-card.is-edit::before {
+    background: linear-gradient(180deg, #2270ad 0%, #1b5a8c 100%);
+    width: 3px;
+}
+
+.mm-card.is-edit:hover {
+    transform: none;
+}
+
+.mm-edit-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 6px;
+    padding: 8px 8px 6px 12px;
+}
+
+.mm-edit-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+}
+
+.mm-edit-grid > input[type="hidden"] {
+    display: none;
+}
+
+.mm-edit-field label,
+.mm-add-field label {
+    display: block;
+    font-size: 9px;
+    font-weight: 750;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+    color: #5d7083;
+    margin-bottom: 3px;
+}
+
+.mm-page .mm-card .form-control {
+    height: 32px;
+    min-height: 32px;
+    padding: 4px 8px;
+    border-radius: 8px;
+    border-color: #d3deea;
+    font-size: 12px;
+}
+
+.mm-page .mm-card .form-control:focus {
+    border-color: #8bb4d4;
+    box-shadow: 0 0 0 3px rgba(27, 90, 140, 0.12);
+    outline: none;
+}
+
+.mm-page .mm-card select.form-control {
+    padding-right: 28px;
+}
+
+/* ---- Add footer: landscape composer, contrasting the portrait cards ---- */
+.mm-card.is-add {
+    background: linear-gradient(180deg, #ffffff 0%, #f4f8fc 100%);
+    border-color: #d5e3f0;
+}
+
+.mm-card.is-add::before {
+    width: 0;
+}
+
+.mm-card.is-add:hover {
+    transform: none;
+    box-shadow: var(--mm-shadow);
+}
+
+.mm-add-grid {
+    display: grid;
+    grid-template-columns: minmax(140px, 1.1fr) minmax(140px, 1.1fr) minmax(160px, 1.4fr) minmax(72px, 0.5fr) minmax(72px, 0.5fr) auto;
+    gap: 8px;
+    align-items: end;
+    padding: 8px 10px;
+}
+
+.mm-add-actions {
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+    min-height: 32px;
+    padding-bottom: 0;
+}
+
+/* ---- Buttons (same commands/text; larger touch targets) ---- */
+.mm-page table.gv-cards .gridBtn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    min-height: 28px;
+    min-width: 56px;
+    padding: 4px 10px !important;
+    border-radius: 8px !important;
+    font-size: 11px;
+    font-weight: 650;
+    letter-spacing: 0.2px;
+    text-transform: none;
+    line-height: 1.2;
+    margin: 0;
+    width: auto !important;
+    -webkit-tap-highlight-color: transparent;
+    transition: transform 0.12s ease, box-shadow 0.18s ease, filter 0.18s ease, background 0.15s ease;
+}
+
+.mm-page table.gv-cards .btn-outline-primary.gridBtn,
+.mm-page table.gv-cards .btn-primary.gridBtn {
+    background: #ffffff !important;
+    border: 1.5px solid #2f6fed !important;
+    box-shadow: none !important;
+    color: #2f6fed !important;
+}
+
+.mm-page table.gv-cards .btn-success.gridBtn {
+    background: linear-gradient(180deg, #14a394 0%, #0f766e 100%) !important;
+    border: 0 !important;
+    box-shadow: 0 4px 10px rgba(15, 118, 110, 0.22);
+    color: #fff !important;
+}
+
+.mm-page table.gv-cards .btn-secondary.gridBtn {
+    background: #fff !important;
+    border: 1px solid #d5e0ea !important;
+    color: var(--mm-primary-deep) !important;
+    box-shadow: none;
+}
+
+.mm-page table.gv-cards .gridBtn:hover,
+.mm-page table.gv-cards .gridBtn:focus {
+    filter: brightness(1.05);
+    text-decoration: none;
+}
+
+.mm-page table.gv-cards .btn-outline-primary.gridBtn:hover,
+.mm-page table.gv-cards .btn-outline-primary.gridBtn:focus,
+.mm-page table.gv-cards .btn-primary.gridBtn:hover,
+.mm-page table.gv-cards .btn-primary.gridBtn:focus {
+    background: #eef4ff !important;
+    border-color: #1f5bd6 !important;
+    color: #1f5bd6 !important;
+    box-shadow: none !important;
+    filter: none;
+}
+
+.mm-page table.gv-cards .btn-success.gridBtn:hover,
+.mm-page table.gv-cards .btn-success.gridBtn:focus {
+    box-shadow: 0 8px 18px rgba(15, 118, 110, 0.34);
+}
+
+.mm-page table.gv-cards .btn-secondary.gridBtn:hover,
+.mm-page table.gv-cards .btn-secondary.gridBtn:focus {
+    background: #eaf3fb !important;
+    border-color: #bcd2e6 !important;
+}
+
+.mm-page table.gv-cards .gridBtn:active {
+    transform: scale(0.97);
+}
+
+.mm-page table.gv-cards .gridBtn:focus-visible {
+    outline: 2px solid #1b5a8c;
+    outline-offset: 2px;
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 1199px) {
+    .mm-add-grid {
+        grid-template-columns: 1fr 1fr 1fr;
+    }
+
+    .mm-add-actions {
+        grid-column: 1 / -1;
+        justify-content: flex-end;
+    }
+}
+
+@media (max-width: 991px) {
+    .mm-page table.gv-cards > tbody {
+        grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
+    }
+}
+
+@media (max-width: 767px) {
+    .mm-page .mm-panel-body,
+    .mm-page .card.mm-panel > .card-body.mm-panel-body {
+        padding: 8px;
+    }
+
+    .mm-page .mm-filter-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .mm-add-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .mm-page table.gv-cards .gridBtn {
+        min-width: 44px;
+        flex: 1 1 auto;
+    }
+
+    .mm-card-foot,
+    .mm-add-actions {
+        flex-wrap: wrap;
+    }
+}
+
+@media (max-width: 520px) {
+    .mm-add-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .mm-edit-row {
+        grid-template-columns: 1fr;
+    }
+
+    .mm-card-head {
+        flex-wrap: wrap;
+    }
+
+    .mm-head-meta {
+        flex-direction: row;
+        align-items: center;
+        width: 100%;
+        justify-content: space-between;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .mm-card,
+    .mm-page table.gv-cards .gridBtn {
+        transition: none;
+    }
+
+    .mm-card:hover {
+        transform: none;
+    }
+}
