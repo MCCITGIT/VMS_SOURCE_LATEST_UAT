@@ -715,6 +715,61 @@ Public Class UnitDespatchClass
 
 #End Region
 
+    'Modified-by MUKESH BHAGAT on 20-08-2026 : restored Indent feature from old UAT source
+#Region "Get Indent Pando"
+    Public Function GetPandoInvoice(ByVal depot As String, ByVal unit As String, ByVal challan_no As Int64, ByVal finyr As String) As DataSet
+        Dim UnitDS As New DataSet
+
+        Dim sqlParams(3) As SqlParameter
+
+        sqlParams(0) = New SqlParameter()
+        sqlParams(0).ParameterName = "@depot"
+        sqlParams(0).DbType = DbType.String
+        sqlParams(0).Direction = Data.ParameterDirection.Input
+        sqlParams(0).Value = depot
+
+        sqlParams(1) = New SqlParameter()
+        sqlParams(1).ParameterName = "@unit"
+        sqlParams(1).DbType = DbType.String
+        sqlParams(1).Direction = Data.ParameterDirection.Input
+        sqlParams(1).Value = unit
+
+        sqlParams(2) = New SqlParameter()
+        sqlParams(2).ParameterName = "@challan_no"
+        sqlParams(2).DbType = DbType.Int64
+        sqlParams(2).Direction = Data.ParameterDirection.Input
+        sqlParams(2).Value = challan_no
+
+        sqlParams(3) = New SqlParameter()
+        sqlParams(3).ParameterName = "@finyear"
+        sqlParams(3).DbType = DbType.String
+        sqlParams(3).Direction = Data.ParameterDirection.Input
+        sqlParams(3).Value = finyr
+
+
+        UnitDS = DBFactory.GetHelper().ExecuteDataSet("[get_indent_pando]", Data.CommandType.StoredProcedure, sqlParams)
+        Return UnitDS
+    End Function
+
+#End Region
+
+#Region "Get Indent Details Pando"
+    Public Function GetIndentDetailsPando(ByVal IndentId As String) As DataSet
+        Dim UnitDS As New DataSet
+        Dim sqlParams(0) As SqlParameter
+
+        sqlParams(0) = New SqlParameter()
+        sqlParams(0).ParameterName = "@indentId"
+        sqlParams(0).DbType = DbType.String
+        sqlParams(0).Direction = Data.ParameterDirection.Input
+        sqlParams(0).Value = IIf(IndentId <> String.Empty, IndentId, DBNull.Value)
+
+        UnitDS = DBFactory.GetHelper().ExecuteDataSet("[get_indent_details_pando]", Data.CommandType.StoredProcedure, sqlParams)
+        Return UnitDS
+    End Function
+
+#End Region
+
 #Region "Get Challan Details For List Screen"
     Public Function GetChallanDetails(ByVal Unit As String, ByVal Depot As String, ByVal Year As String, ByVal Month As String, ByVal ChalanNo As Integer) As DataSet
         Dim UnitDS As New DataSet
@@ -1258,6 +1313,37 @@ Public Class UnitDespatchClass
         Return UnitDS
     End Function
 
+    'Modified-by MUKESH BHAGAT on 20-08-2026 : restored Indent feature from old UAT source
+#Region "Check Indent Available"
 
+    Function CheckIndentAvailable(ByVal unitCode As String) As Boolean
+        Dim result As String = String.Empty
+        Try
+            Dim sqlParams(0) As SqlParameter
+            sqlParams(0) = New SqlParameter()
+            sqlParams(0).ParameterName = "@unitCode"
+            sqlParams(0).DbType = DbType.String
+            sqlParams(0).Direction = Data.ParameterDirection.Input
+            sqlParams(0).Value = unitCode
+
+            Dim ds As DataSet = DBFactory.GetHelper().ExecuteDataSet("[dbo].[Unit_Dspatch_Check_Indent_Available]", CommandType.StoredProcedure, sqlParams)
+
+            If ds IsNot Nothing AndAlso ds.Tables.Count > 0 AndAlso ds.Tables(0).Rows.Count > 0 Then
+                result = ds.Tables(0).Rows(0)(0).ToString()
+            End If
+
+            If result = "true" Then
+                Return True
+            Else
+                Return False
+            End If
+
+        Catch ex As Exception
+            ' Handle any errors by throwing a new exception
+            Throw New Exception("Error in checking indent availability", ex)
+        End Try
+    End Function
+
+#End Region
 
 End Class

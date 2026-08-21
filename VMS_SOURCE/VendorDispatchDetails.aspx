@@ -27,6 +27,8 @@
             }
         }
     </script>
+    <%-- <script src="Scripts/DespatchDetails.js" type="text/javascript"></script>--%>
+    <script src="Scripts/FunctionValidator.js" type="text/javascript"></script>
     <script src="Scripts/DespatchDetails.js" type="text/javascript"></script>
 
     <div class="breadcrumbs">

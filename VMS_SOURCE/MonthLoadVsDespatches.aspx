@@ -10,10 +10,10 @@
         document.onkeydown = checkValue;
         function checkValue() {
             if (event.keyCode == 118) { //Add (F7 keypress)
-                document.getElementById('btnSubmit').click();
+                document.getElementById('<%= btnSubmit.ClientID %>').click();
             }
             if (event.keyCode == 119) { //Add (F9 keypress)
-                document.getElementById('btnCancel').click();
+                document.getElementById('<%= btnCancel.ClientID %>').click();
             }
         }
     </script>

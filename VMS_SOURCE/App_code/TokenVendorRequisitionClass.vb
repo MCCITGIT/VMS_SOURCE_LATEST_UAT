@@ -586,4 +586,22 @@ Public Class TokenVendorRequisitionClass
         Return PrjectList
 
     End Function
+
+    Public Function GetFreightUpdate_Dtls(ByVal userId As String) As DataSet
+        Dim ds As DataSet
+        Dim sqlParams(0) As SqlParameter
+
+        sqlParams(0) = New SqlParameter()
+        sqlParams(0).ParameterName = "@userId"
+        sqlParams(0).DbType = DbType.String
+        sqlParams(0).Direction = Data.ParameterDirection.Input
+        sqlParams(0).Value = userId
+
+        ds = DBFactory.GetHelper().ExecuteDataSet("[dbo].[usp_GetFreight_Update_Dtls]", Data.CommandType.StoredProcedure, sqlParams)
+        Return ds
+    End Function
+
+    Public Function GetFreightDtls_MailRecipient() As DataSet
+        Return DBFactory.GetHelper().ExecuteDataSet("[dbo].[usp_GetFreightDtls_MailRecipient]", Data.CommandType.StoredProcedure)
+    End Function
 End Class

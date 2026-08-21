@@ -5,7 +5,7 @@
         document.onkeydown = checkValue;
         function checkValue() {
             if (event.keyCode == 118) { //Add (F7 keypress)
-                document.getElementById('btnSubmit').click()
+                document.getElementById('<%= btnSubmit.ClientID %>').click()
             }
         }
     </script>

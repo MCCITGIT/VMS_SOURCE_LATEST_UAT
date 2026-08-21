@@ -4,6 +4,7 @@ Imports System.Data.SqlClient
 Imports VMS.DataAccess
 Imports VMS.Web
 Imports System.IO
+Imports System.Text
 Imports NPOI.HSSF.UserModel
 Imports NPOI.HSSF.Util
 Imports NPOI.SS.UserModel
@@ -70,10 +71,10 @@ Partial Class FreightDtls
     Private Sub PopulateUnit()
         'CheckLogin()
         Try
-            Dim obj As New UnitApplicableProductAssignClass
+            Dim obj As New Transit_Days_App
             Dim dsUnitSet As New DataSet
 
-            dsUnitSet = obj.GetUnitName(Constant.Common.ActiveStatus)
+            dsUnitSet = obj.GetUnit(Constant.Common.ActiveStatus)
             If (Not (dsUnitSet Is Nothing) AndAlso dsUnitSet.Tables.Count > 0 AndAlso Not (dsUnitSet.Tables(0) Is Nothing) AndAlso dsUnitSet.Tables(0).Rows.Count > 0) Then
                 ddlVendorUnit.DataSource = dsUnitSet.Tables(0)
                 ddlVendorUnit.DataTextField = "unit_name"
@@ -262,6 +263,12 @@ Partial Class FreightDtls
             lblMsg.Text = "Submitted Successfully"
             lblMsg.ForeColor = Drawing.Color.Green
             BindGrid()
+            Try
+                sendMail_UpdatedData(userInfo.userIDEntity)
+            Catch ex As Exception
+                Dim str As String = ex.Message.ToString()
+                ' Mail failure should not rollback successful freight update.
+            End Try
             'ScriptManager.RegisterStartupScript(Me, Me.GetType(), "Message", "<script type='text/javascript' language='javascript'>window.close()</script>", False)
         Else
             sqlTrans.Rollback()
@@ -729,4 +736,107 @@ Partial Class FreightDtls
             ModalPopupExtender2.Hide()
         End If
     End Sub
+
+    Public Function sendMail_UpdatedData(ByVal userId As String) As Integer
+        Dim mailResult As Integer = 0
+
+        Try
+            Dim obj As New TokenVendorRequisitionClass()
+            Dim dsUpdate As DataSet = obj.GetFreightUpdate_Dtls(userId)
+            Dim dsRecipient As DataSet = obj.GetFreightDtls_MailRecipient()
+
+            If (dsUpdate Is Nothing) OrElse dsUpdate.Tables.Count = 0 OrElse dsUpdate.Tables(0) Is Nothing OrElse dsUpdate.Tables(0).Rows.Count = 0 Then
+                Return mailResult
+            End If
+
+            If (dsRecipient Is Nothing) OrElse dsRecipient.Tables.Count = 0 OrElse dsRecipient.Tables(0) Is Nothing OrElse dsRecipient.Tables(0).Rows.Count = 0 Then
+                Return mailResult
+            End If
+
+            Dim drRecipient As DataRow = dsRecipient.Tables(0).Rows(0)
+            Dim toAddress As String = String.Empty
+            Dim ccAddress As String = String.Empty
+            Dim bccAddress As String = String.Empty
+
+            If dsRecipient.Tables(0).Rows.Count AndAlso dsRecipient.Tables.Count > 0 Then
+                toAddress = drRecipient("to_mail").ToString().Trim()
+                ccAddress = drRecipient("cc_mail").ToString().Trim()
+                bccAddress = drRecipient("bcc_mail").ToString().Trim()
+            End If
+
+            If String.IsNullOrWhiteSpace(toAddress) Then
+                Return mailResult
+            End If
+
+            Dim mailobj As New EmailSMSsender()
+            Dim mailEntity As New MailEntity()
+
+            mailEntity.ToAddress = toAddress
+            mailEntity.CCAddress = ccAddress
+            mailEntity.BCCAddress = bccAddress
+            mailEntity.MailSubject = "Freight Details Updated - " & Format(Date.Now, "dd-MM-yyyy")
+            mailEntity.MailBody = BuildFreightUpdateMailBody(dsUpdate.Tables(0), userId)
+            mailEntity.Sender_Task = "sendMail_FreightDtlsUpdated"
+
+            mailResult = mailobj.sendMail(mailEntity)
+        Catch ex As Exception
+            Throw ex
+        End Try
+
+        Return mailResult
+    End Function
+
+    Private Function BuildFreightUpdateMailBody(ByVal dtUpdate As DataTable, ByVal userId As String) As String
+        Dim bodyBuilder As New StringBuilder()
+
+        bodyBuilder.Append("<div style='font-family: 'Trebuchet MS', Arial, sans-serif;'>Dear Sir/Madam,<br/><br/>")
+        bodyBuilder.Append("This is to inform you that the freight details have been updated in the system.<br/> The updated freight details are provided below for your reference: <br/><br/> </div>")
+        bodyBuilder.Append("<table cellpadding='4' cellspacing='0' style='text-align: left; width:100%; border:1px solid grey; font-size: small;font-family: Arial;'>")
+        bodyBuilder.Append("<tr style='background-color: #99CCFF; font-weight: bold;'>")
+        bodyBuilder.Append("<td style='border:1px solid grey;text-align:center;'>Srl No</td>")
+        bodyBuilder.Append("<td style='border:1px solid grey;text-align:center;'>Source</td>")
+        bodyBuilder.Append("<td style='border:1px solid grey;text-align:center;'>Depot</td>")
+        bodyBuilder.Append("<td style='border:1px solid grey;text-align:center;'>Previous Freight/kg (Rs.)</td>")
+        bodyBuilder.Append("<td style='border:1px solid grey;text-align:center;'>Updated Freight/kg (Rs.)</td>")
+        bodyBuilder.Append("<td style='border:1px solid grey;text-align:center;'>Updated By</td>")
+        bodyBuilder.Append("<td style='border:1px solid grey;text-align:center;'>Updated Date</td>")
+        bodyBuilder.Append("</tr>")
+
+        Dim rowcount As Integer = 0
+        For Each dr As DataRow In dtUpdate.Rows
+            If dtUpdate.Columns.Contains("Result") AndAlso Not IsDBNull(dr("Result")) Then
+                Continue For
+            End If
+
+            rowcount += 1
+            Dim styleStr As String = If(rowcount Mod 2 = 0, " background-color: #f5f5f5;", "")
+
+            bodyBuilder.Append("<tr style='font-size: small;font-family: Arial;" & styleStr & "'>")
+            bodyBuilder.Append("<td style='border:1px solid grey;text-align:center;'>" & rowcount.ToString() & "</td>")
+            bodyBuilder.Append("<td style='border:1px solid grey;text-align:center;'>" & dr("unit_code").ToString() & "</td>")
+            bodyBuilder.Append("<td style='border:1px solid grey;text-align:center;'>" & dr("vendor_code").ToString() & "</td>")
+            bodyBuilder.Append("<td style='border:1px solid grey;text-align:center;'>" & If(IsDBNull(dr("udfd_freight_dtls_previous")), String.Empty, dr("udfd_freight_dtls_previous").ToString()) & "</td>")
+            bodyBuilder.Append("<td style='border:1px solid grey;text-align:center;'>" & If(IsDBNull(dr("udfd_freight_dtls")), String.Empty, dr("udfd_freight_dtls").ToString()) & "</td>")
+            bodyBuilder.Append("<td style='border:1px solid grey;text-align:center;'>" & If(IsDBNull(dr("modified_user")), String.Empty, dr("modified_user").ToString()) & "</td>")
+            bodyBuilder.Append("<td style='border:1px solid grey;text-align:center;'>" & If(IsDBNull(dr("modified_date")), String.Empty, Convert.ToDateTime(dr("modified_date")).ToString("dd-MM-yyyy HH:mm:ss")) & "</td>")
+            bodyBuilder.Append("</tr>")
+
+        Next
+
+        bodyBuilder.Append("<tr style='background-color: #99CCFF; font-weight: bold;'>")
+        bodyBuilder.Append("<td colspan='8' style='border:1px solid grey;text-align:center;'></td>")
+        bodyBuilder.Append("</tr>")
+        bodyBuilder.Append("</table>")
+        bodyBuilder.Append("<div font-family: 'Trebuchet MS', Arial, sans-serif;'>")
+        bodyBuilder.Append("<i><b>Note: </b> This is a system-generated email. Please do not reply to this email.</i>")
+
+        bodyBuilder.Append("<br/><br/><br/>")
+        bodyBuilder.Append("Best Regards,<br/>")
+        bodyBuilder.Append("<b>Management &amp; Computer Consultants</b><br/>")
+        bodyBuilder.Append("Website: <a href='https://www.mccit.co.in' target='_blank'>www.mccit.co.in</a><br/>")
+        bodyBuilder.Append("MCC Tower, Premises No. 12-315, AA - 1D<br/>")
+        bodyBuilder.Append("New Town, Rajarhat, Kolkata - 700 156")
+        bodyBuilder.Append("</div>")
+        Return bodyBuilder.ToString()
+    End Function
 End Class

@@ -7,15 +7,15 @@ function ValidateEstmtnDataDsptchStat(TopFin, LastFin) {
     firstErrorControl = "";
     errMsg = "";
 
-    ValidateRequired("txtFinYear", "Enter Process Year.");
-    ValidateRequired("txtMonth", "Enter Process Month.");
-    ValidateMonth("txtMonth", "Enter Month should not be Less than 1 and Greater than 12.");
-    ValidateYear("txtFinYear", TopFin, LastFin, "Enter Year Not Found In FinYear")
+    ValidateRequired("ctl00_ContentPlaceHolder1_txtFinYear", "Enter Process Year.");
+    ValidateRequired("ctl00_ContentPlaceHolder1_txtMonth", "Enter Process Month.");
+    ValidateMonth("ctl00_ContentPlaceHolder1_txtMonth", "Enter Month should not be Less than 1 and Greater than 12.");
+    ValidateYear("ctl00_ContentPlaceHolder1_txtFinYear", TopFin, LastFin, "Enter Year Not Found In FinYear")
 
     if (firstErrorControl != "") {
         SetControlFocus(firstErrorControl);
         errMsg = "<table>" + errMsg + "</table>";
-        document.getElementById("lblErrMsg").innerHTML = errMsg;
+        document.getElementById("ctl00_ContentPlaceHolder1_lblErrMsg").innerHTML = errMsg;
         return false;
     }
     else

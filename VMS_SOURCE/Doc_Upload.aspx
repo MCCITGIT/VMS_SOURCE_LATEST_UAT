@@ -7,6 +7,7 @@
 
 
     <script src="Scripts/red.js" type="text/javascript"></script>
+    <script type="text/javascript" src="Scripts/FunctionValidator.js"></script>
     <script type="text/javascript" src="Scripts/Validation_Doc_Upload.js"></script>
     <script type="text/javascript">
         document.onkeydown = checkValue;
