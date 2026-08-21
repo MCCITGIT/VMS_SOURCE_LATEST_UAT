@@ -34,7 +34,6 @@
                 document.getElementById('<%=hdnProductName.ClientID%>').value = text;
                 setProductSearchState(true);
                 sender.get_element().value = text;
-                __doPostBack('<%= txtProductSearch.UniqueID %>', '');
             }
 
             function clearProductSelection() {
@@ -77,34 +76,6 @@
                     txtProduct.readOnly ||
                     txtProduct.getAttribute('readonly') === 'readonly';
                 btnReset.disabled = isLocked;
-            }
-
-            function onRawMaterialSelected(sender, e) {
-                var value = e.get_value();
-                var text = e.get_text();
-                document.getElementById('<%=txtrawmatid.ClientID%>').value = value;
-                document.getElementById('<%=txtSearchText.ClientID%>').value = text;
-                sender.get_element().value = text;
-                __doPostBack('<%=btnFilterRawMat.UniqueID%>', '');
-            }
-
-            function clearRawMaterialSelection() {
-                document.getElementById('<%=txtrawmatid.ClientID%>').value = '';
-            }
-
-            function resetRawMaterialField() {
-                var rawMatText = document.getElementById('<%=txtSearchText.ClientID%>');
-                var rawMatCode = document.getElementById('<%=txtrawmatid.ClientID%>');
-
-                if (rawMatText) {
-                    rawMatText.value = '';
-                }
-                if (rawMatCode) {
-                    rawMatCode.value = '';
-                }
-
-                __doPostBack('<%=btnFilterRawMat.UniqueID%>', '');
-                return false;
             }
 
             function allowRateTwoDecimal(evt, control) {
@@ -175,9 +146,7 @@
         <div class="breadcrumbs">
             <div class="leftFung">
                 <a href="Home.aspx" title="Home"><i class="fas fa-home"></i></a>
-                <div class="diveider">/</div>
-                <a href="FormulationMatrixList.aspx" class="rm-crumb-link">Matrix List</a>
-                <div class="diveider">/</div>
+                <div class="diveider">/</div>               
                 <div class="pageTitleWrap">
                     <h3 class="pageTitle">Formulation Matrix</h3>
                     <p class="pageSubTitle">Enter and update rates for the selected product formulation</p>
@@ -202,7 +171,7 @@
                         <div class="form-group">
                             <label class="form-control-label">Product:<span class="mandatory">*</span></label>
                             <div class="input-group product-search-group">
-                                <asp:TextBox ID="txtProductSearch" ClientIDMode="Static" CssClass="form-control" TabIndex="1" runat="server" AutoComplete="Off" Placeholder="Enter Product" onkeyup="clearProductSelection();" OnTextChanged="txtProductSearch_TextChanged" AutoPostBack="true"></asp:TextBox>
+                                <asp:TextBox ID="txtProductSearch" ClientIDMode="Static" CssClass="form-control" TabIndex="1" runat="server" AutoComplete="Off" Placeholder="Enter Product" onkeyup="clearProductSelection();"></asp:TextBox>
                                 <div class="input-group-append">
                                     <button type="button" id="btnResetProduct" class="btn btn-outline-secondary product-reset-btn" onclick="resetProductField(); return false;" title="Reset Product">
                                         <i class="fas fa-sync-alt fa-xs"></i>
@@ -212,6 +181,7 @@
                             <asp:HiddenField ID="hdnProductCode" ClientIDMode="Static" runat="server" />
                             <asp:HiddenField ID="hdnProductName" ClientIDMode="Static" runat="server" />
                             <asp:HiddenField ID="hdnSkucode" ClientIDMode="Static" runat="server" />
+                            <asp:HiddenField ID="hdnEditHeaderId" ClientIDMode="Static" runat="server" />
                             <asp:AutoCompleteExtender ID="aceProductSearch" runat="server" TargetControlID="txtProductSearch" ServiceMethod="ProductSearch" CompletionInterval="200" EnableCaching="false" CompletionSetCount="20" FirstRowSelected="true" OnClientItemSelected="onProductSelected"
                                 CompletionListCssClass="vmsAutoComplete" CompletionListItemCssClass="vmsAutoCompleteItem" CompletionListHighlightedItemCssClass="vmsAutoCompleteItemHighlight">
                             </asp:AutoCompleteExtender>
@@ -220,21 +190,10 @@
                     </div>
                     <div class="col-md-3">
                         <div class="form-group">
-                            <label class="form-control-label">Search Raw Material:</label>
-                            <div class="input-group product-search-group">
-                                <asp:TextBox ID="txtSearchText" ClientIDMode="Static" CssClass="form-control" TabIndex="2" runat="server" AutoComplete="Off" onkeyup="clearRawMaterialSelection();" Placeholder="Enter Raw Material"></asp:TextBox>
-                                <div class="input-group-append">
-                                    <button type="button" class="btn btn-outline-secondary product-reset-btn" onclick="resetRawMaterialField(); return false;" title="Reset Raw Material">
-                                        <i class="fas fa-sync-alt fa-xs"></i>
-                                    </button>
-                                </div>
+                            <label class="form-control-label d-none d-md-block">&nbsp;</label>
+                            <div class="rm-filter-actions">
+                                <asp:LinkButton ID="btnSearch" runat="server" CssClass="btn btn-primary btn-sm rm-btn-icon" ClientIDMode="Static" CausesValidation="false" ToolTip="Search"><i class="fas fa-search"></i></asp:LinkButton>
                             </div>
-                            <asp:HiddenField ID="txtrawmatid" ClientIDMode="Static" runat="server" />
-                            <asp:AutoCompleteExtender ID="aceRawMaterialSearch" runat="server" TargetControlID="txtSearchText" ServiceMethod="RawMaterialSearch" CompletionInterval="200"
-                                EnableCaching="false" CompletionSetCount="20" FirstRowSelected="true" OnClientItemSelected="onRawMaterialSelected"
-                                CompletionListCssClass="vmsAutoComplete" CompletionListItemCssClass="vmsAutoCompleteItem" CompletionListHighlightedItemCssClass="vmsAutoCompleteItemHighlight">
-                            </asp:AutoCompleteExtender>
-                            <asp:LinkButton ID="btnFilterRawMat" runat="server" Style="display: none;" OnClick="btnFilterRawMat_Click"></asp:LinkButton>
                         </div>
                     </div>
                 </div>
@@ -263,12 +222,27 @@
                         <RowStyle CssClass="tlrowlight" />
                         <HeaderStyle CssClass="headerGrid" />
                         <Columns>
-                            <asp:TemplateField HeaderText="Sl No">
+                            <asp:TemplateField HeaderText="Sl No" Visible="false">
                                 <ItemTemplate>
                                     <asp:Label ID="lblSlNo" runat="server" Text='<%# Container.DataItemIndex + 1 %>'></asp:Label>
                                 </ItemTemplate>
                                 <HeaderStyle HorizontalAlign="Center" Width="6%" />
-                                <ItemStyle HorizontalAlign="Center" />
+                                <ItemStyle HorizontalAlign="Center" CssClass="col-sl" />
+                            </asp:TemplateField>
+                            <asp:TemplateField HeaderText="Formula Set">
+                                <ItemTemplate>
+                                    <asp:Label ID="lblFormulaSet" runat="server" Text='<%# Bind("formula_set_no") %>'></asp:Label>
+                                </ItemTemplate>
+                                <HeaderStyle HorizontalAlign="Center" />
+                                <ItemStyle HorizontalAlign="Center" CssClass="formula-set-cell" VerticalAlign="Middle" />
+                            </asp:TemplateField>
+                            <asp:TemplateField HeaderText="Vendor">
+                                <ItemTemplate>
+                                    <asp:Label ID="lblVendorName" runat="server" Text='<%# Bind("vendor_name") %>'></asp:Label>
+                                    <asp:HiddenField ID="hdnVendorCode" runat="server" Value='<%# Bind("vendor_code") %>' />
+                                </ItemTemplate>
+                                <HeaderStyle HorizontalAlign="Center" />
+                                <ItemStyle HorizontalAlign="Left" CssClass="col-vendor" />
                             </asp:TemplateField>
                             <asp:TemplateField HeaderText="Brand">
                                 <ItemTemplate>
@@ -278,23 +252,15 @@
                                     <asp:HiddenField ID="hdnBrandCode" runat="server" Value='<%# Bind("brand_code") %>' />
                                 </ItemTemplate>
                                 <HeaderStyle HorizontalAlign="Center" />
-                                <ItemStyle HorizontalAlign="Left" />
-                            </asp:TemplateField>
-                            <asp:TemplateField HeaderText="Vendor">
-                                <ItemTemplate>
-                                    <asp:Label ID="lblVendorName" runat="server" Text='<%# Bind("vendor_name") %>'></asp:Label>
-                                    <asp:HiddenField ID="hdnVendorCode" runat="server" Value='<%# Bind("vendor_code") %>' />
-                                </ItemTemplate>
-                                <HeaderStyle HorizontalAlign="Center" />
-                                <ItemStyle HorizontalAlign="Left" />
-                            </asp:TemplateField>
+                                <ItemStyle HorizontalAlign="Left" CssClass="col-brand" />
+                            </asp:TemplateField>                            
                             <asp:TemplateField HeaderText="Product Name">
                                 <ItemTemplate>
                                     <asp:Label ID="lblProductName" runat="server" Text='<%# Bind("product_name") %>'></asp:Label>
                                     <asp:HiddenField ID="hdnGridProductCode" runat="server" Value='<%# Bind("product_code") %>' />
                                 </ItemTemplate>
                                 <HeaderStyle HorizontalAlign="Center" />
-                                <ItemStyle HorizontalAlign="Left" />
+                                <ItemStyle HorizontalAlign="Left" CssClass="col-product" />
                             </asp:TemplateField>
                             <asp:TemplateField HeaderText="Raw Material Name">
                                 <ItemTemplate>
@@ -302,14 +268,14 @@
                                     <asp:HiddenField ID="hdnRawMatCode" runat="server" Value='<%# Bind("rawmat_code") %>' />
                                 </ItemTemplate>
                                 <HeaderStyle HorizontalAlign="Center" />
-                                <ItemStyle HorizontalAlign="Left" />
+                                <ItemStyle HorizontalAlign="Left" CssClass="col-rm" />
                             </asp:TemplateField>
                             <asp:TemplateField HeaderText="Consumption Ratio">
                                 <ItemTemplate>
                                     <asp:Label ID="lblRatio" runat="server" Text='<%# Bind("ratio") %>'></asp:Label>
                                 </ItemTemplate>
                                 <HeaderStyle HorizontalAlign="Center" />
-                                <ItemStyle HorizontalAlign="Center" />
+                                <ItemStyle HorizontalAlign="Center" CssClass="col-ratio" />
                             </asp:TemplateField>
                             <asp:TemplateField HeaderText="Rate">
                                 <ItemTemplate>
@@ -319,15 +285,16 @@
                                         onblur="formatRateTwoDecimal(this);"></asp:TextBox>
                                 </ItemTemplate>
                                 <HeaderStyle HorizontalAlign="Center" Width="12%" />
-                                <ItemStyle HorizontalAlign="Right" />
+                                <ItemStyle HorizontalAlign="Right" CssClass="col-rate" />
                             </asp:TemplateField>
                             <asp:TemplateField HeaderText="Action">
                                 <ItemTemplate>
-                                    <asp:LinkButton ID="btnUpdateRow" runat="server" CommandName="UpdateRow" CommandArgument='<%# Container.DataItemIndex %>' CssClass="text-success" ToolTip="Update"
-                                        Visible='<%# (Not String.IsNullOrWhiteSpace(Convert.ToString(Eval("id")))) %>' OnClientClick="return validateFormulationMatrixUpdate(this);"><i class="fas fa-save"></i></asp:LinkButton>
+                                    <asp:LinkButton ID="btnUpdateRow" runat="server" CommandName="SaveRow" CommandArgument='<%# Container.DataItemIndex %>'
+                                        CausesValidation="false" CssClass="text-success" ToolTip="Save"
+                                        OnClientClick="return validateFormulationMatrixUpdate(this);"><i class="fas fa-save"></i></asp:LinkButton>
                                 </ItemTemplate>
                                 <HeaderStyle HorizontalAlign="Center" Width="8%" />
-                                <ItemStyle HorizontalAlign="Center" />
+                                <ItemStyle HorizontalAlign="Center" CssClass="col-action" />
                             </asp:TemplateField>
                         </Columns>
                     </asp:GridView>

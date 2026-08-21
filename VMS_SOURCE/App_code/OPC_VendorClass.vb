@@ -1058,9 +1058,23 @@ Public Class OPC_VendorClass
 #End Region
 
 #Region "formulation matrix"
-    Function GetFormulationMatrixList(ByVal productcode As String, ByVal rawmatcode As String, ByVal brandcode As String, ByVal vendorcode As String) As DataSet
+    Function GetFormulation_MatrixBindList(ByVal productcode As String) As DataSet
         Dim DS As System.Data.DataSet
-        Dim sqlParams(3) As SqlParameter
+        Dim sqlParams(0) As SqlParameter
+
+        sqlParams(0) = New SqlParameter()
+        sqlParams(0).ParameterName = "@product_code"
+        sqlParams(0).DbType = DbType.String
+        sqlParams(0).Direction = Data.ParameterDirection.Input
+        sqlParams(0).Value = If(Not String.IsNullOrWhiteSpace(productcode), CObj(productcode.Trim()), DBNull.Value)
+
+        DS = DBFactory.GetHelper().ExecuteDataSet("[dbo].[getformulation_matrix_datalist]", Data.CommandType.StoredProcedure, sqlParams)
+        Return DS
+    End Function
+
+    Function GetFormulationMatrixList(ByVal productcode As String, ByVal brandcode As String, ByVal vendorcode As String) As DataSet
+        Dim DS As System.Data.DataSet
+        Dim sqlParams(2) As SqlParameter
 
         sqlParams(0) = New SqlParameter()
         sqlParams(0).ParameterName = "@product_code"
@@ -1069,22 +1083,16 @@ Public Class OPC_VendorClass
         sqlParams(0).Value = If(Not String.IsNullOrWhiteSpace(productcode), CObj(productcode.Trim()), DBNull.Value)
 
         sqlParams(1) = New SqlParameter()
-        sqlParams(1).ParameterName = "@rawmat_code"
-        sqlParams(1).DbType = DbType.Int32
+        sqlParams(1).ParameterName = "@vendor_code"
+        sqlParams(1).DbType = DbType.String
         sqlParams(1).Direction = Data.ParameterDirection.Input
-        sqlParams(1).Value = If(Not String.IsNullOrWhiteSpace(rawmatcode), CObj(rawmatcode.Trim()), DBNull.Value)
+        sqlParams(1).Value = If(Not String.IsNullOrWhiteSpace(vendorcode), CObj(vendorcode.Trim()), DBNull.Value)
 
         sqlParams(2) = New SqlParameter()
-        sqlParams(2).ParameterName = "@vendor_code"
+        sqlParams(2).ParameterName = "@brand_code"
         sqlParams(2).DbType = DbType.String
         sqlParams(2).Direction = Data.ParameterDirection.Input
-        sqlParams(2).Value = If(Not String.IsNullOrWhiteSpace(vendorcode), CObj(vendorcode.Trim()), DBNull.Value)
-
-        sqlParams(3) = New SqlParameter()
-        sqlParams(3).ParameterName = "@brand_code"
-        sqlParams(3).DbType = DbType.String
-        sqlParams(3).Direction = Data.ParameterDirection.Input
-        sqlParams(3).Value = If(Not String.IsNullOrWhiteSpace(brandcode), CObj(brandcode.Trim()), DBNull.Value)
+        sqlParams(2).Value = If(Not String.IsNullOrWhiteSpace(brandcode), CObj(brandcode.Trim()), DBNull.Value)
 
         DS = DBFactory.GetHelper().ExecuteDataSet("[dbo].[getformulation_matrix_list]", Data.CommandType.StoredProcedure, sqlParams)
         Return DS
@@ -1172,5 +1180,18 @@ Public Class OPC_VendorClass
 
         Return rowsAffected
     End Function
+    'Function GetFormulation_MatrixList(ByVal productcode As String) As DataSet
+    '    Dim DS As System.Data.DataSet
+    '    Dim sqlParams(0) As SqlParameter
+
+    '    sqlParams(0) = New SqlParameter()
+    '    sqlParams(0).ParameterName = "@product_code"
+    '    sqlParams(0).DbType = DbType.String
+    '    sqlParams(0).Direction = Data.ParameterDirection.Input
+    '    sqlParams(0).Value = If(Not String.IsNullOrWhiteSpace(productcode), CObj(productcode.Trim()), DBNull.Value)
+
+    '    DS = DBFactory.GetHelper().ExecuteDataSet("[dbo].[getformulation_matrix_datalist]", Data.CommandType.StoredProcedure, sqlParams)
+    '    Return DS
+    'End Function
 #End Region
 End Class
