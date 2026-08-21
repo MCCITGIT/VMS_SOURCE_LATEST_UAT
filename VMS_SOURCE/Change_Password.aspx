@@ -21,6 +21,9 @@
 
     <asp:UpdatePanel ID="UpdatePanel" runat="server">
         <ContentTemplate>
+            <%--Modified-by MUKESH BHAGAT on 20-08-2026 : restored from old UAT source--%>
+            <asp:HiddenField ID="hdnOldPwd" runat="server" />
+            <asp:HiddenField ID="hdnStatus" runat="server" />
             <div class="card">
                 <div class="card-body">
                     <div class="row">

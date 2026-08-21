@@ -12,16 +12,17 @@
         document.onkeydown = checkValue;
         function checkValue() {
             if (event.keyCode == 118) { // button Add (F7 keypress)
-                __doPostBack(document.getElementById('imgbtnAdd').name, '');
+                __doPostBack(document.getElementById('<%= imgbtnAdd.ClientID %>').name, '');
             }
             else if (event.keyCode == 119) {
-                __doPostBack(document.getElementById('imgbtnSearch').name, '');
+                __doPostBack(document.getElementById('<%= imgbtnSearch.ClientID %>').name, '');
             }
         }
 
         function disableBackButton() {
             window.history.forward(1);
         }
+        window.onload = disableBackButton;
     </script>
 
     <div class="breadcrumbs">

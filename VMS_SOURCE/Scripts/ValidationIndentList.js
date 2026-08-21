@@ -16,7 +16,7 @@
 function rwslctToggleSelect(clkdCheckBox)
 {
 
-    var theGridView = document.getElementById('gvIndentList');
+    var theGridView = document.getElementById('ctl00_ContentPlaceHolder1_gvIndentList');
 
     var flag = 0;
 
@@ -48,16 +48,16 @@ function rwslctToggleSelect(clkdCheckBox)
 
     if (flag == 0)
     {
-        if (document.getElementById('btnSubmit').disabled == false)
+        if (document.getElementById('ctl00_ContentPlaceHolder1_btnSubmit').disabled == false)
         {
-            document.getElementById('btnSubmit').disabled = true;
+            document.getElementById('ctl00_ContentPlaceHolder1_btnSubmit').disabled = true;
         }
     }
     else
     {
-        if (document.getElementById('btnSubmit').disabled == true)
+        if (document.getElementById('ctl00_ContentPlaceHolder1_btnSubmit').disabled == true)
         {
-            document.getElementById('btnSubmit').disabled = false;
+            document.getElementById('ctl00_ContentPlaceHolder1_btnSubmit').disabled = false;
         }
     }
 
@@ -68,8 +68,8 @@ function validateForm()
     if (confirm('Are you sure to submit?'))
     {
 
-        document.getElementById('btnSubmit').disabled = true;
-        __doPostBack(document.getElementById('btnSubmit').name, '');
+        document.getElementById('ctl00_ContentPlaceHolder1_btnSubmit').disabled = true;
+        __doPostBack(document.getElementById('ctl00_ContentPlaceHolder1_btnSubmit').name, '');
 
     }
     else

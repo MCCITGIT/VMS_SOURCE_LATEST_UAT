@@ -188,7 +188,7 @@
                 </div>
             </div>
 
-            <div class="card" runat="server" id="tr2">
+            <div class="card" runat="server" id="tr2" visible="false">
                 <div class="card-body">
                     <div class="table-responsive" style="overflow-y: auto; max-height: calc(100vh - 290px);">
                         <asp:UpdatePanel ID="UpdatePanel2" runat="server">
@@ -240,7 +240,7 @@
                     </div>
                     <div class="row">
                         <div class="col-md-12 text-center">
-                            <asp:Button ID="btnSave" CssClass="btn btn-success btn-sm" runat="server" Text="Confirm" OnClientClick="return confirm('Are you sure you want to submit?');" />
+                            <asp:Button ID="btnSave" CssClass="btn btn-success btn-sm" runat="server" Text="Confirm" Visible="false" OnClientClick="return confirm('Are you sure you want to submit?');" />
                             <asp:Button ID="btnReset" CssClass="btn btn-success btn-sm" runat="server" Text="Reset" Visible="false" />
                         </div>
                     </div>

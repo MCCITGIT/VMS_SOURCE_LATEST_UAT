@@ -126,49 +126,46 @@ Partial Class Home
 
 #Region "Populate Action Required List"
 
+    'Modified-by MUKESH BHAGAT on 20-08-2026 : restored from old UAT source
     Private Sub PopulateActionRequiredList(ByVal srlint As Integer)
 
-        'Dim userInfo As VMSUserEntity = New VMSUserEntity()
-        'If (Not (Session(Constant.SessionKeys.UserInfo) Is Nothing)) Then
-        '    userInfo = CType(Session(Constant.SessionKeys.UserInfo), VMSUserEntity)
-        'Else
-        '    Response.Redirect("~/Login.aspx")
-        'End If
+        Dim userInfo As VMSUserEntity = New VMSUserEntity()
+        If (Not (Session(Constant.SessionKeys.UserInfo) Is Nothing)) Then
+            userInfo = CType(Session(Constant.SessionKeys.UserInfo), VMSUserEntity)
+        Else
+            Response.Redirect("~/Login.aspx")
+        End If
 
-        'If (userInfo.userGroupCodeEntity = Constant.UserFormAccess.SYSADMIN Or userInfo.userGroupCodeEntity = Constant.UserFormAccess.HOMARKETING) Then
-        '    Dim unapproved_indt_count As Integer = getUnapprovedIndentsCount()
+        If (userInfo.userGroupCodeEntity = Constant.UserFormAccess.SYSADMIN Or userInfo.userGroupCodeEntity = Constant.UserFormAccess.HOMARKETING) Then
+            Dim unapproved_indt_count As Integer = getUnapprovedIndentsCount()
 
-        '    If unapproved_indt_count > 0 Then
-        '        'tdActionReq.InnerHtml = "<a href='IndentsList.aspx' >" + (srlint + 1).ToString + ". Unapproved Indents - ( " + unapproved_indt_count.ToString + " )" + "</a><br/>"
-        '        tdActionReq.InnerHtml = "<li><a href='IndentsList.aspx'><div class='arIcon'><i class='fa fa-file-code'></i></div><div class='arDtls'><p>Unapproved Indents</p><h2>" + unapproved_indt_count.ToString + "</h2></div></a></li>"
-        '        srlint += 1
-        '    End If
+            If unapproved_indt_count > 0 Then
+                tdActionReq.InnerHtml = "<a href='IndentsList.aspx' >" + (srlint + 1).ToString + ". Unapproved Indents - ( " + unapproved_indt_count.ToString + " )" + "</a><br/>"
+                srlint += 1
+            End If
 
-        '    Dim new_docs_count As Integer = getNewDocUploadedCount(userInfo.userBranchEntity)
+            Dim new_docs_count As Integer = getNewDocUploadedCount(userInfo.userBranchEntity)
 
-        '    If new_docs_count > 0 Then
-        '        'tdActionReq.InnerHtml += "<a href='Doc_Upload.aspx' class='chi'>" + (srlint + 1).ToString + ". New Documents - ( " + new_docs_count.ToString + " )" + "</a><br/>"
-        '        tdActionReq.InnerHtml = "<li><a href='Doc_Upload.aspx'><div class='arIcon'><i class='fa fa-file-code'></i></div><div class='arDtls'><p>New Documents</p><h2>" + new_docs_count.ToString + "</h2></div></a></li>"
-        '        srlint += 1
-        '    End If
+            If new_docs_count > 0 Then
+                tdActionReq.InnerHtml += "<a href='Doc_Upload.aspx' class='chi'>" + (srlint + 1).ToString + ". New Documents - ( " + new_docs_count.ToString + " )" + "</a><br/>"
+                srlint += 1
+            End If
 
-        'ElseIf (userInfo.userGroupCodeEntity = Constant.UserFormAccess.UNIT) Then
-        '    Dim unapproved_desp_challan_count As Integer = getUnapprovedDespatchChallan(userInfo.userIDEntity)
+        ElseIf (userInfo.userGroupCodeEntity = Constant.UserFormAccess.UNIT) Then
+            Dim unapproved_desp_challan_count As Integer = getUnapprovedDespatchChallan(userInfo.userIDEntity)
 
-        '    If unapproved_desp_challan_count > 0 Then
-        '        'tdActionReq.InnerHtml += "<a href='UnitDespatchPlanList.aspx' class='chi'>" + (srlint + 1).ToString + ". Unapproved Despatch Challans - ( " + unapproved_desp_challan_count.ToString + " )" + "</a><br/>"
-        '        tdActionReq.InnerHtml = "<li><a href='UnitDespatchPlanList.aspx'><div class='arIcon'><i class='fa fa-file-code'></i></div><div class='arDtls'><p>Unapproved Despatch Challans</p><h2>" + unapproved_desp_challan_count.ToString + "</h2></div></a></li>"
-        '        srlint += 1
-        '    End If
-        'ElseIf (userInfo.userGroupCodeEntity = Constant.UserFormAccess.SYSADMIN Or userInfo.userGroupCodeEntity = Constant.UserFormAccess.HOMARKETING Or userInfo.userGroupCodeEntity = Constant.UserFormAccess.DEPOT) Then
-        '    Dim new_docs_count As Integer = getNewDocUploadedCount(userInfo.userBranchEntity)
+            If unapproved_desp_challan_count > 0 Then
+                tdActionReq.InnerHtml += "<a href='UnitDespatchPlanList.aspx' class='chi'>" + (srlint + 1).ToString + ". Unapproved Despatch Challans - ( " + unapproved_desp_challan_count.ToString + " )" + "</a><br/>"
+                srlint += 1
+            End If
+        ElseIf (userInfo.userGroupCodeEntity = Constant.UserFormAccess.SYSADMIN Or userInfo.userGroupCodeEntity = Constant.UserFormAccess.HOMARKETING Or userInfo.userGroupCodeEntity = Constant.UserFormAccess.DEPOT) Then
+            Dim new_docs_count As Integer = getNewDocUploadedCount(userInfo.userBranchEntity)
 
-        '    If new_docs_count > 0 Then
-        '        'tdActionReq.InnerHtml += "<a href='Doc_Upload.aspx' class='chi'>" + (srlint + 1).ToString + ". New Documents (last 15 days) - ( " + new_docs_count.ToString + " )" + "</a><br/>"
-        '        tdActionReq.InnerHtml = "<li><a href='IndentsList.aspx'><div class='arIcon'><i class='fa fa-file-code'></i></div><div class='arDtls'><p>New Documents (last 15 days)</p><h2>" + new_docs_count.ToString + "</h2></div></a></li>"
-        '        srlint += 1
-        '    End If
-        'End If
+            If new_docs_count > 0 Then
+                tdActionReq.InnerHtml += "<a href='Doc_Upload.aspx' class='chi'>" + (srlint + 1).ToString + ". New Documents (last 15 days) - ( " + new_docs_count.ToString + " )" + "</a><br/>"
+                srlint += 1
+            End If
+        End If
 
     End Sub
 
@@ -783,7 +780,8 @@ Partial Class Home
             Try
                 adminDataSet = userDetailsObject.GetLastStockUpdateDate()
                 If (adminDataSet.Tables(0).Rows.Count > 0) Then
-                    'lblLastStockUpdateDate.Text = adminDataSet.Tables(0).Rows(0)(0).ToString()
+                    'Modified-by MUKESH BHAGAT on 20-08-2026 : restored from old UAT source
+                    lblLastStockUpdateDate.Text = adminDataSet.Tables(0).Rows(0)(0).ToString()
 
                     ' Dim lastUpdate As DateTime = Convert.ToDateTime(adminDataSet.Tables(0).Rows(0)(0))
                     ' Set individual parts

@@ -71,6 +71,8 @@
                                     ImageUrl="~/images/printButton.png" />--%>
                                 <asp:LinkButton ID="ImageButton2" runat="server" CssClass="btn btn-info btn-sm" AlternateText="Home" OnClick="ImageButton2_Click">Print</asp:LinkButton>
                                 <asp:Button ID="btnProcess" runat="server" CssClass="btn btn-primary btn-sm" Text="Create" />
+                                <%--Modified-by MUKESH BHAGAT on 20-08-2026 : restored from old UAT source--%>
+                                <asp:Button ID="btnSendMail" runat="server" CssClass="btn btn-primary btn-sm" Text="Send Mail" />
                             </div>
                         </div>
                     </div>

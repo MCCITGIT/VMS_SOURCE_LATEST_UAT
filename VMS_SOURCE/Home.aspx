@@ -41,6 +41,30 @@
                 </div>
             </div>
 
+            <%--Modified-by MUKESH BHAGAT on 20-08-2026 : restored from old UAT source (Action Required panel and Last Stock Update Date)--%>
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="newCard w100">
+                        <div class="newCardHead">
+                            <h3 class="newHeadTitle">Action Required</h3>
+                        </div>
+                        <div class="newCardBody">
+                            <div id="tdActionReq" runat="server"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="newCard w100">
+                        <div class="newCardHead">
+                            <h3 class="newHeadTitle">Stock As On</h3>
+                        </div>
+                        <div class="newCardBody">
+                            <asp:Label ID="lblLastStockUpdateDate" runat="server" Font-Bold="True" ForeColor="Red"></asp:Label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
 
 
             <div class="row" runat="server" id="divHo">
