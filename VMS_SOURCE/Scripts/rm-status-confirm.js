@@ -148,8 +148,31 @@
     }
 
     function continueControl(el) {
-        el.setAttribute("data-rm-confirmed", "1");
-        el.click();
+        if (!el) {
+            return;
+        }
+
+        var target = el;
+        if (el.closest) {
+            target = el.closest("a, button, input[type='submit'], input[type='button']") || el;
+        }
+
+        var href = target.getAttribute("href") || "";
+        var decoded = href.replace(/&#39;/g, "'").replace(/&quot;/g, "\"");
+        var match = decoded.match(/__doPostBack\s*\(\s*['"]([^'"]+)['"]\s*,\s*['"]([^'"]*)['"]\s*\)/);
+        if (match && typeof __doPostBack === "function") {
+            __doPostBack(match[1], match[2]);
+            return;
+        }
+
+        if (target.name && typeof __doPostBack === "function") {
+            target.setAttribute("data-rm-confirmed", "1");
+            __doPostBack(target.name, "");
+            return;
+        }
+
+        target.setAttribute("data-rm-confirmed", "1");
+        target.click();
     }
 
     function isAlreadyConfirmed(el) {
