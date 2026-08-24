@@ -27,8 +27,10 @@ Partial Class OCSpecificationList
         AddAttributes()
         MaintainScrollPositionOnPostBack = True
         If Not IsPostBack Then
-            txtFromDate.Text = DateTime.Now.ToString("dd/MM/yyyy")
-            txtTodate.Text = DateTime.Now.ToString("dd/MM/yyyy")
+            'Modified-by MUKESH BHAGAT on 20-08-2026 : InvariantCulture so "/" is always emitted
+            '(on en-IN machines "/" in a format string becomes "-", which broke FormatDate's Split("/"))
+            txtFromDate.Text = DateTime.Now.ToString("dd/MM/yyyy", System.Globalization.CultureInfo.InvariantCulture)
+            txtTodate.Text = DateTime.Now.ToString("dd/MM/yyyy", System.Globalization.CultureInfo.InvariantCulture)
             PopulateVender()
             PopulateProducts()
             BindGrid(ddlVender.SelectedValue, txtFromDate.Text, txtTodate.Text, ddlproduct.SelectedValue)

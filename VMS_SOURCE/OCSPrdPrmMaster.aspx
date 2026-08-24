@@ -7,6 +7,8 @@
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
     
 
+    <%-- Modified-by MUKESH BHAGAT on 20-08-2026 : FunctionValidator.js is commented out in MasterPage; ValidateSubmit needs ValidateRequired/ValidateDropDown1/GetErrorRow/SetErrorColor/SetControlFocus --%>
+    <script type="text/javascript" src="Scripts/FunctionValidator.js"></script>
     <script src="Scripts/ValidatePrdPrmMaster.js?time=<%= DateTime.Now.ToString("yyyy.MM.dd-HH.mm.ss.fff") %>" type="text/javascript"></script>
     <script type="text/javascript">
         function disableBackButton() {

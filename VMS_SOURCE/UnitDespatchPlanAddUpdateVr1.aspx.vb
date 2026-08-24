@@ -544,8 +544,34 @@ Partial Class UnitDespatchPlanAddUpdateVr1
         ddlPageSize.Items.Insert(0, New ListItem("999", 999, True))
         gvSKUDetails.PageSize = ddlPageSize.SelectedValue
     End Sub
+    'Modified-by MUKESH BHAGAT on 20-08-2026 : formats a DB datetime value for an HTML5 date input (yyyy-MM-dd);
+    'returns empty for NULL / SqlDateTime.MinValue (1753-01-01) so the input shows blank instead of a junk date
+    Private Function ToHtml5Date(ByVal value As Object) As String
+        If value Is Nothing OrElse IsDBNull(value) OrElse Not IsDate(value) Then
+            Return String.Empty
+        End If
+        Dim dt As DateTime = Convert.ToDateTime(value)
+        If dt.Year <= 1753 Then
+            Return String.Empty
+        End If
+        Return dt.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture)
+    End Function
+
     Public Function FormatDate(ByVal stringdate As String) As SqlDateTime
         If Not (stringdate = String.Empty) Then
+            'Modified-by MUKESH BHAGAT on 20-08-2026 : txtEwayBillDate / txtValidUpto are HTML5 date inputs
+            '(TextMode="Date") and post yyyy-MM-dd; the original Split("/") parser crashed on them.
+            'Added the yyyy-MM-dd branch using the same pattern as TestCaseResultEntry.FormatDate.
+            If stringdate.Contains("-") Then
+                Dim ddateIso As String() = stringdate.Split("-")
+                Dim yyyyIso As Integer = System.Convert.ToInt32(ddateIso(0))
+                Dim mmIso As Integer = System.Convert.ToInt32(ddateIso(1))
+                Dim ddIso As Integer = System.Convert.ToInt32(ddateIso(2))
+                Dim dtIso As DateTime = New DateTime(yyyyIso, mmIso, ddIso)
+                dtIso = FormatDateTime(dtIso, DateFormat.LongDate)
+                Return dtIso
+            End If
+
             Dim ddate As String() = stringdate.Split("/")
             Dim arrlist As New ArrayList
             Dim index As Integer = 0
@@ -925,8 +951,10 @@ Partial Class UnitDespatchPlanAddUpdateVr1
             lblChallanNo.Text = "Challan No. : " & hdnChallanno.Value
             txtRoadPermitNo.Text = DespatchDS.Tables(0).Rows(0)("desph_road_permit_no").ToString
             txtEwayBillNo.Text = DespatchDS.Tables(0).Rows(0)("desph_eway_bill_no").ToString
-            txtEwayBillDate.Text = DespatchDS.Tables(0).Rows(0)("desph_eway_bill_dt").ToString
-            txtValidUpto.Text = DespatchDS.Tables(0).Rows(0)("desph_valid_upto_dt").ToString
+            'Modified-by MUKESH BHAGAT on 20-08-2026 : these are HTML5 date inputs - they only display a value
+            'formatted yyyy-MM-dd. The raw .ToString left them blank in edit mode, so re-saving wiped the dates.
+            txtEwayBillDate.Text = ToHtml5Date(DespatchDS.Tables(0).Rows(0)("desph_eway_bill_dt"))
+            txtValidUpto.Text = ToHtml5Date(DespatchDS.Tables(0).Rows(0)("desph_valid_upto_dt"))
             'Modified-by MUKESH BHAGAT on 20-08-2026 : restored Indent feature from old UAT source
             ddlIndent.SelectedValue = DespatchDS.Tables(0).Rows(0)("desph_third_party_indent_no").ToString
             ddlIndent.Enabled = False
