@@ -328,10 +328,9 @@ Partial Class RawMaterialRequisitionDtls
 
 #Region "Populate Unit"
     Private Sub PopulateUnit()
-        Dim UnitDespatch As New PendingDespatchesClass
-        Dim UnitSet As New DataSet
+        Dim obj As New OPC_VendorClass()
+        Dim UnitSet As DataSet = obj.GetUnitName(Constant.Common.ActiveStatus)
 
-        UnitSet = UnitDespatch.GetUnitName(Constant.Common.ActiveStatus, userInfo.userRegionEntity)
         If (Not (UnitSet Is Nothing) AndAlso UnitSet.Tables.Count > 0 AndAlso Not (UnitSet.Tables(0) Is Nothing) AndAlso UnitSet.Tables(0).Rows.Count > 0) Then
             ddlUnit.DataSource = UnitSet.Tables(0)
             ddlUnit.DataTextField = "unit_name"
