@@ -112,7 +112,7 @@
                     ShowFooter="false" PagerSettings-Mode="NumericFirstLast" PagerSettings-PageButtonCount="5"
                     PagerSettings-FirstPageText="First" PagerSettings-LastPageText="Last">
                     <RowStyle CssClass="tlrowlight" />
-                    <PagerStyle CssClass="PagerGrid" HorizontalAlign="Right" />
+                    <PagerStyle CssClass="PagerGrid" HorizontalAlign="Left" />
                     <HeaderStyle CssClass="headerGrid" />
                     <FooterStyle CssClass="footerGrid" />
                     <Columns>

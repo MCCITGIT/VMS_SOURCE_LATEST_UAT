@@ -58,11 +58,9 @@ function validateVendorRawMaterialLinkAdd() {
     //ValidateRequired("txtVendorSearch", "Please enter Vendor.");
     var grid = document.getElementById("gvVendorRawMat");
     var hasDataRow = false;
-    var rateInputs = [];
     if (grid) {
         var bodyRows = grid.querySelectorAll("tr");
         hasDataRow = bodyRows.length > 1;
-        rateInputs = grid.querySelectorAll("input[id$='txtRate']");
     }
 
     if (!hasDataRow) {
@@ -70,19 +68,6 @@ function validateVendorRawMaterialLinkAdd() {
             firstErrorControl = "gvVendorRawMat";
         }
         errMsg += GetErrorRow("gvVendorRawMat", "Please add at least one Raw Material.");
-    }
-
-    if (hasDataRow) {
-        for (var i = 0; i < rateInputs.length; i++) {
-            var rateValue = (rateInputs[i].value || "").trim();
-            if (rateValue === "") {
-                if (firstErrorControl == "") {
-                    firstErrorControl = rateInputs[i].id;
-                }
-                errMsg += GetErrorRow(rateInputs[i].id, "Please enter Rate.");
-                break;
-            }
-        }
     }
 
     if (firstErrorControl != "") {
