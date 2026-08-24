@@ -11,6 +11,7 @@
                 <h3 class="pageTitle">Vendor Raw Material Linking</h3>
                 <p class="pageSubTitle">Raw materials linked to each vendor</p>
             </div>
+
         </div>
         <div class="rightFung"></div>
     </div>

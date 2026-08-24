@@ -3,6 +3,62 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
     <link href="includes/rm-procurement.css?v=<%= DateTime.Now.Ticks %>" rel="stylesheet" type="text/css" />
     <div class="rm-module rm-compact">
+        <style type="text/css">
+            .rm-module .upgradDataGrid td.rm-wrap-text {
+                width: 38% !important;
+                max-width: none !important;
+                white-space: normal !important;
+                word-break: normal !important;
+                overflow-wrap: break-word !important;
+                vertical-align: top !important;
+                text-align: left !important;
+                padding-top: 8px !important;
+                padding-bottom: 8px !important;
+            }
+
+                .rm-module .upgradDataGrid td.rm-wrap-text .rm-rawmat-list {
+                    display: block;
+                    width: 100%;
+                }
+
+                .rm-module .upgradDataGrid td.rm-wrap-text .rm-rawmat-line {
+                    display: flex;
+                    align-items: baseline;
+                    justify-content: space-between;
+                    gap: 10px;
+                    width: 100%;
+                    padding: 4px 0;
+                    border-bottom: 1px dotted #d7dde6;
+                }
+
+                    .rm-module .upgradDataGrid td.rm-wrap-text .rm-rawmat-line:last-child {
+                        border-bottom: 0;
+                        padding-bottom: 0;
+                    }
+
+                .rm-module .upgradDataGrid td.rm-wrap-text .rm-rawmat-name {
+                    flex: 1 1 auto;
+                    min-width: 0;
+                    text-align: left;
+                    white-space: normal !important;
+                    word-break: normal !important;
+                    overflow-wrap: break-word !important;
+                }
+
+                .rm-module .upgradDataGrid td.rm-wrap-text .qty {
+                    flex: 0 0 auto;
+                    width: auto;
+                    text-align: right;
+                    font-weight: 600;
+                    white-space: nowrap !important;
+                    word-break: keep-all !important;
+                    overflow-wrap: normal !important;
+                }
+
+            .rm-module .rm-wrap-text {
+                text-align: left;
+            }
+        </style>
         <script type="text/javascript" src="Scripts/FunctionValidator.js"></script>
         <script type="text/javascript" src="Scripts/ValidateRawMaterialRequisitionDtls.js?time=<%= DateTime.Now.ToString("yyyy.MM.dd-HH.mm.ss.fff") %>"></script>
         <script type="text/javascript">
@@ -65,7 +121,8 @@
                                     <div>
                                         <p class="rm-stat-label">Total</p>
                                         <p class="rm-stat-value">
-                                            <asp:Label ID="lblTotalCount" runat="server" Text="0"></asp:Label></p>
+                                            <asp:Label ID="lblTotalCount" runat="server" Text="0"></asp:Label>
+                                        </p>
                                     </div>
                                 </div>
                                 <div class="rm-stat-card">
@@ -73,7 +130,8 @@
                                     <div>
                                         <p class="rm-stat-label">Pending</p>
                                         <p class="rm-stat-value is-orange">
-                                            <asp:Label ID="lblPendingCount" runat="server" Text="0"></asp:Label></p>
+                                            <asp:Label ID="lblPendingCount" runat="server" Text="0"></asp:Label>
+                                        </p>
                                     </div>
                                 </div>
                                 <div class="rm-stat-card">
@@ -81,7 +139,8 @@
                                     <div>
                                         <p class="rm-stat-label">Approved</p>
                                         <p class="rm-stat-value is-green">
-                                            <asp:Label ID="lblApprovedCount" runat="server" Text="0"></asp:Label></p>
+                                            <asp:Label ID="lblApprovedCount" runat="server" Text="0"></asp:Label>
+                                        </p>
                                     </div>
                                 </div>
                             </div>
@@ -156,10 +215,13 @@
 
                                     <asp:TemplateField HeaderText="Raw Material List">
                                         <ItemTemplate>
-                                            <asp:Label ID="lblRawmaterialList" runat="server" CssClass="rm-wrap-text" Text='<%# Bind("RawmaterialList") %>'></asp:Label>
+                                            <div class="rm-wrap-text">
+                                                <asp:HiddenField ID="hdnRawmaterialList" runat="server" Value='<%# Bind("RawmaterialList") %>' />
+                                                <asp:Literal ID="litRawmaterialList" runat="server" Mode="PassThrough"></asp:Literal>
+                                            </div>
                                         </ItemTemplate>
-                                        <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="34%" />
-                                        <ItemStyle HorizontalAlign="Left" VerticalAlign="Middle" Width="34%" />
+                                        <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="38%" />
+                                        <ItemStyle HorizontalAlign="Center" VerticalAlign="Top" Width="38%" />
                                     </asp:TemplateField>
 
                                     <asp:TemplateField HeaderText="Approval Status">
