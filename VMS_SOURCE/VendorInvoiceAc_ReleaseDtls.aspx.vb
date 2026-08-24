@@ -154,24 +154,39 @@ Partial Class VendorInvoiceAc_ReleaseDtls
 
 #Region "Date Format"
     Public Function FormatDate(ByVal stringdate As String) As SqlDateTime
-        If Not (stringdate = String.Empty) Then
-            Dim ddate As String() = stringdate.Split("/")
-            Dim arrlist As New ArrayList
-            Dim index As Integer = 0
+        'Modified-by MUKESH BHAGAT on 20-08-2026 : ported robust parser from UAT source (NEW had reverted to the old Split("/") version which fails on dd-MM-yyyy input)
+        ' --- Original implementation (kept for reference) ---
+        'If Not (stringdate = String.Empty) Then
+        '    Dim ddate As String() = stringdate.Split("/")
+        '    Dim arrlist As New ArrayList
+        '    Dim index As Integer = 0
+        '
+        '    While index <= ddate.Length - 1
+        '        arrlist.Add(ddate(index))
+        '        System.Math.Min(System.Threading.Interlocked.Increment(index), index - 1)
+        '    End While
+        '    Dim dd As Integer = System.Convert.ToInt32(arrlist.Item(0))
+        '    Dim mm As Integer = System.Convert.ToInt32(arrlist.Item(1))
+        '    Dim yyyy As Integer = System.Convert.ToInt32(arrlist.Item(2))
+        '
+        '    Dim dt As DateTime = New DateTime(yyyy, mm, dd)
+        '    dt = FormatDateTime(dt, DateFormat.LongDate)
+        '
+        '    Return dt
+        'End If
 
-            While index <= ddate.Length - 1
-                arrlist.Add(ddate(index))
-                System.Math.Min(System.Threading.Interlocked.Increment(index), index - 1)
-            End While
-            Dim dd As Integer = System.Convert.ToInt32(arrlist.Item(0))
-            Dim mm As Integer = System.Convert.ToInt32(arrlist.Item(1))
-            Dim yyyy As Integer = System.Convert.ToInt32(arrlist.Item(2))
+        If String.IsNullOrWhiteSpace(stringdate) Then Return SqlDateTime.Null
 
-            Dim dt As DateTime = New DateTime(yyyy, mm, dd)
-            dt = FormatDateTime(dt, DateFormat.LongDate)
+        Dim raw As String = stringdate.Trim()
+        ' UI uses dd/MM/yyyy; some clients submit dd-MM-yyyy — accept both separators.
+        Dim formats() As String = {"dd/MM/yyyy", "d/M/yyyy", "dd-MM-yyyy", "d-M-yyyy"}
 
-            Return dt
+        Dim parsed As DateTime
+        If Not DateTime.TryParseExact(raw, formats, CultureInfo.InvariantCulture, DateTimeStyles.None, parsed) Then
+            Throw New FormatException("Invalid date: " & raw)
         End If
+
+        Return New SqlDateTime(parsed)
     End Function
 #End Region
     'Protected Sub gvVendorInvoiceDtls_RowDataBound(sender As Object, e As GridViewRowEventArgs)

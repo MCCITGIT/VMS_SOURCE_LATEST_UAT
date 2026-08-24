@@ -10,7 +10,8 @@
         document.onkeydown = checkValue;
         function checkValue() {
             if (event.keyCode == 118) { //Add (F7 keypress)
-                document.getElementById('btnSubmit').click()
+                <%-- Modified-by MUKESH BHAGAT on 20-08-2026 : master page mangles IDs (ctl00_ContentPlaceHolder1_*) - use ClientID so F7 hotkey works --%>
+                document.getElementById('<%= btnSubmit.ClientID %>').click()
             }
         }
     </script>

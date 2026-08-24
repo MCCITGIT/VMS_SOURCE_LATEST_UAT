@@ -109,7 +109,8 @@ Partial Class ShareOf_Business_Report
         PopulateDepot()
     End Sub
     Protected Sub btnCancel_Click(sender As Object, e As EventArgs) Handles btnCancel.Click
-        Response.Redirect("~/Home_New.aspx")
+        'Modified-by MUKESH BHAGAT on 20-08-2026 : Home_New.aspx does not exist in this project (Cancel gave 404); OLD redirected to Home.aspx
+        Response.Redirect("~/Home.aspx")
     End Sub
     Protected Sub btnSubmit_Click(sender As Object, e As EventArgs) Handles btnSubmit.Click
         Dim cls As New ShareOfBusinessReportClass

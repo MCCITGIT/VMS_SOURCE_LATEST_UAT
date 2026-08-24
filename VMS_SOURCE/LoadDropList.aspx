@@ -8,12 +8,13 @@
     <script type="text/javascript">
         document.onkeydown = checkValue;
         function checkValue() {
-            if (event.keyCode == 118) {  // button Add (F7 keypress)	    		    
-                __doPostBack(document.getElementById('ImgbtnAdd').name, '');
+            <%-- Modified-by MUKESH BHAGAT on 20-08-2026 : master page mangles IDs (ctl00_ContentPlaceHolder1_*) and the buttons are now LinkButtons (no name attribute) - use ClientID and .click() so F7/F8 hotkeys work --%>
+            if (event.keyCode == 118) {  // button Add (F7 keypress)
+                document.getElementById('<%= ImgbtnAdd.ClientID %>').click();
             }
             else if (event.keyCode == 119) { // button Search (F8 keypress)
 
-                __doPostBack(document.getElementById('ImgbtnSearch').name, '');
+                document.getElementById('<%= ImgbtnSearch.ClientID %>').click();
             }
         }
         //-->

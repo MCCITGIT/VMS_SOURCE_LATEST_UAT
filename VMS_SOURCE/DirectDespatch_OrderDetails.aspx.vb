@@ -42,24 +42,40 @@ Partial Class DirectDespatch_OrderDetails
 
 #Region "Date Format"
     Public Function FormatDate(ByVal stringdate As String) As SqlDateTime
-        If Not (stringdate = String.Empty) Then
-            Dim ddate As String() = stringdate.Split("/")
-            Dim arrlist As New ArrayList
-            Dim index As Integer = 0
+        'Modified-by MUKESH BHAGAT on 20-08-2026 : ported robust parser from UAT source (NEW had reverted to the old Split("/") version which fails on dd-MM-yyyy input)
+        ' --- Original implementation (kept for reference) ---
+        'If Not (stringdate = String.Empty) Then
+        '    Dim ddate As String() = stringdate.Split("/")
+        '    Dim arrlist As New ArrayList
+        '    Dim index As Integer = 0
+        '
+        '    While index <= ddate.Length - 1
+        '        arrlist.Add(ddate(index))
+        '        System.Math.Min(System.Threading.Interlocked.Increment(index), index - 1)
+        '    End While
+        '    Dim dd As Integer = System.Convert.ToInt32(arrlist.Item(0))
+        '    Dim mm As Integer = System.Convert.ToInt32(arrlist.Item(1))
+        '    Dim yyyy As Integer = System.Convert.ToInt32(arrlist.Item(2))
+        '
+        '    Dim dt As DateTime = New DateTime(yyyy, mm, dd)
+        '    dt = FormatDateTime(dt, DateFormat.LongDate)
+        '
+        '    Return dt
+        'End If
 
-            While index <= ddate.Length - 1
-                arrlist.Add(ddate(index))
-                System.Math.Min(System.Threading.Interlocked.Increment(index), index - 1)
-            End While
-            Dim dd As Integer = System.Convert.ToInt32(arrlist.Item(0))
-            Dim mm As Integer = System.Convert.ToInt32(arrlist.Item(1))
-            Dim yyyy As Integer = System.Convert.ToInt32(arrlist.Item(2))
+        If String.IsNullOrWhiteSpace(stringdate) Then Return SqlDateTime.Null
 
-            Dim dt As DateTime = New DateTime(yyyy, mm, dd)
-            dt = FormatDateTime(dt, DateFormat.LongDate)
+        Dim raw As String = stringdate.Trim()
+        ' On this page the UI is intended to be dd/MM/yyyy (calendarpopup),
+        ' but some browsers/users may submit dd-MM-yyyy; accept both.
+        Dim formats() As String = {"dd/MM/yyyy", "d/M/yyyy", "dd-MM-yyyy", "d-M-yyyy"}
 
-            Return dt
+        Dim parsed As DateTime
+        If Not DateTime.TryParseExact(raw, formats, CultureInfo.InvariantCulture, DateTimeStyles.None, parsed) Then
+            Throw New FormatException("Invalid date: " & raw)
         End If
+
+        Return New SqlDateTime(parsed)
     End Function
 #End Region
     Protected Sub btnCancel_Click(sender As Object, e As EventArgs) Handles btnCancel.Click
@@ -202,6 +218,17 @@ Partial Class DirectDespatch_OrderDetails
             styleDate.DataFormat = formatIdDate
         End If
 
+        'Modified-by MUKESH BHAGAT on 20-08-2026 : ported "Delayed Days / Delayed Reason" export columns (19-20) and header rename from UAT source - missing in redesigned page
+        'Delayed days (column 19) — numeric; template supplies header "Delayed Days"
+        Dim styleDelayedDays As ICellStyle = templateWorkbook.CreateCellStyle()
+        styleDelayedDays.CloneStyleFrom(stylecenter)
+        styleDelayedDays.DataFormat = templateWorkbook.CreateDataFormat().GetFormat("0")
+
+        'Delayed reason (column 20) — text + wrap; template supplies header "Delayed Reason"
+        Dim styleDelayedReason As ICellStyle = templateWorkbook.CreateCellStyle()
+        styleDelayedReason.CloneStyleFrom(stylecenter)
+        styleDelayedReason.WrapText = True
+
         'Getting the worksheet by its name...
         Dim sheet As HSSFSheet = templateWorkbook.GetSheet("Sheet1")
 
@@ -209,6 +236,19 @@ Partial Class DirectDespatch_OrderDetails
 
         Dim row As HSSFRow
         Dim cell As HSSFCell
+
+        'Header text for columns 19–20 and title merge come from the Excel template.
+        'Rename order_status column header only (column index 16).
+        Try
+            Dim headerRow As HSSFRow = sheet.GetRow(1)
+            If headerRow IsNot Nothing Then
+                Dim orderStatusHeader As HSSFCell = headerRow.GetCell(16)
+                If orderStatusHeader IsNot Nothing Then
+                    orderStatusHeader.SetCellValue("Oracle Order status")
+                End If
+            End If
+        Catch ex As Exception
+        End Try
 
         Dim DateString As String = "_" & DateTime.Today.ToString("dd_MM_yyyy")
 
@@ -307,13 +347,16 @@ Partial Class DirectDespatch_OrderDetails
 
             cell = row.CreateCell(16)
             cell.SetCellValue(Convert.ToString(dt.Rows(i)("order_status")))
-            cell.CellStyle = styleRight
+            'Modified-by MUKESH BHAGAT on 20-08-2026 : order_status is text - left aligned as in UAT source (NEW used styleRight)
+            cell.CellStyle = styleleft
 
+            'Invoice No
             cell = row.CreateCell(17)
 
             cell.SetCellValue(Convert.ToString(dt.Rows(i)("invoice_no")))
             cell.CellStyle = stylecenter
 
+            'Invoice Date
             cell = row.CreateCell(18)
             Try
                 cell.SetCellValue(Convert.ToString(dt.Rows(i)("invoice_date")))
@@ -321,6 +364,41 @@ Partial Class DirectDespatch_OrderDetails
                 cell.SetCellValue("")
             End Try
             cell.CellStyle = styleDate
+
+            'Modified-by MUKESH BHAGAT on 20-08-2026 : ported Delayed Days / Delayed Reason columns + bordered-cell fill from UAT source
+            'Delayed days (column 19) — data from order_pending_days
+            cell = row.CreateCell(19)
+            If dt.Rows(i)("order_pending_days") Is DBNull.Value Then
+                cell.SetCellValue("")
+                cell.CellStyle = styleDelayedDays
+            Else
+                Dim pendingRaw As String = Convert.ToString(dt.Rows(i)("order_pending_days")).Trim()
+                Dim pendingNum As Double
+                If Double.TryParse(pendingRaw, NumberStyles.Any, CultureInfo.InvariantCulture, pendingNum) OrElse Double.TryParse(pendingRaw, pendingNum) Then
+                    cell.SetCellValue(pendingNum)
+                    cell.CellStyle = styleDelayedDays
+                Else
+                    cell.SetCellValue(pendingRaw)
+                    cell.CellStyle = styleDelayedDays
+                End If
+            End If
+
+            'Delayed reason (column 20) — data from non_delivered_reason
+            cell = row.CreateCell(20)
+            cell.SetCellValue(GetReportColumnString(dt.Rows(i), "non_delivered_reason"))
+            cell.CellStyle = styleDelayedReason
+
+            'Template seems to rely on borders (gridlines off). Ensure all columns have bordered cells.
+            For col As Integer = 0 To 20
+                Dim gridCell As HSSFCell = row.GetCell(col)
+                If gridCell Is Nothing Then
+                    gridCell = row.CreateCell(col)
+                    gridCell.SetCellValue("")
+                    gridCell.CellStyle = styleleft
+                ElseIf gridCell.CellStyle Is Nothing Then
+                    gridCell.CellStyle = styleleft
+                End If
+            Next
 
             RowsIndex = RowsIndex + 1
         Next
@@ -336,6 +414,45 @@ Partial Class DirectDespatch_OrderDetails
         'Writing workbook's data stream to the root directory
         Dim fl As FileStream = New FileStream(genReportPath & file_name, FileMode.Create)
 
+        'Modified-by MUKESH BHAGAT on 20-08-2026 : ported initial-view fix from UAT source (exported sheet opened scrolled to column C)
+        'Set initial view BEFORE writing, so it persists in the file.
+        'NPOI ShowInPane(topRow, leftCol): first arg is ROW, second is COLUMN (we wrongly used (0,2) which pinned LeftCol=2 => column C).
+        Try
+            Dim sheetIndex As Integer = templateWorkbook.GetSheetIndex(sheet)
+            If sheetIndex >= 0 Then
+                templateWorkbook.SetActiveSheet(sheetIndex)
+                templateWorkbook.SetSelectedTab(sheetIndex)
+            End If
+
+            Try
+                Dim r0 = sheet.GetRow(0)
+                If r0 Is Nothing Then r0 = sheet.CreateRow(0)
+                Dim c0 = r0.GetCell(0)
+                If c0 Is Nothing Then c0 = r0.CreateCell(0)
+            Catch
+            End Try
+
+            'Do NOT call CreateFreezePane(0,0) to "clear" the template — on HSSF (.xls) this often
+            'rewrites PANE/window records in a way Excel flags as corrupt ("File error: data may have been lost")
+            'then auto-repairs. Initial position is set below via ShowInPane / SetActiveCell only.
+
+            Try : sheet.SetColumnHidden(0, False) : Catch : End Try
+            Try : sheet.SetColumnHidden(1, False) : Catch : End Try
+            Try
+                If sheet.GetColumnWidth(0) = 0 Then sheet.SetColumnWidth(0, 12 * 256)
+            Catch
+            End Try
+            Try
+                If sheet.GetColumnWidth(1) = 0 Then sheet.SetColumnWidth(1, 12 * 256)
+            Catch
+            End Try
+
+            sheet.ShowInPane(0, 0)
+            sheet.SetActiveCell(0, 0)
+        Catch ex As Exception
+            'Ignore view-setting issues; export should still succeed.
+        End Try
+
         templateWorkbook.Write(fl)
         fl.Close()
 
@@ -350,5 +467,14 @@ Partial Class DirectDespatch_OrderDetails
         HttpContext.Current.Response.SuppressContent = True
         HttpContext.Current.ApplicationInstance.CompleteRequest()
     End Sub
+
+    'Modified-by MUKESH BHAGAT on 20-08-2026 : ported helper from UAT source (used by Delayed Reason column)
+    ''' <summary>Returns empty string if column missing (SP not yet deployed) or DBNull.</summary>
+    Private Function GetReportColumnString(dr As DataRow, columnName As String) As String
+        If dr Is Nothing OrElse dr.Table Is Nothing Then Return String.Empty
+        If Not dr.Table.Columns.Contains(columnName) Then Return String.Empty
+        If dr.IsNull(columnName) Then Return String.Empty
+        Return Convert.ToString(dr(columnName))
+    End Function
 
 End Class
