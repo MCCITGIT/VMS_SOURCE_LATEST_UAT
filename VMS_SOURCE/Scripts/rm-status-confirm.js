@@ -5,7 +5,7 @@
         submit: { title: "Submit?", text: "Are you sure you want to submit?" },
         update: { title: "Update record?", text: "Are you sure you want to update this record?" },
         "delete": { title: "Delete record?", text: "Are you sure you want to delete this record?" },
-        approve: { title: "Approve?", text: "Are you sure you want to approve the selected requisition(s)?" },
+        approve: { title: "Approve?", text: "Are you sure to approve the selected requisition(s)?" },
         status: { title: "Change status?", text: "Are you sure you want to change the status?" }
     };
 
