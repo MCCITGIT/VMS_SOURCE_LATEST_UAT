@@ -10,11 +10,11 @@ Partial Class Dispatch_List
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
         Page.MaintainScrollPositionOnPostBack = True
         If (Not IsPostBack) Then
-            'Dim rmVendorCode As String = String.Empty
-            'If Request.QueryString("rmvendor_code") IsNot Nothing Then
-            '    rmVendorCode = Request.QueryString("rmvendor_code").ToString()
-            'End If
-            Dim rmVendorCode As String = "5023412"
+            Dim rmVendorCode As String = String.Empty
+            If Request.QueryString("rmvendor_code") IsNot Nothing Then
+                rmVendorCode = Request.QueryString("rmvendor_code").ToString()
+            End If
+            'Dim rmVendorCode As String = "5023412"
             ViewState("RmVendorCode") = rmVendorCode
             divVendor.Visible = False
             populateStatus()

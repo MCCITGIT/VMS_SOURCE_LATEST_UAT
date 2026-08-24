@@ -570,6 +570,12 @@ body:has(.rm-module) .contentMainBody,
     font-size: 12px !important;
 }
 
+.rm-module .rm-fit-grid .upgradDataGrid td.rm-wrap-text,
+.rm-module .rm-fit-grid .upgradDataGrid td.rm-wrap-text * {
+    overflow-wrap: break-word !important;
+    word-break: normal !important;
+}
+
 .rm-module .rm-fit-grid .upgradDataGrid a:not(.btn) {
     width: 28px;
     height: 28px;
