@@ -44,16 +44,16 @@ body:has(.rm-module) .contentMainBody,
 .standalone-breadcrumbs {
     background: #ffffff !important;
     border: 1px solid #eee8de !important;
-    border-radius: 10px !important;
-    box-shadow: 0 4px 12px rgba(80, 60, 30, 0.05) !important;
-    padding: 4px 10px 4px 12px !important;
-    min-height: 40px;
-    margin-bottom: 8px !important;
+    border-radius: 18px !important;
+    box-shadow: 0 8px 22px rgba(80, 60, 30, 0.05) !important;
+    padding: 16px 20px !important;
+    min-height: 72px;
+    margin-bottom: 16px !important;
     display: flex;
     align-items: center;
     justify-content: space-between;
     flex-wrap: wrap;
-    gap: 6px;
+    gap: 10px;
 }
 
 .rm-module .breadcrumbs::before,
@@ -72,19 +72,19 @@ body:has(.rm-module) .contentMainBody,
 .rm-module .breadcrumbs .leftFung > a:not(.rm-crumb-link),
 .standalone-breadcrumbs .leftFung > a:not(.rm-crumb-link),
 .standalone-breadcrumbs .home-link {
-    width: 28px;
-    height: 28px;
-    min-width: 28px;
-    min-height: 28px;
-    margin-right: 0;
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
+    margin-right: 12px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     background: #e8f0ff !important;
     border: 0 !important;
-    border-radius: 8px !important;
+    border-radius: 12px !important;
     color: #2f6fed !important;
-    font-size: 13px;
+    font-size: 18px;
     text-decoration: none !important;
     transition: background-color 0.18s ease, color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
 }
@@ -104,17 +104,17 @@ body:has(.rm-module) .contentMainBody,
 .rm-module .breadcrumbs .fa-home,
 .standalone-breadcrumbs .fa-home {
     color: #2f6fed !important;
-    font-size: 13px;
+    font-size: 18px;
 }
 
 .rm-module .diveider,
 .standalone-breadcrumbs .diveider {
     display: block !important;
     flex: 0 0 auto;
-    margin: 0 6px;
+    margin: 0 10px 0 0;
     padding: 0;
     color: #c5ccd6 !important;
-    font-size: 13px;
+    font-size: 18px;
     font-weight: 300;
     line-height: 1;
 }
@@ -122,11 +122,11 @@ body:has(.rm-module) .contentMainBody,
 .rm-module .rm-crumb-link,
 .standalone-breadcrumbs .rm-crumb-link {
     color: #64748b;
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 600;
     text-decoration: none;
     white-space: nowrap;
-    margin-right: 6px;
+    margin-right: 10px;
     transition: color 0.2s ease;
 }
 
@@ -139,23 +139,23 @@ body:has(.rm-module) .contentMainBody,
 .rm-module .pageTitle,
 .standalone-breadcrumbs .pageTitle {
     color: #111827 !important;
-    font-size: 14px !important;
-    line-height: 17px !important;
-    font-weight: 700 !important;
-    letter-spacing: 0.1px;
-    white-space: nowrap !important;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    font-size: 22px !important;
+    line-height: 1.2 !important;
+    font-weight: 800 !important;
+    letter-spacing: -0.02em;
+    white-space: normal !important;
+    overflow: visible;
+    text-overflow: unset;
 }
 
 .rm-module .pageSubTitle,
 .standalone-breadcrumbs .pageSubTitle {
     color: #8a93a3 !important;
-    font-size: 11px !important;
-    line-height: 13px !important;
-    white-space: nowrap !important;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    font-size: 13px !important;
+    line-height: 1.4 !important;
+    white-space: normal !important;
+    overflow: visible;
+    text-overflow: unset;
 }
 
 .rm-module .breadcrumbs .rightFung,
@@ -164,7 +164,7 @@ body:has(.rm-module) .contentMainBody,
     align-items: center;
     flex-wrap: wrap;
     justify-content: flex-end;
-    gap: 6px;
+    gap: 10px;
 }
 
 /* Cards */
@@ -1020,24 +1020,14 @@ body:has(.rm-module) .bootstrapModal .modal-title {
 }
 
 .rm-compact .breadcrumbs {
-    padding: 4px 10px 4px 12px !important;
-    min-height: 40px;
-    margin-bottom: 8px !important;
-    border-radius: 10px !important;
+    padding: 10px 16px !important;
+    min-height: 56px;
+    margin-bottom: 10px !important;
+    border-radius: 14px !important;
     position: relative;
     z-index: 1;
 }
 
-<<<<<<< HEAD
-.rm-compact .breadcrumbs .leftFung > a {
-    width: 28px;
-    height: 28px;
-    min-width: 28px;
-    min-height: 28px;
-    margin-right: 0;
-    border-radius: 8px !important;
-    font-size: 13px;
-=======
 .rm-compact .breadcrumbs .leftFung > a:not(.rm-crumb-link) {
     width: 36px;
     height: 36px;
@@ -1046,15 +1036,14 @@ body:has(.rm-module) .bootstrapModal .modal-title {
     margin-right: 10px;
     border-radius: 10px !important;
     font-size: 15px;
->>>>>>> upstream/main
 }
 
 .rm-compact .pageTitle {
-    font-size: 14px !important;
+    font-size: 18px !important;
 }
 
 .rm-compact .pageSubTitle {
-    font-size: 11px !important;
+    font-size: 12px !important;
 }
 
 .rm-compact .card {
@@ -1432,41 +1421,53 @@ body:has(.rm-module) .bootstrapModal .modal-title {
 }
 
 .rm-formulation-matrix .upgradDataGrid th:nth-child(1),
-.rm-formulation-matrix .upgradDataGrid td:nth-child(1) {
+.rm-formulation-matrix .upgradDataGrid td.col-sl {
     width: 6%;
     text-align: center !important;
 }
 
 .rm-formulation-matrix .upgradDataGrid th:nth-child(2),
-.rm-formulation-matrix .upgradDataGrid td:nth-child(2),
+.rm-formulation-matrix .upgradDataGrid td.formula-set-cell {
+    width: 12%;
+    text-align: center !important;
+    font-weight: 600;
+    background-color: #f8fafc;
+}
+
 .rm-formulation-matrix .upgradDataGrid th:nth-child(3),
-.rm-formulation-matrix .upgradDataGrid td:nth-child(3) {
+.rm-formulation-matrix .upgradDataGrid td.col-brand {
     width: 12%;
     text-align: left !important;
 }
 
 .rm-formulation-matrix .upgradDataGrid th:nth-child(4),
-.rm-formulation-matrix .upgradDataGrid td:nth-child(4),
+.rm-formulation-matrix .upgradDataGrid td.col-vendor,
 .rm-formulation-matrix .upgradDataGrid th:nth-child(5),
-.rm-formulation-matrix .upgradDataGrid td:nth-child(5) {
+.rm-formulation-matrix .upgradDataGrid td.col-product {
     width: 18%;
     text-align: left !important;
 }
 
 .rm-formulation-matrix .upgradDataGrid th:nth-child(6),
-.rm-formulation-matrix .upgradDataGrid td:nth-child(6) {
+.rm-formulation-matrix .upgradDataGrid td.col-rm {
+    width: 12%;
+    text-align: left !important;
+}
+
+.rm-formulation-matrix .upgradDataGrid th:nth-child(7),
+.rm-formulation-matrix .upgradDataGrid td.col-ratio {
     width: 12%;
     text-align: center !important;
 }
 
-.rm-formulation-matrix .upgradDataGrid th:nth-child(7),
-.rm-formulation-matrix .upgradDataGrid td:nth-child(7) {
+.rm-formulation-matrix .upgradDataGrid th:nth-child(8),
+.rm-formulation-matrix .upgradDataGrid td.col-rate {
     width: 14%;
     text-align: right !important;
 }
 
-.rm-formulation-matrix .upgradDataGrid th:nth-child(8),
-.rm-formulation-matrix .upgradDataGrid td:nth-child(8) {
+.rm-formulation-matrix .upgradDataGrid th:nth-child(9),
+.rm-formulation-matrix .upgradDataGrid td.col-action {
     width: 8%;
     text-align: center !important;
 }
@@ -1481,8 +1482,22 @@ body:has(.rm-module) .bootstrapModal .modal-title {
     text-align: right;
 }
 
-.rm-formulation-matrix .card-body .text-center {
-    margin-top: 12px;
+.rm-formulation-matrix .rm-filter-actions {
+    margin-top: 0;
+    justify-content: flex-start;
+}
+
+.rm-formulation-matrix .rm-filter-actions .btn,
+.rm-formulation-matrix .rm-filter-actions a.btn {
+    height: 36px;
+    width: 36px;
+    min-width: 36px;
+    padding: 0;
+    margin: 0 !important;
+    font-size: 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .rm-brand-master .upgradDataGrid {
@@ -1528,6 +1543,46 @@ body:has(.rm-module) .bootstrapModal .modal-title {
 .rm-brand-master .upgradDataGrid .PagerGrid td {
     text-align: right !important;
 }
+/* ==========================================================
+   GRID PAGINATION - LEFT ALIGNMENT
+   ========================================================== */
+ 
+.rm-module .upgradDataGrid tr.PagerGrid > td,
+.rm-module .upgradDataGrid .PagerGrid > td {
+    text-align: left !important;
+    padding: 12px 10px !important;
+}
+ 
+/* ASP.NET GridView inner pager table */
+.rm-module .upgradDataGrid .PagerGrid table {
+    width: auto !important;
+    margin: 0 !important;
+    border-collapse: separate !important;
+    border-spacing: 6px 0 !important;
+}
+ 
+    /* Pager cells */
+    .rm-module .upgradDataGrid .PagerGrid table td {
+        width: auto !important;
+        padding: 0 !important;
+        border: 0 !important;
+        text-align: left !important;
+    }
+ 
+/* Page buttons */
+.rm-module .upgradDataGrid .PagerGrid a,
+.rm-module .upgradDataGrid .PagerGrid span {
+    width: 28px !important;
+    min-width: 28px !important;
+    height: 28px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: 8px !important;
+    font-size: 12px !important;
+}
 
 .rm-rawmat-master .upgradDataGrid td:nth-child(2),
 .rm-formulation-list .upgradDataGrid td:nth-child(2),
@@ -1572,8 +1627,7 @@ body:has(.rm-module) .bootstrapModal .modal-title {
 
 @media (max-width: 767px) {
     .rm-module .pageTitle {
-        font-size: 13px !important;
-        white-space: normal !important;
+        font-size: 18px !important;
     }
 
     .rm-module .card-body {
