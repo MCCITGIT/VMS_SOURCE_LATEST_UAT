@@ -8,11 +8,10 @@
     <script type="text/javascript">
         document.onkeydown = checkValue;
         function checkValue() {
-            if (event.keyCode == 118) { // button Add (F7 keypress)
-                __doPostBack(document.getElementById('imgbtnAdd').name, '');
-            }
-            else if (event.keyCode == 119) {
-                __doPostBack(document.getElementById('imgbtnSearch').name, '');
+            <%-- Modified-by MUKESH BHAGAT on 20-08-2026 : MasterPage mangles IDs and imgbtnSearch is now a LinkButton (no "name");
+                 use UniqueID. F7 branch removed - imgbtnAdd does not exist on this page (getElementById(null).name threw a JS error). --%>
+            if (event.keyCode == 119) {
+                __doPostBack('<%= imgbtnSearch.UniqueID %>', '');
             }
         }
 

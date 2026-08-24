@@ -6,6 +6,8 @@
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
 
 
+    <%-- Modified-by MUKESH BHAGAT on 20-08-2026 : FunctionValidator.js is commented out in MasterPage; ValidateDptDsptchUntWise needs ValidateRequired/GetErrorRow/SetErrorColor/SetControlFocus and code-behind calls fnNewWindow --%>
+    <script type="text/javascript" src="Scripts/FunctionValidator.js"></script>
     <script type="text/javascript" src="Scripts/ValidationDepotDespatchUnitwise.js"></script>
 
     <div class="breadcrumbs">
