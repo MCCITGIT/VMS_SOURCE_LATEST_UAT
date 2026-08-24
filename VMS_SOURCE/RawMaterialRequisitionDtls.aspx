@@ -89,7 +89,8 @@
                                             </ItemTemplate>
                                         </asp:TemplateField>
                                         <asp:BoundField DataField="rawmat_code" HeaderText="Raw Material Code" ReadOnly="true" />
-                                        <asp:BoundField DataField="rawmat_name" HeaderText="Raw Material Name" ReadOnly="true" />                                        
+                                        <asp:BoundField DataField="rawmat_name" HeaderText="Raw Material Name" ReadOnly="true" /> 
+                                        <asp:BoundField DataField="rate" HeaderText="Rate" ReadOnly="true" />                                                
                                         <asp:TemplateField HeaderText="Quantity Required">
                                             <ItemTemplate>
                                                 <asp:TextBox ID="txtQuantity" runat="server" CssClass="form-control form-control-sm" AutoComplete="Off"
