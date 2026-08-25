@@ -42,17 +42,17 @@
 
             function resetProductField() {
                 var rawMatText = document.getElementById('<%=txtSearchText.ClientID%>');
-            var rawMatCode = document.getElementById('<%=txtrawmatid.ClientID%>');
+                var rawMatCode = document.getElementById('<%=txtrawmatid.ClientID%>');
 
-            if (rawMatText) {
-                rawMatText.value = '';
-            }
-            if (rawMatCode) {
-                rawMatCode.value = '';
-            }
+                if (rawMatText) {
+                    rawMatText.value = '';
+                }
+                if (rawMatCode) {
+                    rawMatCode.value = '';
+                }
 
-            return false;
-        }
+                return false;
+            }
         </script>
         <script type="text/javascript">
             function onProductSelected(sender, e) {
@@ -69,8 +69,8 @@
 
             function resetProductField() {
                 document.getElementById('<%=txtVendorSearch.ClientID%>').value = '';
-         document.getElementById('<%=hdnVendorCode.ClientID%>').value = '';
-     }
+                document.getElementById('<%=hdnVendorCode.ClientID%>').value = '';
+            }
         </script>
 
         <div class="breadcrumbs">
@@ -122,7 +122,10 @@
                                         EnableCaching="false"
                                         CompletionSetCount="20"
                                         FirstRowSelected="true"
-                                        OnClientItemSelected="onProductSelected">
+                                        OnClientItemSelected="onProductSelected"
+                                        CompletionListCssClass="vmsAutoComplete"
+                                        CompletionListItemCssClass="vmsAutoCompleteItem"
+                                        CompletionListHighlightedItemCssClass="vmsAutoCompleteItemHighlight">
                                     </asp:AutoCompleteExtender>
                                 </div>
                             </div>
