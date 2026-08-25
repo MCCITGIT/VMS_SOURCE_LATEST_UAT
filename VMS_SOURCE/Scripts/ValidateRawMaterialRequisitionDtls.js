@@ -186,10 +186,8 @@ function validateRawMaterialRequisitionApprove() {
             lblError.innerHTML = "";
         }
 
-        var approveBtn = document.getElementById("btnApprove");
-        return rmConfirmAction(approveBtn, "approve");
+        return rmConfirmPostback("btnApprove", "approve");
     } catch (ex) {
-        var approveBtnCatch = document.getElementById("btnApprove");
-        return rmConfirmAction(approveBtnCatch, "approve");
+        return rmConfirmPostback("btnApprove", "approve");
     }
 }

@@ -8,11 +8,12 @@
     <script type="text/javascript">
         document.onkeydown = checkValue;
         function checkValue() {
+            <%-- Modified-by MUKESH BHAGAT on 20-08-2026 : MasterPage mangles IDs (ctl00_ContentPlaceHolder1_...); use UniqueID instead of bare IDs --%>
             if (event.keyCode == 118) { // button Add (F7 keypress)
-                __doPostBack(document.getElementById('imgbtnAdd').name, '');
+                __doPostBack('<%= imgbtnAdd.UniqueID %>', '');
             }
             else if (event.keyCode == 119) {
-                __doPostBack(document.getElementById('imgbtnSearch').name, '');
+                __doPostBack('<%= imgbtnSearch.UniqueID %>', '');
             }
         }
 

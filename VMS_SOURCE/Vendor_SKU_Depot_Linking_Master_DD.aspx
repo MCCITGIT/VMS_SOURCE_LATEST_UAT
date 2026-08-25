@@ -5,12 +5,15 @@
 </asp:Content>--%>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
     
+    <%-- Modified-by MUKESH BHAGAT on 20-08-2026 : FunctionValidator.js is commented out in MasterPage.master; ValidationDDVendorSKUDepotMaster.js (ValidateSearch/ValidateUpdate/ValidateInsert) needs ValidateRequired/SetControlFocus from it --%>
+    <script type="text/javascript" src="Scripts/FunctionValidator.js"></script>
     <script type="text/javascript" src="Scripts/ValidationDDVendorSKUDepotMaster.js"></script>
     <script type="text/javascript">
         document.onkeydown = checkValue;
         function checkValue() {
+            <%-- Modified-by MUKESH BHAGAT on 20-08-2026 : master page mangles IDs and imgbtnSearch is now a LinkButton (no name attribute) - use ClientID and .click() so F8 hotkey works --%>
             if (event.keyCode == 119) { // button Search (F8 keypress)
-                __doPostBack(document.getElementById('imgbtnSearch').name, '');
+                document.getElementById('<%= imgbtnSearch.ClientID %>').click();
             }
         }
         //-->

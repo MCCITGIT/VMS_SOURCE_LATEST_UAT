@@ -5,6 +5,8 @@
 </asp:Content>--%>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
 
+    <%-- Modified-by MUKESH BHAGAT on 20-08-2026 : FunctionValidator.js is commented out in MasterPage; code-behind RegisterStartupScript calls fnNewWindow('ReportViewer.aspx') for Print --%>
+    <script type="text/javascript" src="Scripts/FunctionValidator.js"></script>
     <script type="text/javascript">
         function disableBackButton() {
             window.history.forward(1);

@@ -6,6 +6,8 @@
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
     
 
+    <%-- Modified-by MUKESH BHAGAT on 20-08-2026 : FunctionValidator.js is commented out in MasterPage.master; validate_yearmonth() (btnSubmit OnClientClick) needs ValidateDropDown1/SetControlFocus from it --%>
+    <script type="text/javascript" src="Scripts/FunctionValidator.js"></script>
     <script type="text/javascript" src="Scripts/ValidateMonthlyIndent.js"></script>
     <script type="text/javascript">
         document.onkeydown = checkValue;

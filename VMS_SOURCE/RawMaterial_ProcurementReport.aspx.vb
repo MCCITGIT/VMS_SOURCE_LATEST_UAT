@@ -1,159 +1,81 @@
 ﻿Imports System.Data
 Imports VMS.Web
-Imports System.Data.SqlClient
 Imports System.Data.SqlTypes
+Imports System.Data.SqlClient
 Imports System.IO
 Imports NPOI.HSSF.UserModel
 Imports NPOI.HSSF.Util
 Imports NPOI.SS.UserModel
 Imports NPOI.XSSF.UserModel
-Partial Class IndentWise_Vendorrating
+
+Partial Class RawMaterial_ProcurementReport
     Inherits System.Web.UI.Page
     Dim userInfo As VMSUserEntity = New VMSUserEntity()
-    Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
-
-        If (Request.QueryString("NoData") = "Yes") Then
-            lblErrMsg.Text = "No record found!"
-        Else
-            lblErrMsg.Text = String.Empty
-        End If
-
-        CheckLogin()
-
-        If Not IsPostBack Then
-            PopulateRegion()
-            PopulateDepot()
-            PopulateUnit()
-            PopulateProcessYr()
-
-            'Dim DptDsptchdUntWise As New DepotDespatchUnitwiseApp
-            'btnSubmit.Attributes.Add("onClick", "return ValidateDptDsptchUntWise('" + DptDsptchdUntWise.GetTopFinYear() + "','" + DptDsptchdUntWise.GetLastFinYear() + "');")
-        End If
-    End Sub
-
-#Region "Check Login"
     Private Sub CheckLogin()
-
         If (Not (Session(Constant.SessionKeys.UserInfo) Is Nothing)) Then
             userInfo = CType(Session(Constant.SessionKeys.UserInfo), VMSUserEntity)
-
         Else
             Response.Redirect("~/Login.aspx")
         End If
-
     End Sub
-#End Region
+#Region "Page Load Event Handler"
+    Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
+        CheckLogin()
+        If (Not IsPostBack) Then
 
-#Region "Populate Region"
-    Private Sub PopulateRegion()
+            PopulateUnit()
+            PopulateVendor()
 
-        Dim ObjDocumentType As New Common
-        Dim OccupationTypeSet As New DataSet
-        Dim LovType As String = Constant.Common.REGION_TYPE
-        OccupationTypeSet = ObjDocumentType.GetLovDetails(userInfo.userCompanyEntity, LovType, Constant.Common.ActiveStatus)
-        If (Not (OccupationTypeSet Is Nothing) AndAlso OccupationTypeSet.Tables.Count > 0 AndAlso Not (OccupationTypeSet.Tables(0) Is Nothing) AndAlso OccupationTypeSet.Tables(0).Rows.Count > 0) Then
-            ddlRegion.DataSource = OccupationTypeSet.Tables(0)
-            ddlRegion.DataTextField = "lov_value"
-            ddlRegion.DataValueField = "lov_code"
-            ddlRegion.DataBind()
-            ddlRegion.Items.Insert(0, New ListItem(Constant.Common.All, String.Empty, True))
-        End If
-        If Not (userInfo.userGroupCodeEntity = Constant.UserFormAccess.SYSADMIN Or userInfo.userGroupCodeEntity = Constant.UserFormAccess.HOMARKETING Or userInfo.userGroupCodeEntity = Constant.UserFormAccess.HOACCOUNTS Or userInfo.userGroupCodeEntity = Constant.UserFormAccess.UNIT) Then
-            ddlRegion.SelectedValue = userInfo.userRegionEntity
-            ddlRegion.Enabled = False
-        End If
-
-    End Sub
-#End Region
-
-#Region "Populate Depot"
-    Private Sub PopulateDepot()
-        Dim DptDsptchdUntWise As New Common
-        Dim DepotSet As New DataSet
-
-        DepotSet = DptDsptchdUntWise.Getdepotname(ddlRegion.SelectedValue)
-        If (Not (DepotSet Is Nothing) AndAlso DepotSet.Tables.Count > 0 AndAlso Not (DepotSet.Tables(0) Is Nothing) AndAlso DepotSet.Tables(0).Rows.Count > 0) Then
-            ddlLocation.DataSource = DepotSet.Tables(0)
-            ddlLocation.DataTextField = "depot_name"
-            ddlLocation.DataValueField = "depot_code"
-            ddlLocation.DataBind()
-            ddlLocation.Items.Insert(0, New ListItem(Constant.Common.All, String.Empty, True))
-        End If
-        If Not (userInfo.userGroupCodeEntity = Constant.UserFormAccess.SYSADMIN Or userInfo.userGroupCodeEntity = Constant.UserFormAccess.HOMARKETING Or userInfo.userGroupCodeEntity = Constant.UserFormAccess.HOACCOUNTS Or userInfo.userGroupCodeEntity = Constant.UserFormAccess.UNIT Or userInfo.userGroupCodeEntity = Constant.UserFormAccess.REGION) Then
-            ddlLocation.SelectedValue = userInfo.userBranchEntity
-            ddlLocation.Enabled = False
         End If
     End Sub
 #End Region
 
+#Region "PopulateVendor"
+    Public Sub PopulateVendor()
+        Dim obj As New OPC_VendorClass()
+        Dim ds As New DataSet()
+        ds = obj.GetRawMaterialVendorList()
+
+        ddlVendor.Items.Clear()
+        If (Not (ds Is Nothing) AndAlso ds.Tables.Count > 0 AndAlso Not (ds.Tables(0) Is Nothing) AndAlso ds.Tables(0).Rows.Count > 0) Then
+            ddlVendor.DataSource = ds.Tables(0)
+            ddlVendor.DataTextField = "vendor_name"
+            ddlVendor.DataValueField = "vendor_code"
+            ddlVendor.DataBind()
+        End If
+        ddlVendor.Items.Insert(0, New ListItem(Constant.Common.Selec, String.Empty, True))
+    End Sub
+#End Region
 #Region "Populate Unit"
     Private Sub PopulateUnit()
-        Dim DptDsptchdUntWise As New DepotDespatchUnitwiseApp
-        Dim UnitSet As New DataSet
+        Dim obj As New OPC_VendorClass()
+        Dim UnitSet As DataSet = obj.GetUnitName(Constant.Common.ActiveStatus)
 
-        UnitSet = DptDsptchdUntWise.GetUnit(Constant.Common.ActiveStatus)
         If (Not (UnitSet Is Nothing) AndAlso UnitSet.Tables.Count > 0 AndAlso Not (UnitSet.Tables(0) Is Nothing) AndAlso UnitSet.Tables(0).Rows.Count > 0) Then
-            ddlDsptchdUnit.DataSource = UnitSet.Tables(0)
-            ddlDsptchdUnit.DataTextField = "unit_name"
-            ddlDsptchdUnit.DataValueField = "unit_code"
-            ddlDsptchdUnit.DataBind()
-            ddlDsptchdUnit.Items.Insert(0, New ListItem(Constant.Common.All, String.Empty, True))
+            ddlUnit.DataSource = UnitSet.Tables(0)
+            ddlUnit.DataTextField = "unit_name"
+            ddlUnit.DataValueField = "unit_code"
+            ddlUnit.DataBind()
+            ddlUnit.Items.Insert(0, New ListItem(Constant.Common.All, String.Empty, True))
         End If
         'If Not (userInfo.userGroupCodeEntity = Constant.UserFormAccess.SYSADMIN Or userInfo.userGroupCodeEntity = Constant.UserFormAccess.HOMARKETING Or userInfo.userGroupCodeEntity = Constant.UserFormAccess.HOACCOUNTS Or userInfo.userGroupCodeEntity = Constant.UserFormAccess.DEPOT) Then
-        '    ddlDsptchdUnit.SelectedValue = userInfo.userUnitEntity
-        '    ddlDsptchdUnit.Enabled = False
+        '    ddlUnit.SelectedValue = userInfo.userUnitEntity
+        '    ddlUnit.Enabled = False
         'End If
-        'If (userInfo.userGroupCodeEntity = "UNIT") Then
-        '    ddlDsptchdUnit.SelectedValue = userInfo.userBranchEntity
-        '    ddlDsptchdUnit.Enabled = False
-        'End If
+        If (userInfo.userGroupCodeEntity = "UNIT") Then
+            ddlUnit.SelectedValue = userInfo.userBranchEntity
+            ddlUnit.Enabled = False
+        End If
     End Sub
 #End Region
-#Region "Populate Process Year"
-    Private Sub PopulateProcessYr()
-        CheckLogin()
-
-        Dim ProcessYr As New Common
-        Dim StandrdParams As New MonthlyUnitDespatch
-        Dim YearSet As New DataSet
-        Dim StandardYrMnth As New DataSet
-
-        YearSet = ProcessYr.GetFinYrDetails(Constant.Common.Company, Constant.Common.ActiveStatus)
-
-        StandardYrMnth = StandrdParams.GetMnthsYr(Constant.Common.ActiveStatus)
-        If (Not (YearSet Is Nothing) AndAlso YearSet.Tables.Count > 0 AndAlso Not (YearSet.Tables(0) Is Nothing) AndAlso YearSet.Tables(0).Rows.Count > 0) Then
-            ddlProcessYr.DataSource = YearSet.Tables(0)
-            ddlProcessYr.DataTextField = "fin_year"
-            ddlProcessYr.DataValueField = "fin_year"
-            ddlProcessYr.DataBind()
-            'ddlProcessYr.Items.Insert(0, New ListItem(Constant.Common.Selec, String.Empty, True))
-            'ddlProcessYr.Items.Insert(0, New ListItem("2011", String.Empty, True))
-        End If
-        'If Not (userInfo.userGroupCodeEntity = Constant.UserFormAccess.SYSADMIN Or userInfo.userGroupCodeEntity = Constant.UserFormAccess.HOMARKETING Or userInfo.userGroupCodeEntity = Constant.UserFormAccess.HOACCOUNTS Or userInfo.userGroupCodeEntity = Constant.UserFormAccess.DEPOT) Then
-        '    ddlProcessYr.SelectedValue = userInfo.currentFinancialYearEntity
-        '    ddlProcessYr.Enabled = False
-        'End If
-
-
-        If (Not (StandardYrMnth Is Nothing) AndAlso StandardYrMnth.Tables.Count > 0 AndAlso Not (StandardYrMnth.Tables(0) Is Nothing) AndAlso StandardYrMnth.Tables(0).Rows.Count > 0) Then
-            ddlProcessYr.SelectedValue = StandardYrMnth.Tables(0).Rows(0)("param_char_value")
-            ddlProcessMnth.SelectedValue = StandardYrMnth.Tables(0).Rows(1)("param_char_value")
-        End If
-
-    End Sub
-#End Region
-    Protected Sub ddlRegion_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ddlRegion.SelectedIndexChanged
-        PopulateDepot()
-    End Sub
-    Protected Sub btnCancel_Click(sender As Object, e As EventArgs) Handles btnCancel.Click
-        'Modified-by MUKESH BHAGAT on 20-08-2026 : Home_New.aspx does not exist in this project (Cancel gave 404); OLD redirected to Home.aspx
+    Protected Sub btnCancel_Click(sender As Object, e As EventArgs)
         Response.Redirect("~/Home.aspx")
     End Sub
-    Protected Sub btnSubmit_Click(sender As Object, e As EventArgs) Handles btnSubmit.Click
-        Dim cls As New VendorRankingReportClass
+    Protected Sub btnSubmit_Click(sender As Object, e As EventArgs)
+        Dim cls As New OPC_VendorClass
         Dim ExcelSet As New DataSet
         Try
-            ExcelSet = cls.Get_VendorIndent_Ranklist(ddlLocation.SelectedValue, ddlDsptchdUnit.SelectedValue, userInfo.userIDEntity, ddlProcessYr.SelectedValue, ddlProcessMnth.SelectedValue)
+            ExcelSet = cls.GetRawMeterial_ProcurementReport(ddlUnit.SelectedValue, ddlVendor.SelectedValue)
 
             If (ExcelSet.Tables(0).Rows.Count > 0) Then
                 ExportToExcelSheet(ExcelSet)
@@ -167,7 +89,7 @@ Partial Class IndentWise_Vendorrating
     Private Sub ExportToExcelSheet(ByVal dset As DataSet)
         Try
             'Opening the Excel template......
-            Dim fs As FileStream = New FileStream(Server.MapPath(Request.ApplicationPath) & "\Templates\Indent_Wise_Vendor_Rating_Template.xlsx", FileMode.Open, FileAccess.Read)
+            Dim fs As FileStream = New FileStream(Server.MapPath(Request.ApplicationPath) & "\Templates\RawMeterialProcurementReportTemplate.xlsx", FileMode.Open, FileAccess.Read)
 
             'Getting the complete workbook...
             Dim templateWorkbook As XSSFWorkbook = New XSSFWorkbook(fs)
@@ -264,7 +186,7 @@ Partial Class IndentWise_Vendorrating
             Dim DateString As String = "_" & DateTime.Today.ToString("dd_MM_yyyy")
             row = sheet.GetRow(0)
             cell = row.GetCell(0)
-            cell.SetCellValue("Indent Wise Vendor Rating Report As On - " + Format(Now, "dd-MM-yyyy").ToString)
+            cell.SetCellValue("Raw Material Procurement Report Report")
 
             RowsIndex = 2
             Dim count = 0
@@ -275,79 +197,93 @@ Partial Class IndentWise_Vendorrating
                 colIndex = 0
 
                 cell = row.CreateCell(colIndex)
-                cell.SetCellValue(Convert.ToString(dset.Tables(0).Rows(i)("Region")))
+                cell.SetCellValue(Convert.ToString(dset.Tables(0).Rows(i)("vendor_code")))
                 cell.CellStyle = styleCenter
                 colIndex += 1
 
                 cell = row.CreateCell(colIndex)
-                cell.SetCellValue(Convert.ToString(dset.Tables(0).Rows(i)("Depot")))
+                cell.SetCellValue(Convert.ToString(dset.Tables(0).Rows(i)("vendor_name")))
                 cell.CellStyle = styleLeft
                 colIndex += 1
 
                 cell = row.CreateCell(colIndex)
-                cell.SetCellValue(Convert.ToString(dset.Tables(0).Rows(i)("Vendor")))
-                cell.CellStyle = styleLeft
-                colIndex += 1
-
-                cell = row.CreateCell(colIndex)
-                cell.SetCellValue(Convert.ToString(dset.Tables(0).Rows(i)("indh_indent_no")))
+                cell.SetCellValue(Convert.ToString(dset.Tables(0).Rows(i)("rawmat_vendor_code")))
                 cell.CellStyle = styleCenter
                 colIndex += 1
 
                 cell = row.CreateCell(colIndex)
-                cell.SetCellValue(Convert.ToString(dset.Tables(0).Rows(i)("indh_fin_year")))
-                cell.CellStyle = styleCenter
-                colIndex += 1
-
-                cell = row.CreateCell(colIndex)
-                cell.SetCellValue(Convert.ToString(dset.Tables(0).Rows(i)("indh_month")))
-                cell.CellStyle = styleCenter
-                colIndex += 1
-
-                cell = row.CreateCell(colIndex)
-                cell.SetCellValue(Convert.ToString(dset.Tables(0).Rows(i)("SKU")))
+                cell.SetCellValue(Convert.ToString(dset.Tables(0).Rows(i)("rawmat_vendor_name")))
                 cell.CellStyle = styleLeft
                 colIndex += 1
 
                 cell = row.CreateCell(colIndex)
-                cell.SetCellValue(Convert.ToString(dset.Tables(0).Rows(i)("SKU_DESC")))
-                cell.CellStyle = styleLeft
+                cell.SetCellValue(Convert.ToString(dset.Tables(0).Rows(i)("request_id")))
+                cell.CellStyle = styleCenter
                 colIndex += 1
 
                 cell = row.CreateCell(colIndex)
-                cell.SetCellValue(Convert.ToDouble(dset.Tables(0).Rows(i)("Volume")))
+                Try
+                    cell.SetCellValue(Convert.ToDateTime(dset.Tables(0).Rows(i)("Request_date")))
+                Catch ex As Exception
+                End Try
+                cell.CellStyle = styleDate
+                colIndex += 1
+
+                cell = row.CreateCell(colIndex)
+                cell.SetCellValue(Convert.ToDouble(dset.Tables(0).Rows(i)("request_qty")))
                 cell.CellStyle = styleValue
                 colIndex += 1
 
                 cell = row.CreateCell(colIndex)
-                cell.SetCellValue(Convert.ToInt32(dset.Tables(0).Rows(i)("indd_sku_nop")))
-                cell.CellStyle = styleRight
-                colIndex += 1
-
-                cell = row.CreateCell(colIndex)
-                cell.SetCellValue(Convert.ToDouble(dset.Tables(0).Rows(i)("TotalVolume")))
+                cell.SetCellValue(Convert.ToString(dset.Tables(0).Rows(i)("despatch_id")))
                 cell.CellStyle = styleValue
                 colIndex += 1
 
                 cell = row.CreateCell(colIndex)
-                cell.SetCellValue(Convert.ToString(dset.Tables(0).Rows(i)("Priority")))
-                cell.CellStyle = styleLeft
+                Try
+                    cell.SetCellValue(Convert.ToDateTime(dset.Tables(0).Rows(i)("despatch_date")))
+                Catch ex As Exception
+                End Try
+                cell.CellStyle = styleDate
                 colIndex += 1
 
                 cell = row.CreateCell(colIndex)
-                cell.SetCellValue(Convert.ToString(dset.Tables(0).Rows(i)("Reason")))
-                cell.CellStyle = styleLeft
+                cell.SetCellValue(Convert.ToDouble(dset.Tables(0).Rows(i)("despatch_qty")))
+                cell.CellStyle = styleValue
+                colIndex += 1
+
+
+                cell = row.CreateCell(colIndex)
+                cell.SetCellValue(Convert.ToString(dset.Tables(0).Rows(i)("received_id")))
+                cell.CellStyle = styleCenter
+                colIndex += 1
+
+                cell = row.CreateCell(colIndex)
+                Try
+                    cell.SetCellValue(Convert.ToDateTime(dset.Tables(0).Rows(i)("received_date")))
+                Catch ex As Exception
+                End Try
+                cell.CellStyle = styleDate
+                colIndex += 1
+
+                cell = row.CreateCell(colIndex)
+                cell.SetCellValue(Convert.ToDouble(dset.Tables(0).Rows(i)("received_qty")))
+                cell.CellStyle = styleValue
+                colIndex += 1
+
+                cell = row.CreateCell(colIndex)
+                cell.SetCellValue(Convert.ToDouble(dset.Tables(0).Rows(i)("pending_qty")))
+                cell.CellStyle = styleValue
                 colIndex += 1
 
                 RowsIndex = RowsIndex + 1
-
             Next
 
             Dim genReportPath As String = AppDomain.CurrentDomain.BaseDirectory & "Excel_Reports\"
             If Not (Directory.Exists(genReportPath)) Then
                 Directory.CreateDirectory(genReportPath)
             End If
-            Dim file_name As String = "Indent_Wise_Vendor_Rating_Report_" & DateString & ".xlsx"
+            Dim file_name As String = "RawMaterial_Procurement_Report Report_" & DateString & ".xlsx"
             Dim fl As FileStream = New FileStream(genReportPath & file_name, FileMode.Create)
             templateWorkbook.Write(fl)
             fl.Close()

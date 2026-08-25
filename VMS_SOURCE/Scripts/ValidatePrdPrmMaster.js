@@ -34,8 +34,14 @@
     else {
         document.getElementById(lblErrMsg).innerHTML = '';
         if (confirm('Are you sure to Submit?')) {
-            document.getElementById(btnUpdate).disabled = true;
-            __doPostBack(document.getElementById(btnUpdate).name, '');
+            // Modified-by MUKESH BHAGAT on 20-08-2026 : buttons are now LinkButtons (no "name" attribute);
+            // __doPostBack(undefined) posted back with an empty __EVENTTARGET and the Submit/Update never fired.
+            // Only force the postback when a name exists (ImageButton); otherwise let the LinkButton's own href post back.
+            var btnObj = document.getElementById(btnUpdate);
+            if (btnObj && btnObj.name) {
+                btnObj.disabled = true;
+                __doPostBack(btnObj.name, '');
+            }
             //            document.getElementById('btnAdd').click()
             return true;
         }

@@ -1194,4 +1194,25 @@ Public Class OPC_VendorClass
     '    Return DS
     'End Function
 #End Region
+#Region "Reports"
+    Function GetRawMeterial_ProcurementReport(ByVal vendorcode As String, ByVal rawmat_vendorcode As String) As DataSet
+        Dim DS As System.Data.DataSet
+        Dim sqlParams(1) As SqlParameter
+
+        sqlParams(0) = New SqlParameter()
+        sqlParams(0).ParameterName = "@vendor_code"
+        sqlParams(0).DbType = DbType.String
+        sqlParams(0).Direction = Data.ParameterDirection.Input
+        sqlParams(0).Value = If(Not String.IsNullOrWhiteSpace(vendorcode), CObj(vendorcode.Trim()), DBNull.Value)
+
+        sqlParams(1) = New SqlParameter()
+        sqlParams(1).ParameterName = "@rmVendor_code"
+        sqlParams(1).DbType = DbType.String
+        sqlParams(1).Direction = Data.ParameterDirection.Input
+        sqlParams(1).Value = If(Not String.IsNullOrWhiteSpace(rawmat_vendorcode), CObj(rawmat_vendorcode.Trim()), DBNull.Value)
+
+        DS = DBFactory.GetHelper().ExecuteDataSet("[dbo].[GetRawMetirialProcurementList]", Data.CommandType.StoredProcedure, sqlParams)
+        Return DS
+    End Function
+#End Region
 End Class
