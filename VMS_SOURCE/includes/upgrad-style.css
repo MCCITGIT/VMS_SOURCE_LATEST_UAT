@@ -76,7 +76,7 @@ body {
    page title with a supporting subtitle underneath.
    ========================================================================== */
 .breadcrumbs {
-    position: relative;
+    /*position: relative;
     background: #fff;
     background: -webkit-linear-gradient(top,rgba(255, 255, 255, 1) 0%, rgba(245, 248, 252, 1) 100%);
     background: linear-gradient(180deg,rgba(255, 255, 255, 1) 0%, rgba(245, 248, 252, 1) 100%);
@@ -90,7 +90,21 @@ body {
     align-items: center;
     justify-content: space-between;
     flex-wrap: wrap;
-    gap: 6px;
+    gap: 6px;*/
+    padding: 8px 16px !important;
+    min-height: 50px;
+    margin-bottom: 10px !important;
+    border-radius: 14px !important;
+    position: relative;
+    z-index: 1;
+    background: #ffffff !important;
+    border: 1px solid #eee8de !important;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    box-shadow: 0 8px 22px rgba(80, 60, 30, 0.05) !important;
 }
 
     /* Accent bar */
@@ -125,15 +139,15 @@ body {
     line-height: 14px;
 }
 
-.rightFung:empty {
-    display: none;
-}
+    .rightFung:empty {
+        display: none;
+    }
 
 /* Home button */
 .breadcrumbs .leftFung > a {
     flex: 0 0 auto;
-    width: 28px;
-    height: 28px;
+    width: 30px;
+    height: 30px;
     min-width: 28px;
     min-height: 28px;
     display: inline-flex;
@@ -166,17 +180,17 @@ body {
     }
 
 .breadcrumbs .fa-home {
-    font-size: 13px;
+    font-size: 15px;
     color: #10385a;
     line-height: 1;
 }
 
 .diveider {
     flex: 0 0 auto;
-    margin: 0px 6px;
+    margin: 0px 10px;
     padding: 0px;
     color: #c3cfdd;
-    font-size: 13px;
+    font-size: 20px;
     font-weight: 300;
     line-height: 1;
 }
@@ -196,7 +210,7 @@ body {
 
 .pageTitle {
     color: #10385a;
-    font-size: 14px;
+    font-size: 15px;
     line-height: 17px;
     font-weight: 600;
     letter-spacing: 0.1px;
@@ -209,8 +223,8 @@ body {
 
 .pageSubTitle {
     color: #6b7b8f;
-    font-size: 11px;
-    line-height: 13px;
+    font-size: 12px;
+    line-height: 14px;
     font-weight: 400;
     letter-spacing: 0.1px;
     margin: 0px;
@@ -335,27 +349,47 @@ body {
     z-index: 9;
 }
 
+
+.input-group-append .btn {
+    border-radius: 0px 16px 16px 0px !important;
+    border-color: #bfc9d3;
+}
+
+.mandatory {
+    font-size: 13px;
+}
+
+.CheckBoxList {
+    max-height: 200px;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    padding: 5px 10px;
+    margin: 3px 0px 15px 0px;
+}
+/* Start Grid */
 .upgradDataGrid {
-    width: 100%;
-    border-color: #ddd;
-    /*margin-bottom:10px;*/
+    width: 100% !important;
+    border: 0 !important;
+    background: transparent !important;
+    color: #1f2937 !important;
+    border-collapse: collapse;
+    border-spacing: 0;
 }
 
     .upgradDataGrid .gridBtn {
-        padding: 3px 4px !important;
-        font-size: 11px;
-        line-height: 13px;
+        padding: 2px 5px !important;
+        font-size: 10px;
+        line-height: 12px;
         text-transform: uppercase;
         font-weight: 500;
-        letter-spacing: 0.5px;
+        letter-spacing: 0.4px;
         display: inline-block;
         width: auto !important;
-        margin: 1px;
-        border-radius: 4px !important;
+        margin: 0 1px;
+        border-radius: 50% !important;
     }
 
     .upgradDataGrid.gvVendorDtlsGrid tr:first-child {
-        /*background: #3F855A;*/
         background: #3f7185;
         background: -webkit-linear-gradient(180deg,rgba(63, 113, 133, 1) 0%, rgba(81, 153, 181, 1) 100%);
         background: -moz-linear-gradient(180deg,rgba(63, 113, 133, 1) 0%, rgba(81, 153, 181, 1) 100%);
@@ -369,30 +403,24 @@ body {
         .upgradDataGrid.gvVendorDtlsGrid tr:first-child th {
             color: #FFF;
             font-weight: 500;
-            padding: 7px 5px;
+            padding: 5px 6px;
         }
 
     .upgradDataGrid tr.headerGrid {
-        background: #eff2f5;
-        /*background: #10395a;
-        background: -webkit-linear-gradient(180deg,rgba(29, 95, 150, 1) 0%, rgba(16, 57, 90, 1) 100%);
-        background: -moz-linear-gradient(180deg,rgba(29, 95, 150, 1) 0%, rgba(16, 57, 90, 1) 100%);
-        background: linear-gradient(180deg,rgba(29, 95, 150, 1) 0%, rgba(16, 57, 90, 1) 100%);
-        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr="#10395a", endColorstr="#1d5f96", GradientType=0 );*/
         position: sticky;
         top: 0;
         z-index: 2;
     }
 
-        .upgradDataGrid tr.headerGrid:hover {
+    /*.upgradDataGrid tr.headerGrid:hover {
             background: #eff2f5;
-        }
+        }*/
 
-        .upgradDataGrid tr.headerGrid th {
+    /*.upgradDataGrid tr.headerGrid th {
             color: #403c49;
             font-weight: 500;
-            padding: 7px 5px;
-        }
+            padding: 5px 6px;
+        }*/
 
     .upgradDataGrid tr.footerGrid td {
         font-weight: 500;
@@ -407,27 +435,30 @@ body {
         color: #333;
     }
 
-        .upgradDataGrid tr td {
-            /*color: #333;*/
+        /*.upgradDataGrid tr td {
             font-weight: normal;
-            padding: 3px 5px;
+            padding: 3px 6px;
+        }*/
+
+        .upgradDataGrid tr td .form-control,
+        .upgradDataGrid tr td select.form-control,
+        .upgradDataGrid tr td input.form-control {
+            padding: 2px 6px;
+            height: 24px;
+            font-size: 12px;
+            line-height: 14px;
+            border-radius: 4px;
         }
 
-            .upgradDataGrid tr td .form-control {
-                padding: .3rem .75rem;
-                height: calc(1.5em + .7rem + 0px);
-                border-radius: 4px;
-            }
-
-        .upgradDataGrid tr th, .upgradDataGrid tr td {
-            font-size: 13px;
-            line-height: 16px;
+        /*.upgradDataGrid tr th, .upgradDataGrid tr td {
+            font-size: 12px;
+            line-height: 15px;
             vertical-align: middle;
-        }
+        }*/
 
             .upgradDataGrid tr th a i, .upgradDataGrid tr td a i {
-                font-size: 14px;
-                margin: 0px 2px;
+                font-size: 12px;
+                margin: 0px 1px;
                 font-weight: 600;
             }
 
@@ -446,22 +477,68 @@ body {
         color: #0056b3;
     }
 
+    .upgradDataGrid input[type="checkbox"],
+    .upgradDataGrid input[type="radio"] {
+        width: 14px;
+        height: 14px;
+        margin: 0;
+        vertical-align: middle;
+    }
+
+    .upgradDataGrid th,
+    .upgradDataGrid td {
+        border: 0 !important;
+        border-bottom: 1px solid #eef1f5 !important;
+        background: transparent !important;
+        vertical-align: middle !important;
+    }
+
+    .upgradDataGrid th {
+        color: #9aa3b2 !important;
+        font-size: 10px !important;
+        font-weight: 700 !important;
+        letter-spacing: 0.04em;
+        text-transform: uppercase !important;
+        padding: 6px 8px !important;
+        line-height: 13px !important;
+        white-space: nowrap;
+    }
+
+    .upgradDataGrid td {
+        color: #1f2937 !important;
+        font-size: 12px !important;
+        padding: 6px 8px !important;
+        line-height: 15px !important;
+        transition: background-color 0.18s ease;
+    }
+
+    .upgradDataGrid tr:hover td {
+        background: #fafbfd !important;
+    }
+
+    .upgradDataGrid .btn,
+    .upgradDataGrid .btn-sm {
+        padding: 2px 8px;
+        font-size: 11px;
+        line-height: 14px;
+    }
+
     .upgradDataGrid .PagerGrid table td {
-        padding: 0px 3px !important;
+        padding: 0px 2px !important;
         border: 0px !important;
     }
 
         .upgradDataGrid .PagerGrid table td span {
-            width: 24px;
-            height: 24px;
-            display: flex;
+            width: 22px;
+            height: 22px;
+            display: inline-flex;
             align-items: center;
             justify-content: center;
             border: 1px solid #ccc;
-            border-radius: 50%;
+            border-radius: 6px;
             background: #10385a;
-            font-size: 13px;
-            line-height: 16px;
+            font-size: 11px;
+            line-height: 12px;
             font-weight: 400;
             color: #FFF;
             margin: 0px;
@@ -469,63 +546,60 @@ body {
         }
 
         .upgradDataGrid .PagerGrid table td a {
-            width: 24px;
-            height: 24px;
-            display: flex;
+            width: 22px;
+            height: 22px;
+            display: inline-flex;
             align-items: center;
             justify-content: center;
             border: 1px solid #ccc;
-            border-radius: 50%;
-            background: #FFF;
-            font-size: 13px;
-            line-height: 16px;
+            border-radius: 6px;
+            background: #e8f0ff;
+            font-size: 11px;
+            line-height: 12px;
             font-weight: 400;
             color: #0056b3;
             margin: 0px;
             padding: 0px;
         }
 
-.input-group-append .btn {
-    border-radius: 0px 16px 16px 0px !important;
-    border-color: #bfc9d3;
-}
-
-.mandatory {
-    font-size: 13px;
-}
-
-.CheckBoxList {
-    max-height: 200px;
-    overflow-y: auto;
-    border: 1px solid #ddd;
-    padding: 5px 10px;
-    margin: 3px 0px 15px 0px;
-}
-
-    .CheckBoxList table tr td {
-        padding: 5px 0px;
+    .upgradDataGrid tr:not(.PagerGrid) td[colspan] {
+        text-align: center;
+        color: #8a93a3 !important;
+        padding: 10px 8px !important;
+        white-space: normal;
     }
 
-        .CheckBoxList table tr td input {
-            width: 16px;
-            height: 16px;
-            margin: 0px;
-            padding: 0px;
-            display: inline;
-        }
+    .upgradDataGrid .PagerGrid td,
+    .upgradDataGrid tr.PagerGrid td {
+        padding: 4px 2px !important;
+        border-bottom: 0 !important;
+    }
 
-        .CheckBoxList table tr td label {
-            font-weight: 500;
-            font-weight: 500;
-            color: #495057;
-            font-size: 12px;
-            line-height: 15px;
-            margin: 0px;
-            padding: 0px 10px 0px 4px;
-            vertical-align: top;
-            white-space: normal;
-            display: inline;
-        }
+/* End Grid */
+.CheckBoxList table tr td {
+    padding: 5px 0px;
+}
+
+    .CheckBoxList table tr td input {
+        width: 16px;
+        height: 16px;
+        margin: 0px;
+        padding: 0px;
+        display: inline;
+    }
+
+    .CheckBoxList table tr td label {
+        font-weight: 500;
+        font-weight: 500;
+        color: #495057;
+        font-size: 12px;
+        line-height: 15px;
+        margin: 0px;
+        padding: 0px 10px 0px 4px;
+        vertical-align: top;
+        white-space: normal;
+        display: inline;
+    }
 
 .checkAll input {
     margin: 0px 4px 0px 0px;
@@ -1612,8 +1686,8 @@ body {
 
 .formCalndIcon {
     position: absolute;
-    top: 22px;
-    right: 22px;
+    top: 27px;
+    right: 32px;
     z-index: 1;
 }
 
@@ -2984,7 +3058,7 @@ body {
 .mst-panel-header-left {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 8px;
 }
 
 .mst-panel-icon {

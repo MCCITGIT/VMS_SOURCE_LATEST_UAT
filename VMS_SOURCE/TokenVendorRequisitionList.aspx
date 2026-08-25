@@ -74,7 +74,7 @@
                     <div class="form-group">
                         <label class="form-control-label">From Date:</label>
                         <asp:TextBox ID="txtFromDate" CssClass="form-control" runat="server" ReadOnly="true" MaxLength="10"></asp:TextBox>
-                        <a href="javascript:cal1.select(document.forms[0].txtFromDate,'RequisitionFromDate','dd/MM/yyyy');">
+                        <a class="formCalndIcon" href="javascript:cal1.select(document.forms[0].txtFromDate,'RequisitionFromDate','dd/MM/yyyy');">
                             <img src="images/date_icon.gif" id="RequisitionFromDate" alt="Calender" style="border: 0; margin-top: -4px; position: absolute; margin-left: 5px" />
                         </a>
                     </div>
@@ -83,7 +83,7 @@
                     <div class="form-group">
                         <label class="form-control-label">To Date:</label>
                         <asp:TextBox ID="txtTodate" CssClass="form-control" runat="server" ReadOnly="true" MaxLength="10"></asp:TextBox>
-                        <a href="javascript:cal1.select(document.forms[0].txtTodate,'RequisitionToDate','dd/MM/yyyy');">
+                        <a class="formCalndIcon" href="javascript:cal1.select(document.forms[0].txtTodate,'RequisitionToDate','dd/MM/yyyy');">
                             <img src="images/date_icon.gif" id="RequisitionToDate" alt="Calender" style="border: 0; margin-top: -4px; position: absolute; margin-left: 5px" />
                         </a>
                     </div>
