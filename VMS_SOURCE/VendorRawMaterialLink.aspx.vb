@@ -175,7 +175,7 @@ Partial Class VendorRawMaterialLink
 
         gvVendorRawMat.EditIndex = -1
         BindRawMatGrid()
-        txtVendorSearch.Text = String.Empty
+        ' txtVendorSearch.Text = String.Empty
         txtSearchText.Text = String.Empty
         txtrawmatid.Value = String.Empty
         lblErrorMessage.Text = ""

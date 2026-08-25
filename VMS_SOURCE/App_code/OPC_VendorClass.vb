@@ -941,6 +941,25 @@ Public Class OPC_VendorClass
         Return PrjectList
 
     End Function
+    Function GetRawMaterial_Requesteditt(ByVal vendor_id As String, ByVal rawmat_vendorcode As String) As DataSet
+        Dim DS As System.Data.DataSet
+        Dim sqlParams(1) As SqlParameter
+
+        sqlParams(0) = New SqlParameter()
+        sqlParams(0).ParameterName = "@vendor_id"
+        sqlParams(0).DbType = DbType.String
+        sqlParams(0).Direction = Data.ParameterDirection.Input
+        sqlParams(0).Value = vendor_id
+
+        sqlParams(1) = New SqlParameter()
+        sqlParams(1).ParameterName = "@rawmat_vendorcode"
+        sqlParams(1).DbType = DbType.String
+        sqlParams(1).Direction = Data.ParameterDirection.Input
+        sqlParams(1).Value = rawmat_vendorcode
+
+        DS = DBFactory.GetHelper().ExecuteDataSet("[dbo].[getrawmaterial_vendorlink_data]", Data.CommandType.StoredProcedure, sqlParams)
+        Return DS
+    End Function
 #End Region
 #Region "Receipt Raw Material"
     Function GetRawMaterialReceiptList(ByVal rmvendorcode As String, ByVal status As String) As DataSet

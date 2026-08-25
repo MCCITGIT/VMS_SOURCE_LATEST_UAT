@@ -53,13 +53,13 @@
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label class="form-control-label">Vendor Name:</label>
-                                <asp:DropDownList ID="ddlUnit" runat="server" CssClass="form-control select2"></asp:DropDownList>
+                                <label class="form-control-label">Vendor Name:<span id="Span1" class="mandatory">*</span></label>
+                                <asp:DropDownList ID="ddlUnit" ClientIDMode="Static" runat="server" CssClass="form-control select2"></asp:DropDownList>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label class="form-control-label">RM Vendor:<span id="Span" class="mandatory">*</span></label>
+                                <label class="form-control-label">RM Vendor:<span id="Span2" class="mandatory">*</span></label>
                                 <asp:DropDownList ID="ddlVendor" ClientIDMode="Static" CssClass="form-control select2" runat="server" AutoPostBack="true" OnSelectedIndexChanged="ddlVendor_SelectedIndexChanged"></asp:DropDownList>
                             </div>
                         </div>
@@ -67,7 +67,7 @@
                             <div class="form-group rm-requisition-dtls-action">
                                 <label class="form-control-label">&nbsp;</label>
                                 <div class="rm-filter-actions">
-                                    <asp:LinkButton CssClass="btn btn-primary btn-sm rm-btn-icon" ID="imgbtnSearch" runat="server" ClientIDMode="Static" OnClick="imgbtnSearch_Click" ToolTip="Search"><i class="fas fa-search"></i></asp:LinkButton>
+                                    <asp:LinkButton CssClass="btn btn-primary btn-sm rm-btn-icon" ID="imgbtnSearch" runat="server" ClientIDMode="Static" OnClick="imgbtnSearch_Click" OnClientClick="return validateRawMaterialRequisitionSearch();" ToolTip="Search"><i class="fas fa-search"></i></asp:LinkButton>
                                 </div>
                             </div>
                         </div>
