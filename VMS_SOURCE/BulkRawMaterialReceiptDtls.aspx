@@ -92,6 +92,18 @@
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
+                                <label class="form-control-label">Courier Name:</label>
+                                <asp:TextBox ID="txtcouriernm" ClientIDMode="Static" CssClass="form-control" runat="server" ReadOnly="true"></asp:TextBox>                               
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-control-label">Courier Date:</label>
+                                <asp:TextBox ID="txtcourierDT" ClientIDMode="Static" CssClass="form-control" MaxLength="10" runat="server" placeholder="dd/mm/yyyy" Enabled="false"></asp:TextBox>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
                                 <label class="form-control-label">Despatch Date:</label>
                                 <asp:TextBox ID="txtDOJ" ClientIDMode="Static" CssClass="form-control" MaxLength="10" runat="server" placeholder="dd/mm/yyyy" Enabled="false"></asp:TextBox>
                             </div>
@@ -106,6 +118,12 @@
                             <div class="form-group">
                                 <label class="form-control-label">Invoice Date:</label>
                                 <asp:TextBox ID="txtinvdate" ClientIDMode="Static" CssClass="form-control" MaxLength="10" runat="server" placeholder="dd/mm/yyyy" Enabled="false"></asp:TextBox>
+                            </div>
+                        </div>
+                         <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-control-label">Transporter No:</label>
+                                <asp:TextBox ID="txttransno" ClientIDMode="Static" CssClass="form-control" runat="server" Enabled="false"></asp:TextBox>
                             </div>
                         </div>
                         <div class="col-md-4">

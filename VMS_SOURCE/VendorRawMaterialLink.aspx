@@ -59,18 +59,39 @@
                 var value = e.get_value();
                 var text = e.get_text();
                 document.getElementById('<%=hdnVendorCode.ClientID%>').value = value;
-                document.getElementById('<%=txtVendorSearch.ClientID%>').value = text + " (" + value + ")";
-                sender.get_element().value = text + " (" + value + ")";
+                <%-- document.getElementById('<%=txtVendorSearch.ClientID%>').value = text + " (" + value + ")";
+                sender.get_element().value = text + " (" + value + ")";--%>
+                document.getElementById('<%=txtVendorSearch.ClientID%>').value = text;
+                sender.get_element().value = text;
+
+                setProductSearchState(true);
             }
 
             function clearProductSelection() {
                 document.getElementById('<%=hdnVendorCode.ClientID%>').value = '';
+               <%-- document.getElementById('<%=txtVendorSearch.ClientID%>').value = '';--%>
             }
 
             function resetProductField() {
                 document.getElementById('<%=txtVendorSearch.ClientID%>').value = '';
                 document.getElementById('<%=hdnVendorCode.ClientID%>').value = '';
             }
+            function setProductSearchState(isLocked) {
+                var txtProduct = document.getElementById('txtVendorSearch');
+                var btnReset = document.getElementById('btnVendor');
+
+                if (btnReset) {
+                    btnReset.disabled = !!isLocked;
+                }
+
+                if (txtProduct && isLocked) {
+                    txtProduct.setAttribute('readonly', 'readonly');
+                }
+            }
+            function resetRawmatField() {
+                document.getElementById('<%=txtSearchText.ClientID%>').value = '';
+
+             }
         </script>
 
         <div class="breadcrumbs">
@@ -109,9 +130,9 @@
                                 <div class="form-group">
                                     <label class="form-control-label">Vendor:</label>
                                     <div class="input-group product-search-group">
-                                        <asp:TextBox ID="txtVendorSearch" ClientIDMode="Static" CssClass="form-control" TabIndex="2" runat="server" AutoComplete="Off" Placeholder="Enter Vendor" onkeyup="clearProductSelection();"></asp:TextBox>
+                                        <asp:TextBox ID="txtVendorSearch" ClientIDMode="Static" class="form-control" runat="server" AutoComplete="Off" onkeyup="clearProductSelection();" Placeholder="Enter Vendor"></asp:TextBox>
                                         <div class="input-group-append">
-                                            <button type="button" class="btn btn-outline-secondary product-reset-btn" onclick="resetProductField(); return false;" title="Reset SKU"><i class="fas fa-sync-alt fa-xs"></i></button>
+                                            <button type="button" id="btnVendor" class="btn btn-outline-secondary product-reset-btn" onclick="resetProductField(); return false;" title="Reset Vendor"><i class="fas fa-sync-alt fa-xs"></i></button>
                                         </div>
                                     </div>
                                     <asp:HiddenField ID="hdnVendorCode" ClientIDMode="Static" runat="server" />
@@ -135,7 +156,7 @@
                                     <div class="input-group product-search-group">
                                         <asp:TextBox ID="txtSearchText" ClientIDMode="Static" class="form-control" runat="server" AutoComplete="Off" onkeyup="clearRawMaterialSelection();" Placeholder="Enter Here"></asp:TextBox>
                                         <div class="input-group-append">
-                                            <button type="button" class="btn btn-outline-secondary product-reset-btn" onclick="resetProductField(); return false;" title="Reset SKU"><i class="fas fa-sync-alt fa-xs"></i></button>
+                                            <button type="button" class="btn btn-outline-secondary product-reset-btn" onclick="resetRawmatField(); return false;" title="Reset SKU"><i class="fas fa-sync-alt fa-xs"></i></button>
                                         </div>
                                     </div>
                                     <asp:HiddenField ID="txtrawmatid" ClientIDMode="Static" runat="server" />
