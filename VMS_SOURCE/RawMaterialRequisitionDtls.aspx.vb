@@ -21,6 +21,7 @@ Partial Class RawMaterialRequisitionDtls
         CheckLogin()
         If (Not IsPostBack) Then
             btnSubmit.Attributes.Add("onclick", "return validateRawMaterialRequisitionSubmit();")
+            imgbtnSearch.Attributes.Add("onclick", "return validateRawMaterialRequisitionSearch();")
             PopulateUnit()
             PopulateVendor()
 
@@ -55,7 +56,8 @@ Partial Class RawMaterialRequisitionDtls
     Private Sub BindData()
         Dim obj As New OPC_VendorClass()
         Dim ds As New DataSet()
-        ds = obj.GetVendorRawMatEditList(ddlVendor.SelectedValue.ToString())
+        'ds = obj.GetVendorRawMatEditList(ddlVendor.SelectedValue.ToString())
+        ds = obj.GetRawMaterial_Requesteditt(ddlUnit.SelectedValue, ddlVendor.SelectedValue.ToString())
         If (Not (ds Is Nothing) AndAlso ds.Tables.Count > 0) Then
             If (Not (ds.Tables(0) Is Nothing) AndAlso ds.Tables(0).Rows.Count > 0) Then
                 gvVendorRawMat.DataSource = ds
@@ -146,6 +148,18 @@ Partial Class RawMaterialRequisitionDtls
 #End Region
 
     Protected Sub imgbtnSearch_Click(sender As Object, e As EventArgs)
+        If ddlUnit.SelectedIndex <= 0 OrElse String.IsNullOrWhiteSpace(ddlUnit.SelectedValue) Then
+            lblErrorMessage.Text = ""
+            RmActionPopup.ShowError(Me, "Please select Vendor Name.")
+            Return
+        End If
+
+        If ddlVendor.SelectedIndex <= 0 OrElse String.IsNullOrWhiteSpace(ddlVendor.SelectedValue) Then
+            lblErrorMessage.Text = ""
+            RmActionPopup.ShowError(Me, "Please select RM Vendor.")
+            Return
+        End If
+
         BindData()
     End Sub
 
