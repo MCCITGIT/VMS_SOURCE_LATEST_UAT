@@ -97,6 +97,8 @@ Public Class Constant
         Public Const LRDoc = "LRDoc"
         Public Const InvoiceDoc = "InvoiceDoc"
 
+        Public Const userDept = "SYS ADMIN"
+
     End Class
 
     Public Class SessionKeys

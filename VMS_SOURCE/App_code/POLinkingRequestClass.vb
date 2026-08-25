@@ -546,5 +546,45 @@ Public Class POLinkingRequestClass
             Throw ex
         End Try
     End Function
+
+    Public Function GetRmConsumedDetails(ByVal userId As String) As DataSet
+        Try
+            Dim DS As DataSet
+            Dim sqlParams(0) As SqlParameter
+
+            sqlParams(0) = New SqlParameter()
+            sqlParams(0).ParameterName = "@user_id"
+            sqlParams(0).DbType = DbType.String
+            sqlParams(0).Direction = ParameterDirection.Input
+            sqlParams(0).Value = If(String.IsNullOrEmpty(userId), DBNull.Value, CObj(userId))
+
+            DS = DBFactory.GetHelper().ExecuteDataSet("[dbo].[opc_rm_consumed_dtls]", CommandType.StoredProcedure, sqlParams)
+
+            Return DS
+
+        Catch ex As Exception
+            Throw
+        End Try
+    End Function
+
+    Public Function GetPendingDispatchData(ByVal userId As String) As DataSet
+        Try
+            Dim DS As DataSet
+            Dim sqlParams(0) As SqlParameter
+
+            sqlParams(0) = New SqlParameter()
+            sqlParams(0).ParameterName = "@user_id"
+            sqlParams(0).DbType = DbType.String
+            sqlParams(0).Direction = ParameterDirection.Input
+            sqlParams(0).Value = If(String.IsNullOrEmpty(userId), DBNull.Value, CObj(userId))
+
+            DS = DBFactory.GetHelper().ExecuteDataSet("[dbo].[opc_get_rm_pending_transit_list]", CommandType.StoredProcedure, sqlParams)
+
+            Return DS
+
+        Catch ex As Exception
+            Throw
+        End Try
+    End Function
 #End Region
 End Class
