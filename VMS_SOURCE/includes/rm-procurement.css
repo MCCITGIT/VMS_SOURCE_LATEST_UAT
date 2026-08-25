@@ -1,46 +1,5 @@
-/* RAW MATERIAL PROCUREMENT - shared UI (scoped, no logic impact) */
-
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
-
-body:has(.rm-module) .contentMainBody {
-    background: #f4efe8 !important;
-}
-
-body:has(.rm-module) .contentMainBody,
-.rm-module,
-.rm-module input,
-.rm-module select,
-.rm-module textarea,
-.rm-module button,
-.rm-module label,
-.rm-module table {
-    font-family: "Inter", Arial, Helvetica, sans-serif;
-}
-
-.rm-module {
-    color: #1f2937;
-    animation: rm-fade-in-up 0.38s ease;
-}
-
-@keyframes rm-fade-in-up {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-    to {
-        opacity: 1;
-        transform: none;
-    }
-}
-
-@keyframes rm-pop {
-    0% { transform: scale(0.72); }
-    70% { transform: scale(1.08); }
-    100% { transform: scale(1); }
-}
-
 /* Header / breadcrumbs */
-.rm-module .breadcrumbs,
+/*.rm-module .breadcrumbs,
 .standalone-breadcrumbs {
     background: #ffffff !important;
     border: 1px solid #eee8de !important;
@@ -134,9 +93,9 @@ body:has(.rm-module) .contentMainBody,
 .standalone-breadcrumbs .rm-crumb-link:hover {
     color: #2f6fed;
     text-decoration: none;
-}
+}*/
 
-.rm-module .pageTitle,
+/*.rm-module .pageTitle,
 .standalone-breadcrumbs .pageTitle {
     color: #111827 !important;
     font-size: 22px !important;
@@ -146,9 +105,9 @@ body:has(.rm-module) .contentMainBody,
     white-space: normal !important;
     overflow: visible;
     text-overflow: unset;
-}
+}*/
 
-.rm-module .pageSubTitle,
+/*.rm-module .pageSubTitle,
 .standalone-breadcrumbs .pageSubTitle {
     color: #8a93a3 !important;
     font-size: 13px !important;
@@ -165,7 +124,7 @@ body:has(.rm-module) .contentMainBody,
     flex-wrap: wrap;
     justify-content: flex-end;
     gap: 10px;
-}
+}*/
 
 /* Cards */
 .rm-module .card {
@@ -484,15 +443,15 @@ body:has(.rm-module) .contentMainBody,
 }
 
 /* Grids */
-.rm-module .upgradDataGrid,
+/*.rm-module .upgradDataGrid,
 .rm-module table.upgradDataGrid {
     width: 100% !important;
     border: 0 !important;
     background: transparent !important;
     color: #1f2937 !important;
-}
+}*/
 
-.rm-module .upgradDataGrid th,
+/*.rm-module .upgradDataGrid th,
 .rm-module .upgradDataGrid td {
     border: 0 !important;
     border-bottom: 1px solid #eef1f5 !important;
@@ -524,7 +483,7 @@ body:has(.rm-module) .contentMainBody,
     text-align: center;
     color: #8a93a3 !important;
     padding: 24px 10px !important;
-}
+}*/
 
 /* Dense list grids: fit all columns in one view, no horizontal scroll */
 .rm-module .rm-fit-grid.table-responsive,
@@ -1025,16 +984,16 @@ body:has(.rm-module) .bootstrapModal .modal-title {
     min-height: calc(100vh - 6.5rem);
 }
 
-.rm-compact .breadcrumbs {
+/*.rm-compact .breadcrumbs {
     padding: 10px 16px !important;
     min-height: 56px;
     margin-bottom: 10px !important;
     border-radius: 14px !important;
     position: relative;
     z-index: 1;
-}
+}*/
 
-.rm-compact .breadcrumbs .leftFung > a:not(.rm-crumb-link) {
+/*.rm-compact .breadcrumbs .leftFung > a:not(.rm-crumb-link) {
     width: 36px;
     height: 36px;
     min-width: 36px;
@@ -1042,15 +1001,15 @@ body:has(.rm-module) .bootstrapModal .modal-title {
     margin-right: 10px;
     border-radius: 10px !important;
     font-size: 15px;
-}
+}*/
 
-.rm-compact .pageTitle {
+/*.rm-compact .pageTitle {
     font-size: 18px !important;
 }
 
 .rm-compact .pageSubTitle {
     font-size: 12px !important;
-}
+}*/
 
 .rm-compact .card {
     margin-bottom: 10px !important;
@@ -1209,6 +1168,48 @@ body:has(.rm-module) .bootstrapModal .modal-title {
     display: inline-flex;
     align-items: center;
     justify-content: center;
+}
+
+/* Keep Brand / Vendor / Product filter controls the same height as Product */
+.rm-formulation-list .rm-filter-fields .form-control,
+.rm-formulation-list .rm-filter-fields .product-search-group,
+.rm-formulation-list .rm-filter-fields .product-search-group .form-control,
+.rm-formulation-list .rm-filter-fields .product-search-group .product-reset-btn {
+    height: 36px;
+    min-height: 36px;
+}
+
+.rm-formulation-list .rm-filter-fields .product-search-group {
+    display: flex;
+    align-items: stretch;
+}
+
+.rm-formulation-list .rm-filter-fields .product-search-group .product-reset-btn {
+    width: 36px;
+    min-width: 36px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.rm-formulation-list .rm-filter-fields .select2-container {
+    width: 100% !important;
+}
+
+body:has(.rm-formulation-list) .rm-formulation-list .select2-container--default .select2-selection--single {
+    height: 36px !important;
+    min-height: 36px !important;
+}
+
+body:has(.rm-formulation-list) .rm-formulation-list .select2-container--default .select2-selection--single .select2-selection__rendered {
+    line-height: 34px !important;
+    height: 34px !important;
+    padding-left: 12px !important;
+}
+
+body:has(.rm-formulation-list) .rm-formulation-list .select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 34px !important;
 }
 
 .rm-vendor-mstr-list .form-btn-mt .rm-filter-actions {
