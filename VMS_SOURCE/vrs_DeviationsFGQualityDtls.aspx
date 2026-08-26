@@ -197,6 +197,7 @@
                     <div class="form-group">
                         <asp:UpdatePanel runat="server" ID="UpdatePanel4">
                             <ContentTemplate>
+                                 <asp:HiddenField ID="hdnFinYear"  runat="server" />
                                 <label class="form-control-label">Quarter:</label>
                                 <asp:DropDownList ID="ddlQuarter" class="form-control form-control-sm select2" runat="server" AutoPostBack="true" />
                             </ContentTemplate>

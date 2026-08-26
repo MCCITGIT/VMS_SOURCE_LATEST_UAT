@@ -24,6 +24,7 @@ Partial Class vrs_legal_score
             div2.Visible = True
             PopulateVendor()
             Populate_Quarter()
+            PopulateFinYear()
             ' btnSubmit.Visible = False
             btnConSub.Visible = False
             If userInfo.userGroupCodeEntity.Equals("UNIT") Then
@@ -367,11 +368,11 @@ Partial Class vrs_legal_score
             '        count += 1
             '    Else
             row.BackColor = System.Drawing.Color.White
-                    ' If file is uploaded, store the file name in the label
-                    If FileUpload1.HasFile Then
-                        lblFileName.Text = FileUpload1.PostedFile.FileName
-                        lblFileName.Visible = True
-                    End If
+            ' If file is uploaded, store the file name in the label
+            If FileUpload1.HasFile Then
+                lblFileName.Text = FileUpload1.PostedFile.FileName
+                lblFileName.Visible = True
+            End If
             '    End If
             'End If
         Next
@@ -397,41 +398,41 @@ Partial Class vrs_legal_score
                 Dim parameterId As String = CType(row.FindControl("hdnParameterCode"), HiddenField).Value
                 Dim parametershortname As String = CType(row.FindControl("hdnparamshortname"), HiddenField).Value
                 Dim obligation As String = CType(row.FindControl("lblObligation"), Label).Text
-                    Dim availability As String = CType(row.FindControl("lblAvailability"), Label).Text
-                    Dim targetScore As Integer = Convert.ToDecimal(CType(row.FindControl("lblTargetScore"), Label).Text)
-                    Dim obtainedScore As Integer = Convert.ToDecimal(txtObtainedScore.Text)
-                    Dim validFromDate As String = txtValidFromDate.Text
-                    Dim validDate As String = txtValidDate.Text
-                    Dim issueAuthority As String = txtIssueAuthority.Text
+                Dim availability As String = CType(row.FindControl("lblAvailability"), Label).Text
+                Dim targetScore As Integer = Convert.ToDecimal(CType(row.FindControl("lblTargetScore"), Label).Text)
+                Dim obtainedScore As Integer = Convert.ToDecimal(txtObtainedScore.Text)
+                Dim validFromDate As String = txtValidFromDate.Text
+                Dim validDate As String = txtValidDate.Text
+                Dim issueAuthority As String = txtIssueAuthority.Text
 
 
-                    ' Define the folder and file paths for saving the file
-                    Dim DOC_ABS_PATH As String = ConfigurationManager.AppSettings("UPLOAD_DOCS_FOLDER_ABS_PATH")
-                    Dim FolderPath As String = "Legal_Score/"
-                    Dim FolderPath2 As String = "Legal_Score/" & DateTime.UtcNow.ToString("yyyyMMdd") & "_" & Guid.NewGuid().ToString()
-                    Dim fullFolderPath As String = Path.Combine(DOC_ABS_PATH, FolderPath)
+                ' Define the folder and file paths for saving the file
+                Dim DOC_ABS_PATH As String = ConfigurationManager.AppSettings("UPLOAD_DOCS_FOLDER_ABS_PATH")
+                Dim FolderPath As String = "Legal_Score/"
+                Dim FolderPath2 As String = "Legal_Score/" & DateTime.UtcNow.ToString("yyyyMMdd") & "_" & Guid.NewGuid().ToString()
+                Dim fullFolderPath As String = Path.Combine(DOC_ABS_PATH, FolderPath)
 
-                    ' Create folder if it doesn't exist
-                    If Not Directory.Exists(fullFolderPath) Then
-                        Directory.CreateDirectory(fullFolderPath)
-                    End If
+                ' Create folder if it doesn't exist
+                If Not Directory.Exists(fullFolderPath) Then
+                    Directory.CreateDirectory(fullFolderPath)
+                End If
 
-                    Dim fileLocation As String = ""
-                    ' If file is uploaded, save it
-                    If FileUpload1.HasFile Then
+                Dim fileLocation As String = ""
+                ' If file is uploaded, save it
+                If FileUpload1.HasFile Then
                     Dim FileName As String = "Legal_Score" & DateTime.UtcNow.ToString("yyyyMMddss") & "_" & parametershortname & Path.GetExtension(FileUpload1.PostedFile.FileName)
                     fileLocation = Path.Combine(FolderPath, FileName)
-                        Dim fullFilePath As String = Path.Combine(fullFolderPath, FileName)
-                        FileUpload1.SaveAs(fullFilePath)
-                    ElseIf Not String.IsNullOrEmpty(lblFileName.Text) Then
+                    Dim fullFilePath As String = Path.Combine(fullFolderPath, FileName)
+                    FileUpload1.SaveAs(fullFilePath)
+                ElseIf Not String.IsNullOrEmpty(lblFileName.Text) Then
                     Dim FileName As String = "Legal_Score" & DateTime.UtcNow.ToString("yyyyMMddss") & "_" & parametershortname & Path.GetExtension(lblFileName.Text)
                     fileLocation = Path.Combine(FolderPath, FileName)
-                        Dim fullFilePath As String = Path.Combine(fullFolderPath, FileName)
+                    Dim fullFilePath As String = Path.Combine(fullFolderPath, FileName)
                     FileUpload1.SaveAs(fullFilePath)
                 End If
 
-                    ' Add values to DataTable
-                    dt.Rows.Add(parameterId, obligation, availability, targetScore, obtainedScore, fileLocation, validFromDate, validDate, issueAuthority)
+                ' Add values to DataTable
+                dt.Rows.Add(parameterId, obligation, availability, targetScore, obtainedScore, fileLocation, validFromDate, validDate, issueAuthority)
                 '  End If
             Next
 
@@ -528,17 +529,17 @@ Partial Class vrs_legal_score
 
                 ' Collect data from each row
                 Dim parameterId As String = CType(row.FindControl("hdnParameterCode"), HiddenField).Value
-                    Dim obligation As String = CType(row.FindControl("lblObligation"), Label).Text
-                    Dim availability As String = CType(row.FindControl("lblAvailability"), Label).Text
-                    Dim targetScore As Integer = Convert.ToDecimal(CType(row.FindControl("lblTargetScore"), Label).Text)
-                    Dim obtainedScore As Integer = Convert.ToDecimal(txtObtainedScore.Text)
-                    Dim validFromDate As String = txtValidFromDate.Text
-                    Dim validDate As String = txtValidDate.Text
-                    Dim issueAuthority As String = txtIssueAuthority.Text
+                Dim obligation As String = CType(row.FindControl("lblObligation"), Label).Text
+                Dim availability As String = CType(row.FindControl("lblAvailability"), Label).Text
+                Dim targetScore As Integer = Convert.ToDecimal(CType(row.FindControl("lblTargetScore"), Label).Text)
+                Dim obtainedScore As Integer = Convert.ToDecimal(txtObtainedScore.Text)
+                Dim validFromDate As String = txtValidFromDate.Text
+                Dim validDate As String = txtValidDate.Text
+                Dim issueAuthority As String = txtIssueAuthority.Text
 
-                    Dim fileLocation As String = CType(row.FindControl("hdnFilePath"), HiddenField).Value
-                    ' Add values to DataTable
-                    dt.Rows.Add(parameterId, obligation, availability, targetScore, obtainedScore, fileLocation, validFromDate, validDate, issueAuthority)
+                Dim fileLocation As String = CType(row.FindControl("hdnFilePath"), HiddenField).Value
+                ' Add values to DataTable
+                dt.Rows.Add(parameterId, obligation, availability, targetScore, obtainedScore, fileLocation, validFromDate, validDate, issueAuthority)
 
             Next
 
