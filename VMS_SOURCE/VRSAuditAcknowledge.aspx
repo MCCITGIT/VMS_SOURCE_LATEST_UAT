@@ -241,7 +241,7 @@
                         <div class="col-md-12">
                             <asp:UpdatePanel ID="UpdatePanel1" runat="server">
                                 <ContentTemplate>
-                                    <div style="max-height: 300px; overflow-y: auto;">
+                                    <div style="max-height: 260px; overflow-y: auto;">
                                         <asp:GridView ID="gvAuditList" runat="server" AutoGenerateColumns="False" EmptyDataText="No records found" CssClass="upgradDataGrid m-0" CellSpacing="0" CellPadding="0">
                                             <RowStyle CssClass="tlrowlight" />
                                             <SelectedRowStyle />

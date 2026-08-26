@@ -119,6 +119,14 @@
                 </div>
             </div>
             <div class="card" runat="server" id="div2" visible="false">
+                <div class="mst-panel-header">
+                    <div class="mst-panel-header-left">
+                        <span class="mst-panel-icon"><i class="fas fa-list"></i></span>
+                        <div>
+                            <h5 class="mst-panel-title">Legal Score Approval</h5>
+                        </div>
+                    </div>
+                </div>
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-12">
