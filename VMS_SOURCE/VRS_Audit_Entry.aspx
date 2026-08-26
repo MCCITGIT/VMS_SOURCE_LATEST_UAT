@@ -190,6 +190,16 @@
             <div class="card">
                 <div class="card-body">
                     <div class="row">
+                         <div class="col-md-3">
+                            <div class="form-group">
+                                <label class="form-control-label">Fin Year:</label>
+                                <asp:UpdatePanel runat="server" ID="UpdatePanel5">
+                                    <ContentTemplate>
+                                        <asp:DropDownList ID="ddlFinYear" class="form-control form-control-sm select2" runat="server" AutoPostBack="True" OnSelectedIndexChanged="ddlFinYear_SelectedIndexChanged"/>
+                                    </ContentTemplate>
+                                </asp:UpdatePanel>
+                            </div>
+                        </div>
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label class="form-control-label">Quarter:</label>

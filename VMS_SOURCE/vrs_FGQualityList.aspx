@@ -23,7 +23,17 @@
     <div class="card">
         <div class="card-body">
             <div class="row">
-                <div class="col-md-3">
+                <div class="col-md-2">
+                            <div class="form-group">
+                                <asp:UpdatePanel runat="server" ID="UpdatePanel6">
+                                    <ContentTemplate>
+                                        <label class="form-control-label">Fin Year:</label>
+                                        <asp:DropDownList ID="ddlFinYear" class="form-control form-control-sm select2" runat="server" OnSelectedIndexChanged="ddlFinYear_SelectedIndexChanged" AutoPostBack="true" />
+                                    </ContentTemplate>
+                                </asp:UpdatePanel>
+                            </div>
+                        </div>
+                <div class="col-md-2">
                     <div class="form-group">
                         <asp:UpdatePanel runat="server" ID="UpdatePanel4">
                             <ContentTemplate>

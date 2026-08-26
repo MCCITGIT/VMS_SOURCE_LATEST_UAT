@@ -121,10 +121,10 @@ Partial Class DeviationsFGQuality
             Response.Redirect("~/Login.aspx")
         End If
 
-        Dim obj As New VRSAuditClass()
+        Dim obj As New vrs_legalscore_class()
         Dim ds As DataSet
         Try
-            ds = obj.GetQuarterDetails(userInfo.userIDEntity)
+            ds = obj.Get_QuarterList_vr1(userInfo.userIDEntity, hdnFinYear.Value)
             If Not (ds Is Nothing) Then
                 If Not (ds.Tables(0).Rows.Count = 0) Then
                     ddlQuarter.DataSource = ds
