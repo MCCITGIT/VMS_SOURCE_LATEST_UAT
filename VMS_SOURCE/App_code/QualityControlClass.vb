@@ -99,7 +99,7 @@ Public Class QualityControlClass
 #Region "Brand Product Linking"
     Function Getbrand() As DataSet
         Dim DS As System.Data.DataSet
-        DS = DBFactory.GetHelper().ExecuteDataSet("[dbo].[tc_get_brand_master_list]", Data.CommandType.StoredProcedure)
+        DS = DBFactory.GetHelper().ExecuteDataSet("[VMS].[dbo].[tc_get_brand_master_list]", Data.CommandType.StoredProcedure)
         Return DS
     End Function
     Function GetProduct(ByVal brandid As String) As DataSet
@@ -1308,4 +1308,533 @@ Public Class QualityControlClass
         DS = DBFactory.GetHelper().ExecuteDataSet("[dbo].[get_brandwise_productlist]", Data.CommandType.StoredProcedure, sqlParams)
         Return DS
     End Function
+
+#Region "Chemical Master"
+    Function GetChemicalMasterList() As DataSet
+
+        Dim DS As System.Data.DataSet
+
+        DS = DBFactory.GetHelper().ExecuteDataSet("[dbo].[tc_get_chemical_master_list]", Data.CommandType.StoredProcedure)
+        Return DS
+    End Function
+
+
+
+    Function InsertUpdateChemicalMasterDtls(ByVal chemicalName As String, ByVal userid As String, ByVal trantype As Int32, ByVal chemicalid As Int32) As Integer
+        Dim sqlConn As SqlConnection = Nothing
+        sqlConn = DBFactory.GetHelper.OpenConnection()
+        'sqlTrans = sqlConn.BeginTransaction
+        Dim MsgID As Integer
+
+        Dim sqlParams(4) As SqlParameter
+        Try
+            sqlParams(0) = New SqlParameter()
+            sqlParams(0).ParameterName = "@tc_chemical_name"
+            sqlParams(0).SqlDbType = SqlDbType.VarChar
+            sqlParams(0).Direction = Data.ParameterDirection.Input
+            sqlParams(0).Value = chemicalName
+
+            sqlParams(1) = New SqlParameter()
+            sqlParams(1).ParameterName = "@user_id"
+            sqlParams(1).SqlDbType = SqlDbType.VarChar
+            sqlParams(1).Direction = Data.ParameterDirection.Input
+            sqlParams(1).Value = userid
+
+            sqlParams(2) = New SqlParameter()
+            sqlParams(2).ParameterName = "@trantype"
+            sqlParams(2).SqlDbType = SqlDbType.Int
+            sqlParams(2).Direction = Data.ParameterDirection.Input
+            sqlParams(2).Value = trantype
+
+            sqlParams(3) = New SqlParameter()
+            sqlParams(3).ParameterName = "@tc_chemical_id"
+            sqlParams(3).SqlDbType = SqlDbType.Int
+            sqlParams(3).Direction = Data.ParameterDirection.Input
+            sqlParams(3).Value = chemicalid
+
+            sqlParams(4) = New SqlParameter()
+            sqlParams(4).ParameterName = "@outputCode"
+            sqlParams(4).DbType = DbType.Int64
+            sqlParams(4).Direction = Data.ParameterDirection.Output
+            sqlParams(4).Size = 100
+
+
+
+            Dim sqlCmd As New SqlCommand()
+            sqlCmd.Connection = sqlConn
+            'sqlCmd.Transaction = sqlTrans
+            sqlCmd.CommandType = CommandType.StoredProcedure
+            sqlCmd.CommandText = "[tc_chemical_master_insertupdate]"
+            sqlCmd.Parameters.AddRange(sqlParams)
+            sqlCmd.ExecuteNonQuery()
+            MsgID = CType(sqlParams(4).Value, Integer)
+            'sqlTrans.Commit()
+        Catch ex As Exception
+            'If (sqlTrans IsNot Nothing) Then
+            '    sqlTrans.Rollback()
+            'End If
+            Throw ex
+        Finally
+            If (sqlConn IsNot Nothing) Then
+                sqlConn.Close()
+            End If
+        End Try
+        Return MsgID
+    End Function
+
+    Function GetChemicalMasterById(ByVal Chemicalid As Integer) As DataSet
+
+        Dim DS As System.Data.DataSet
+        Dim sqlParams(0) As SqlParameter
+
+        sqlParams(0) = New SqlParameter()
+        sqlParams(0).ParameterName = "@chemical_id"
+        sqlParams(0).DbType = DbType.Int32
+        sqlParams(0).Direction = Data.ParameterDirection.Input
+        sqlParams(0).Value = Chemicalid
+        DS = DBFactory.GetHelper().ExecuteDataSet("[dbo].[tc_get_Chemical_master_byid]", Data.CommandType.StoredProcedure, sqlParams)
+        Return DS
+    End Function
+#End Region
+
+#Region "Chemical Linking"
+    Function GetChemicalProduct() As DataSet
+        Dim DS As System.Data.DataSet
+
+        DS = DBFactory.GetHelper().ExecuteDataSet("[dbo].[rm_product_list]", Data.CommandType.StoredProcedure)
+        Return DS
+    End Function
+
+    Function GetProductWiseChemical(ByVal productid As String) As DataSet
+
+        Dim DS As System.Data.DataSet
+        Dim sqlParams(0) As SqlParameter
+
+        sqlParams(0) = New SqlParameter()
+        sqlParams(0).ParameterName = "@productid"
+        sqlParams(0).DbType = DbType.String
+        sqlParams(0).Direction = Data.ParameterDirection.Input
+        sqlParams(0).Value = productid
+        DS = DBFactory.GetHelper().ExecuteDataSet("[dbo].[tc_productwise_chemical_list]", Data.CommandType.StoredProcedure, sqlParams)
+        Return DS
+    End Function
+
+    Function InsertChemicalproductLink(ByVal productid As String, ByVal user_id As String, ByVal tbl As DataTable) As Integer
+        Dim sqlConn As SqlConnection = Nothing
+        Dim sqlTrans As SqlTransaction = Nothing
+        Dim numRowsAffected As Integer
+        sqlConn = DBFactory.GetHelper.OpenConnection
+        sqlTrans = sqlConn.BeginTransaction
+
+
+        Dim sqlParams(2) As SqlParameter
+        Try
+
+            sqlParams(0) = New SqlParameter()
+            sqlParams(0).ParameterName = "@productid"
+            sqlParams(0).SqlDbType = SqlDbType.VarChar
+            sqlParams(0).Direction = Data.ParameterDirection.Input
+            sqlParams(0).Value = productid
+
+
+            sqlParams(1) = New SqlParameter()
+            sqlParams(1).ParameterName = "@userid"
+            sqlParams(1).SqlDbType = SqlDbType.VarChar
+            sqlParams(1).Direction = Data.ParameterDirection.Input
+            sqlParams(1).Value = user_id
+
+            sqlParams(2) = New SqlParameter()
+            sqlParams(2).ParameterName = "@tbl"
+            sqlParams(2).Direction = Data.ParameterDirection.Input
+            sqlParams(2).Value = tbl
+
+            Dim sqlCmd As New SqlCommand()
+            sqlCmd.Connection = sqlConn
+            sqlCmd.Transaction = sqlTrans
+            sqlCmd.CommandType = CommandType.StoredProcedure
+            sqlCmd.CommandText = "[dbo].[tc_chemical_product_link_insert]"
+
+            sqlCmd.Parameters.AddRange(sqlParams)
+            numRowsAffected = sqlCmd.ExecuteNonQuery()
+
+            sqlTrans.Commit()
+        Catch ex As Exception
+            If (sqlTrans IsNot Nothing) Then
+                sqlTrans.Rollback()
+            End If
+            Throw ex
+        Finally
+            If (sqlConn IsNot Nothing) Then
+                sqlConn.Close()
+            End If
+        End Try
+        Return numRowsAffected
+    End Function
+
+#End Region
+
+#Region "Supplier Details Upload"
+    Function GetSupplierData() As DataSet
+        Dim DS As System.Data.DataSet
+
+        DS = DBFactory.GetHelper().ExecuteDataSet("[dbo].[rm_get_supplierdetails]", Data.CommandType.StoredProcedure)
+        Return DS
+    End Function
+
+    Function InsertSupplierDetails(ByVal quarter As String, ByVal user_id As String, ByVal tbl As DataTable) As Integer
+        Dim sqlConn As SqlConnection = Nothing
+        Dim sqlTrans As SqlTransaction = Nothing
+        Dim numRowsAffected As Integer
+        sqlConn = DBFactory.GetHelper.OpenConnection
+        sqlTrans = sqlConn.BeginTransaction
+
+
+        Dim sqlParams(2) As SqlParameter
+        Try
+
+            sqlParams(0) = New SqlParameter()
+            sqlParams(0).ParameterName = "@quarter"
+            sqlParams(0).SqlDbType = SqlDbType.VarChar
+            sqlParams(0).Direction = Data.ParameterDirection.Input
+            sqlParams(0).Value = quarter
+
+
+            sqlParams(1) = New SqlParameter()
+            sqlParams(1).ParameterName = "@userid"
+            sqlParams(1).SqlDbType = SqlDbType.VarChar
+            sqlParams(1).Direction = Data.ParameterDirection.Input
+            sqlParams(1).Value = user_id
+
+            sqlParams(2) = New SqlParameter()
+            sqlParams(2).ParameterName = "@tbl"
+            sqlParams(2).Direction = Data.ParameterDirection.Input
+            sqlParams(2).Value = tbl
+
+            Dim sqlCmd As New SqlCommand()
+            sqlCmd.Connection = sqlConn
+            sqlCmd.Transaction = sqlTrans
+            sqlCmd.CommandType = CommandType.StoredProcedure
+            sqlCmd.CommandText = "[dbo].[rm_supplierdeatils_insert]"
+
+            sqlCmd.Parameters.AddRange(sqlParams)
+            numRowsAffected = sqlCmd.ExecuteNonQuery()
+
+            sqlTrans.Commit()
+        Catch ex As Exception
+            If (sqlTrans IsNot Nothing) Then
+                sqlTrans.Rollback()
+            End If
+            Throw ex
+        Finally
+            If (sqlConn IsNot Nothing) Then
+                sqlConn.Close()
+            End If
+        End Try
+        Return numRowsAffected
+    End Function
+
+#End Region
+
+#Region "Allocation Details Upload"
+    Function InsertAllocationDetails(ByVal quarter As String, ByVal user_id As String, ByVal tbl As DataTable) As Integer
+        Dim sqlConn As SqlConnection = Nothing
+        Dim sqlTrans As SqlTransaction = Nothing
+        Dim numRowsAffected As Integer
+        sqlConn = DBFactory.GetHelper.OpenConnection
+        sqlTrans = sqlConn.BeginTransaction
+
+
+        Dim sqlParams(2) As SqlParameter
+        Try
+
+            sqlParams(0) = New SqlParameter()
+            sqlParams(0).ParameterName = "@quarter"
+            sqlParams(0).SqlDbType = SqlDbType.VarChar
+            sqlParams(0).Direction = Data.ParameterDirection.Input
+            sqlParams(0).Value = quarter
+
+
+            sqlParams(1) = New SqlParameter()
+            sqlParams(1).ParameterName = "@userid"
+            sqlParams(1).SqlDbType = SqlDbType.VarChar
+            sqlParams(1).Direction = Data.ParameterDirection.Input
+            sqlParams(1).Value = user_id
+
+            sqlParams(2) = New SqlParameter()
+            sqlParams(2).ParameterName = "@tbl"
+            sqlParams(2).Direction = Data.ParameterDirection.Input
+            sqlParams(2).Value = tbl
+
+            Dim sqlCmd As New SqlCommand()
+            sqlCmd.Connection = sqlConn
+            sqlCmd.Transaction = sqlTrans
+            sqlCmd.CommandType = CommandType.StoredProcedure
+            sqlCmd.CommandText = "[dbo].[rm_allocation_insert]"
+
+            sqlCmd.Parameters.AddRange(sqlParams)
+            numRowsAffected = sqlCmd.ExecuteNonQuery()
+
+            sqlTrans.Commit()
+        Catch ex As Exception
+            If (sqlTrans IsNot Nothing) Then
+                sqlTrans.Rollback()
+            End If
+            Throw ex
+        Finally
+            If (sqlConn IsNot Nothing) Then
+                sqlConn.Close()
+            End If
+        End Try
+        Return numRowsAffected
+    End Function
+#End Region
+
+#Region "Populate Quarter RM"
+    Function Get_QuarterList(ByVal userid As String) As DataSet
+
+        Dim DS As System.Data.DataSet
+        Dim sqlParams(0) As SqlParameter
+
+        sqlParams(0) = New SqlParameter()
+        sqlParams(0).ParameterName = "@user_id"
+        sqlParams(0).DbType = DbType.String
+        sqlParams(0).Direction = Data.ParameterDirection.Input
+        sqlParams(0).Value = userid
+
+        DS = DBFactory.GetHelper().ExecuteDataSet("[dbo].[vrs_RM_Quarter_List]", Data.CommandType.StoredProcedure, sqlParams)
+        Return DS
+    End Function
+#End Region
+
+
+#Region "Supplier Master"
+    Function GetSupplierMasterList() As DataSet
+
+        Dim DS As System.Data.DataSet
+
+        DS = DBFactory.GetHelper().ExecuteDataSet("[dbo].[RM_get_supplierMaster_list]", Data.CommandType.StoredProcedure)
+        Return DS
+    End Function
+
+    Function GetSupplierMasterById(ByVal Chemicalid As Integer) As DataSet
+
+        Dim DS As System.Data.DataSet
+        Dim sqlParams(0) As SqlParameter
+
+        sqlParams(0) = New SqlParameter()
+        sqlParams(0).ParameterName = "@supplier_id"
+        sqlParams(0).DbType = DbType.Int32
+        sqlParams(0).Direction = Data.ParameterDirection.Input
+        sqlParams(0).Value = Chemicalid
+        DS = DBFactory.GetHelper().ExecuteDataSet("[dbo].[rm_get_supplier_master_byid]", Data.CommandType.StoredProcedure, sqlParams)
+        Return DS
+    End Function
+
+    Function InsertUpdateSupplierMasterDtls(ByVal SupplierName As String, ByVal userid As String, ByVal trantype As Int32, ByVal supplierid As Int32) As Integer
+        Dim sqlConn As SqlConnection = Nothing
+        sqlConn = DBFactory.GetHelper.OpenConnection()
+        'sqlTrans = sqlConn.BeginTransaction
+        Dim MsgID As Integer
+
+        Dim sqlParams(4) As SqlParameter
+        Try
+            sqlParams(0) = New SqlParameter()
+            sqlParams(0).ParameterName = "@tc_supplier_name"
+            sqlParams(0).SqlDbType = SqlDbType.VarChar
+            sqlParams(0).Direction = Data.ParameterDirection.Input
+            sqlParams(0).Value = SupplierName
+
+            sqlParams(1) = New SqlParameter()
+            sqlParams(1).ParameterName = "@user_id"
+            sqlParams(1).SqlDbType = SqlDbType.VarChar
+            sqlParams(1).Direction = Data.ParameterDirection.Input
+            sqlParams(1).Value = userid
+
+            sqlParams(2) = New SqlParameter()
+            sqlParams(2).ParameterName = "@trantype"
+            sqlParams(2).SqlDbType = SqlDbType.Int
+            sqlParams(2).Direction = Data.ParameterDirection.Input
+            sqlParams(2).Value = trantype
+
+            sqlParams(3) = New SqlParameter()
+            sqlParams(3).ParameterName = "@tc_supplier_id"
+            sqlParams(3).SqlDbType = SqlDbType.Int
+            sqlParams(3).Direction = Data.ParameterDirection.Input
+            sqlParams(3).Value = supplierid
+
+            sqlParams(4) = New SqlParameter()
+            sqlParams(4).ParameterName = "@outputCode"
+            sqlParams(4).DbType = DbType.Int64
+            sqlParams(4).Direction = Data.ParameterDirection.Output
+            sqlParams(4).Size = 100
+
+
+
+            Dim sqlCmd As New SqlCommand()
+            sqlCmd.Connection = sqlConn
+            'sqlCmd.Transaction = sqlTrans
+            sqlCmd.CommandType = CommandType.StoredProcedure
+            sqlCmd.CommandText = "[rm_supplier_master_insertupdate]"
+            sqlCmd.Parameters.AddRange(sqlParams)
+            sqlCmd.ExecuteNonQuery()
+            MsgID = CType(sqlParams(4).Value, Integer)
+            'sqlTrans.Commit()
+        Catch ex As Exception
+            'If (sqlTrans IsNot Nothing) Then
+            '    sqlTrans.Rollback()
+            'End If
+            Throw ex
+        Finally
+            If (sqlConn IsNot Nothing) Then
+                sqlConn.Close()
+            End If
+        End Try
+        Return MsgID
+    End Function
+
+
+#End Region
+
+#Region "RM Consumption Details"
+
+    Function GetRmConsumtionSupplyProductList(ByVal vendorcode As String, ByVal Keyword As String, ByVal userid As String) As DataSet
+
+        Dim DS As System.Data.DataSet
+        Dim sqlParams(2) As SqlParameter
+
+        sqlParams(0) = New SqlParameter()
+        sqlParams(0).ParameterName = "@vendorid"
+        sqlParams(0).DbType = DbType.String
+        sqlParams(0).Direction = Data.ParameterDirection.Input
+        sqlParams(0).Value = IIf(vendorcode Is "", DBNull.Value, vendorcode)
+
+        sqlParams(1) = New SqlParameter()
+        sqlParams(1).ParameterName = "@productSearch"
+        sqlParams(1).DbType = DbType.String
+        sqlParams(1).Direction = Data.ParameterDirection.Input
+        sqlParams(1).Value = IIf(Keyword Is "", DBNull.Value, Keyword)
+
+        sqlParams(2) = New SqlParameter()
+        sqlParams(2).ParameterName = "@userid"
+        sqlParams(2).DbType = DbType.String
+        sqlParams(2).Direction = Data.ParameterDirection.Input
+        sqlParams(2).Value = userid
+
+        DS = DBFactory.GetHelper().ExecuteDataSet("[dbo].[rm_consumption_supply_product_list]", Data.CommandType.StoredProcedure, sqlParams)
+        Return DS
+    End Function
+
+    Function GetRmConsumtionSupplyProductDetails(ByVal vendorcode As String, ByVal Keyword As String, ByVal userid As String) As DataSet
+
+        Dim DS As System.Data.DataSet
+        Try
+            Dim sqlParams(2) As SqlParameter
+
+            sqlParams(0) = New SqlParameter()
+            sqlParams(0).ParameterName = "@vendorid"
+            sqlParams(0).DbType = DbType.String
+            sqlParams(0).Direction = Data.ParameterDirection.Input
+            sqlParams(0).Value = IIf(vendorcode Is "", DBNull.Value, vendorcode)
+
+            sqlParams(1) = New SqlParameter()
+            sqlParams(1).ParameterName = "@productcode"
+            sqlParams(1).DbType = DbType.String
+            sqlParams(1).Direction = Data.ParameterDirection.Input
+            sqlParams(1).Value = IIf(Keyword Is "", DBNull.Value, Keyword)
+
+            sqlParams(2) = New SqlParameter()
+            sqlParams(2).ParameterName = "@userid"
+            sqlParams(2).DbType = DbType.String
+            sqlParams(2).Direction = Data.ParameterDirection.Input
+            sqlParams(2).Value = userid
+
+            DS = DBFactory.GetHelper().ExecuteDataSet("[dbo].[rm_consumption_supply_product_details]", Data.CommandType.StoredProcedure, sqlParams)
+        Catch ex As Exception
+            Dim msg As String = ex.Message.ToString()
+        End Try
+        Return DS
+
+
+    End Function
+
+
+
+    'Function GetRmConsumtionDetails() As DataSet
+
+    '    Dim DS As System.Data.DataSet
+
+    '    DS = DBFactory.GetHelper().ExecuteDataSet("[dbo].[rm_consumption_details_report]", Data.CommandType.StoredProcedure)
+    '    Return DS
+    'End Function
+
+    Function GetRmConsumtionDetails(ByVal vendorcode As String, ByVal Keyword As String, ByVal quarter As String) As DataSet
+
+        Dim DS As System.Data.DataSet
+        Try
+            Dim sqlParams(2) As SqlParameter
+
+            sqlParams(0) = New SqlParameter()
+            sqlParams(0).ParameterName = "@vendorid"
+            sqlParams(0).DbType = DbType.String
+            sqlParams(0).Direction = Data.ParameterDirection.Input
+            sqlParams(0).Value = IIf(vendorcode Is "", DBNull.Value, vendorcode)
+
+            sqlParams(1) = New SqlParameter()
+            sqlParams(1).ParameterName = "@productcode"
+            sqlParams(1).DbType = DbType.String
+            sqlParams(1).Direction = Data.ParameterDirection.Input
+            sqlParams(1).Value = IIf(Keyword Is "", DBNull.Value, Keyword)
+
+            sqlParams(2) = New SqlParameter()
+            sqlParams(2).ParameterName = "@quarter"
+            sqlParams(2).DbType = DbType.String
+            sqlParams(2).Direction = Data.ParameterDirection.Input
+            sqlParams(2).Value = quarter
+
+            DS = DBFactory.GetHelper().ExecuteDataSet("[dbo].[rm_consumption_details_report]", Data.CommandType.StoredProcedure, sqlParams)
+        Catch ex As Exception
+            Dim msg As String = ex.Message.ToString()
+        End Try
+        Return DS
+
+
+    End Function
+
+    Function GetRmVariationReport(ByVal vendorcode As String, ByVal Keyword As String, ByVal quarter As String) As DataSet
+
+        Dim DS As System.Data.DataSet
+        Try
+            Dim sqlParams(2) As SqlParameter
+
+            sqlParams(0) = New SqlParameter()
+            sqlParams(0).ParameterName = "@vendorid"
+            sqlParams(0).DbType = DbType.String
+            sqlParams(0).Direction = Data.ParameterDirection.Input
+            sqlParams(0).Value = IIf(vendorcode Is "", DBNull.Value, vendorcode)
+
+            sqlParams(1) = New SqlParameter()
+            sqlParams(1).ParameterName = "@productcode"
+            sqlParams(1).DbType = DbType.String
+            sqlParams(1).Direction = Data.ParameterDirection.Input
+            sqlParams(1).Value = IIf(Keyword Is "", DBNull.Value, Keyword)
+
+            sqlParams(2) = New SqlParameter()
+            sqlParams(2).ParameterName = "@quarter"
+            sqlParams(2).DbType = DbType.String
+            sqlParams(2).Direction = Data.ParameterDirection.Input
+            sqlParams(2).Value = quarter
+
+            DS = DBFactory.GetHelper().ExecuteDataSet("[dbo].[rm_allocation_variation_report]", Data.CommandType.StoredProcedure, sqlParams)
+        Catch ex As Exception
+            Dim msg As String = ex.Message.ToString()
+        End Try
+        Return DS
+
+
+    End Function
+
+
+
+#End Region
+
 End Class

@@ -384,7 +384,7 @@ Public Class vrs_legalscore_class
         sqlParams(1).Direction = Data.ParameterDirection.Input
         sqlParams(1).Value = quarter
 
-        dsVendor = DBFactory.GetHelper().ExecuteDataSet("[VMS_TEST].dbo.vrs_legal_score_dtls_vr1", System.Data.CommandType.StoredProcedure, sqlParams)
+        dsVendor = DBFactory.GetHelper().ExecuteDataSet("[VMS].dbo.vrs_legal_score_dtls_vr1", System.Data.CommandType.StoredProcedure, sqlParams)
         Return dsVendor
     End Function
 
@@ -468,7 +468,7 @@ Public Class vrs_legalscore_class
         sqlParams(1).Direction = Data.ParameterDirection.Input
         sqlParams(1).Value = quarter
 
-        dsVendor = DBFactory.GetHelper().ExecuteDataSet("[VMS_TEST].[dbo].[vrs_legal_score_appr_rej_dtls]", System.Data.CommandType.StoredProcedure, sqlParams)
+        dsVendor = DBFactory.GetHelper().ExecuteDataSet("[VMS].[dbo].[vrs_legal_score_appr_rej_dtls]", System.Data.CommandType.StoredProcedure, sqlParams)
         Return dsVendor
     End Function
 

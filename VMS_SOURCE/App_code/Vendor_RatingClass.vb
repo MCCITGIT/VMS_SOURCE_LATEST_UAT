@@ -29,9 +29,9 @@ Public Class Vendor_RatingClass
         Return DS
     End Function
 
-    Function Get_VendorRatingList_All(ByVal vendor As String, ByVal quartor As String, ByVal product As String, ByVal vendorgrp As String, ByVal productgrp As String, ByVal type As String) As DataSet
+    Function Get_VendorRatingList_All(ByVal vendor As String, ByVal finyear As String, ByVal quartor As String, ByVal product As String, ByVal vendorgrp As String, ByVal productgrp As String, ByVal type As String) As DataSet
         Dim DS As System.Data.DataSet
-        Dim sqlParams(5) As SqlParameter
+        Dim sqlParams(6) As SqlParameter
 
         sqlParams(0) = New SqlParameter()
         sqlParams(0).ParameterName = "@quarter"
@@ -68,6 +68,12 @@ Public Class Vendor_RatingClass
         sqlParams(5).DbType = DbType.String
         sqlParams(5).Direction = Data.ParameterDirection.Input
         sqlParams(5).Value = type
+
+        sqlParams(6) = New SqlParameter()
+        sqlParams(6).ParameterName = "@finyear"
+        sqlParams(6).DbType = DbType.String
+        sqlParams(6).Direction = Data.ParameterDirection.Input
+        sqlParams(6).Value = finyear
 
         'DS = DBFactory.GetHelper().ExecuteDataSet("[dbo].[VRS_GetVendor_RatingList]", Data.CommandType.StoredProcedure, sqlParams)
         DS = DBFactory.GetHelper().ExecuteDataSet("[dbo].[vrs_vendor_weightage_board_All_vr1]", Data.CommandType.StoredProcedure, sqlParams)
