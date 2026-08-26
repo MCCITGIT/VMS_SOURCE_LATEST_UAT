@@ -104,23 +104,23 @@
             transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
         }
 
-        .rm-status-badge:before {
-            content: "";
-            width: 7px;
-            height: 7px;
-            border-radius: 50%;
-            background: currentColor;
-        }
+            .rm-status-badge:before {
+                content: "";
+                width: 7px;
+                height: 7px;
+                border-radius: 50%;
+                background: currentColor;
+            }
 
-        .rm-status-badge.is-pending {
-            background: #fff4e5;
-            color: #d9822b;
-        }
+            .rm-status-badge.is-pending {
+                background: #fff4e5;
+                color: #d9822b;
+            }
 
-        .rm-status-badge.is-complete {
-            background: #e8f8ee;
-            color: #1f9d57;
-        }
+            .rm-status-badge.is-complete {
+                background: #e8f8ee;
+                color: #1f9d57;
+            }
 
         .rm-meta-bar {
             display: grid;
@@ -138,13 +138,13 @@
             border-right: 1px solid #f0ece4;
         }
 
-        .rm-meta-item:last-child {
-            border-right: 0;
-        }
+            .rm-meta-item:last-child {
+                border-right: 0;
+            }
 
-        .rm-meta-item.is-vendor {
-            background: #eef4ff;
-        }
+            .rm-meta-item.is-vendor {
+                background: #eef4ff;
+            }
 
         .rm-meta-label {
             display: block;
@@ -177,10 +177,10 @@
             font-weight: 800;
         }
 
-        .rm-vendor-name i {
-            color: #2f6fed;
-            font-size: 14px;
-        }
+            .rm-vendor-name i {
+                color: #2f6fed;
+                font-size: 14px;
+            }
 
         .rm-two-col {
             margin-left: -8px;
@@ -188,10 +188,10 @@
             margin-bottom: 8px;
         }
 
-        .rm-two-col > [class*="col-"] {
-            padding-left: 8px;
-            padding-right: 8px;
-        }
+            .rm-two-col > [class*="col-"] {
+                padding-left: 8px;
+                padding-right: 8px;
+            }
 
         .rm-card {
             background: #ffffff;
@@ -288,11 +288,11 @@
             transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, color 0.2s ease;
         }
 
-        .form-control:focus {
-            background: #ffffff;
-            border-color: #8fb0ea;
-            box-shadow: 0 0 0 3px rgba(47, 111, 237, 0.12) !important;
-        }
+            .form-control:focus {
+                background: #ffffff;
+                border-color: #8fb0ea;
+                box-shadow: 0 0 0 3px rgba(47, 111, 237, 0.12) !important;
+            }
 
         .field-hint {
             display: flex;
@@ -387,10 +387,10 @@
             z-index: 2;
         }
 
-        .rm-file-input:disabled {
-            pointer-events: none;
-            cursor: default;
-        }
+            .rm-file-input:disabled {
+                pointer-events: none;
+                cursor: default;
+            }
 
         .rm-extract-btn,
         .btn-primary {
@@ -412,16 +412,16 @@
             gap: 8px;
         }
 
-        .btn-primary:hover,
-        .btn-primary:focus,
-        .rm-extract-btn:hover,
-        .rm-extract-btn:focus {
-            background: #1f5bd6 !important;
-            border-color: #1f5bd6 !important;
-            color: #ffffff !important;
-            transform: translateY(-1px);
-            box-shadow: 0 8px 18px rgba(47, 111, 237, 0.28) !important;
-        }
+            .btn-primary:hover,
+            .btn-primary:focus,
+            .rm-extract-btn:hover,
+            .rm-extract-btn:focus {
+                background: #1f5bd6 !important;
+                border-color: #1f5bd6 !important;
+                color: #ffffff !important;
+                transform: translateY(-1px);
+                box-shadow: 0 8px 18px rgba(47, 111, 237, 0.28) !important;
+            }
 
         .rm-metric-row {
             display: grid;
@@ -443,9 +443,17 @@
             font-size: 16px;
         }
 
-        .rm-metric-icon.is-blue { color: #2f6fed; }
-        .rm-metric-icon.is-green { color: #22a35a; }
-        .rm-metric-icon.is-orange { color: #e7a23a; }
+            .rm-metric-icon.is-blue {
+                color: #2f6fed;
+            }
+
+            .rm-metric-icon.is-green {
+                color: #22a35a;
+            }
+
+            .rm-metric-icon.is-orange {
+                color: #e7a23a;
+            }
 
         .rm-metric-label {
             margin: 0 0 4px;
@@ -464,8 +472,13 @@
             line-height: 1;
         }
 
-        .rm-metric-value.is-green { color: #22a35a; }
-        .rm-metric-value.is-orange { color: #e7a23a; }
+            .rm-metric-value.is-green {
+                color: #22a35a;
+            }
+
+            .rm-metric-value.is-orange {
+                color: #e7a23a;
+            }
 
         .table-responsive {
             width: 100%;
@@ -482,35 +495,35 @@
             font-size: 13px !important;
         }
 
-        .upgradDataGrid th {
-            padding: 12px 10px !important;
-            background: transparent !important;
-            color: #9aa3b2 !important;
-            border: 0 !important;
-            border-bottom: 1px solid #eef1f5 !important;
-            font-size: 11px !important;
-            font-weight: 700 !important;
-            letter-spacing: 0.06em;
-            text-transform: uppercase !important;
-            vertical-align: middle !important;
-            white-space: normal;
-        }
+            .upgradDataGrid th {
+                padding: 12px 10px !important;
+                background: transparent !important;
+                color: #9aa3b2 !important;
+                border: 0 !important;
+                border-bottom: 1px solid #eef1f5 !important;
+                font-size: 11px !important;
+                font-weight: 700 !important;
+                letter-spacing: 0.06em;
+                text-transform: uppercase !important;
+                vertical-align: middle !important;
+                white-space: normal;
+            }
 
-        .upgradDataGrid td {
-            padding: 12px 10px !important;
-            background: transparent;
-            color: #1f2937;
-            border: 0 !important;
-            border-bottom: 1px solid #f1f4f8 !important;
-            font-size: 13px !important;
-            line-height: 1.35;
-            font-weight: 500;
-            vertical-align: middle !important;
-        }
+            .upgradDataGrid td {
+                padding: 12px 10px !important;
+                background: transparent;
+                color: #1f2937;
+                border: 0 !important;
+                border-bottom: 1px solid #f1f4f8 !important;
+                font-size: 13px !important;
+                line-height: 1.35;
+                font-weight: 500;
+                vertical-align: middle !important;
+            }
 
-        .upgradDataGrid tr:hover td {
-            background: #fafbfd !important;
-        }
+            .upgradDataGrid tr:hover td {
+                background: #fafbfd !important;
+            }
 
         .materialGrid th,
         .materialGrid td {
@@ -541,9 +554,9 @@
             font-weight: 800;
         }
 
-        .rm-code-cell i {
-            color: #2f6fed;
-        }
+            .rm-code-cell i {
+                color: #2f6fed;
+            }
 
         .qty-value {
             color: #111827;
@@ -613,14 +626,14 @@
             font-size: 13px;
         }
 
-        .rm-footer-hint i {
-            margin-top: 3px;
-            color: #2f6fed;
-        }
+            .rm-footer-hint i {
+                margin-top: 3px;
+                color: #2f6fed;
+            }
 
-        .rm-footer-hint strong {
-            color: #111827;
-        }
+            .rm-footer-hint strong {
+                color: #111827;
+            }
 
         .rm-footer-actions {
             display: flex;
@@ -642,23 +655,23 @@
             transition: background-color 0.18s ease, border-color 0.18s ease, color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
         }
 
-        .btn-back::before {
-            content: "\f060";
-            font-family: "Font Awesome 5 Free";
-            font-weight: 900;
-            margin-right: 6px;
-        }
+            .btn-back::before {
+                content: "\f060";
+                font-family: "Font Awesome 5 Free";
+                font-weight: 900;
+                margin-right: 6px;
+            }
 
-        .btn-back:hover,
-        .btn-back:focus,
-        .btn-secondary:hover,
-        .btn-secondary:focus {
-            background: #eef4ff !important;
-            border-color: #2f6fed !important;
-            color: #1f5bd6 !important;
-            transform: translateY(-1px);
-            box-shadow: 0 8px 18px rgba(47, 111, 237, 0.14) !important;
-        }
+            .btn-back:hover,
+            .btn-back:focus,
+            .btn-secondary:hover,
+            .btn-secondary:focus {
+                background: #eef4ff !important;
+                border-color: #2f6fed !important;
+                color: #1f5bd6 !important;
+                transform: translateY(-1px);
+                box-shadow: 0 8px 18px rgba(47, 111, 237, 0.14) !important;
+            }
 
         .btn-submit-dispatch {
             background: #2f6fed !important;
@@ -672,31 +685,31 @@
             transition: background-color 0.18s ease, border-color 0.18s ease, color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
         }
 
-        .btn-submit-dispatch::after {
-            content: "\f061";
-            font-family: "Font Awesome 5 Free";
-            font-weight: 900;
-            margin-left: 6px;
-        }
+            .btn-submit-dispatch::after {
+                content: "\f061";
+                font-family: "Font Awesome 5 Free";
+                font-weight: 900;
+                margin-left: 6px;
+            }
 
-        .btn-submit-dispatch:hover,
-        .btn-submit-dispatch:focus {
-            background: #1f5bd6 !important;
-            border-color: #1f5bd6 !important;
-            color: #ffffff !important;
-            transform: translateY(-1px);
-            box-shadow: 0 8px 18px rgba(47, 111, 237, 0.28) !important;
-        }
+            .btn-submit-dispatch:hover,
+            .btn-submit-dispatch:focus {
+                background: #1f5bd6 !important;
+                border-color: #1f5bd6 !important;
+                color: #ffffff !important;
+                transform: translateY(-1px);
+                box-shadow: 0 8px 18px rgba(47, 111, 237, 0.28) !important;
+            }
 
         .message-box {
             margin-bottom: 14px;
         }
 
-        .message-box .alert {
-            margin-bottom: 0;
-            border-radius: 12px;
-            font-size: 14px;
-        }
+            .message-box .alert {
+                margin-bottom: 0;
+                border-radius: 12px;
+                font-size: 14px;
+            }
 
         #divMessage {
             font-size: 13px;
@@ -704,24 +717,52 @@
             margin-top: 8px;
         }
 
+        .form-control.field-invalid,
+        select.field-invalid {
+            border-color: #dc3545 !important;
+            box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.12);
+        }
+
+        .rm-upload-box.field-invalid {
+            border-color: #dc3545;
+            box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.12);
+        }
+
+        .table-responsive.field-invalid {
+            border: 1px solid #dc3545;
+            border-radius: 10px;
+            box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.08);
+        }
+
+        .dispatch-field-error {
+            display: block;
+            color: #dc3545;
+            font-size: 12px;
+            font-weight: 500;
+            margin-top: 4px;
+            line-height: 1.35;
+        }
+
+            .dispatch-field-error:empty {
+                display: none;
+            }
+
         .modalBackground {
             background-color: #000;
             opacity: 0.6;
             filter: alpha(opacity=60);
         }
 
-        .success-popup,
-        .validation-popup {
+        .success-popup {
             background-color: #fff;
             padding: 0;
             border-radius: 14px;
             overflow: hidden;
             box-shadow: 0 8px 28px rgba(0,0,0,0.28);
             animation: rm-fade-in-up 0.28s ease;
+            width: 360px;
+            max-width: 90%;
         }
-
-        .success-popup { width: 360px; max-width: 90%; }
-        .validation-popup { width: 450px; max-width: 90%; }
 
         .success-popup .success-popup-header {
             background-color: #22a35a;
@@ -729,12 +770,11 @@
             padding: 13px 18px;
         }
 
-        .success-popup .success-popup-header h5,
-        .validation-popup-header h5 {
-            margin: 0;
-            font-size: 16px;
-            font-weight: 700;
-        }
+            .success-popup .success-popup-header h5 {
+                margin: 0;
+                font-size: 16px;
+                font-weight: 700;
+            }
 
         .success-popup .success-popup-body {
             padding: 22px 18px;
@@ -742,36 +782,10 @@
             font-size: 14px;
         }
 
-        .success-popup .success-popup-footer,
-        .validation-popup-footer {
+        .success-popup .success-popup-footer {
             padding: 12px 18px;
             text-align: center;
             border-top: 1px solid #eee;
-        }
-
-        .validation-popup-header {
-            background-color: #dc3545;
-            color: #fff;
-            padding: 13px 18px;
-        }
-
-        .validation-popup-body {
-            padding: 20px 25px;
-            text-align: left;
-            max-height: 350px;
-            overflow-y: auto;
-            font-size: 14px;
-        }
-
-        .validation-popup-body ul {
-            margin: 0;
-            padding-left: 20px;
-        }
-
-        .validation-popup-body li {
-            margin-bottom: 7px;
-            color: #dc3545;
-            font-weight: 500;
         }
 
         @media (max-width: 991px) {
@@ -797,9 +811,9 @@
                 display: block;
             }
 
-            .standalone-breadcrumbs .pageTitle {
-                font-size: 13px !important;
-            }
+                .standalone-breadcrumbs .pageTitle {
+                    font-size: 13px !important;
+                }
 
             .rm-meta-item {
                 border-right: 0;
@@ -835,7 +849,7 @@
                 </div>
             </div>
 
-<asp:Panel ID="pnlMessage" runat="server" Visible="false" CssClass="message-box">
+            <asp:Panel ID="pnlMessage" runat="server" Visible="false" CssClass="message-box">
                 <asp:Label ID="lblMessage" runat="server" CssClass="alert alert-danger d-block"></asp:Label>
             </asp:Panel>
             <asp:Button ID="btnPopupTarget" runat="server" Style="display: none;" />
@@ -860,54 +874,7 @@
                         runat="server"
                         Text="OK"
                         CssClass="btn btn-primary btn-sm"
-                        OnClientClick="window.location.href='Dispatch_List.aspx'; return false;" />
-                </div>
-
-            </asp:Panel>
-
-            <asp:Button
-                ID="btnValidationPopupTarget"
-                runat="server"
-                Style="display: none;" />
-
-            <ajaxToolkit:ModalPopupExtender
-                ID="mpeValidation"
-                runat="server"
-                BehaviorID="mpeValidationBehavior"
-                TargetControlID="btnValidationPopupTarget"
-                PopupControlID="pnlValidationPopup"
-                BackgroundCssClass="modalBackground">
-            </ajaxToolkit:ModalPopupExtender>
-
-            <asp:Panel
-                ID="pnlValidationPopup"
-                runat="server"
-                CssClass="validation-popup"
-                Style="display: none;">
-
-                <div class="validation-popup-header">
-                    <h5>Validation</h5>
-                </div>
-
-                <div class="validation-popup-body">
-
-                    <asp:Label
-                        ID="lblValidationMessage"
-                        runat="server">
-                    </asp:Label>
-
-                </div>
-
-                <div class="validation-popup-footer">
-
-                    <asp:Button
-                        ID="btnValidationOk"
-                        runat="server"
-                        Text="OK"
-                        CssClass="btn btn-primary btn-sm"
-                        CausesValidation="false"
-                        OnClientClick="$find('mpeValidationBehavior').hide(); return false;" />
-
+                        OnClientClick="window.location.href='<%= GetDispatchListUrl() %>'; return false;" />
                 </div>
 
             </asp:Panel>
@@ -962,6 +929,7 @@
                                 AutoPostBack="true"
                                 OnSelectedIndexChanged="ddlDelType_SelectedIndexChanged">
                             </asp:DropDownList>
+                            <asp:Label ID="valDelType" runat="server" ClientIDMode="Static" CssClass="dispatch-field-error"></asp:Label>
                             <div class="field-hint">
                                 <i class="fas fa-info-circle"></i>
                                 Select the applicable delivery method
@@ -986,6 +954,7 @@
                                             CssClass="form-control"
                                             placeholder="Enter POD No.">
                                         </asp:TextBox>
+                                        <asp:Label ID="valCouNo" runat="server" ClientIDMode="Static" CssClass="dispatch-field-error"></asp:Label>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
@@ -1000,6 +969,7 @@
                                             CssClass="form-control"
                                             placeholder="Enter Courier Name.">
                                         </asp:TextBox>
+                                        <asp:Label ID="valTranName" runat="server" ClientIDMode="Static" CssClass="dispatch-field-error"></asp:Label>
                                     </div>
                                 </div>
                                 <div id="divLrNo" class="col-md-6" runat="server">
@@ -1012,6 +982,7 @@
                                             CssClass="form-control"
                                             placeholder="Enter LR/Consignment No.">
                                         </asp:TextBox>
+                                        <asp:Label ID="valLRNo" runat="server" ClientIDMode="Static" CssClass="dispatch-field-error"></asp:Label>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
@@ -1022,6 +993,7 @@
                                         <asp:TextBox
                                             ID="txtLRDate"
                                             runat="server"
+                                            ClientIDMode="Static"
                                             CssClass="form-control"
                                             autocomplete="off"
                                             placeholder="Select Courier Date."
@@ -1035,6 +1007,7 @@
                                             TargetControlID="txtLRDate"
                                             Format="dd-MM-yyyy">
                                         </ajaxToolkit:CalendarExtender>
+                                        <asp:Label ID="valLRDate" runat="server" ClientIDMode="Static" CssClass="dispatch-field-error"></asp:Label>
                                     </div>
                                 </div>
                                 <div id="divVehNo" class="col-md-6" runat="server">
@@ -1047,16 +1020,17 @@
                                             CssClass="form-control"
                                             placeholder="Enter Vehicle No.">
                                         </asp:TextBox>
+                                        <asp:Label ID="valVehNo" runat="server" ClientIDMode="Static" CssClass="dispatch-field-error"></asp:Label>
                                     </div>
                                 </div>
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         <label class="form-control-label">LR Doc:</label>
-                                        <div class="rm-upload-box">
+                                        <div class="rm-upload-box" id="divLrDocUpload" runat="server" clientidmode="Static">
                                             <span class="rm-upload-icon"><i class="fas fa-file-pdf"></i></span>
                                             <div>
                                                 <p class="rm-upload-title">Upload LR Document</p>
-                                                <p class="rm-upload-hint">PDF file only</p>
+                                                <p class="rm-upload-hint">PDF file only &bull; Max 5 MB</p>
                                                 <span id="lrFileName" class="rm-upload-name"></span>
                                             </div>
                                             <button type="button" class="rm-choose-btn" onclick="document.getElementById('fuLrDoc').click(); return false;">Choose File</button>
@@ -1067,6 +1041,7 @@
                                                 accept=".pdf,application/pdf"
                                                 CssClass="rm-file-input" />
                                         </div>
+                                        <asp:Label ID="valLrDoc" runat="server" ClientIDMode="Static" CssClass="dispatch-field-error"></asp:Label>
                                     </div>
                                 </div>
                             </div>
@@ -1088,45 +1063,9 @@
                             </div>
                         </div>
 
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label class="form-control-label">Invoice No. <span class="req-star">*</span></label>
-                                    <asp:TextBox
-                                        ID="txtInvNo"
-                                        runat="server"
-                                        ClientIDMode="Static"
-                                        CssClass="form-control"
-                                        placeholder="Enter invoice no.">
-                                    </asp:TextBox>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label class="form-control-label">Invoice Date <span class="req-star">*</span></label>
-                                    <asp:TextBox
-                                        ID="txtInvDate"
-                                        runat="server"
-                                        CssClass="form-control"
-                                        autocomplete="off"
-                                        placeholder="dd-mm-yyyy"
-                                        onkeydown="return handleDateKeyDown(event, this);"
-                                        onpaste="return false;"
-                                        ondrop="return false;">
-                                    </asp:TextBox>
-                                    <ajaxToolkit:CalendarExtender
-                                        ID="calInvDate"
-                                        runat="server"
-                                        TargetControlID="txtInvDate"
-                                        Format="dd-MM-yyyy">
-                                    </ajaxToolkit:CalendarExtender>
-                                </div>
-                            </div>
-                        </div>
-
                         <div class="form-group">
-                            <label class="form-control-label">Invoice Document</label>
-                            <div class="rm-upload-box">
+                            <label class="form-control-label">Invoice Document <span class="req-star">*</span></label>
+                            <div class="rm-upload-box" id="divInvUpload" runat="server" clientidmode="Static">
                                 <span class="rm-upload-icon"><i class="fas fa-file-alt"></i></span>
                                 <div>
                                     <p class="rm-upload-title">Upload Invoice</p>
@@ -1141,12 +1080,54 @@
                                     accept=".pdf,application/pdf"
                                     CssClass="rm-file-input" />
                             </div>
+                            <asp:Label ID="valInvDoc" runat="server" ClientIDMode="Static" CssClass="dispatch-field-error"></asp:Label>
                         </div>
 
-                        <button type="button" id="btnUploadInvoice" class="btn btn-primary rm-extract-btn" runat="server">
+                        <button style="margin-bottom: 14px; margin-top: 5px" type="button" id="btnUploadInvoice" class="btn btn-primary rm-extract-btn" runat="server">
                             <i class="fas fa-magic"></i>
                             Upload &amp; Extract
                         </button>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-control-label">Invoice No. <span class="req-star">*</span></label>
+                                    <asp:TextBox
+                                        ID="txtInvNo"
+                                        runat="server"
+                                        ClientIDMode="Static"
+                                        CssClass="form-control"
+                                        placeholder="Enter invoice no.">
+                                    </asp:TextBox>
+                                    <asp:Label ID="valInvNo" runat="server" ClientIDMode="Static" CssClass="dispatch-field-error"></asp:Label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-control-label">Invoice Date <span class="req-star">*</span></label>
+                                    <asp:TextBox
+                                        ID="txtInvDate"
+                                        runat="server"
+                                        ClientIDMode="Static"
+                                        CssClass="form-control"
+                                        autocomplete="off"
+                                        placeholder="dd-mm-yyyy"
+                                        onkeydown="return handleDateKeyDown(event, this);"
+                                        onpaste="return false;"
+                                        ondrop="return false;">
+                                    </asp:TextBox>
+                                    <ajaxToolkit:CalendarExtender
+                                        ID="calInvDate"
+                                        runat="server"
+                                        TargetControlID="txtInvDate"
+                                        Format="dd-MM-yyyy">
+                                    </ajaxToolkit:CalendarExtender>
+                                    <asp:Label ID="valInvDate" runat="server" ClientIDMode="Static" CssClass="dispatch-field-error"></asp:Label>
+                                </div>
+                            </div>
+                        </div>
+
+
                         <div id="divMessage"></div>
                     </div>
                 </div>
@@ -1197,7 +1178,7 @@
                     </div>
                 </div>
 
-                <div class="table-responsive">
+                <div class="table-responsive" id="divMaterialsGrid" runat="server" clientidmode="Static">
                     <asp:GridView
                         ID="gvMaterials"
                         runat="server"
@@ -1278,12 +1259,14 @@
                                         oninput="validateDecimal(this);">
                                     </asp:TextBox>
                                 </ItemTemplate>
+
                                 <HeaderStyle HorizontalAlign="Center" Width="18%" />
                                 <ItemStyle HorizontalAlign="Center" Width="18%" />
                             </asp:TemplateField>
                         </Columns>
                     </asp:GridView>
                 </div>
+                <asp:Label ID="valGridQty" runat="server" ClientIDMode="Static" CssClass="dispatch-field-error"></asp:Label>
 
                 <div class="rm-footer-bar">
                     <div class="rm-footer-hint">
@@ -1386,18 +1369,31 @@
             var msgDiv = document.getElementById('divMessage');
             var btn = document.getElementById('btnUploadInvoice');
 
+            clearDispatchUploadValidation('fuInv');
+
             if (!fileUpload || !fileUpload.files || fileUpload.files.length === 0) {
-                showInvoiceMessage(msgDiv, 'Please select an invoice PDF file.', 'danger');
+                setDispatchFieldError('fuInv', 'Invoice Document is required.');
+                showInvoiceMessage(msgDiv, '', 'info');
                 return;
             }
 
             var file = fileUpload.files[0];
 
             if (!/\.pdf$/i.test(file.name)) {
-                showInvoiceMessage(msgDiv, 'Please upload a PDF invoice file.', 'danger');
+                setDispatchFieldError('fuInv', 'Invoice Document must be a PDF file.');
+                showInvoiceMessage(msgDiv, '', 'info');
                 fileUpload.value = '';
                 return;
             }
+
+            if (file.size > (5 * 1024 * 1024)) {
+                setDispatchFieldError('fuInv', 'Invoice Document must not exceed 5 MB.');
+                showInvoiceMessage(msgDiv, '', 'info');
+                fileUpload.value = '';
+                return;
+            }
+
+            clearDispatchUploadValidation('fuInv');
 
             var formData = new FormData();
             formData.append('file', file, file.name);
@@ -1498,6 +1494,76 @@
             msgDiv.innerHTML = '<span class="' + cssClass + '">' + text + '</span>';
         }
 
+    </script>
+    <script>
+        function allowDecimal(input, event) {
+
+            var charCode = event.which ? event.which : event.keyCode;
+            var value = input.value;
+
+            // Allow backspace, delete, tab, arrows
+            if (
+                charCode == 8 ||
+                charCode == 46 ||
+                charCode == 9 ||
+                charCode == 37 ||
+                charCode == 39
+            ) {
+                return true;
+            }
+
+            // Allow only numbers and decimal
+            if (
+                (charCode >= 48 && charCode <= 57) ||
+                charCode == 46
+            ) {
+
+                // Prevent multiple decimal points
+                if (charCode == 46 && value.includes('.')) {
+                    return false;
+                }
+
+                // Restrict 2 digits after decimal
+                if (value.includes('.')) {
+                    var decimalPart = value.split('.')[1];
+
+                    if (decimalPart.length >= 2) {
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+
+            return false;
+        }
+
+
+        function validateDecimal(input) {
+
+            var value = input.value;
+
+            // Remove invalid characters
+            value = value.replace(/[^0-9.]/g, '');
+
+            // Allow only one decimal point
+            var parts = value.split('.');
+
+            if (parts.length > 2) {
+                value = parts[0] + '.' + parts[1];
+            }
+
+            // Restrict decimal places to 2
+            if (value.includes('.')) {
+                var decimal = value.split('.');
+
+                if (decimal[1].length > 2) {
+                    value = decimal[0] + '.' + decimal[1].substring(0, 2);
+                }
+            }
+
+            input.value = value;
+        }
     </script>
     <%--<script type="text/javascript">
 
@@ -1767,19 +1833,225 @@
 
     <script type="text/javascript">
 
+        var DISPATCH_MAX_FILE_SIZE_BYTES = 5 * 1024 * 1024;
+
+        function validateDispatchUploadFile(inputId, displayName, isRequired) {
+            var input = document.getElementById(inputId);
+
+            if (!input) {
+                return null;
+            }
+
+            if (!input.files || input.files.length === 0) {
+                if (isRequired) {
+                    return displayName + ' is required.';
+                }
+                return null;
+            }
+
+            var file = input.files[0];
+
+            if (!/\.pdf$/i.test(file.name)) {
+                return displayName + ' must be a PDF file.';
+            }
+
+            if (file.size > DISPATCH_MAX_FILE_SIZE_BYTES) {
+                return displayName + ' must not exceed 5 MB.';
+            }
+
+            return null;
+        }
+
+        function clearDispatchUploadValidation(fieldKey) {
+            setDispatchFieldError(fieldKey, '');
+        }
+
+        var dispatchValidationFields = [
+            { key: 'ddlDelType', controlId: 'ddlDelType', labelId: 'valDelType' },
+            { key: 'txtCouNo', controlId: 'txtCouNo', labelId: 'valCouNo' },
+            { key: 'txtTranName', controlId: 'txtTranName', labelId: 'valTranName' },
+            { key: 'txtLRNo', controlId: 'txtLRNo', labelId: 'valLRNo' },
+            { key: 'txtLRDate', controlId: 'txtLRDate', labelId: 'valLRDate' },
+            { key: 'txtVehNo', controlId: 'txtVehNo', labelId: 'valVehNo' },
+            { key: 'fuLrDoc', controlId: 'fuLrDoc', labelId: 'valLrDoc', uploadBoxId: 'divLrDocUpload' },
+            { key: 'txtInvNo', controlId: 'txtInvNo', labelId: 'valInvNo' },
+            { key: 'txtInvDate', controlId: 'txtInvDate', labelId: 'valInvDate' },
+            { key: 'fuInv', controlId: 'fuInv', labelId: 'valInvDoc', uploadBoxId: 'divInvUpload' }
+        ];
+
+        function clearDispatchValidation() {
+            var i;
+
+            for (i = 0; i < dispatchValidationFields.length; i++) {
+                var field = dispatchValidationFields[i];
+                var control = document.getElementById(field.controlId);
+                var label = document.getElementById(field.labelId);
+                var uploadBox = field.uploadBoxId
+                    ? document.getElementById(field.uploadBoxId)
+                    : null;
+
+                if (control) {
+                    control.classList.remove('field-invalid');
+                }
+
+                if (uploadBox) {
+                    uploadBox.classList.remove('field-invalid');
+                }
+
+                if (label) {
+                    label.innerHTML = '';
+                }
+            }
+
+            var gridWrapper = document.getElementById('divMaterialsGrid');
+            var gridLabel = document.getElementById('valGridQty');
+
+            if (gridWrapper) {
+                gridWrapper.classList.remove('field-invalid');
+            }
+
+            if (gridLabel) {
+                gridLabel.innerHTML = '';
+            }
+        }
+
+        function setDispatchFieldError(fieldKey, message) {
+            var i;
+
+            for (i = 0; i < dispatchValidationFields.length; i++) {
+                if (dispatchValidationFields[i].key !== fieldKey) {
+                    continue;
+                }
+
+                var field = dispatchValidationFields[i];
+                var control = document.getElementById(field.controlId);
+                var label = document.getElementById(field.labelId);
+                var uploadBox = field.uploadBoxId
+                    ? document.getElementById(field.uploadBoxId)
+                    : null;
+
+                if (control) {
+                    control.classList.add('field-invalid');
+                }
+
+                if (uploadBox) {
+                    uploadBox.classList.add('field-invalid');
+                }
+
+                if (label) {
+                    label.innerHTML = message;
+                }
+
+                if (!message) {
+                    if (control) {
+                        control.classList.remove('field-invalid');
+                    }
+
+                    if (uploadBox) {
+                        uploadBox.classList.remove('field-invalid');
+                    }
+                }
+
+                return;
+            }
+        }
+
+        function setDispatchGridError(message) {
+            var gridWrapper = document.getElementById('divMaterialsGrid');
+            var gridLabel = document.getElementById('valGridQty');
+
+            if (gridWrapper) {
+                gridWrapper.classList.add('field-invalid');
+            }
+
+            if (gridLabel) {
+                gridLabel.innerHTML = message;
+            }
+        }
+
+        function getDispatchValidationElement(fieldKey) {
+            var i;
+
+            for (i = 0; i < dispatchValidationFields.length; i++) {
+                if (dispatchValidationFields[i].key !== fieldKey) {
+                    continue;
+                }
+
+                var field = dispatchValidationFields[i];
+
+                if (field.uploadBoxId) {
+                    return document.getElementById(field.uploadBoxId);
+                }
+
+                return document.getElementById(field.controlId);
+            }
+
+            if (fieldKey === 'gvMaterials') {
+                return document.getElementById('divMaterialsGrid');
+            }
+
+            return null;
+        }
+
+        function showDispatchValidation(fieldErrors, gridErrors) {
+            var fieldKey;
+            var firstInvalid = null;
+
+            clearDispatchValidation();
+
+            for (fieldKey in fieldErrors) {
+                if (!fieldErrors.hasOwnProperty(fieldKey)) {
+                    continue;
+                }
+
+                setDispatchFieldError(fieldKey, fieldErrors[fieldKey].join(' '));
+
+                if (!firstInvalid) {
+                    firstInvalid = getDispatchValidationElement(fieldKey);
+                }
+            }
+
+            if (gridErrors.length > 0) {
+                setDispatchGridError(gridErrors.join(' '));
+
+                if (!firstInvalid) {
+                    firstInvalid = document.getElementById('divMaterialsGrid');
+                }
+            }
+
+            if (firstInvalid && firstInvalid.scrollIntoView) {
+                firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+
+            return false;
+        }
+
         function validateDispatchForm() {
 
-            var errors = [];
+            var fieldErrors = {};
+            var gridErrors = [];
+            var selectedDeliveryText = '';
+
+            function addFieldError(fieldKey, message) {
+                if (!fieldErrors[fieldKey]) {
+                    fieldErrors[fieldKey] = [];
+                }
+
+                fieldErrors[fieldKey].push(message);
+            }
+
+            function addGridError(message) {
+                gridErrors.push(message);
+            }
 
             // ========================================
             // Delivery Type
             // ========================================
             var deliveryType = document.getElementById('ddlDelType');
-            var selectedDeliveryText = '';
 
             if (!deliveryType || deliveryType.value.trim() === '') {
 
-                errors.push('Delivery Type is required.');
+                addFieldError('ddlDelType', 'Delivery Type is required.');
 
             } else {
 
@@ -1800,15 +2072,15 @@
 
                     if (selectedDeliveryText.indexOf('courier') !== -1) {
 
-                        errors.push('POD No is required.');
+                        addFieldError('txtCouNo', 'POD No is required.');
 
                     } else if (selectedDeliveryText.indexOf('transport') !== -1) {
 
-                        errors.push('Transport No is required.');
+                        addFieldError('txtCouNo', 'Transport No is required.');
 
                     } else {
 
-                        errors.push('Courier / Transport No is required.');
+                        addFieldError('txtCouNo', 'Courier / Transport No is required.');
                     }
                 }
 
@@ -1824,15 +2096,15 @@
 
                     if (selectedDeliveryText.indexOf('courier') !== -1) {
 
-                        errors.push('Courier Name is required.');
+                        addFieldError('txtTranName', 'Courier Name is required.');
 
                     } else if (selectedDeliveryText.indexOf('transport') !== -1) {
 
-                        errors.push('Transporter Name is required.');
+                        addFieldError('txtTranName', 'Transporter Name is required.');
 
                     } else {
 
-                        errors.push('Courier / Transporter Name is required.');
+                        addFieldError('txtTranName', 'Courier / Transporter Name is required.');
                     }
                 }
 
@@ -1847,7 +2119,7 @@
 
                     if (!lrNo || lrNo.value.trim() === '') {
 
-                        errors.push('LR / Consignment No is required.');
+                        addFieldError('txtLRNo', 'LR / Consignment No is required.');
                     }
                 }
 
@@ -1856,51 +2128,50 @@
                 // LR Date / Courier Date
                 // Mandatory for Courier & Transport
                 // ========================================
-                var lrDate =
-                    document.getElementById('<%= txtLRDate.ClientID %>');
+                var lrDate = document.getElementById('txtLRDate');
 
                 if (!lrDate || lrDate.value.trim() === '') {
 
                     if (selectedDeliveryText.indexOf('courier') !== -1) {
 
-                        errors.push('Courier Date is required.');
+                        addFieldError('txtLRDate', 'Courier Date is required.');
 
                     } else if (selectedDeliveryText.indexOf('transport') !== -1) {
 
-                        errors.push('LR Date is required.');
+                        addFieldError('txtLRDate', 'LR Date is required.');
 
                     } else {
 
-                        errors.push('Delivery Date is required.');
+                        addFieldError('txtLRDate', 'Delivery Date is required.');
                     }
 
                 } else if (!isValidDispatchDate(lrDate.value.trim())) {
 
                     if (selectedDeliveryText.indexOf('courier') !== -1) {
 
-                        errors.push('Please enter a valid Courier Date.');
+                        addFieldError('txtLRDate', 'Please enter a valid Courier Date.');
 
                     } else if (selectedDeliveryText.indexOf('transport') !== -1) {
 
-                        errors.push('Please enter a valid LR Date.');
+                        addFieldError('txtLRDate', 'Please enter a valid LR Date.');
 
                     } else {
 
-                        errors.push('Please enter a valid Delivery Date.');
+                        addFieldError('txtLRDate', 'Please enter a valid Delivery Date.');
                     }
                 }
 
 
                 // ========================================
                 // Vehicle No
-                // Mandatory for Courier & Transport
+                // Mandatory for Transport
                 // ========================================
                 if (selectedDeliveryText.indexOf('transport') !== -1) {
 
                     var vehicleNo = document.getElementById('txtVehNo');
 
                     if (!vehicleNo || vehicleNo.value.trim() === '') {
-                        errors.push('Vehicle No is required.');
+                        addFieldError('txtVehNo', 'Vehicle No is required.');
                     }
                 }
 
@@ -1909,26 +2180,15 @@
 
             // ========================================
             // LR Document
-            // NOT MANDATORY
             // ========================================
-            // No mandatory validation for fuLrDoc.
-            //
-            // Optional:
-            // If user uploads a file, validate that it is PDF.
-            // ========================================
+            var lrDocError = validateDispatchUploadFile(
+                'fuLrDoc',
+                'LR Document',
+                false
+            );
 
-            var lrDoc = document.getElementById('fuLrDoc');
-
-            if (lrDoc &&
-                lrDoc.files &&
-                lrDoc.files.length > 0) {
-
-                var lrFileName = lrDoc.files[0].name;
-
-                if (!/\.pdf$/i.test(lrFileName)) {
-
-                    errors.push('LR Document must be a PDF file.');
-                }
+            if (lrDocError) {
+                addFieldError('fuLrDoc', lrDocError);
             }
 
 
@@ -1941,7 +2201,7 @@
             if (!invoiceNo ||
                 invoiceNo.value.trim() === '') {
 
-                errors.push('Invoice No is required.');
+                addFieldError('txtInvNo', 'Invoice No is required.');
             }
 
 
@@ -1954,36 +2214,25 @@
             if (!invoiceDate ||
                 invoiceDate.value.trim() === '') {
 
-                errors.push('Invoice Date is required.');
+                addFieldError('txtInvDate', 'Invoice Date is required.');
 
             } else if (!isValidDispatchDate(invoiceDate.value.trim())) {
 
-                errors.push('Please enter a valid Invoice Date.');
+                addFieldError('txtInvDate', 'Please enter a valid Invoice Date.');
             }
 
 
             // ========================================
             // Invoice Document
-            // NOT REQUIRED
             // ========================================
-            // No mandatory validation for fuInv.
-            //
-            // Optional:
-            // Validate PDF only if file is selected.
-            // ========================================
+            var invDocError = validateDispatchUploadFile(
+                'fuInv',
+                'Invoice Document',
+                true
+            );
 
-            var invDoc = document.getElementById('fuInv');
-
-            if (invDoc &&
-                invDoc.files &&
-                invDoc.files.length > 0) {
-
-                var invFileName = invDoc.files[0].name;
-
-                if (!/\.pdf$/i.test(invFileName)) {
-
-                    errors.push('Invoice Document must be a PDF file.');
-                }
+            if (invDocError) {
+                addFieldError('fuInv', invDocError);
             }
 
 
@@ -2013,7 +2262,7 @@
                 // ========================================
                 if (isNaN(qty)) {
 
-                    errors.push(
+                    addGridError(
                         'Please enter a valid dispatch quantity at row ' +
                         (i + 1) + '.'
                     );
@@ -2027,7 +2276,7 @@
                 // ========================================
                 if (qty < 0) {
 
-                    errors.push(
+                    addGridError(
                         'Dispatch quantity cannot be negative at row ' +
                         (i + 1) + '.'
                     );
@@ -2067,7 +2316,7 @@
                             if (!isNaN(pendingQty) &&
                                 qty > pendingQty) {
 
-                                errors.push(
+                                addGridError(
                                     'Dispatch quantity cannot exceed pending quantity at row ' +
                                     (i + 1) + '.'
                                 );
@@ -2083,23 +2332,24 @@
             // ========================================
             if (!hasDispatchQty) {
 
-                errors.push(
+                addGridError(
                     'Please enter quantity to dispatch for at least one material.'
                 );
             }
 
 
             // ========================================
-            // Show Validation Modal
+            // Inline Validation
             // ========================================
-            if (errors.length > 0) {
-                return rmFailValidation(errors.join(" "));
+            if (Object.keys(fieldErrors).length > 0 || gridErrors.length > 0) {
+                return showDispatchValidation(fieldErrors, gridErrors);
             }
 
 
             // ========================================
             // All validations passed
             // ========================================
+            clearDispatchValidation();
             return rmConfirmAction(document.getElementById("btnSubmit"), "submit");
         }
 
@@ -2182,6 +2432,12 @@
 
             input.addEventListener('change', function () {
                 label.textContent = (input.files && input.files.length) ? input.files[0].name : '';
+
+                if (inputId === 'fuInv') {
+                    clearDispatchUploadValidation('fuInv');
+                } else if (inputId === 'fuLrDoc') {
+                    clearDispatchUploadValidation('fuLrDoc');
+                }
             });
         }
     </script>
@@ -2203,7 +2459,7 @@
             // Block all other keyboard input
             return false;
         }
-</script>
+    </script>
 
 </body>
 </html>

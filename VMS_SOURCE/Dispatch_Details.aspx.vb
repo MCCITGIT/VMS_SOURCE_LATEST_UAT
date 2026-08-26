@@ -18,6 +18,7 @@ Partial Class Dispatch_Details
 
                 vendorCode = If(Request.QueryString("orh_vendor_code"), String.Empty).Trim()
                 dispatchStatus = If(Request.QueryString("dispatch_status"), String.Empty).Trim()
+                RmVendorCode = If(Request.QueryString("rm_vendor_code"), String.Empty).Trim()
 
                 ' Validate Request ID
                 If Not Integer.TryParse(Request.QueryString("orh_id"), orhId) OrElse orhId <= 0 Then
@@ -51,6 +52,20 @@ Partial Class Dispatch_Details
         End If
 
     End Sub
+
+    Private Property RmVendorCode As String
+        Get
+            If ViewState("RmVendorCode") Is Nothing Then
+                Return String.Empty
+            End If
+
+            Return ViewState("RmVendorCode").ToString()
+        End Get
+
+        Set(value As String)
+            ViewState("RmVendorCode") = value
+        End Set
+    End Property
 
     Private Sub BindDetailsByStatus(ByVal orhId As Integer,
                                 ByVal vendorCode As String,
@@ -417,8 +432,18 @@ Partial Class Dispatch_Details
     End Function
 
     Protected Sub btnBack_Click(ByVal sender As Object, ByVal e As System.EventArgs)
-        Response.Redirect("Dispatch_List.aspx")
+        Response.Redirect(GetDispatchListUrl())
     End Sub
+
+    Protected Function GetDispatchListUrl() As String
+        Dim url As String = "Dispatch_List.aspx"
+
+        If Not String.IsNullOrEmpty(RmVendorCode) Then
+            url &= "?rmvendor_code=" & Server.UrlEncode(RmVendorCode)
+        End If
+
+        Return url
+    End Function
 
 
     'Protected Sub btnSubmit_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnSubmit.Click
@@ -782,12 +807,12 @@ Partial Class Dispatch_Details
             ' SERVER SIDE VALIDATION
             '===========================================
 
-            Dim validationErrors As List(Of String) =
+            Dim validationErrors As Dictionary(Of String, List(Of String)) =
             ValidateDispatchDetails()
 
             If validationErrors.Count > 0 Then
 
-                ShowValidationPopup(validationErrors)
+                ShowInlineValidation(validationErrors)
 
                 Return
 
@@ -976,7 +1001,7 @@ Partial Class Dispatch_Details
 
 
             If MsgID = 1 Then
-                RmActionPopup.ShowSuccess(Me, "Dispatch submitted successfully.", "Dispatch_List.aspx")
+                RmActionPopup.ShowSuccess(Me, "Dispatch submitted successfully.", GetDispatchListUrl())
             Else
                 Dim errorText As String =
                     If(
@@ -1289,9 +1314,9 @@ Partial Class Dispatch_Details
 
     'End Function
 
-    Private Function ValidateDispatchDetails() As List(Of String)
+    Private Function ValidateDispatchDetails() As Dictionary(Of String, List(Of String))
 
-        Dim errors As New List(Of String)()
+        Dim errors As New Dictionary(Of String, List(Of String))()
 
         '---------------------------------------
         ' Delivery Type
@@ -1300,7 +1325,7 @@ Partial Class Dispatch_Details
        ddlDelType.SelectedItem Is Nothing OrElse
        String.IsNullOrWhiteSpace(ddlDelType.SelectedItem.Text) Then
 
-            errors.Add("Delivery Type is required.")
+            AddFieldError(errors, "ddlDelType", "Delivery Type is required.")
 
         Else
 
@@ -1316,15 +1341,15 @@ Partial Class Dispatch_Details
 
                 If selectedDeliveryText.Contains("courier") Then
 
-                    errors.Add("POD No is required.")
+                    AddFieldError(errors, "txtCouNo", "POD No is required.")
 
                 ElseIf selectedDeliveryText.Contains("transport") Then
 
-                    errors.Add("Transport No is required.")
+                    AddFieldError(errors, "txtCouNo", "Transport No is required.")
 
                 Else
 
-                    errors.Add("Courier / Transport No is required.")
+                    AddFieldError(errors, "txtCouNo", "Courier / Transport No is required.")
 
                 End If
 
@@ -1339,15 +1364,15 @@ Partial Class Dispatch_Details
 
                 If selectedDeliveryText.Contains("courier") Then
 
-                    errors.Add("Courier Name is required.")
+                    AddFieldError(errors, "txtTranName", "Courier Name is required.")
 
                 ElseIf selectedDeliveryText.Contains("transport") Then
 
-                    errors.Add("Transporter Name is required.")
+                    AddFieldError(errors, "txtTranName", "Transporter Name is required.")
 
                 Else
 
-                    errors.Add("Courier / Transporter Name is required.")
+                    AddFieldError(errors, "txtTranName", "Courier / Transporter Name is required.")
 
                 End If
 
@@ -1362,7 +1387,7 @@ Partial Class Dispatch_Details
 
                 If String.IsNullOrWhiteSpace(txtLRNo.Text) Then
 
-                    errors.Add("LR / Consignment No is required.")
+                    AddFieldError(errors, "txtLRNo", "LR / Consignment No is required.")
 
                 End If
 
@@ -1377,15 +1402,15 @@ Partial Class Dispatch_Details
 
                 If selectedDeliveryText.Contains("courier") Then
 
-                    errors.Add("Courier Date is required.")
+                    AddFieldError(errors, "txtLRDate", "Courier Date is required.")
 
                 ElseIf selectedDeliveryText.Contains("transport") Then
 
-                    errors.Add("LR Date is required.")
+                    AddFieldError(errors, "txtLRDate", "LR Date is required.")
 
                 Else
 
-                    errors.Add("Delivery Date is required.")
+                    AddFieldError(errors, "txtLRDate", "Delivery Date is required.")
 
                 End If
 
@@ -1400,19 +1425,25 @@ Partial Class Dispatch_Details
 
                     If selectedDeliveryText.Contains("courier") Then
 
-                        errors.Add(
+                        AddFieldError(
+                        errors,
+                        "txtLRDate",
                         "Please enter a valid Courier Date."
                     )
 
                     ElseIf selectedDeliveryText.Contains("transport") Then
 
-                        errors.Add(
+                        AddFieldError(
+                        errors,
+                        "txtLRDate",
                         "Please enter a valid LR Date."
                     )
 
                     Else
 
-                        errors.Add(
+                        AddFieldError(
+                        errors,
+                        "txtLRDate",
                         "Please enter a valid Delivery Date."
                     )
 
@@ -1431,7 +1462,7 @@ Partial Class Dispatch_Details
 
                 If String.IsNullOrWhiteSpace(txtVehNo.Text) Then
 
-                    errors.Add("Vehicle No is required.")
+                    AddFieldError(errors, "txtVehNo", "Vehicle No is required.")
 
                 End If
 
@@ -1442,28 +1473,15 @@ Partial Class Dispatch_Details
 
         '---------------------------------------
         ' LR Document
-        ' NOT Mandatory
-        ' Validate PDF only if uploaded
+        ' Validate PDF and size when uploaded
         '---------------------------------------
-        If fuLrDoc.HasFile Then
-
-            Dim extension As String =
-            System.IO.Path.GetExtension(
-                fuLrDoc.FileName
-            )
-
-            If Not extension.Equals(
-            ".pdf",
-            StringComparison.OrdinalIgnoreCase
-        ) Then
-
-                errors.Add(
-                "LR Document must be a PDF file."
-            )
-
-            End If
-
-        End If
+        ValidateUploadFile(
+            errors,
+            fuLrDoc,
+            "fuLrDoc",
+            "LR Document",
+            False
+        )
 
 
         '---------------------------------------
@@ -1471,7 +1489,7 @@ Partial Class Dispatch_Details
         '---------------------------------------
         If String.IsNullOrWhiteSpace(txtInvNo.Text) Then
 
-            errors.Add("Invoice No is required.")
+            AddFieldError(errors, "txtInvNo", "Invoice No is required.")
 
         End If
 
@@ -1481,7 +1499,7 @@ Partial Class Dispatch_Details
         '---------------------------------------
         If String.IsNullOrWhiteSpace(txtInvDate.Text) Then
 
-            errors.Add("Invoice Date is required.")
+            AddFieldError(errors, "txtInvDate", "Invoice Date is required.")
 
         Else
 
@@ -1492,7 +1510,9 @@ Partial Class Dispatch_Details
             invoiceDateValue
         ) Then
 
-                errors.Add(
+                AddFieldError(
+                errors,
+                "txtInvDate",
                 "Please enter a valid Invoice Date."
             )
 
@@ -1503,28 +1523,15 @@ Partial Class Dispatch_Details
 
         '---------------------------------------
         ' Invoice Document
-        ' NOT Mandatory
-        ' Validate PDF only if uploaded
+        ' Required
         '---------------------------------------
-        If fuInv.HasFile Then
-
-            Dim extension As String =
-            System.IO.Path.GetExtension(
-                fuInv.FileName
-            )
-
-            If Not extension.Equals(
-            ".pdf",
-            StringComparison.OrdinalIgnoreCase
-        ) Then
-
-                errors.Add(
-                "Invoice Document must be a PDF file."
-            )
-
-            End If
-
-        End If
+        ValidateUploadFile(
+            errors,
+            fuInv,
+            "fuInv",
+            "Invoice Document",
+            True
+        )
 
 
         '---------------------------------------
@@ -1564,7 +1571,9 @@ Partial Class Dispatch_Details
                qty
            ) Then
 
-                errors.Add(
+                AddFieldError(
+                errors,
+                "gvMaterials",
                 "Please enter a valid dispatch quantity at row " &
                 rowNumber.ToString() & "."
             )
@@ -1592,7 +1601,9 @@ Partial Class Dispatch_Details
             '---------------------------------------
             If qty < 0 Then
 
-                errors.Add(
+                AddFieldError(
+                errors,
+                "gvMaterials",
                 "Dispatch quantity cannot be negative at row " &
                 rowNumber.ToString() & "."
             )
@@ -1611,7 +1622,9 @@ Partial Class Dispatch_Details
 
                 If qty > pendingQty Then
 
-                    errors.Add(
+                    AddFieldError(
+                    errors,
+                    "gvMaterials",
                     "Dispatch quantity cannot exceed pending quantity at row " &
                     rowNumber.ToString() & "."
                 )
@@ -1628,7 +1641,9 @@ Partial Class Dispatch_Details
         '---------------------------------------
         If Not hasDispatchQty Then
 
-            errors.Add(
+            AddFieldError(
+            errors,
+            "gvMaterials",
             "Please enter quantity to dispatch for at least one material."
         )
 
@@ -1638,6 +1653,163 @@ Partial Class Dispatch_Details
         Return errors
 
     End Function
+
+    Private Const DispatchMaxFileSizeBytes As Integer = 5 * 1024 * 1024
+
+    Private Sub ValidateUploadFile(
+        ByVal errors As Dictionary(Of String, List(Of String)),
+        ByVal fileUpload As FileUpload,
+        ByVal fieldKey As String,
+        ByVal displayName As String,
+        ByVal isRequired As Boolean
+    )
+
+        If fileUpload Is Nothing OrElse Not fileUpload.HasFile Then
+
+            If isRequired Then
+                AddFieldError(errors, fieldKey, displayName & " is required.")
+            End If
+
+            Return
+
+        End If
+
+        Dim extension As String =
+            System.IO.Path.GetExtension(fileUpload.FileName)
+
+        If Not extension.Equals(
+            ".pdf",
+            StringComparison.OrdinalIgnoreCase
+        ) Then
+
+            AddFieldError(
+                errors,
+                fieldKey,
+                displayName & " must be a PDF file."
+            )
+
+            Return
+
+        End If
+
+        If fileUpload.PostedFile IsNot Nothing AndAlso
+           fileUpload.PostedFile.ContentLength > DispatchMaxFileSizeBytes Then
+
+            AddFieldError(
+                errors,
+                fieldKey,
+                displayName & " must not exceed 5 MB."
+            )
+
+        End If
+
+    End Sub
+
+    Private Sub AddFieldError(
+        ByVal errors As Dictionary(Of String, List(Of String)),
+        ByVal fieldKey As String,
+        ByVal message As String
+    )
+
+        If Not errors.ContainsKey(fieldKey) Then
+            errors(fieldKey) = New List(Of String)()
+        End If
+
+        errors(fieldKey).Add(message)
+
+    End Sub
+
+    Private Sub ClearInlineValidation()
+
+        ddlDelType.CssClass = "form-control"
+        txtCouNo.CssClass = "form-control"
+        txtTranName.CssClass = "form-control"
+        txtLRNo.CssClass = "form-control"
+        txtLRDate.CssClass = "form-control"
+        txtVehNo.CssClass = "form-control"
+        txtInvNo.CssClass = "form-control"
+        txtInvDate.CssClass = "form-control"
+
+        divLrDocUpload.Attributes("class") = "rm-upload-box"
+        divInvUpload.Attributes("class") = "rm-upload-box"
+        divMaterialsGrid.Attributes("class") = "table-responsive"
+
+        valDelType.Text = String.Empty
+        valCouNo.Text = String.Empty
+        valTranName.Text = String.Empty
+        valLRNo.Text = String.Empty
+        valLRDate.Text = String.Empty
+        valVehNo.Text = String.Empty
+        valLrDoc.Text = String.Empty
+        valInvNo.Text = String.Empty
+        valInvDate.Text = String.Empty
+        valInvDoc.Text = String.Empty
+        valGridQty.Text = String.Empty
+
+    End Sub
+
+    Private Sub ShowInlineValidation(
+        ByVal errors As Dictionary(Of String, List(Of String))
+    )
+
+        ClearInlineValidation()
+
+        For Each fieldKey As String In errors.Keys
+
+            Dim message As String =
+                String.Join(" ", errors(fieldKey))
+
+            Select Case fieldKey
+
+                Case "ddlDelType"
+                    ddlDelType.CssClass = "form-control field-invalid"
+                    valDelType.Text = message
+
+                Case "txtCouNo"
+                    txtCouNo.CssClass = "form-control field-invalid"
+                    valCouNo.Text = message
+
+                Case "txtTranName"
+                    txtTranName.CssClass = "form-control field-invalid"
+                    valTranName.Text = message
+
+                Case "txtLRNo"
+                    txtLRNo.CssClass = "form-control field-invalid"
+                    valLRNo.Text = message
+
+                Case "txtLRDate"
+                    txtLRDate.CssClass = "form-control field-invalid"
+                    valLRDate.Text = message
+
+                Case "txtVehNo"
+                    txtVehNo.CssClass = "form-control field-invalid"
+                    valVehNo.Text = message
+
+                Case "fuLrDoc"
+                    divLrDocUpload.Attributes("class") = "rm-upload-box field-invalid"
+                    valLrDoc.Text = message
+
+                Case "txtInvNo"
+                    txtInvNo.CssClass = "form-control field-invalid"
+                    valInvNo.Text = message
+
+                Case "txtInvDate"
+                    txtInvDate.CssClass = "form-control field-invalid"
+                    valInvDate.Text = message
+
+                Case "fuInv"
+                    divInvUpload.Attributes("class") = "rm-upload-box field-invalid"
+                    valInvDoc.Text = message
+
+                Case "gvMaterials"
+                    divMaterialsGrid.Attributes("class") = "table-responsive field-invalid"
+                    valGridQty.Text = message
+
+            End Select
+
+        Next
+
+    End Sub
 
     Private Function TryParseDispatchDate(
     ByVal dateText As String,
@@ -1658,30 +1830,6 @@ Partial Class Dispatch_Details
         )
 
     End Function
-
-    Private Sub ShowValidationPopup(
-    ByVal errors As List(Of String)
-)
-
-        Dim sb As New System.Text.StringBuilder()
-
-        sb.Append("<ul>")
-
-        For Each err As String In errors
-
-            sb.Append("<li>")
-            sb.Append(Server.HtmlEncode(err))
-            sb.Append("</li>")
-
-        Next
-
-        sb.Append("</ul>")
-
-        lblValidationMessage.Text = sb.ToString()
-
-        mpeValidation.Show()
-
-    End Sub
 
     Protected Sub ddlDelType_SelectedIndexChanged(sender As Object, e As EventArgs)
         DisplayCourierInfo()
