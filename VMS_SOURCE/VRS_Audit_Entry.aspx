@@ -183,19 +183,19 @@
                 </div>
                 <div class="rightFung"></div>
             </div>
-            
+
         </div>
 
         <div class="container">
             <div class="card">
                 <div class="card-body">
                     <div class="row">
-                         <div class="col-md-3">
+                        <div class="col-md-3">
                             <div class="form-group">
                                 <label class="form-control-label">Fin Year:</label>
                                 <asp:UpdatePanel runat="server" ID="UpdatePanel5">
                                     <ContentTemplate>
-                                        <asp:DropDownList ID="ddlFinYear" class="form-control form-control-sm select2" runat="server" AutoPostBack="True" OnSelectedIndexChanged="ddlFinYear_SelectedIndexChanged"/>
+                                        <asp:DropDownList ID="ddlFinYear" class="form-control form-control-sm select2" runat="server" AutoPostBack="True" OnSelectedIndexChanged="ddlFinYear_SelectedIndexChanged" />
                                     </ContentTemplate>
                                 </asp:UpdatePanel>
                             </div>
@@ -234,7 +234,7 @@
                         <div class="col-md-3 form-btn-mt">
                             <asp:UpdatePanel runat="server" ID="UpdatePanel3">
                                 <ContentTemplate>
-                                    <asp:Button ID="btnSearch" runat="server" ToolTip="Click to Search" Text="Search" CssClass="btn btn-primary btn-sm"/>&nbsp;
+                                    <asp:Button ID="btnSearch" runat="server" ToolTip="Click to Search" Text="Search" CssClass="btn btn-primary btn-sm" />&nbsp;
                                     <asp:Button ID="btnReset" runat="server" ToolTip="Click to Reset" Text="Reset" CssClass="btn btn-warning btn-sm" />
                                 </ContentTemplate>
                             </asp:UpdatePanel>
@@ -246,12 +246,21 @@
 
         <div class="container">
             <div class="card">
+                <div class="mst-panel-header">
+                    <div class="mst-panel-header-left">
+                        <span class="mst-panel-icon"><i class="fas fa-list"></i></span>
+                        <div>
+                            <h5 class="mst-panel-title">Vendor Audit Entry</h5>
+                            <p class="mst-panel-subtitle">Record findings from a vendor audit</p>
+                        </div>
+                    </div>
+                </div>
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-12">
                             <asp:UpdatePanel ID="UpdatePanel1" runat="server">
                                 <ContentTemplate>
-                                    <div style="max-height: 300px; overflow-y: auto;">
+                                    <div style="max-height: 280px; overflow-y: auto;">
                                         <asp:GridView ID="gvAuditList" runat="server" AutoGenerateColumns="False" EmptyDataText="No records found" CssClass="upgradDataGrid m-0" CellSpacing="0" CellPadding="0">
                                             <RowStyle CssClass="tlrowlight" />
                                             <SelectedRowStyle />
@@ -304,7 +313,7 @@
                                                 </asp:TemplateField>
                                                 <asp:TemplateField HeaderText="Remarks">
                                                     <ItemTemplate>
-                                                        <asp:TextBox ID="txtAuditRemarks" runat="server" CssClass="form-control form-control-sm" Text='<%# Eval("ah_remarks") %>'/>
+                                                        <asp:TextBox ID="txtAuditRemarks" runat="server" CssClass="form-control form-control-sm" Text='<%# Eval("ah_remarks") %>' />
                                                     </ItemTemplate>
                                                     <ControlStyle></ControlStyle>
                                                     <HeaderStyle HorizontalAlign="Center" />

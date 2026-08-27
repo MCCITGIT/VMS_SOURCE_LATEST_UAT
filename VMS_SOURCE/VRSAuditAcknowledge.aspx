@@ -190,7 +190,7 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-3">
-                             <div class="form-group">
+                            <div class="form-group">
                                 <label class="form-control-label">Fin Year:</label>
                                 <asp:UpdatePanel runat="server" ID="UpdatePanel5">
                                     <ContentTemplate>
@@ -224,7 +224,7 @@
                                     <asp:Button ID="btnReset" runat="server" ToolTip="Click to Reset" Text="Reset" CssClass="btn btn-warning btn-sm" />
                                     <asp:Button ID="btnExport" runat="server" ToolTip="Click to Reset" Text="Export" OnClick="btnExport_Click" CssClass="btn btn-success btn-sm" />
                                 </ContentTemplate>
-                                 <Triggers>
+                                <Triggers>
                                     <asp:PostBackTrigger ControlID="btnExport" />
                                 </Triggers>
                             </asp:UpdatePanel>
@@ -236,12 +236,21 @@
 
         <div class="container">
             <div class="card">
+                <div class="mst-panel-header">
+                    <div class="mst-panel-header-left">
+                        <span class="mst-panel-icon"><i class="fas fa-list"></i></span>
+                        <div>
+                            <h5 class="mst-panel-title">Vendor Audit Details</h5>
+                            <p class="mst-panel-subtitle">Acknowledge audit findings raised against vendors</p>
+                        </div>
+                    </div>
+                </div>
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-12">
                             <asp:UpdatePanel ID="UpdatePanel1" runat="server">
                                 <ContentTemplate>
-                                    <div style="max-height: 300px; overflow-y: auto;">
+                                    <div style="max-height: 200px; overflow-y: auto;">
                                         <asp:GridView ID="gvAuditList" runat="server" AutoGenerateColumns="False" EmptyDataText="No records found" CssClass="upgradDataGrid m-0" CellSpacing="0" CellPadding="0">
                                             <RowStyle CssClass="tlrowlight" />
                                             <SelectedRowStyle />
@@ -311,13 +320,12 @@
                             </asp:UpdatePanel>
                         </div>
                     </div>
+                    <asp:UpdatePanel runat="server" ID="UpdatePanel10">
+                        <ContentTemplate>
+                            <asp:Label ID="lblErrorMessage" CssClass="errormsg" Visible="true" runat="server"></asp:Label>
+                        </ContentTemplate>
+                    </asp:UpdatePanel>
                 </div>
-
-                <asp:UpdatePanel runat="server" ID="UpdatePanel10">
-                    <ContentTemplate>
-                        <asp:Label ID="lblErrorMessage" CssClass="errormsg" Visible="true" runat="server"></asp:Label>
-                    </ContentTemplate>
-                </asp:UpdatePanel>
             </div>
         </div>
 

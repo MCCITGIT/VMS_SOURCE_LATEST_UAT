@@ -22,7 +22,7 @@
     <div class="card">
         <div class="card-body">
             <div class="row">
-                 <div class="col-md-2">
+                <div class="col-md-2">
                     <div class="form-group">
                         <label class="form-control-label">Fin Year:</label>
                         <asp:UpdatePanel runat="server" ID="UpdatePanel5">
@@ -57,7 +57,7 @@
                         <ContentTemplate>
                             <asp:Button ID="btnSearch" runat="server" ToolTip="Click to Search" Text="Search" CssClass="btn btn-primary btn-sm" />&nbsp;
                                     <asp:Button ID="btnReset" runat="server" ToolTip="Click to Reset" Text="Reset" CssClass="btn btn-warning btn-sm" />
-                            <asp:Button ID="btnExport" runat="server" ToolTip="Click to Export" Text="Export" CssClass="btn btn-success btn-sm" OnClick="btnExport_Click"/>
+                            <asp:Button ID="btnExport" runat="server" ToolTip="Click to Export" Text="Export" CssClass="btn btn-success btn-sm" OnClick="btnExport_Click" />
                         </ContentTemplate>
                     </asp:UpdatePanel>
                 </div>
@@ -66,6 +66,15 @@
     </div>
 
     <div class="card">
+        <div class="mst-panel-header">
+            <div class="mst-panel-header-left">
+                <span class="mst-panel-icon"><i class="fas fa-list"></i></span>
+                <div>
+                    <h5 class="mst-panel-title">Vendor Audit Entry</h5>
+                    <p class="mst-panel-subtitle">Acknowledge complaint scores raised against vendors</p>
+                </div>
+            </div>
+        </div>
         <div class="card-body">
             <div class="row">
                 <div class="col-md-12">
