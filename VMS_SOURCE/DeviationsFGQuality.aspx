@@ -325,6 +325,7 @@
                             <span class="mst-panel-icon"><i class="fas fa-list"></i></span>
                             <div>
                                 <h5 class="mst-panel-title">Deviations in FG quality</h5>
+                                <p class="mst-panel-subtitle">Log deviations found in finished goods quality</p>
                             </div>
                         </div>
                     </div>

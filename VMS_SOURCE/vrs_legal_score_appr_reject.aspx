@@ -124,6 +124,7 @@
                         <span class="mst-panel-icon"><i class="fas fa-list"></i></span>
                         <div>
                             <h5 class="mst-panel-title">Legal Score Approval</h5>
+                            <p class="mst-panel-subtitle">Approve or reject submitted legal scores</p>
                         </div>
                     </div>
                 </div>

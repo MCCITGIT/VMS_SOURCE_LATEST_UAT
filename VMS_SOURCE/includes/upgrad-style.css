@@ -374,6 +374,7 @@ body {
     color: #1f2937 !important;
     border-collapse: collapse;
     border-spacing: 0;
+    border: 1px solid #ededed !important;
 }
 
     .upgradDataGrid .gridBtn {
@@ -1567,8 +1568,8 @@ body {
         }
 /*=================================================*/
 .select2-container .select2-selection--single {
-    height: 33px;
-    border-radius: 13px;
+    height: 33px !important;
+    border-radius: 13px !important;
 }
 
 .select2-container--default .select2-selection--single .select2-selection__arrow {

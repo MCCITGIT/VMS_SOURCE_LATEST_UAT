@@ -112,6 +112,7 @@
                         <span class="mst-panel-icon"><i class="fas fa-list"></i></span>
                         <div>
                             <h5 class="mst-panel-title">Legal Score</h5>
+                            <p class="mst-panel-subtitle">Legal compliance scores used in vendor rating</p>
                         </div>
                     </div>
                 </div>

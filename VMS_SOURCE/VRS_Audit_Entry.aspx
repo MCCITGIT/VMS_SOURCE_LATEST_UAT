@@ -251,6 +251,7 @@
                         <span class="mst-panel-icon"><i class="fas fa-list"></i></span>
                         <div>
                             <h5 class="mst-panel-title">Vendor Audit Entry</h5>
+                            <p class="mst-panel-subtitle">Record findings from a vendor audit</p>
                         </div>
                     </div>
                 </div>

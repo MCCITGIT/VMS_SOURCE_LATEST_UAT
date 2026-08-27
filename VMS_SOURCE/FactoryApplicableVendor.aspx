@@ -70,7 +70,6 @@
                                 </asp:UpdatePanel>
                             </div>
                         </div>
-
                         <div class="col-md-1">
                             <asp:Button
                                 ID="btnSearch"
@@ -80,7 +79,6 @@
                                 Style="margin-top: 19px" />
                         </div>
                     </div>
-
                     <div class="row mt-3" id="vendorRow" runat="server">
                         <div class="col-md-12">
                             <div class="form-group">
@@ -102,8 +100,6 @@
                             </div>
                         </div>
                     </div>
-
-
                     <div class="row mt-4">
                         <div class="col-12 d-flex justify-content-center">
                             <asp:UpdatePanel runat="server" ID="UpdatePanelButtons">
