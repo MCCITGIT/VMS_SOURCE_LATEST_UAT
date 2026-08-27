@@ -23,25 +23,25 @@
 
     <div class="card">
         <div class="card-body">
-            <div class="flexFormGrup row" style="align-items: flex-end; gap: 10px !important">
+            <div class="row">
                 <div class="col-md-2">
-                    <div class="form-group w-100">
+                    <div class="form-group">
                         <label class="form-control-label">Fin Year:</label>
-                        <asp:DropDownList ID="ddlFinYear" CssClass="form-control form-control-sm select2" runat="server" AutoPostBack="true" OnSelectedIndexChanged="ddlFinYear_SelectedIndexChanged" />
+                        <asp:DropDownList ID="ddlFinYear" CssClass="form-control select2" runat="server" AutoPostBack="true" OnSelectedIndexChanged="ddlFinYear_SelectedIndexChanged" />
                     </div>
                 </div>
 
-                <div class="col-md-3">
-                    <div class="form-group w-100">
+                <div class="col-md-2">
+                    <div class="form-group">
                         <label class="form-control-label">Quarter:</label>
-                        <asp:DropDownList ID="ddlquartor" CssClass="form-control form-control-sm select2" runat="server" />
+                        <asp:DropDownList ID="ddlquartor" CssClass="form-control select2" runat="server" />
                     </div>
                 </div>
 
-                <div class="col-md-3">
-                    <div class="form-group w-100">
+                <div class="col-md-2">
+                    <div class="form-group">
                         <label class="form-control-label">Search Type:</label>
-                        <asp:DropDownList ID="ddlType" CssClass="form-control form-control-sm select2" runat="server" AutoPostBack="true" OnSelectedIndexChanged="ddlType_SelectedIndexChanged">
+                        <asp:DropDownList ID="ddlType" CssClass="form-control select2" runat="server" AutoPostBack="true" OnSelectedIndexChanged="ddlType_SelectedIndexChanged">
                             <asp:ListItem Text="Group Wise" Value="GRPS"></asp:ListItem>
                             <asp:ListItem Text="Individual" Value="INDV"></asp:ListItem>
                             <asp:ListItem Text="Head Wise" Value="HEAD"></asp:ListItem>
@@ -50,9 +50,9 @@
                 </div>
 
                 <div class="col-md-3" runat="server" id="divSrcHeadGrp">
-                    <div class="form-group w-100">
+                    <div class="form-group">
                         <label class="form-control-label">Head:</label>
-                        <asp:DropDownList ID="ddlHead" CssClass="form-control form-control-sm select2" runat="server" AutoPostBack="true" OnSelectedIndexChanged="ddlHead_SelectedIndexChanged">
+                        <asp:DropDownList ID="ddlHead" CssClass="form-control select2" runat="server" AutoPostBack="true" OnSelectedIndexChanged="ddlHead_SelectedIndexChanged">
                             <asp:ListItem Text="Legal Statutory" Value="LEGSTA"></asp:ListItem>
                             <asp:ListItem Text="Quality" Value="FGQ"></asp:ListItem>
                             <asp:ListItem Text="Audit" Value="AUDIT"></asp:ListItem>
@@ -63,35 +63,35 @@
                 </div>
 
                 <div class="col-md-3" runat="server" id="divSrcVendorGroup">
-                    <div class="form-group w-100">
+                    <div class="form-group">
                         <label class="form-control-label">Vendor Group:</label>
-                        <asp:DropDownList ID="ddlVendorGrp" CssClass="form-control form-control-sm select2" runat="server" AutoPostBack="true" OnSelectedIndexChanged="ddlVendorGrp_SelectedIndexChanged" />
+                        <asp:DropDownList ID="ddlVendorGrp" CssClass="form-control select2" runat="server" AutoPostBack="true" OnSelectedIndexChanged="ddlVendorGrp_SelectedIndexChanged" />
                     </div>
                 </div>
 
                 <div class="col-md-3" runat="server" id="divSrcVendor">
-                    <div class="form-group w-100">
+                    <div class="form-group">
                         <label class="form-control-label">Vendor Unit:</label>
-                        <asp:DropDownList ID="ddlVendor" CssClass="form-control form-control-sm select2" runat="server" AutoPostBack="true" OnSelectedIndexChanged="ddlVendor_SelectedIndexChanged" />
+                        <asp:DropDownList ID="ddlVendor" CssClass="form-control select2" runat="server" AutoPostBack="true" OnSelectedIndexChanged="ddlVendor_SelectedIndexChanged" />
                     </div>
                 </div>
 
                 <div class="col-md-3" runat="server" id="divSrcProductGroup">
-                    <div class="form-group w-100">
+                    <div class="form-group">
                         <label class="form-control-label">Product Group:</label>
-                        <asp:DropDownList ID="ddlBrand" CssClass="form-control form-control-sm select2" runat="server" AutoPostBack="true" OnSelectedIndexChanged="ddlBrand_SelectedIndexChanged" />
+                        <asp:DropDownList ID="ddlBrand" CssClass="form-control select2" runat="server" AutoPostBack="true" OnSelectedIndexChanged="ddlBrand_SelectedIndexChanged" />
                     </div>
                 </div>
 
                 <div class="col-md-3" runat="server" id="divSrcProduct">
-                    <div class="form-group w-100">
+                    <div class="form-group">
                         <label class="form-control-label">Product:</label>
-                        <asp:DropDownList ID="ddlProduct" CssClass="form-control form-control-sm select2" runat="server" AutoPostBack="true" />
+                        <asp:DropDownList ID="ddlProduct" CssClass="form-control select2" runat="server" AutoPostBack="true" />
                     </div>
                 </div>
 
-                <div class="col-md-3">
-                    <div class="form-group form-btn-mt w-100" style="display: flex; gap: 2px; margin-top: 0 !important;">
+                <div class="col-md-3 form-btn-mt">
+                    <div class="form-group form-btn-mt" style="display: flex; gap: 2px; margin-top: 0 !important;">
                         <asp:Button ID="btnsearch" runat="server" Text="Search" CssClass="btn btn-primary btn-sm" OnClick="btnsearch_Click" />
                         <asp:Button ID="btnReset" runat="server" Text="Reset" CssClass="btn btn-warning btn-sm" OnClick="btnReset_Click" CausesValidation="false" />
                     </div>
@@ -466,7 +466,7 @@
 
 
             <%--<div class="card" runat="server" style="display: none;" id="div1" visible="false">
-                        <div class="card-body p-0">
+                        <div class="card-body">
                             <div class="row">
                                 <div class="col-md-12">
                                     <asp:GridView ID="gvVendor_Rate" runat="server" AutoGenerateColumns="False" EmptyDataText="No records found"
@@ -585,12 +585,21 @@
                     </ItemTemplate>
                 </asp:Repeater>
             </div>
-            <div class="card">
-                <div class="card-body">
-                    <div class="row" runat="server" id="divVendorRating" visible="false">
-                        <div class="col-md-12">
-                            <h4 class="gridTitleTx" style="font-size: 14px !important;">All Unit List</h4>
+            <div class="card" runat="server" id="divVendorRating" visible="false">
+                <div class="mst-panel-header">
+                    <div class="mst-panel-header-left">
+                        <span class="mst-panel-icon"><i class="fas fa-list"></i></span>
+                        <div>
+                            <h5 class="mst-panel-title">All Unit List</h5>
+                            <p class="mst-panel-subtitle">Record findings from a vendor audit</p>
                         </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+<%--                        <div class="col-md-12">
+                            <h4 class="gridTitleTx" style="font-size: 14px !important;"></h4>
+                        </div>--%>
                         <asp:Repeater ID="RatingRepeater" runat="server" OnItemDataBound="RatingRepeater_ItemDataBound" OnItemCommand="RatingRepeater_ItemCommand">
                             <ItemTemplate>
                                 <div class="col-md-3">
@@ -754,7 +763,7 @@
                     </div>
                     <div class="col-md-12">
                         <div class="card">
-                            <div class="card-body p-0">
+                            <div class="card-body">
                                 <div class="row">
                                     <div class="col-md-8">
                                         <div class="cardChart">
@@ -826,7 +835,7 @@
 
                 <!-- Start Old Grid View -->
                 <%-- <div class="card" style="display: none;">
-                            <div class="card-body p-0">
+                            <div class="card-body">
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="row pl-2">
