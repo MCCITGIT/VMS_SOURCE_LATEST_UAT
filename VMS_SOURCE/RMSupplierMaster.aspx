@@ -89,7 +89,7 @@
                         <asp:TemplateField HeaderText="SlNo" HeaderStyle-HorizontalAlign="Center">
                             <ItemTemplate>
                                 <span class="rsm-serial">
-                                    <span class="rsm-serial-icon" aria-hidden="true"><i class="fas fa-industry"></i></span>
+                                    <%--<span class="rsm-serial-icon" aria-hidden="true"><i class="fas fa-industry"></i></span>--%>
                                     <span class="rsm-serial-label">SlNo</span>
                                     <span class="rsm-serial-num">
                                         <asp:Label ID="lblbrandid" runat="server" Text='<%# Container.DataItemIndex + 1 %>'></asp:Label>

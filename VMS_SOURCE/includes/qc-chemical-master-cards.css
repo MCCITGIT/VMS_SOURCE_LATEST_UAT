@@ -267,6 +267,7 @@
 .qcm-card-action {
     display: flex;
     width: 100%;
+    margin-top:8px;
 }
 
 .qcm-page table.gv-cards .gridBtn,

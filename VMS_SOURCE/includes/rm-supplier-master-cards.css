@@ -57,7 +57,7 @@
 .rsm-page table.gv-cards > tbody {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
-    gap: 6px;
+    gap: 10px;
     width: 100%;
 }
 

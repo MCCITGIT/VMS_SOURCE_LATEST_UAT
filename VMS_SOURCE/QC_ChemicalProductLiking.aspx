@@ -67,6 +67,7 @@
                 <div class="diveider">/</div>
                 <div class="pageTitleWrap">
                     <h3 class="pageTitle">Add Chemical Product Linking - Details</h3>
+                    <p class="pageSubTitle">Browse and manage user profiles</p>
                 </div>
             </div>
             <div class="rightFung"></div>
