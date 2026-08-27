@@ -23,53 +23,80 @@
 
     <div class="card">
         <div class="card-body">
-            <div class="flexFormGrup">
-                <div class="form-group">
-                            <label class="form-control-label">Fin Year:</label>
-                            <asp:DropDownList ID="ddlFinYear" class="form-control select2" runat="server" AutoPostBack="true" OnSelectedIndexChanged="ddlFinYear_SelectedIndexChanged"/>
-                        </div>
-                <div class="form-group">
-                    <label class="form-control-label">Quarter:</label>
-                    <asp:DropDownList ID="ddlquartor" class="form-control select2" runat="server" />
+            <div class="row">
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label class="form-control-label">Fin Year:</label>
+                        <asp:DropDownList ID="ddlFinYear" CssClass="form-control select2" runat="server" AutoPostBack="true" OnSelectedIndexChanged="ddlFinYear_SelectedIndexChanged" />
+                    </div>
                 </div>
-                 <div class="form-group">
-                    <label class="form-control-label">Search Type:</label>
-                    <asp:DropDownList ID="ddlType" class="form-control select2" runat="server" AutoPostBack="true" OnSelectedIndexChanged="ddlType_SelectedIndexChanged">
-                        <asp:ListItem Text="Group Wise" Value="GRPS"></asp:ListItem>
-                        <asp:ListItem Text="Indivisual" Value="INDV"></asp:ListItem>
-                          <asp:ListItem Text="Head Wise" Value="HEAD"></asp:ListItem>
-                    </asp:DropDownList>
+
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label class="form-control-label">Quarter:</label>
+                        <asp:DropDownList ID="ddlquartor" CssClass="form-control select2" runat="server" />
+                    </div>
                 </div>
-                 <div class="form-group" runat="server" id="divSrcHeadGrp">
-                            <label class="form-control-label">Head:</label>
-                            <asp:DropDownList ID="ddlHead" class="form-control select2" runat="server" AutoPostBack="true" OnSelectedIndexChanged="ddlHead_SelectedIndexChanged">
-                                <asp:ListItem Text="Leagl Statutory" Value="LEGSTA"></asp:ListItem>
-                                <asp:ListItem Text="Quality" Value="FGQ"></asp:ListItem>
-                                <asp:ListItem Text="Audit" Value="AUDIT"></asp:ListItem>
-                                <asp:ListItem Text="Service" Value="SERV"></asp:ListItem>
-                                <asp:ListItem Text="Complaints" Value="COMP"></asp:ListItem>
-                            </asp:DropDownList>
-                        </div>
-                <div class="form-group" runat="server" id="divSrcVendorGroup">
-                    <label class="form-control-label">Vendor Group:</label>
-                    <asp:DropDownList ID="ddlVendorGrp" class="form-control form-control-sm select2" runat="server" AutoPostBack="true" OnSelectedIndexChanged="ddlVendorGrp_SelectedIndexChanged" />
+
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label class="form-control-label">Search Type:</label>
+                        <asp:DropDownList ID="ddlType" CssClass="form-control select2" runat="server" AutoPostBack="true" OnSelectedIndexChanged="ddlType_SelectedIndexChanged">
+                            <asp:ListItem Text="Group Wise" Value="GRPS"></asp:ListItem>
+                            <asp:ListItem Text="Individual" Value="INDV"></asp:ListItem>
+                            <asp:ListItem Text="Head Wise" Value="HEAD"></asp:ListItem>
+                        </asp:DropDownList>
+                    </div>
                 </div>
-                <div class="form-group" runat="server" id="divSrcVendor">
-                    <label class="form-control-label">Vendor Unit:</label>
-                    <asp:DropDownList ID="ddlVendor" class="form-control form-control-sm select2" runat="server" AutoPostBack="true" OnSelectedIndexChanged="ddlVendor_SelectedIndexChanged" />
+
+                <div class="col-md-3" runat="server" id="divSrcHeadGrp">
+                    <div class="form-group">
+                        <label class="form-control-label">Head:</label>
+                        <asp:DropDownList ID="ddlHead" CssClass="form-control select2" runat="server" AutoPostBack="true" OnSelectedIndexChanged="ddlHead_SelectedIndexChanged">
+                            <asp:ListItem Text="Legal Statutory" Value="LEGSTA"></asp:ListItem>
+                            <asp:ListItem Text="Quality" Value="FGQ"></asp:ListItem>
+                            <asp:ListItem Text="Audit" Value="AUDIT"></asp:ListItem>
+                            <asp:ListItem Text="Service" Value="SERV"></asp:ListItem>
+                            <asp:ListItem Text="Complaints" Value="COMP"></asp:ListItem>
+                        </asp:DropDownList>
+                    </div>
                 </div>
-                <div class="form-group" runat="server" id="divSrcProductGroup">
-                    <label class="form-control-label">Product Group:</label>
-                    <asp:DropDownList ID="ddlBrand" class="form-control form-control-sm select2" AutoPostBack="true" OnSelectedIndexChanged="ddlBrand_SelectedIndexChanged" runat="server" />
+
+                <div class="col-md-3" runat="server" id="divSrcVendorGroup">
+                    <div class="form-group">
+                        <label class="form-control-label">Vendor Group:</label>
+                        <asp:DropDownList ID="ddlVendorGrp" CssClass="form-control select2" runat="server" AutoPostBack="true" OnSelectedIndexChanged="ddlVendorGrp_SelectedIndexChanged" />
+                    </div>
                 </div>
-                <div class="form-group" runat="server" id="divSrcProduct">
-                    <label class="form-control-label">Product:</label>
-                    <asp:DropDownList ID="ddlProduct" class="form-control form-control-sm select2" AutoPostBack="true" runat="server" />
+
+                <div class="col-md-3" runat="server" id="divSrcVendor">
+                    <div class="form-group">
+                        <label class="form-control-label">Vendor Unit:</label>
+                        <asp:DropDownList ID="ddlVendor" CssClass="form-control select2" runat="server" AutoPostBack="true" OnSelectedIndexChanged="ddlVendor_SelectedIndexChanged" />
+                    </div>
                 </div>
-                <div class="form-group form-btn-mt">
-                    <asp:Button ID="btnsearch" runat="server" Text="Search" CssClass="btn btn-primary btn-sm" />
-                    <asp:Button ID="btnReset" runat="server" Text="Reset" CssClass="btn btn-warning btn-sm" />
+
+                <div class="col-md-3" runat="server" id="divSrcProductGroup">
+                    <div class="form-group">
+                        <label class="form-control-label">Product Group:</label>
+                        <asp:DropDownList ID="ddlBrand" CssClass="form-control select2" runat="server" AutoPostBack="true" OnSelectedIndexChanged="ddlBrand_SelectedIndexChanged" />
+                    </div>
                 </div>
+
+                <div class="col-md-3" runat="server" id="divSrcProduct">
+                    <div class="form-group">
+                        <label class="form-control-label">Product:</label>
+                        <asp:DropDownList ID="ddlProduct" CssClass="form-control select2" runat="server" AutoPostBack="true" />
+                    </div>
+                </div>
+
+                <div class="col-md-3 form-btn-mt">
+                    <div class="form-group form-btn-mt" style="display: flex; gap: 2px; margin-top: 0 !important;">
+                        <asp:Button ID="btnsearch" runat="server" Text="Search" CssClass="btn btn-primary btn-sm" OnClick="btnsearch_Click" />
+                        <asp:Button ID="btnReset" runat="server" Text="Reset" CssClass="btn btn-warning btn-sm" OnClick="btnReset_Click" CausesValidation="false" />
+                    </div>
+                </div>
+
             </div>
             <asp:Label ID="lblError" CssClass="errormsg" Visible="true" runat="server"></asp:Label>
         </div>
@@ -387,59 +414,59 @@
                 </div>
             </div>
 
-             <%-- All Header List --%>
-                     <div class="row" runat="server" id="divHeaderList" visible="false">
-                        <div class="col-md-12">
-                            <h4 class="gridTitleTx">All Header List</h4>
-                        </div>
-                        <asp:Repeater ID="rptHeadGrp" runat="server" OnItemDataBound="rptHeadGrp_ItemDataBound" OnItemCommand="rptHeadGrp_ItemCommand">
-                            <ItemTemplate>
-                                <div class="col-md-3">
-                                    <div class="p-card-content">
-                                        <h4 class="vendorName" style="padding: 0px 0px 10px 0px; min-height: 45px;"><%#Eval("vendor_name") %></h4>
-                                        <div class="p-unit-volume" style="column-gap: 30px;">
-                                            <div class="quikImgView">
-                                            <asp:Image runat="server" ID="imgGrpHead" src="images/gold.png" class="quikImg" Style="width:auto; height: 55px;" alt="img" />
-                                                </div>
-                                            <div class="p-unit-volume-item">
-                                                <div class="p-card-item">
-                                                     <h4 class="vendorName" style="padding: 0px;min-height: auto;"><%#Eval("head_name") %></h4>
-                                                   <%-- <span><%#Eval("head_name") %></span>--%>
-                                                     <asp:HiddenField runat="server" ID="hdrheadname" Value='<%#Eval("head_name") %>' />
-                                                   <%-- <asp:Label runat="server" class="value" ID="lblGrpTotalUnitCount" Text='<%#Eval("unit_count") %>'></asp:Label>
+            <%-- All Header List --%>
+            <div class="row" runat="server" id="divHeaderList" visible="false">
+                <div class="col-md-12">
+                    <h4 class="gridTitleTx">All Header List</h4>
+                </div>
+                <asp:Repeater ID="rptHeadGrp" runat="server" OnItemDataBound="rptHeadGrp_ItemDataBound" OnItemCommand="rptHeadGrp_ItemCommand">
+                    <ItemTemplate>
+                        <div class="col-md-3">
+                            <div class="p-card-content">
+                                <h4 class="vendorName" style="padding: 0px 0px 10px 0px; min-height: 45px;"><%#Eval("vendor_name") %></h4>
+                                <div class="p-unit-volume" style="column-gap: 30px;">
+                                    <div class="quikImgView">
+                                        <asp:Image runat="server" ID="imgGrpHead" src="images/gold.png" class="quikImg" Style="width: auto; height: 55px;" alt="img" />
+                                    </div>
+                                    <div class="p-unit-volume-item">
+                                        <div class="p-card-item">
+                                            <h4 class="vendorName" style="padding: 0px; min-height: auto;"><%#Eval("head_name") %></h4>
+                                            <%-- <span><%#Eval("head_name") %></span>--%>
+                                            <asp:HiddenField runat="server" ID="hdrheadname" Value='<%#Eval("head_name") %>' />
+                                            <%-- <asp:Label runat="server" class="value" ID="lblGrpTotalUnitCount" Text='<%#Eval("unit_count") %>'></asp:Label>
                                                     <asp:HiddenField runat="server" ID="hdrGrpGrade" Value='<%#Eval("grade_name") %>' />
                                                     <asp:HiddenField runat="server" ID="hdnVendorGroupId" Value='<%#Eval("vendor_id") %>' />--%>
-                                                </div>
-                                                <div class="p-card-item">
-                                                    <span>Obtain Weightage:</span>
-                                                    <asp:Label runat="server" class="value" ID="lblobtainHead" Text='<%#Eval("obtain_weightage") %>'></asp:Label>
-                                                </div>
-                                                <div class="p-card-item">
-                                                    <span>Max Weightage</span>
-                                                    <asp:Label runat="server" class="value" ID="lblmaxhead" Text='<%#Eval("maxWeightage") %>'></asp:Label>
-                                                </div>
-                                            </div>
                                         </div>
-                                        <div class="p-card-item" style="margin: 6px 0px 4px 0px;">
-                                            <span>Total Score:</span>
-                                            <asp:Label runat="server" class="value" ID="lblHeadTotalScore" Text='<%#Eval("obtain_percentage") %>'></asp:Label>
+                                        <div class="p-card-item">
+                                            <span>Obtain Weightage:</span>
+                                            <asp:Label runat="server" class="value" ID="lblobtainHead" Text='<%#Eval("obtain_weightage") %>'></asp:Label>
                                         </div>
-                                        <div class="p-progress-container" style="margin: 0px; height: 8px;">
-                                            <div class="progress-bar" id="LineHeadProgressBar" runat="server" style="width: 45%; height: 100%;"></div>
+                                        <div class="p-card-item">
+                                            <span>Max Weightage</span>
+                                            <asp:Label runat="server" class="value" ID="lblmaxhead" Text='<%#Eval("maxWeightage") %>'></asp:Label>
                                         </div>
-                                        <%--<div class="footerAction" style="justify-content: center;">
-                                            <asp:LinkButton ID="LnkGroupViewDetails" runat="server" title="View Details" class="vViewDtlsLink" OnClick="LnkGroupViewDetails_Click">View Details <i class="fas fa-chevron-right"></i></asp:LinkButton>
-                                        </div>--%>
                                     </div>
                                 </div>
-                            </ItemTemplate>
-                        </asp:Repeater>
-                    </div>
-                    <%-- End All Header List --%>
+                                <div class="p-card-item" style="margin: 6px 0px 4px 0px;">
+                                    <span>Total Score:</span>
+                                    <asp:Label runat="server" class="value" ID="lblHeadTotalScore" Text='<%#Eval("obtain_percentage") %>'></asp:Label>
+                                </div>
+                                <div class="p-progress-container" style="margin: 0px; height: 8px;">
+                                    <div class="progress-bar" id="LineHeadProgressBar" runat="server" style="width: 45%; height: 100%;"></div>
+                                </div>
+                                <%--<div class="footerAction" style="justify-content: center;">
+                                            <asp:LinkButton ID="LnkGroupViewDetails" runat="server" title="View Details" class="vViewDtlsLink" OnClick="LnkGroupViewDetails_Click">View Details <i class="fas fa-chevron-right"></i></asp:LinkButton>
+                                        </div>--%>
+                            </div>
+                        </div>
+                    </ItemTemplate>
+                </asp:Repeater>
+            </div>
+            <%-- End All Header List --%>
 
 
             <%--<div class="card" runat="server" style="display: none;" id="div1" visible="false">
-                        <div class="card-body p-0">
+                        <div class="card-body">
                             <div class="row">
                                 <div class="col-md-12">
                                     <asp:GridView ID="gvVendor_Rate" runat="server" AutoGenerateColumns="False" EmptyDataText="No records found"
@@ -558,71 +585,83 @@
                     </ItemTemplate>
                 </asp:Repeater>
             </div>
-
-            <div class="row" runat="server" id="divVendorRating" visible="false">
-                <div class="col-md-12">
-                    <h4 class="gridTitleTx">All Unit List</h4>
-                </div>
-                <asp:Repeater ID="RatingRepeater" runat="server" OnItemDataBound="RatingRepeater_ItemDataBound" OnItemCommand="RatingRepeater_ItemCommand">
-                    <ItemTemplate>
-                        <div class="col-md-3">
-                            <div class="card">
-                                <div class="card-body dataContSet">
-                                    <h4 class="vendorName"><%#Eval("vendor") %></h4>
-                                    <div class="vScoreDtlsView">
-                                        <div class="vScoreView">
-                                            <div class="graphData">
-                                                <uc:CircularProgressBar ID="CircularProgressBar1" runat="server" />
-                                            </div>
-                                        </div>
-                                        <div class="vDtlsView">
-                                            <ul class="vendorRatingList">
-                                                <li>
-                                                    <p class="vRatingLabel">Statutory(10.00)</p>
-                                                    <p class="vRatingDataPoint">
-                                                        <asp:Label ID="StatutoryObtainScore" runat="server" Text='<%#Eval("Statutory") %>'></asp:Label>
-                                                    </p>
-                                                </li>
-                                                <li>
-                                                    <p class="vRatingLabel">Quality(20.00)</p>
-                                                    <p class="vRatingDataPoint">
-                                                        <asp:Label ID="QualityObtainScore" runat="server" Text='<%#Eval("Quality") %>'></asp:Label>
-                                                    </p>
-                                                </li>
-                                                <li>
-                                                    <p class="vRatingLabel">Audit(15.00)</p>
-                                                    <p class="vRatingDataPoint">
-                                                        <asp:Label ID="AuditObtainScore" runat="server" Text='<%#Eval("Audit") %>'></asp:Label>
-                                                    </p>
-                                                </li>
-                                                <li>
-                                                    <p class="vRatingLabel">Service(30.00)</p>
-                                                    <p class="vRatingDataPoint">
-                                                        <asp:Label ID="ServeiceObtainScore" runat="server" Text='<%#Eval("Service") %>'></asp:Label>
-                                                    </p>
-                                                </li>
-                                                <li>
-                                                    <p class="vRatingLabel">Complaints(25.00)</p>
-                                                    <p class="vRatingDataPoint">
-                                                        <asp:Label ID="CompObtainScore" runat="server" Text='<%#Eval("Complaints") %>'></asp:Label>
-                                                    </p>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                    <div class="footerAction">
-                                        <asp:LinkButton ID="LnkViewDetails" runat="server" title="View Details" class="vViewDtlsLink" OnClick="LnkViewDetails_Click">View Details <i class="fas fa-chevron-right"></i></asp:LinkButton>
-                                        <asp:LinkButton ID="LnkViewProduct" runat="server" title="View Product" class="vViewDtlsLink" CommandName="ViewProduct" CommandArgument='<%#Eval("unit_code") %>'>View Product <i class="fas fa-chevron-right"></i></asp:LinkButton>
-                                    </div>
-                                    <asp:HiddenField ID="hdnTotal" Value='<%#Eval("total") %>' runat="server" />
-                                    <asp:HiddenField ID="hdnvendorID" Value='<%#Eval("unit_code") %>' runat="server" />
-                                </div>
-                            </div>
+            <div class="card" runat="server" id="divVendorRating" visible="false">
+                <div class="mst-panel-header">
+                    <div class="mst-panel-header-left">
+                        <span class="mst-panel-icon"><i class="fas fa-list"></i></span>
+                        <div>
+                            <h5 class="mst-panel-title">All Unit List</h5>
+                            <p class="mst-panel-subtitle">Record findings from a vendor audit</p>
                         </div>
-                    </ItemTemplate>
-                </asp:Repeater>
-                <div class="col-md-12 text-center mb-3 mt-1">
-                    <asp:Button ID="Button1" runat="server" Text="Back" OnClick="btnback_Click" CssClass="btn btn-secondary btn-sm" />
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+<%--                        <div class="col-md-12">
+                            <h4 class="gridTitleTx" style="font-size: 14px !important;"></h4>
+                        </div>--%>
+                        <asp:Repeater ID="RatingRepeater" runat="server" OnItemDataBound="RatingRepeater_ItemDataBound" OnItemCommand="RatingRepeater_ItemCommand">
+                            <ItemTemplate>
+                                <div class="col-md-3">
+                                    <div class="card">
+                                        <div class="card-body dataContSet">
+                                            <h4 class="vendorName"><%#Eval("vendor") %></h4>
+                                            <div class="vScoreDtlsView">
+                                                <div class="vScoreView">
+                                                    <div class="graphData">
+                                                        <uc:CircularProgressBar ID="CircularProgressBar1" runat="server" />
+                                                    </div>
+                                                </div>
+                                                <div class="vDtlsView">
+                                                    <ul class="vendorRatingList">
+                                                        <li>
+                                                            <p class="vRatingLabel">Statutory(10.00)</p>
+                                                            <p class="vRatingDataPoint">
+                                                                <asp:Label ID="StatutoryObtainScore" runat="server" Text='<%#Eval("Statutory") %>'></asp:Label>
+                                                            </p>
+                                                        </li>
+                                                        <li>
+                                                            <p class="vRatingLabel">Quality(20.00)</p>
+                                                            <p class="vRatingDataPoint">
+                                                                <asp:Label ID="QualityObtainScore" runat="server" Text='<%#Eval("Quality") %>'></asp:Label>
+                                                            </p>
+                                                        </li>
+                                                        <li>
+                                                            <p class="vRatingLabel">Audit(15.00)</p>
+                                                            <p class="vRatingDataPoint">
+                                                                <asp:Label ID="AuditObtainScore" runat="server" Text='<%#Eval("Audit") %>'></asp:Label>
+                                                            </p>
+                                                        </li>
+                                                        <li>
+                                                            <p class="vRatingLabel">Service(30.00)</p>
+                                                            <p class="vRatingDataPoint">
+                                                                <asp:Label ID="ServeiceObtainScore" runat="server" Text='<%#Eval("Service") %>'></asp:Label>
+                                                            </p>
+                                                        </li>
+                                                        <li>
+                                                            <p class="vRatingLabel">Complaints(25.00)</p>
+                                                            <p class="vRatingDataPoint">
+                                                                <asp:Label ID="CompObtainScore" runat="server" Text='<%#Eval("Complaints") %>'></asp:Label>
+                                                            </p>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                            <div class="footerAction">
+                                                <asp:LinkButton ID="LnkViewDetails" runat="server" title="View Details" class="vViewDtlsLink" OnClick="LnkViewDetails_Click">View Details <i class="fas fa-chevron-right"></i></asp:LinkButton>
+                                                <asp:LinkButton ID="LnkViewProduct" runat="server" title="View Product" class="vViewDtlsLink" CommandName="ViewProduct" CommandArgument='<%#Eval("unit_code") %>'>View Product <i class="fas fa-chevron-right"></i></asp:LinkButton>
+                                            </div>
+                                            <asp:HiddenField ID="hdnTotal" Value='<%#Eval("total") %>' runat="server" />
+                                            <asp:HiddenField ID="hdnvendorID" Value='<%#Eval("unit_code") %>' runat="server" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </ItemTemplate>
+                        </asp:Repeater>
+                        <div class="col-md-12 text-center">
+                            <asp:Button ID="Button1" runat="server" Text="Back" OnClick="btnback_Click" CssClass="btn btn-secondary btn-sm" />
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -724,7 +763,7 @@
                     </div>
                     <div class="col-md-12">
                         <div class="card">
-                            <div class="card-body p-0">
+                            <div class="card-body">
                                 <div class="row">
                                     <div class="col-md-8">
                                         <div class="cardChart">
@@ -796,7 +835,7 @@
 
                 <!-- Start Old Grid View -->
                 <%-- <div class="card" style="display: none;">
-                            <div class="card-body p-0">
+                            <div class="card-body">
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="row pl-2">

@@ -4,7 +4,7 @@
 <%--<asp:Content ID="Content1" ContentPlaceHolderID="Head1" runat="Server">
 </asp:Content>--%>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
-    
+
 
     <script type="text/javascript" src="Scripts/ValidateUnitApplicableVendorAssign.js?key=<%= DateTime.Now.ToString %>"></script>
     <script type="text/javascript">
@@ -213,13 +213,13 @@
         <ContentTemplate>
             <div class="card">
                 <div class="card-body">
-                    <div class="row">
+                    <div class="row" style="flex-wrap: nowrap;">
                         <div class="col-md-2">
                             <div class="form-group">
                                 <asp:UpdatePanel runat="server" ID="UpdatePanel12">
                                     <ContentTemplate>
                                         <label class="form-control-label">Fin Year:</label>
-                                        <asp:DropDownList ID="ddlFinYear" class="form-control form-control-sm select2" runat="server" AutoPostBack="true" OnSelectedIndexChanged="ddlFinYear_SelectedIndexChanged"/>
+                                        <asp:DropDownList ID="ddlFinYear" class="form-control form-control-sm select2" runat="server" AutoPostBack="true" OnSelectedIndexChanged="ddlFinYear_SelectedIndexChanged" />
                                     </ContentTemplate>
                                 </asp:UpdatePanel>
                             </div>
@@ -273,7 +273,6 @@
                     </div>
                 </div>
             </div>
-
             <div class="card">
                 <div class="card-body">
                     <div class="row">
@@ -320,6 +319,15 @@
                                 </asp:UpdatePanel>
                             </div>
                         </div>--%>
+                    </div>
+                    <div class="mst-panel-header" style="padding: 10px 0;">
+                        <div class="mst-panel-header-left">
+                            <span class="mst-panel-icon"><i class="fas fa-list"></i></span>
+                            <div>
+                                <h5 class="mst-panel-title">Deviations in FG quality</h5>
+                                <p class="mst-panel-subtitle">Log deviations found in finished goods quality</p>
+                            </div>
+                        </div>
                     </div>
                     <%--<div class="row">
                         <div class="col-md-6">
@@ -567,8 +575,6 @@
                     </asp:UpdatePanel>
                 </div>
             </div>
-
-
             <asp:Panel ID="pnlRejectPopup" runat="server" CssClass="modalPanel bootstrapModal" Style="display: none;">
                 <div class="modal-dialog">
                     <div class="modal-content">
