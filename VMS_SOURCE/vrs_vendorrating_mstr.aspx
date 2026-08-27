@@ -23,7 +23,7 @@
 
     <div class="card">
         <div class="card-body">
-            <div class="flexFormGrup" style="flex-wrap: wrap; gap: 10px; align-items: flex-end;">
+            <div class="flexFormGrup" style="flex-wrap: wrap; gap: 10px; align-items: flex-end; justify-content: space-between;">
                 <div class="form-group">
                     <label class="form-control-label">Fin Year:</label>
                     <asp:DropDownList ID="ddlFinYear" class="form-control select2" runat="server" AutoPostBack="true" OnSelectedIndexChanged="ddlFinYear_SelectedIndexChanged" />

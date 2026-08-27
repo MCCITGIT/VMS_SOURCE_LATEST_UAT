@@ -32,7 +32,7 @@
                         </asp:UpdatePanel>
                     </div>
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-3">
                     <div class="form-group">
                         <label class="form-control-label">Quarter:</label>
                         <asp:UpdatePanel runat="server" ID="UpdatePanel2">
@@ -42,7 +42,7 @@
                         </asp:UpdatePanel>
                     </div>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <div class="form-group">
                         <label class="form-control-label">Vendor:</label>
                         <asp:UpdatePanel runat="server" ID="UpdatePanel4">
@@ -70,7 +70,7 @@
             <div class="mst-panel-header-left">
                 <span class="mst-panel-icon"><i class="fas fa-list"></i></span>
                 <div>
-                    <h5 class="mst-panel-title">Vendor Audit Entry</h5>
+                    <h5 class="mst-panel-title">Vendor Cpmplaints Score</h5>
                     <p class="mst-panel-subtitle">Acknowledge complaint scores raised against vendors</p>
                 </div>
             </div>

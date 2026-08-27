@@ -190,7 +190,7 @@
             <div class="card">
                 <div class="card-body">
                     <div class="row">
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <div class="form-group">
                                 <label class="form-control-label">Fin Year:</label>
                                 <asp:UpdatePanel runat="server" ID="UpdatePanel5">
@@ -200,7 +200,7 @@
                                 </asp:UpdatePanel>
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-4">
                             <div class="form-group">
                                 <label class="form-control-label">Quarter:</label>
                                 <asp:UpdatePanel runat="server" ID="UpdatePanel2">
@@ -210,7 +210,7 @@
                                 </asp:UpdatePanel>
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-4">
                             <div class="form-group">
                                 <label class="form-control-label">Vendor:</label>
                                 <asp:UpdatePanel runat="server" ID="UpdatePanel4">
@@ -231,7 +231,7 @@
                                 </asp:UpdatePanel>
                             </div>
                         </div>--%>
-                        <div class="col-md-3 form-btn-mt">
+                        <div class="col-md-2 form-btn-mt">
                             <asp:UpdatePanel runat="server" ID="UpdatePanel3">
                                 <ContentTemplate>
                                     <asp:Button ID="btnSearch" runat="server" ToolTip="Click to Search" Text="Search" CssClass="btn btn-primary btn-sm" />&nbsp;
@@ -260,7 +260,7 @@
                         <div class="col-md-12">
                             <asp:UpdatePanel ID="UpdatePanel1" runat="server">
                                 <ContentTemplate>
-                                    <div style="max-height: 280px; overflow-y: auto;">
+                                    <div style="max-height: 260px; overflow-y: auto;">
                                         <asp:GridView ID="gvAuditList" runat="server" AutoGenerateColumns="False" EmptyDataText="No records found" CssClass="upgradDataGrid m-0" CellSpacing="0" CellPadding="0">
                                             <RowStyle CssClass="tlrowlight" />
                                             <SelectedRowStyle />

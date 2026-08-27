@@ -189,8 +189,8 @@
             <div class="card">
                 <div class="card-body">
                     <div class="row">
-                        <div class="col-md-3">
-                            <div class="form-group">
+                        <div class="col-md-6" style="display: flex; column-gap: 20px;">
+                            <div class="form-group" style="width: 100%;">
                                 <label class="form-control-label">Fin Year:</label>
                                 <asp:UpdatePanel runat="server" ID="UpdatePanel5">
                                     <ContentTemplate>
@@ -198,7 +198,7 @@
                                     </ContentTemplate>
                                 </asp:UpdatePanel>
                             </div>
-                            <div class="form-group">
+                            <div class="form-group" style="width: 100%;">
                                 <label class="form-control-label">Quarter:</label>
                                 <asp:UpdatePanel runat="server" ID="UpdatePanel2">
                                     <ContentTemplate>
@@ -207,7 +207,7 @@
                                 </asp:UpdatePanel>
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-3">
                             <div class="form-group">
                                 <label class="form-control-label">Vendor:</label>
                                 <asp:UpdatePanel runat="server" ID="UpdatePanel4">

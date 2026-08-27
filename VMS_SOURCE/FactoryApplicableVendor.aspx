@@ -52,6 +52,7 @@
     <asp:UpdatePanel ID="UpdatePanel" runat="server">
         <ContentTemplate>
             <div class="card">
+
                 <div class="card-body">
                     <div class="row">
                         <!-- Factory Dropdown -->
@@ -77,6 +78,15 @@
                                 Text="Search"
                                 CssClass="btn btn-sm btn-primary"
                                 Style="margin-top: 19px" />
+                        </div>
+                    </div>
+                    <div class="mst-panel-header" style="padding: 15px 0;">
+                        <div class="mst-panel-header-left">
+                            <span class="mst-panel-icon"><i class="fas fa-list"></i></span>
+                            <div>
+                                <h5 class="mst-panel-title">Factory Applicable Vendor</h5>
+                                <p class="mst-panel-subtitle">Map vendors applicable to each factory</p>
+                            </div>
                         </div>
                     </div>
                     <div class="row mt-3" id="vendorRow" runat="server">
