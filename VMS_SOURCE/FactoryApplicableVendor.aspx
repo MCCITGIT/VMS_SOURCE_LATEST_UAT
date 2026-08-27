@@ -52,7 +52,6 @@
     <asp:UpdatePanel ID="UpdatePanel" runat="server">
         <ContentTemplate>
             <div class="card">
-
                 <div class="card-body">
                     <div class="row">
                         <!-- Factory Dropdown -->
@@ -89,20 +88,21 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row mt-3" id="vendorRow" runat="server">
+                    <div class="row mt-2" id="vendorRow" runat="server">
                         <div class="col-md-12">
                             <div class="form-group">
                                 <label class="form-control-label">Vendors:</label>
                                 <asp:UpdatePanel runat="server" ID="UpdatePanelVendors">
                                     <ContentTemplate>
-                                        <div class="checkRadioGroup" style="max-height: 300px; overflow-y: auto;">
+                                        <div class="CheckBoxList" style="max-height: 300px; overflow-y: auto;">
                                             <asp:CheckBoxList
                                                 ID="cblVendors"
                                                 runat="server"
                                                 CssClass="form-check checkbox-spacing"
                                                 RepeatLayout="Table"
                                                 RepeatDirection="Horizontal"
-                                                RepeatColumns="3">
+                                                RepeatColumns="3"
+                                                style="padding-left: 0 !important;">
                                             </asp:CheckBoxList>
                                         </div>
                                     </ContentTemplate>
@@ -110,7 +110,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row mt-4">
+                    <div class="row mt-2">
                         <div class="col-12 d-flex justify-content-center">
                             <asp:UpdatePanel runat="server" ID="UpdatePanelButtons">
                                 <ContentTemplate>
