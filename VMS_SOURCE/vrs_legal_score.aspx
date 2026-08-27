@@ -73,7 +73,7 @@
                         <div class="col-md-3">
                             <div class="form-group pb-0">
                                 <label class="form-control-label">Fin Year:</label>
-                                <asp:DropDownList ID="ddlFinYear" class="form-control select2" runat="server" AutoPostBack="true" OnSelectedIndexChanged="ddlFinYear_SelectedIndexChanged"/>
+                                <asp:DropDownList ID="ddlFinYear" class="form-control select2" runat="server" AutoPostBack="true" OnSelectedIndexChanged="ddlFinYear_SelectedIndexChanged" />
                             </div>
                         </div>
                         <div class="col-md-3">
@@ -107,6 +107,15 @@
     <asp:UpdatePanel ID="UpdatePanel1" runat="server">
         <ContentTemplate>
             <div class="card" runat="server" id="div2" visible="false">
+                <div class="mst-panel-header">
+                    <div class="mst-panel-header-left">
+                        <span class="mst-panel-icon"><i class="fas fa-list"></i></span>
+                        <div>
+                            <h5 class="mst-panel-title">Legal Score</h5>
+                            <p class="mst-panel-subtitle">Legal compliance scores used in vendor rating</p>
+                        </div>
+                    </div>
+                </div>
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-12">
