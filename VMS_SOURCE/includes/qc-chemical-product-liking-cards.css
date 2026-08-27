@@ -1,0 +1,632 @@
+/* Chemical Product Linking — compact two-zone cards (visual only)
+   Scoped to .cpl-page. Uses VMS navy/teal theme. GridView columns stay intact. */
+
+.cpl-page {
+    --cpl-surface: #ffffff;
+    --cpl-ink: #10243a;
+    --cpl-muted: #5b6b7c;
+    --cpl-line: #e3ebf3;
+    --cpl-soft: #f4f8fc;
+    --cpl-primary: #1b5a8c;
+    --cpl-primary-deep: #10385a;
+    --cpl-accent: #0f8a7a;
+    --cpl-tint: #eef5fb;
+    --cpl-linked: #0f8a7a;
+    --cpl-linked-soft: #eef8f6;
+    --cpl-shadow: 0 1px 2px rgba(16, 56, 90, 0.05), 0 6px 14px rgba(16, 56, 90, 0.05);
+    --cpl-shadow-hover: 0 6px 16px rgba(16, 56, 90, 0.1);
+    --cpl-radius: 10px;
+}
+
+.cpl-page.rm-module .card {
+    border-color: var(--cpl-line) !important;
+    box-shadow: var(--cpl-shadow) !important;
+}
+
+.cpl-page.rm-module .card:hover {
+    box-shadow: var(--cpl-shadow-hover) !important;
+}
+
+.cpl-page.rm-module .btn-primary,
+.cpl-page.rm-module .btn-info {
+    background: var(--cpl-primary) !important;
+    border-color: var(--cpl-primary) !important;
+}
+
+.cpl-page.rm-module .btn-primary:hover,
+.cpl-page.rm-module .btn-primary:focus,
+.cpl-page.rm-module .btn-info:hover,
+.cpl-page.rm-module .btn-info:focus {
+    background: var(--cpl-primary-deep) !important;
+    border-color: var(--cpl-primary-deep) !important;
+    box-shadow: 0 6px 14px rgba(27, 90, 140, 0.22) !important;
+}
+
+.cpl-page .cpl-panel-body {
+    padding-top: 4px !important;
+}
+
+.cpl-page #lblErrorMessage,
+.cpl-page span[id$="lblErrorMessage"] {
+    display: block !important;
+    margin-top: 4px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.cpl-page #lblErrorMessage:empty,
+.cpl-page span[id$="lblErrorMessage"]:empty {
+    display: none !important;
+    margin: 0;
+}
+
+.cpl-card-wrap {
+    width: 100%;
+    max-height: min(520px, calc(100vh - 260px));
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 1px 1px 6px;
+}
+
+.cpl-actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 8px 0 2px;
+}
+
+.cpl-actions .btn,
+.cpl-actions input.btn {
+    margin: 0 !important;
+    min-height: 32px;
+    min-width: 80px;
+}
+
+/* Product filter */
+.cpl-page .cpl-filter .form-group {
+    margin-bottom: 0;
+}
+
+.cpl-page .cpl-filter .select2-container {
+    width: 100% !important;
+    max-width: 100%;
+}
+
+.cpl-page .cpl-filter .select2-container .select2-selection--single {
+    min-height: 32px;
+    height: 32px;
+    border-radius: 8px !important;
+    border: 1px solid var(--cpl-line) !important;
+    background: var(--cpl-soft) !important;
+}
+
+.cpl-page .cpl-filter .select2-container--default .select2-selection--single .select2-selection__rendered {
+    line-height: 30px;
+    padding-left: 8px;
+    color: var(--cpl-ink);
+    font-size: 13px;
+}
+
+.cpl-page .cpl-filter .select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 30px;
+}
+
+.cpl-page .cpl-filter .select2-container--default.select2-container--focus .select2-selection--single,
+.cpl-page .cpl-filter .select2-container--default.select2-container--open .select2-selection--single {
+    border-color: #9bbcd6 !important;
+    background: #ffffff !important;
+    box-shadow: 0 0 0 2px rgba(27, 90, 140, 0.12);
+}
+
+/* ---- GridView → compact two-zone cards ---- */
+.cpl-page table.gv-cards {
+    display: block;
+    width: 100% !important;
+    max-width: 100%;
+    border: 0 !important;
+    border-collapse: separate !important;
+    border-spacing: 0;
+    background: transparent !important;
+    margin: 0;
+}
+
+.cpl-page table.gv-cards > colgroup {
+    display: none;
+}
+
+.cpl-page table.gv-cards > thead {
+    display: block;
+    width: 100%;
+    position: sticky;
+    top: 0;
+    z-index: 3;
+    margin-bottom: 6px;
+}
+
+.cpl-page table.gv-cards > thead > tr,
+.cpl-page table.gv-cards > tbody > tr.headerGrid {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    min-height: 36px;
+    padding: 4px 8px;
+    background: var(--cpl-soft);
+    border: 1px solid var(--cpl-line);
+    border-radius: 8px;
+    box-shadow: 0 1px 2px rgba(16, 56, 90, 0.04);
+}
+
+.cpl-page table.gv-cards > tbody > tr.headerGrid {
+    grid-column: 1 / -1;
+    position: sticky;
+    top: 0;
+    z-index: 3;
+    margin-bottom: 0;
+}
+
+.cpl-page table.gv-cards > thead > tr > th,
+.cpl-page table.gv-cards > tbody > tr.headerGrid > th,
+.cpl-page table.gv-cards > tbody > tr.headerGrid > td {
+    width: auto !important;
+    border: 0 !important;
+    background: transparent !important;
+    padding: 0 !important;
+    vertical-align: middle;
+    text-align: left !important;
+    font-size: 9px;
+    font-weight: 750;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #7d8d9e;
+    white-space: nowrap;
+}
+
+.cpl-page table.gv-cards > thead > tr > th:nth-child(1),
+.cpl-page table.gv-cards > tbody > tr.headerGrid > th:nth-child(1),
+.cpl-page table.gv-cards > tbody > tr.headerGrid > td:nth-child(1) {
+    flex: 0 0 auto;
+    min-width: 32px;
+}
+
+.cpl-page table.gv-cards > thead > tr > th:nth-child(2),
+.cpl-page table.gv-cards > tbody > tr.headerGrid > th:nth-child(2),
+.cpl-page table.gv-cards > tbody > tr.headerGrid > td:nth-child(2) {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.cpl-page table.gv-cards > thead > tr > th:nth-child(3),
+.cpl-page table.gv-cards > tbody > tr.headerGrid > th:nth-child(3),
+.cpl-page table.gv-cards > tbody > tr.headerGrid > td:nth-child(3) {
+    flex: 0 1 110px;
+}
+
+.cpl-select-all {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    background: #ffffff;
+    border: 1px solid var(--cpl-line);
+}
+
+.cpl-page table.gv-cards > tbody {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 236px), 1fr));
+    gap: 6px;
+    width: 100%;
+}
+
+.cpl-page table.gv-cards > tbody > tr.tlrowlight,
+.cpl-page table.gv-cards > tbody > tr.tlrowdark {
+    display: grid;
+    grid-template-columns: 40px minmax(0, 1fr);
+    grid-template-rows: auto auto;
+    min-width: 0;
+    min-height: 0;
+    height: auto;
+    background: var(--cpl-surface);
+    border: 1px solid var(--cpl-line);
+    border-radius: var(--cpl-radius);
+    box-shadow: var(--cpl-shadow);
+    overflow: hidden;
+    position: relative;
+    transition: transform 0.16s ease, box-shadow 0.16s ease, border-color 0.16s ease, background-color 0.16s ease;
+}
+
+.cpl-page table.gv-cards > tbody > tr.tlrowlight::before,
+.cpl-page table.gv-cards > tbody > tr.tlrowdark::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: linear-gradient(180deg, var(--cpl-primary) 0%, var(--cpl-accent) 100%);
+    pointer-events: none;
+    z-index: 1;
+}
+
+.cpl-page table.gv-cards > tbody > tr.tlrowlight:hover,
+.cpl-page table.gv-cards > tbody > tr.tlrowdark:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--cpl-shadow-hover);
+    border-color: #c9d8e8;
+}
+
+.cpl-page table.gv-cards > tbody > tr.tlrowlight:focus-within,
+.cpl-page table.gv-cards > tbody > tr.tlrowdark:focus-within {
+    border-color: #9bbcd6;
+    box-shadow: 0 0 0 2px rgba(27, 90, 140, 0.12), var(--cpl-shadow-hover);
+    transform: none;
+}
+
+.cpl-page table.gv-cards > tbody > tr.tlrowlight:has(input[type="checkbox"]:checked),
+.cpl-page table.gv-cards > tbody > tr.tlrowdark:has(input[type="checkbox"]:checked) {
+    border-color: #9bbcd6;
+    background: #f6fafd;
+}
+
+.cpl-page table.gv-cards > tbody > tr.tlrowlight:has(input[type="checkbox"]:checked:disabled),
+.cpl-page table.gv-cards > tbody > tr.tlrowdark:has(input[type="checkbox"]:checked:disabled) {
+    border-color: #b7e4de;
+    background: var(--cpl-linked-soft);
+}
+
+.cpl-page table.gv-cards > tbody > tr.tlrowlight:has(input[type="checkbox"]:checked:disabled)::before,
+.cpl-page table.gv-cards > tbody > tr.tlrowdark:has(input[type="checkbox"]:checked:disabled)::before {
+    background: var(--cpl-accent);
+}
+
+.cpl-page table.gv-cards > tbody > tr.tlrowlight > td,
+.cpl-page table.gv-cards > tbody > tr.tlrowdark > td {
+    width: auto !important;
+    max-width: none !important;
+    border: 0 !important;
+    background: transparent !important;
+    vertical-align: middle;
+    padding: 0 !important;
+    min-width: 0;
+}
+
+.cpl-page table.gv-cards > tbody > tr.tlrowlight > td:nth-child(1),
+.cpl-page table.gv-cards > tbody > tr.tlrowdark > td:nth-child(1) {
+    grid-column: 1;
+    grid-row: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 4px 6px 8px !important;
+    background: linear-gradient(180deg, #f4f8fc 0%, #eaf3f9 100%) !important;
+    border-right: 1px solid var(--cpl-line) !important;
+}
+
+.cpl-select {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 6px;
+    background: #ffffff;
+    border: 1px solid var(--cpl-line);
+    transition: border-color 0.12s ease, background 0.12s ease, box-shadow 0.12s ease;
+}
+
+.cpl-page table.gv-cards > tbody > tr.tlrowlight:has(input[type="checkbox"]:checked) > td:nth-child(1) .cpl-select,
+.cpl-page table.gv-cards > tbody > tr.tlrowdark:has(input[type="checkbox"]:checked) > td:nth-child(1) .cpl-select {
+    background: var(--cpl-tint);
+    border-color: #9bbcd6;
+}
+
+.cpl-page table.gv-cards > tbody > tr.tlrowlight:has(input[type="checkbox"]:checked:disabled) > td:nth-child(1) .cpl-select,
+.cpl-page table.gv-cards > tbody > tr.tlrowdark:has(input[type="checkbox"]:checked:disabled) > td:nth-child(1) .cpl-select {
+    background: #dff3ef;
+    border-color: #9ad4cb;
+}
+
+.cpl-page table.gv-cards input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    min-width: 16px;
+    min-height: 16px;
+    margin: 0;
+    cursor: pointer;
+    accent-color: var(--cpl-primary);
+    -webkit-tap-highlight-color: transparent;
+}
+
+.cpl-page table.gv-cards input[type="checkbox"]:focus-visible {
+    outline: 2px solid var(--cpl-primary);
+    outline-offset: 2px;
+}
+
+.cpl-page table.gv-cards input[type="checkbox"]:disabled {
+    cursor: not-allowed;
+    accent-color: var(--cpl-accent);
+}
+
+.cpl-page table.gv-cards > tbody > tr.tlrowlight > td:nth-child(2),
+.cpl-page table.gv-cards > tbody > tr.tlrowdark > td:nth-child(2) {
+    grid-column: 2;
+    grid-row: 1;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 6px 10px !important;
+    text-align: left;
+}
+
+.cpl-chem {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1px;
+    min-width: 0;
+    width: 100%;
+}
+
+.cpl-chem-kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 8px;
+    font-weight: 750;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #7d8d9e;
+    line-height: 1;
+}
+
+.cpl-chem-kicker i {
+    color: var(--cpl-primary);
+    font-size: 9px;
+}
+
+.cpl-chem-value,
+.cpl-chem-value span,
+.cpl-chem-value label {
+    display: block;
+    font-size: 13px;
+    font-weight: 750;
+    color: var(--cpl-primary-deep);
+    line-height: 1.25;
+    word-break: break-word;
+}
+
+.cpl-page table.gv-cards > tbody > tr.tlrowlight > td:nth-child(3),
+.cpl-page table.gv-cards > tbody > tr.tlrowdark > td:nth-child(3) {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    display: flex;
+    align-items: stretch;
+    justify-content: stretch;
+    padding: 0 8px 8px !important;
+    background: var(--cpl-soft) !important;
+    border-top: 1px dashed #d5e4f2 !important;
+}
+
+.cpl-dose {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 2px;
+    width: 100%;
+    padding-top: 5px;
+}
+
+.cpl-dose-kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 8px;
+    font-weight: 750;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #7d8d9e;
+    line-height: 1;
+}
+
+.cpl-dose-kicker i {
+    color: var(--cpl-primary);
+    font-size: 9px;
+}
+
+.cpl-dose-field {
+    display: block;
+    width: 100%;
+}
+
+.cpl-page table.gv-cards .cpl-dose-field .form-control,
+.cpl-page table.gv-cards .cpl-dose-field input[type="text"] {
+    width: 100% !important;
+    max-width: 100%;
+    min-height: 30px;
+    height: 30px;
+    padding: 2px 8px !important;
+    border-radius: 8px !important;
+    background: #ffffff !important;
+    border: 1px solid var(--cpl-line) !important;
+    color: var(--cpl-ink) !important;
+    font-size: 12px !important;
+    font-weight: 650;
+    box-shadow: none !important;
+}
+
+.cpl-page table.gv-cards .cpl-dose-field .form-control:focus,
+.cpl-page table.gv-cards .cpl-dose-field input[type="text"]:focus {
+    background: #ffffff !important;
+    border-color: #9bbcd6 !important;
+    box-shadow: 0 0 0 2px rgba(27, 90, 140, 0.12) !important;
+}
+
+.cpl-page table.gv-cards .cpl-dose-field .form-control:disabled,
+.cpl-page table.gv-cards .cpl-dose-field input[type="text"]:disabled {
+    background: #eef1f5 !important;
+    color: #64748b !important;
+}
+
+.cpl-page table.gv-cards > tbody > tr.footerGrid,
+.cpl-page table.gv-cards > tbody > tr.PagerGrid {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: center;
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+    min-height: 0;
+    padding: 4px 0 0;
+}
+
+.cpl-page table.gv-cards > tbody > tr.footerGrid > td,
+.cpl-page table.gv-cards > tbody > tr.PagerGrid > td {
+    display: block;
+    width: 100%;
+    padding: 0 !important;
+    border: 0 !important;
+    background: transparent !important;
+}
+
+.cpl-page table.gv-cards > tbody > tr:not(.headerGrid):not(.tlrowlight):not(.tlrowdark):not(.footerGrid):not(.PagerGrid) {
+    grid-column: 1 / -1;
+    display: block;
+}
+
+.cpl-page table.gv-cards > tbody > tr td[colspan] {
+    display: block;
+    text-align: center;
+    padding: 14px 10px !important;
+    color: var(--cpl-muted);
+    background: #f8fafc !important;
+    border: 1px dashed #d5e0ea !important;
+    border-radius: var(--cpl-radius);
+    font-weight: 650;
+}
+
+.cpl-page table.gv-cards .PagerGrid table {
+    margin-left: auto;
+}
+
+.cpl-page table.gv-cards .PagerGrid table td {
+    padding: 0 2px;
+    border: 0 !important;
+    background: transparent !important;
+}
+
+.cpl-page table.gv-cards .PagerGrid table td a,
+.cpl-page table.gv-cards .PagerGrid table td span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 28px;
+    min-height: 28px;
+    padding: 0 6px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.cpl-page table.gv-cards .PagerGrid table td a {
+    color: var(--cpl-primary);
+    background: #ffffff;
+    border: 1px solid var(--cpl-line);
+}
+
+.cpl-page table.gv-cards .PagerGrid table td a:hover,
+.cpl-page table.gv-cards .PagerGrid table td a:focus {
+    background: #eaf3fb;
+    border-color: var(--cpl-primary);
+    color: var(--cpl-primary-deep);
+}
+
+.cpl-page table.gv-cards .PagerGrid table td span {
+    background: var(--cpl-primary);
+    border: 1px solid var(--cpl-primary);
+    color: #ffffff;
+}
+
+.cpl-page table.gv-cards > tfoot {
+    display: block;
+    width: 100%;
+    margin-top: 6px;
+}
+
+@media (min-width: 1400px) {
+    .cpl-page table.gv-cards > tbody {
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    }
+}
+
+@media (max-width: 720px) {
+    .cpl-card-wrap {
+        max-height: none;
+    }
+
+    .cpl-page table.gv-cards > tbody {
+        grid-template-columns: 1fr;
+        gap: 6px;
+    }
+
+    .cpl-page .cpl-filter .col-md-4 {
+        max-width: 100%;
+        flex: 1 1 100%;
+    }
+
+    .cpl-actions .btn,
+    .cpl-actions input.btn {
+        flex: 1 1 auto;
+        min-width: 0;
+        min-height: 36px;
+    }
+}
+
+@media (max-width: 480px) {
+    .cpl-page table.gv-cards > tbody > tr.tlrowlight,
+    .cpl-page table.gv-cards > tbody > tr.tlrowdark {
+        grid-template-columns: 40px minmax(0, 1fr);
+    }
+
+    .cpl-select,
+    .cpl-select-all {
+        width: 32px;
+        height: 32px;
+    }
+
+    .cpl-page table.gv-cards input[type="checkbox"] {
+        width: 18px;
+        height: 18px;
+        min-width: 18px;
+        min-height: 18px;
+    }
+
+    .cpl-page table.gv-cards .cpl-dose-field .form-control,
+    .cpl-page table.gv-cards .cpl-dose-field input[type="text"] {
+        min-height: 36px;
+        height: 36px;
+    }
+}
+
+@media (hover: none) {
+    .cpl-page table.gv-cards > tbody > tr.tlrowlight:hover,
+    .cpl-page table.gv-cards > tbody > tr.tlrowdark:hover {
+        transform: none;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .cpl-page table.gv-cards > tbody > tr.tlrowlight,
+    .cpl-page table.gv-cards > tbody > tr.tlrowdark {
+        transition: none;
+    }
+
+    .cpl-page table.gv-cards > tbody > tr.tlrowlight:hover,
+    .cpl-page table.gv-cards > tbody > tr.tlrowdark:hover {
+        transform: none;
+    }
+}

@@ -1,0 +1,396 @@
+/* Supplier Master — compact landscape cards (visual only)
+   Scoped to .rsm-page. Uses VMS navy/teal theme. GridView columns stay intact. */
+
+.rsm-page {
+    --rsm-surface: #ffffff;
+    --rsm-ink: #10243a;
+    --rsm-muted: #5b6b7c;
+    --rsm-line: #e3ebf3;
+    --rsm-soft: #f4f8fc;
+    --rsm-primary: #1b5a8c;
+    --rsm-primary-deep: #10385a;
+    --rsm-accent: #0f8a7a;
+    --rsm-shadow: 0 1px 2px rgba(16, 56, 90, 0.05), 0 6px 14px rgba(16, 56, 90, 0.05);
+    --rsm-shadow-hover: 0 6px 16px rgba(16, 56, 90, 0.1);
+    --rsm-radius: 10px;
+}
+
+.rsm-page .mst-panel-icon {
+    background: #eef5fb !important;
+    color: var(--rsm-primary) !important;
+}
+
+.rsm-page .rsm-panel-body {
+    padding-top: 6px !important;
+}
+
+.rsm-page #lblErrorMessage,
+.rsm-page span[id$="lblErrorMessage"] {
+    display: block !important;
+    margin-top: 6px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.rsm-page #lblErrorMessage:empty,
+.rsm-page span[id$="lblErrorMessage"]:empty {
+    display: none !important;
+    margin: 0;
+}
+
+.rsm-card-wrap {
+    width: 100%;
+}
+
+/* ---- GridView → compact landscape card tiles ---- */
+.rsm-page table.gv-cards {
+    display: block;
+    width: 100% !important;
+    max-width: 100%;
+    border: 0 !important;
+    border-collapse: separate !important;
+    border-spacing: 0;
+    background: transparent !important;
+    margin: 0;
+}
+
+.rsm-page table.gv-cards > tbody {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+    gap: 6px;
+    width: 100%;
+}
+
+.rsm-page table.gv-cards > thead,
+.rsm-page table.gv-cards > tbody > tr.headerGrid {
+    display: none !important;
+}
+
+.rsm-page table.gv-cards > tbody > tr.tlrowlight {
+    display: grid;
+    grid-template-columns: 44px minmax(0, 1fr) auto;
+    grid-template-rows: 1fr;
+    align-items: stretch;
+    min-width: 0;
+    min-height: 52px;
+    height: auto;
+    background: var(--rsm-surface);
+    border: 1px solid var(--rsm-line);
+    border-radius: var(--rsm-radius);
+    box-shadow: var(--rsm-shadow);
+    overflow: hidden;
+    position: relative;
+    transition: transform 0.16s ease, box-shadow 0.16s ease, border-color 0.16s ease;
+}
+
+.rsm-page table.gv-cards > tbody > tr.tlrowlight::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: linear-gradient(180deg, var(--rsm-primary) 0%, var(--rsm-accent) 100%);
+    pointer-events: none;
+}
+
+.rsm-page table.gv-cards > tbody > tr.tlrowlight:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--rsm-shadow-hover);
+    border-color: #c9d8e8;
+    background: var(--rsm-surface);
+}
+
+.rsm-page table.gv-cards > tbody > tr.tlrowlight:focus-within {
+    border-color: #9bbcd6;
+    box-shadow: 0 0 0 2px rgba(27, 90, 140, 0.12), var(--rsm-shadow-hover);
+    transform: none;
+}
+
+.rsm-page table.gv-cards > tbody > tr.tlrowlight > td {
+    width: auto !important;
+    max-width: none !important;
+    border: 0 !important;
+    background: transparent !important;
+    vertical-align: middle;
+    padding: 0 !important;
+    min-width: 0;
+}
+
+/* SlNo — compact identity rail */
+.rsm-page table.gv-cards > tbody > tr.tlrowlight > td:nth-child(1) {
+    grid-column: 1;
+    grid-row: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 4px 6px 8px !important;
+    background: linear-gradient(180deg, #f4f8fc 0%, #eaf3f9 100%) !important;
+    border-right: 1px solid var(--rsm-line) !important;
+}
+
+.rsm-serial {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    min-width: 0;
+}
+
+.rsm-serial-icon {
+    flex: 0 0 20px;
+    width: 20px;
+    height: 20px;
+    border-radius: 6px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 9px;
+    line-height: 1;
+    background: linear-gradient(180deg, #2a78b5 0%, #1b5a8c 100%);
+    border: 0;
+    box-shadow: 0 1px 3px rgba(27, 90, 140, 0.22);
+}
+
+.rsm-serial-icon i {
+    display: block;
+    line-height: 1;
+    margin: 0;
+}
+
+.rsm-serial-label {
+    font-size: 7px;
+    font-weight: 750;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #7d8d9e;
+    line-height: 1;
+}
+
+.rsm-serial-num,
+.rsm-serial-num span,
+.rsm-serial-num label {
+    font-size: 12px;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.2px;
+    color: var(--rsm-primary-deep);
+    margin: 0;
+    padding: 0;
+    line-height: 1;
+}
+
+.rsm-serial-num span,
+.rsm-serial-num label {
+    display: inline !important;
+    background: transparent !important;
+    border: 0 !important;
+}
+
+/* Supplier Name — primary content column */
+.rsm-page table.gv-cards > tbody > tr.tlrowlight > td:nth-child(2) {
+    grid-column: 2;
+    grid-row: 1;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 6px 10px !important;
+    text-align: left;
+}
+
+.rsm-name {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1px;
+    min-width: 0;
+    width: 100%;
+}
+
+.rsm-name-kicker {
+    font-size: 8px;
+    font-weight: 750;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #7d8d9e;
+    line-height: 1;
+}
+
+.rsm-name-value,
+.rsm-name-value span {
+    display: block;
+    font-size: 13px;
+    font-weight: 750;
+    color: var(--rsm-primary-deep);
+    line-height: 1.25;
+    word-break: break-word;
+}
+
+/* Edit — trailing action column */
+.rsm-page table.gv-cards > tbody > tr.tlrowlight > td:nth-child(3) {
+    grid-column: 3;
+    grid-row: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px 6px !important;
+    background: var(--rsm-soft) !important;
+    border-left: 1px dashed #d5e4f2 !important;
+}
+
+.rsm-card-action {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.rsm-page table.gv-cards .gridBtn,
+.rsm-page table.gv-cards .btn.gridBtn,
+.rsm-page table.gv-cards .btn-info.gridBtn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 56px;
+    min-height: 28px;
+    width: auto !important;
+    padding: 3px 10px !important;
+    border-radius: 8px !important;
+    font-size: 11px;
+    font-weight: 650;
+    letter-spacing: 0.2px;
+    text-transform: none;
+    line-height: 1.2;
+    margin: 0;
+    background: #ffffff !important;
+    border: 1.5px solid var(--rsm-primary) !important;
+    color: var(--rsm-primary) !important;
+    box-shadow: none !important;
+    -webkit-tap-highlight-color: transparent;
+    transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease, color 0.12s ease, border-color 0.12s ease;
+}
+
+.rsm-page table.gv-cards .gridBtn:hover,
+.rsm-page table.gv-cards .gridBtn:focus,
+.rsm-page table.gv-cards .btn-info.gridBtn:hover,
+.rsm-page table.gv-cards .btn-info.gridBtn:focus {
+    transform: translateY(-1px);
+    background: #eaf3fb !important;
+    border-color: var(--rsm-primary-deep) !important;
+    color: var(--rsm-primary-deep) !important;
+    box-shadow: none !important;
+    filter: none;
+    text-decoration: none;
+}
+
+.rsm-page table.gv-cards .gridBtn:active {
+    transform: translateY(0);
+}
+
+.rsm-page table.gv-cards .gridBtn:focus-visible {
+    outline: 2px solid var(--rsm-primary);
+    outline-offset: 2px;
+}
+
+.rsm-page table.gv-cards > tbody > tr.footerGrid {
+    display: none;
+}
+
+.rsm-page table.gv-cards > tbody > tr:not(.headerGrid):not(.tlrowlight):not(.footerGrid) {
+    grid-column: 1 / -1;
+    display: block;
+}
+
+.rsm-page table.gv-cards > tbody > tr td[colspan] {
+    display: block;
+    text-align: center;
+    padding: 14px 10px !important;
+    color: var(--rsm-muted);
+    background: #f8fafc !important;
+    border: 1px dashed #d5e0ea !important;
+    border-radius: var(--rsm-radius);
+    font-weight: 650;
+}
+
+@media (min-width: 1400px) {
+    .rsm-page table.gv-cards > tbody {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    }
+}
+
+@media (max-width: 720px) {
+    .rsm-page table.gv-cards > tbody {
+        grid-template-columns: 1fr;
+        gap: 6px;
+    }
+
+    .rsm-page .rm-add-form-controls {
+        flex-wrap: wrap;
+    }
+
+    .rsm-page .rm-add-form-controls .form-control {
+        flex: 1 1 100%;
+    }
+
+    .rsm-page .rm-add-form-controls .btn {
+        flex: 1 1 auto;
+        min-width: 0;
+    }
+}
+
+@media (max-width: 480px) {
+    .rsm-page table.gv-cards > tbody > tr.tlrowlight {
+        grid-template-columns: 40px minmax(0, 1fr);
+        grid-template-rows: auto auto;
+        min-height: 0;
+    }
+
+    .rsm-page table.gv-cards > tbody > tr.tlrowlight > td:nth-child(1) {
+        grid-column: 1;
+        grid-row: 1 / 3;
+        padding: 6px 4px 6px 8px !important;
+    }
+
+    .rsm-page table.gv-cards > tbody > tr.tlrowlight > td:nth-child(2) {
+        grid-column: 2;
+        grid-row: 1;
+        padding: 6px 8px 2px !important;
+    }
+
+    .rsm-page table.gv-cards > tbody > tr.tlrowlight > td:nth-child(3) {
+        grid-column: 2;
+        grid-row: 2;
+        justify-content: flex-start;
+        padding: 0 8px 6px !important;
+        background: transparent !important;
+        border-left: 0 !important;
+    }
+
+    .rsm-page table.gv-cards .gridBtn,
+    .rsm-page table.gv-cards .btn.gridBtn {
+        min-width: 64px;
+        min-height: 32px;
+    }
+}
+
+@media (hover: none) {
+    .rsm-page table.gv-cards > tbody > tr.tlrowlight:hover {
+        transform: none;
+    }
+
+    .rsm-page table.gv-cards .gridBtn:hover {
+        transform: none;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .rsm-page table.gv-cards > tbody > tr.tlrowlight,
+    .rsm-page table.gv-cards .gridBtn {
+        transition: none;
+    }
+
+    .rsm-page table.gv-cards > tbody > tr.tlrowlight:hover {
+        transform: none;
+    }
+}
