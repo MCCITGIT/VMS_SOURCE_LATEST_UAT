@@ -439,7 +439,7 @@
 
 
             <%--<div class="card" runat="server" style="display: none;" id="div1" visible="false">
-                        <div class="card-body p-0">
+                        <div class="card-body">
                             <div class="row">
                                 <div class="col-md-12">
                                     <asp:GridView ID="gvVendor_Rate" runat="server" AutoGenerateColumns="False" EmptyDataText="No records found"
@@ -724,7 +724,7 @@
                     </div>
                     <div class="col-md-12">
                         <div class="card">
-                            <div class="card-body p-0">
+                            <div class="card-body">
                                 <div class="row">
                                     <div class="col-md-8">
                                         <div class="cardChart">
@@ -796,7 +796,7 @@
 
                 <!-- Start Old Grid View -->
                 <%-- <div class="card" style="display: none;">
-                            <div class="card-body p-0">
+                            <div class="card-body">
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="row pl-2">

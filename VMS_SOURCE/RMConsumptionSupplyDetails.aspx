@@ -25,27 +25,27 @@
     <div class="card">
         <div class="card-body">
             <div class="row">
-                <div class="col-md-2">
+                <div class="col-md-3">
                     <div class="form-group pb-0">
                         <label class="form-control-label">Quarter:<span id="Span12" class="mandatory">*</span></label>
-                        <asp:DropDownList ID="ddlQuarter" class="form-control form-control-sm select2" runat="server" AutoPostBack="true" />
+                        <asp:DropDownList ID="ddlQuarter" CssClass="form-control select2" runat="server" AutoPostBack="true" />
 
                     </div>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <div class="form-group pb-0">
                         <label class="form-control-label">Vendor:</label>
-                        <asp:DropDownList ID="ddlVendor" class="form-control form-control-sm select2" runat="server" AutoPostBack="true" />
+                        <asp:DropDownList ID="ddlVendor" CssClass="form-control select2" runat="server" AutoPostBack="true" />
                     </div>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <div class="form-group pb-0">
                         <label class="form-control-label">Product:</label>
-                        <asp:TextBox ID="txtProduct" class="form-control form-control-sm" runat="server"></asp:TextBox>
+                        <asp:TextBox ID="txtProduct" CssClass="form-control" runat="server"></asp:TextBox>
 
                     </div>
                 </div>
-                <div class="col-md-4 form-btn-mt">
+                <div class="col-md-12 form-btn-mt text-center">
                     <asp:Button ID="btnSearch" runat="server" Text="Search" CssClass="btn btn-primary btn-sm" OnClick="btnSearch_Click" />
                     <asp:Button ID="btnExportConsumption" runat="server" Text="Export Cunsumption" CssClass="btn btn-success btn-sm" OnClick="btnExportConsumption_Click" />
                     <asp:Button ID="btnExportAllocation" runat="server" Text="Export Allocation" CssClass="btn btn-info btn-sm" OnClick="btnExportAllocation_Click" />
@@ -61,82 +61,80 @@
     </div>
 
     <div class="card">
-        <div class="card-body p-0">
-            <div class="row">
-                <div class="col-md-12">
-                    <asp:UpdatePanel ID="updetails" runat="server">
-                        <ContentTemplate>
-                            <asp:GridView CssClass="upgradDataGrid" border="1" CellSpacing="0" CellPadding="0" ID="gvConsumption" runat="server"
-                                AutoGenerateColumns="false" AllowPaging="false" Visible="true" ShowFooter="false" GridLines="both" OnRowCommand="gvConsumption_RowCommand" OnDataBound="gvConsumption_DataBound">
-                                <RowStyle CssClass="tlrowlight" />
-                                <SelectedRowStyle />
-                                <AlternatingRowStyle CssClass="tlrowdark" />
-                                <PagerStyle HorizontalAlign="Center" />
-                                <HeaderStyle CssClass="headerGrid" HorizontalAlign="Center" />
-                                <FooterStyle CssClass="footerGrid" HorizontalAlign="Center" />
-                                <Columns>
-                                    <asp:TemplateField HeaderText="SlNo" HeaderStyle-HorizontalAlign="Center">
-                                        <ItemTemplate>
-                                            <asp:Label ID="lblbrandid" runat="server" Text='<%# Container.DataItemIndex + 1 %>'></asp:Label>
-                                        </ItemTemplate>
-                                        <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="10%" />
-                                        <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="10%" />
-                                    </asp:TemplateField>
-                                    <asp:TemplateField HeaderText="Vendor" HeaderStyle-HorizontalAlign="Center">
-                                        <ItemTemplate>
-                                            <asp:Label ID="lblVendor" runat="server" Text='<%# Bind("vendorname") %>'></asp:Label>
-                                            <asp:HiddenField runat="server" ID="hdnvendorId" Value='<%#Eval("vendorid") %>' />
-                                        </ItemTemplate>
-                                        <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="20%" />
-                                        <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="20%" />
-                                    </asp:TemplateField>
-                                    <asp:TemplateField HeaderText="Chemical Name" HeaderStyle-HorizontalAlign="Center">
-                                        <ItemTemplate>
-                                            <asp:Label ID="lChemical" runat="server" Text='<%# Bind("tc_chemical_name") %>'></asp:Label>
-                                        </ItemTemplate>
-                                        <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="20%" />
-                                        <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="20%" />
-                                    </asp:TemplateField>
-                                    <asp:TemplateField HeaderText="Allocation" HeaderStyle-HorizontalAlign="Center">
-                                        <ItemTemplate>
-                                            <asp:Label ID="lblAlloted" runat="server" Text='<%# Bind("alloted") %>'></asp:Label>
-                                        </ItemTemplate>
-                                        <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="20%" />
-                                        <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="20%" />
-                                    </asp:TemplateField>
-                                    <asp:TemplateField HeaderText="Supply" HeaderStyle-HorizontalAlign="Center">
-                                        <ItemTemplate>
-                                            <asp:Label ID="lblSupply" runat="server" Text='<%# Bind("supply") %>'></asp:Label>
-                                        </ItemTemplate>
-                                        <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="20%" />
-                                        <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="20%" />
-                                    </asp:TemplateField>
-                                    <asp:TemplateField HeaderText="Consumption" HeaderStyle-HorizontalAlign="Center">
-                                        <ItemTemplate>
-                                            <asp:Label ID="lblConsumption" runat="server" Text='<%# Bind("consumption") %>'></asp:Label>
-                                        </ItemTemplate>
-                                        <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="20%" />
-                                        <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="20%" />
-                                    </asp:TemplateField>
-                                    <asp:TemplateField HeaderText="" HeaderStyle-HorizontalAlign="Center" Visible="true">
-                                        <ItemTemplate>
-                                            <asp:Button ID="btnView" CommandName="ViewDetails" Visible="true" runat="server" CssClass="btn btn-info gridBtn" Text="View" title="View" ToolTip="Click To View Details" CommandArgument='<%# Eval("vendorid") & "|" & Eval("vendorid") %>'></asp:Button>
-                                        </ItemTemplate>
-                                        <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="10%" />
-                                        <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="10%" />
-                                    </asp:TemplateField>
-                                </Columns>
-                            </asp:GridView>
-                        </ContentTemplate>
-                        <Triggers>
-                            <asp:AsyncPostBackTrigger ControlID="gvConsumption" EventName="RowCommand" />
-                        </Triggers>
-                        <%-- <Triggers>
+        <div class="card-body">
+            <asp:UpdatePanel ID="updetails" runat="server">
+                <ContentTemplate>
+                    <div class="table-responsive">
+                        <asp:GridView CssClass="upgradDataGrid" border="1" CellSpacing="0" CellPadding="0" ID="gvConsumption" runat="server"
+                            AutoGenerateColumns="false" AllowPaging="false" Visible="true" ShowFooter="false" GridLines="both" OnRowCommand="gvConsumption_RowCommand" OnDataBound="gvConsumption_DataBound">
+                            <RowStyle CssClass="tlrowlight" />
+                            <SelectedRowStyle />
+                            <AlternatingRowStyle CssClass="tlrowdark" />
+                            <PagerStyle HorizontalAlign="Center" />
+                            <HeaderStyle CssClass="headerGrid" HorizontalAlign="Center" />
+                            <FooterStyle CssClass="footerGrid" HorizontalAlign="Center" />
+                            <Columns>
+                                <asp:TemplateField HeaderText="SlNo" HeaderStyle-HorizontalAlign="Center">
+                                    <ItemTemplate>
+                                        <asp:Label ID="lblbrandid" runat="server" Text='<%# Container.DataItemIndex + 1 %>'></asp:Label>
+                                    </ItemTemplate>
+                                    <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="10%" />
+                                    <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="10%" />
+                                </asp:TemplateField>
+                                <asp:TemplateField HeaderText="Vendor" HeaderStyle-HorizontalAlign="Center">
+                                    <ItemTemplate>
+                                        <asp:Label ID="lblVendor" runat="server" Text='<%# Bind("vendorname") %>'></asp:Label>
+                                        <asp:HiddenField runat="server" ID="hdnvendorId" Value='<%#Eval("vendorid") %>' />
+                                    </ItemTemplate>
+                                    <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="20%" />
+                                    <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="20%" />
+                                </asp:TemplateField>
+                                <asp:TemplateField HeaderText="Chemical Name" HeaderStyle-HorizontalAlign="Center">
+                                    <ItemTemplate>
+                                        <asp:Label ID="lChemical" runat="server" Text='<%# Bind("tc_chemical_name") %>'></asp:Label>
+                                    </ItemTemplate>
+                                    <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="20%" />
+                                    <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="20%" />
+                                </asp:TemplateField>
+                                <asp:TemplateField HeaderText="Allocation" HeaderStyle-HorizontalAlign="Center">
+                                    <ItemTemplate>
+                                        <asp:Label ID="lblAlloted" runat="server" Text='<%# Bind("alloted") %>'></asp:Label>
+                                    </ItemTemplate>
+                                    <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="20%" />
+                                    <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="20%" />
+                                </asp:TemplateField>
+                                <asp:TemplateField HeaderText="Supply" HeaderStyle-HorizontalAlign="Center">
+                                    <ItemTemplate>
+                                        <asp:Label ID="lblSupply" runat="server" Text='<%# Bind("supply") %>'></asp:Label>
+                                    </ItemTemplate>
+                                    <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="20%" />
+                                    <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="20%" />
+                                </asp:TemplateField>
+                                <asp:TemplateField HeaderText="Consumption" HeaderStyle-HorizontalAlign="Center">
+                                    <ItemTemplate>
+                                        <asp:Label ID="lblConsumption" runat="server" Text='<%# Bind("consumption") %>'></asp:Label>
+                                    </ItemTemplate>
+                                    <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="20%" />
+                                    <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="20%" />
+                                </asp:TemplateField>
+                                <asp:TemplateField HeaderText="" HeaderStyle-HorizontalAlign="Center" Visible="true">
+                                    <ItemTemplate>
+                                        <asp:Button ID="btnView" CommandName="ViewDetails" Visible="true" runat="server" CssClass="btn btn-info gridBtn" Text="View" title="View" ToolTip="Click To View Details" CommandArgument='<%# Eval("vendorid") & "|" & Eval("vendorid") %>'></asp:Button>
+                                    </ItemTemplate>
+                                    <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="10%" />
+                                    <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="10%" />
+                                </asp:TemplateField>
+                            </Columns>
+                        </asp:GridView>
+                    </div>
+                </ContentTemplate>
+                <Triggers>
+                    <asp:AsyncPostBackTrigger ControlID="gvConsumption" EventName="RowCommand" />
+                </Triggers>
+                <%-- <Triggers>
                                      <asp:PostBackTrigger ControlID="btnView" />
                                  </Triggers>--%>
-                    </asp:UpdatePanel>
-                </div>
-            </div>
+            </asp:UpdatePanel>
         </div>
     </div>
 
