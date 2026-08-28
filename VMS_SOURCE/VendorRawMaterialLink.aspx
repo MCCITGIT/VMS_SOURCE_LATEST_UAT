@@ -3,8 +3,28 @@
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
     <link href="includes/rm-procurement.css?v=<%= DateTime.Now.Ticks %>" rel="stylesheet" type="text/css" />
+    <style type="text/css">
+        .rm-module .form-control.field-invalid,
+        .rm-module textarea.form-control.field-invalid {
+            border: 1px solid #dc3545 !important;
+            box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.12) !important;
+        }
+
+        .dispatch-field-error {
+            display: block;
+            color: #dc3545;
+            font-size: 12px;
+            font-weight: 500;
+            margin-top: 4px;
+            line-height: 1.35;
+        }
+
+            .dispatch-field-error:empty {
+                display: none;
+            }
+    </style>
     <div class="rm-module rm-vendor-link">
-        <script type="text/javascript" src="Scripts/FunctionValidator.js"></script>
+        <script type="text/javascript" src="Scripts/rm-status-confirm.js?v=<%= DateTime.Now.Ticks %>"></script>
         <script type="text/javascript" src="Scripts/VendorRawMaterialLinking.js?time=<%= DateTime.Now.ToString("yyyy.MM.dd-HH.mm.ss.fff") %>"></script>
 
         <script type="text/javascript">
@@ -32,15 +52,21 @@
                 var value = e.get_value();
                 var text = e.get_text();
                 document.getElementById('<%=txtrawmatid.ClientID%>').value = value;
-                document.getElementById('<%=txtSearchText.ClientID%>').value = text + " (" + value + ")";
-                sender.get_element().value = text + " (" + value + ")";
+                document.getElementById('<%=txtSearchText.ClientID%>').value = text;
+                sender.get_element().value = text;
+                if (typeof clearRawMatValidation === 'function') {
+                    clearRawMatValidation();
+                }
             }
 
             function clearRawMaterialSelection() {
                 document.getElementById('<%=txtrawmatid.ClientID%>').value = '';
+                if (typeof clearRawMatValidation === 'function') {
+                    clearRawMatValidation();
+                }
             }
 
-            function resetProductField() {
+            function resetRawMaterialField() {
                 var rawMatText = document.getElementById('<%=txtSearchText.ClientID%>');
                 var rawMatCode = document.getElementById('<%=txtrawmatid.ClientID%>');
 
@@ -49,6 +75,10 @@
                 }
                 if (rawMatCode) {
                     rawMatCode.value = '';
+                }
+
+                if (typeof clearRawMatValidation === 'function') {
+                    clearRawMatValidation();
                 }
 
                 return false;
@@ -65,16 +95,25 @@
                 sender.get_element().value = text;
 
                 setProductSearchState(true);
+                if (typeof clearVendorValidation === 'function') {
+                    clearVendorValidation();
+                }
             }
 
             function clearProductSelection() {
                 document.getElementById('<%=hdnVendorCode.ClientID%>').value = '';
-               <%-- document.getElementById('<%=txtVendorSearch.ClientID%>').value = '';--%>
+                if (typeof clearVendorValidation === 'function') {
+                    clearVendorValidation();
+                }
             }
 
-            function resetProductField() {
+            function resetVendorField() {
                 document.getElementById('<%=txtVendorSearch.ClientID%>').value = '';
                 document.getElementById('<%=hdnVendorCode.ClientID%>').value = '';
+                setProductSearchState(false);
+                if (typeof clearVendorValidation === 'function') {
+                    clearVendorValidation();
+                }
             }
             function setProductSearchState(isLocked) {
                 var txtProduct = document.getElementById('txtVendorSearch');
@@ -90,8 +129,11 @@
             }
             function resetRawmatField() {
                 document.getElementById('<%=txtSearchText.ClientID%>').value = '';
-
-             }
+                document.getElementById('<%=txtrawmatid.ClientID%>').value = '';
+                if (typeof clearRawMatValidation === 'function') {
+                    clearRawMatValidation();
+                }
+            }
         </script>
 
         <div class="breadcrumbs">
@@ -128,11 +170,11 @@
                         </div>--%>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label class="form-control-label">Vendor:</label>
+                                    <label class="form-control-label">Vendor:<span class="mandatory">*</span></label>
                                     <div class="input-group product-search-group">
-                                        <asp:TextBox ID="txtVendorSearch" ClientIDMode="Static" class="form-control" runat="server" AutoComplete="Off" onkeyup="clearProductSelection();" Placeholder="Enter Vendor"></asp:TextBox>
+                                        <asp:TextBox ID="txtVendorSearch" ClientIDMode="Static" CssClass="form-control" runat="server" AutoComplete="Off" onkeyup="clearProductSelection();" Placeholder="Enter Vendor"></asp:TextBox>
                                         <div class="input-group-append">
-                                            <button type="button" id="btnVendor" class="btn btn-outline-secondary product-reset-btn" onclick="resetProductField(); return false;" title="Reset Vendor"><i class="fas fa-sync-alt fa-xs"></i></button>
+                                            <button type="button" id="btnVendor" class="btn btn-outline-secondary product-reset-btn" onclick="resetVendorField(); return false;" title="Reset Vendor"><i class="fas fa-sync-alt fa-xs"></i></button>
                                         </div>
                                     </div>
                                     <asp:HiddenField ID="hdnVendorCode" ClientIDMode="Static" runat="server" />
@@ -148,15 +190,16 @@
                                         CompletionListItemCssClass="vmsAutoCompleteItem"
                                         CompletionListHighlightedItemCssClass="vmsAutoCompleteItemHighlight">
                                     </asp:AutoCompleteExtender>
+                                    <asp:Label ID="valVendorSearch" runat="server" ClientIDMode="Static" CssClass="dispatch-field-error"></asp:Label>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label class="form-control-label">Search Raw Material:<span id="Span2" class="mandatory">*</span></label>
                                     <div class="input-group product-search-group">
-                                        <asp:TextBox ID="txtSearchText" ClientIDMode="Static" class="form-control" runat="server" AutoComplete="Off" onkeyup="clearRawMaterialSelection();" Placeholder="Enter Here"></asp:TextBox>
+                                        <asp:TextBox ID="txtSearchText" ClientIDMode="Static" CssClass="form-control" runat="server" AutoComplete="Off" onkeyup="clearRawMaterialSelection();" Placeholder="Enter Here"></asp:TextBox>
                                         <div class="input-group-append">
-                                            <button type="button" class="btn btn-outline-secondary product-reset-btn" onclick="resetRawmatField(); return false;" title="Reset SKU"><i class="fas fa-sync-alt fa-xs"></i></button>
+                                            <button type="button" class="btn btn-outline-secondary product-reset-btn" onclick="resetRawMaterialField(); return false;" title="Reset Raw Material"><i class="fas fa-sync-alt fa-xs"></i></button>
                                         </div>
                                     </div>
                                     <asp:HiddenField ID="txtrawmatid" ClientIDMode="Static" runat="server" />
@@ -172,6 +215,7 @@
                                         CompletionListItemCssClass="vmsAutoCompleteItem"
                                         CompletionListHighlightedItemCssClass="vmsAutoCompleteItemHighlight">
                                     </asp:AutoCompleteExtender>
+                                    <asp:Label ID="valSearchText" runat="server" ClientIDMode="Static" CssClass="dispatch-field-error"></asp:Label>
                                 </div>
                             </div>
                             <div class="col-md-2">
@@ -235,6 +279,7 @@
                                 </div>
                             </div>
                         </div>
+                        <asp:Label ID="valGrid" runat="server" ClientIDMode="Static" CssClass="dispatch-field-error"></asp:Label>
                         <div class="row">
                             <div class="col-md-12 text-center">
                                 <asp:Button ID="btnSubmit" runat="server" Text="Submit" CssClass="btn btn-primary btn-sm" ClientIDMode="Static" Visible="false" />
@@ -252,5 +297,4 @@
             </ContentTemplate>
         </asp:UpdatePanel>
     </div>
-    <script type="text/javascript" src="Scripts/rm-status-confirm.js?v=<%= DateTime.Now.Ticks %>"></script>
 </asp:Content>

@@ -100,18 +100,29 @@
             </div>
 
             <div class="card">
-                <div class="card-body">
-                    <div class="form-group row ddlPageSize">
+                <div style="display: flex; align-items: center; justify-content: space-between; padding: 15px 0  0">
+                    <div class="mst-panel-header" style="padding-top: 0;">
+                        <div class="mst-panel-header-left">
+                            <span class="mst-panel-icon"><i class="fas fa-list"></i></span>
+                            <div>
+                                <h5 class="mst-panel-title">User Login History Details</h5>
+                                <p class="mst-panel-subtitle">Login activity for the selected user</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group ddlPageSize" style="display: flex; align-items: center; padding: 0 15px;">
                         <label for="ddlPageSize" class="col-auto form-control-label">
                             <asp:Label ID="Label4" runat="server" Text="Results Per Page:"></asp:Label>
                         </label>
-                        <div class="col-md-1">
+                        <div>
                             <asp:DropDownList ID="ddlPageSize" runat="server" CssClass="form-control select2" AutoPostBack="true"></asp:DropDownList>
                         </div>
                     </div>
+                </div>
+                <div class="card-body">
                     <div class="table-responsive">
                         <asp:GridView ID="gvUserHistory" runat="server" AutoGenerateColumns="false" AllowPaging="True"
-                            Visible="true" BorderWidth="1" CssClass="table table-hover upgradDataGrid" OnPageIndexChanging="gvUserProfile_PageIndexChanging">
+                            Visible="true" BorderWidth="1" CssClass="table table-hover upgradDataGrid" style="margin-bottom: 0" OnPageIndexChanging="gvUserProfile_PageIndexChanging">
                             <RowStyle CssClass="tlrowlight" />
                             <PagerStyle CssClass="PagerGrid" HorizontalAlign="Right" />
                             <HeaderStyle CssClass="headerGrid" />

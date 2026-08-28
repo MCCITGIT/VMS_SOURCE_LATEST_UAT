@@ -2,8 +2,29 @@
 
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
     <link href="includes/rm-procurement.css?v=<%= DateTime.Now.Ticks %>" rel="stylesheet" type="text/css" />
+    <style type="text/css">
+        .rm-module .form-control.field-invalid,
+        .rm-module textarea.form-control.field-invalid,
+        .rm-module select.form-control.field-invalid + .select2-container .select2-selection--single {
+            border: 1px solid #dc3545 !important;
+            box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.12) !important;
+        }
+
+        .dispatch-field-error {
+            display: block;
+            color: #dc3545;
+            font-size: 12px;
+            font-weight: 500;
+            margin-top: 4px;
+            line-height: 1.35;
+        }
+
+            .dispatch-field-error:empty {
+                display: none;
+            }
+    </style>
     <div class="rm-module rm-requisition-dtls">
-    <script type="text/javascript" src="Scripts/FunctionValidator.js"></script>
+    <script type="text/javascript" src="Scripts/rm-status-confirm.js?v=<%= DateTime.Now.Ticks %>"></script>
     <script type="text/javascript" src="Scripts/ValidateRawMaterialRequisitionDtls.js?time=<%= DateTime.Now.ToString("yyyy.MM.dd-HH.mm.ss.fff") %>"></script>
     <script type="text/javascript">
         document.onkeydown = checkValue;
@@ -11,9 +32,8 @@
             if (event.keyCode == 118) {
                 if (document.getElementById('btnSubmit').disabled == true)
                     return false;
-                else if (validateRawMaterialRequisitionSubmit()) {
-                    document.getElementById('btnSubmit').disabled = true;
-                    __doPostBack(document.getElementById('btnSubmit').name, '');
+                else {
+                    validateRawMaterialRequisitionSubmit();
                 }
             }
             else if (event.keyCode == 119) {
@@ -22,6 +42,31 @@
         }
         function disableBackButton() {
             window.history.forward(1);
+        }
+
+        function wireRequisitionValidationClear() {
+            var ddlUnit = document.getElementById("ddlUnit");
+            var ddlVendor = document.getElementById("ddlVendor");
+
+            if (ddlUnit && typeof clearUnitValidation === "function") {
+                ddlUnit.addEventListener("change", clearUnitValidation);
+                if (window.jQuery) {
+                    jQuery(ddlUnit).on("select2:select select2:clear", clearUnitValidation);
+                }
+            }
+
+            if (ddlVendor && typeof clearVendorValidation === "function") {
+                ddlVendor.addEventListener("change", clearVendorValidation);
+                if (window.jQuery) {
+                    jQuery(ddlVendor).on("select2:select select2:clear", clearVendorValidation);
+                }
+            }
+        }
+
+        if (window.Sys && Sys.Application) {
+            Sys.Application.add_load(wireRequisitionValidationClear);
+        } else {
+            document.addEventListener("DOMContentLoaded", wireRequisitionValidationClear);
         }
     </script>
 
@@ -55,12 +100,14 @@
                             <div class="form-group">
                                 <label class="form-control-label">Vendor Name:<span id="Span1" class="mandatory">*</span></label>
                                 <asp:DropDownList ID="ddlUnit" ClientIDMode="Static" runat="server" CssClass="form-control select2"></asp:DropDownList>
+                                <asp:Label ID="valUnit" runat="server" ClientIDMode="Static" CssClass="dispatch-field-error"></asp:Label>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label class="form-control-label">RM Vendor:<span id="Span2" class="mandatory">*</span></label>
                                 <asp:DropDownList ID="ddlVendor" ClientIDMode="Static" CssClass="form-control select2" runat="server" AutoPostBack="true" OnSelectedIndexChanged="ddlVendor_SelectedIndexChanged"></asp:DropDownList>
+                                <asp:Label ID="valVendor" runat="server" ClientIDMode="Static" CssClass="dispatch-field-error"></asp:Label>
                             </div>
                         </div>
                         <div class="col-md-2">
@@ -95,13 +142,16 @@
                                             <ItemTemplate>
                                                 <asp:TextBox ID="txtQuantity" runat="server" CssClass="form-control form-control-sm" AutoComplete="Off"
                                                     onkeypress="return allowRateTwoDecimal(event, this);"
-                                                    oninput="sanitizeRateTwoDecimal(this);"
-                                                    onblur="formatRateTwoDecimal(this);"></asp:TextBox>
+                                                    oninput="sanitizeRateTwoDecimal(this); clearRequisitionGridFieldValidation(this);"
+                                                    onblur="formatRateTwoDecimal(this);"
+                                                    onchange="clearRequisitionGridFieldValidation(this);"></asp:TextBox>
                                             </ItemTemplate>
                                         </asp:TemplateField>
                                         <asp:TemplateField HeaderText="Required Delivery Date">
                                             <ItemTemplate>
-                                                <asp:TextBox ID="txtReqDate" runat="server" CssClass="form-control form-control-sm" TextMode="Date" AutoComplete="Off"></asp:TextBox>
+                                                <asp:TextBox ID="txtReqDate" runat="server" CssClass="form-control form-control-sm" TextMode="Date" AutoComplete="Off"
+                                                    oninput="clearRequisitionGridFieldValidation(this);"
+                                                    onchange="clearRequisitionGridFieldValidation(this);"></asp:TextBox>
                                             </ItemTemplate>
                                             <HeaderStyle HorizontalAlign="Center" />
                                             <ItemStyle HorizontalAlign="Center" Width="12%" />
@@ -116,6 +166,7 @@
                             </div>
                         </div>
                     </div>
+                    <asp:Label ID="valGrid" runat="server" ClientIDMode="Static" CssClass="dispatch-field-error"></asp:Label>
                     <div class="row">
                         <div class="col-md-12 text-center">
                             <asp:Button ID="btnSubmit" runat="server" Text="Submit" CssClass="btn btn-primary btn-sm" ClientIDMode="Static" Visible="false"/>
@@ -136,6 +187,5 @@
         </Triggers>
     </asp:UpdatePanel>
     </div>
-    <script type="text/javascript" src="Scripts/rm-status-confirm.js?v=<%= DateTime.Now.Ticks %>"></script>
 </asp:Content>
 

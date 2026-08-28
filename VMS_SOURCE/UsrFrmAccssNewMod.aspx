@@ -33,7 +33,15 @@
                     </div>
                 </div>
             </div>
-
+            <div class="mst-panel-header" style="padding: 10px 0">
+                <div class="mst-panel-header-left">
+                    <span class="mst-panel-icon"><i class="fas fa-list"></i></span>
+                    <div>
+                        <h5 class="mst-panel-title">User Form Access List</h5>
+                        <p class="mst-panel-subtitle">Control which forms a user can open</p>
+                    </div>
+                </div>
+            </div>
             <div class="row">
                 <div class="col-md-12">
                     <div class="form-group">

@@ -16,6 +16,8 @@ Partial Class FormulationMatrix
 
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
         CheckLogin()
+        btnSearch.Attributes.Add("onclick", "return validateProductSearch();")
+        btnSubmit.Attributes.Add("onclick", "return validateFormulationMatrixSubmit();")
 
         If Not IsPostBack Then
             ClearGrid()
@@ -76,12 +78,19 @@ Partial Class FormulationMatrix
     End Function
 
     Protected Sub btnSearch_Click(sender As Object, e As EventArgs) Handles btnSearch.Click
-        If String.IsNullOrWhiteSpace(hdnProductCode.Value) AndAlso String.IsNullOrWhiteSpace(hdnSkucode.Value) Then
-            ShowValidation("Please select Product.")
+        If String.IsNullOrWhiteSpace(txtProductSearch.Text.Trim()) Then
+            ShowInlineValidation("Product", "Please enter Product name.")
             ClearGrid()
             Exit Sub
         End If
 
+        If String.IsNullOrWhiteSpace(hdnProductCode.Value) AndAlso String.IsNullOrWhiteSpace(hdnSkucode.Value) Then
+            ShowInlineValidation("Product", "Please select Product from the list.")
+            ClearGrid()
+            Exit Sub
+        End If
+
+        ClearInlineValidation()
         txtProductSearch.Attributes("readonly") = "readonly"
         Binddata()
     End Sub
@@ -90,6 +99,7 @@ Partial Class FormulationMatrix
         If IsEditMode() Then
             Exit Sub
         End If
+        ClearInlineValidation()
         lblErrorMessage.Text = ""
         ClearGrid()
     End Sub
@@ -114,7 +124,7 @@ Partial Class FormulationMatrix
         End If
 
         If productCode = "" Then
-            ShowValidation("Please select Product.")
+            ShowInlineValidation("Product", "Please select Product from the list.")
             ClearGrid()
             Return
         End If
@@ -133,7 +143,7 @@ Partial Class FormulationMatrix
 
             If table.Rows.Count = 0 Then
                 ClearGrid()
-                ShowValidation("No formulation details found for the selected product.")
+                ShowInlineValidation("Grid", "No formulation details found for the selected product.")
                 Return
             End If
 
@@ -148,10 +158,11 @@ Partial Class FormulationMatrix
             gvFormulationMatrix.DataSource = table
             gvFormulationMatrix.DataBind()
             btnSubmit.Visible = True
+            ClearInlineValidation()
             SetSubmitButtonText()
         Else
             ClearGrid()
-            ShowValidation("No formulation details found for the selected product.")
+            ShowInlineValidation("Grid", "No formulation details found for the selected product.")
         End If
     End Sub
 
@@ -342,7 +353,7 @@ Partial Class FormulationMatrix
         Dim saveTable As DataTable = CreateSaveTable()
         Dim errorMessage As String = String.Empty
         If Not TryAddGridRowToSaveTable(gvFormulationMatrix.Rows(rowIndex), saveTable, errorMessage) Then
-            ShowValidation(errorMessage)
+            ShowInlineValidation("Grid", errorMessage)
             Exit Sub
         End If
 
@@ -354,7 +365,7 @@ Partial Class FormulationMatrix
                 Dim successMessage As String = If(matrixId > 0, "Record updated successfully.", "Submitted Successfully.")
                 RmActionPopup.ShowSuccess(Me, successMessage)
             Else
-                ShowValidation("Unable to save formulation matrix. Please try again.")
+                ShowInlineValidation("Grid", "Unable to save formulation matrix. Please try again.")
             End If
         Catch ex As Exception
             Session(Constant.SessionKeys.ErrMessage) = ex.ToString()
@@ -363,13 +374,18 @@ Partial Class FormulationMatrix
     End Sub
 
     Protected Sub btnSubmit_Click(sender As Object, e As EventArgs) Handles btnSubmit.Click
-        If String.IsNullOrWhiteSpace(hdnProductCode.Value) Then
-            ShowValidation("Please select Product.")
+        If String.IsNullOrWhiteSpace(txtProductSearch.Text.Trim()) Then
+            ShowInlineValidation("Product", "Please enter Product name.")
+            Exit Sub
+        End If
+
+        If String.IsNullOrWhiteSpace(hdnProductCode.Value) AndAlso String.IsNullOrWhiteSpace(hdnSkucode.Value) Then
+            ShowInlineValidation("Product", "Please select Product from the list.")
             Exit Sub
         End If
 
         If gvFormulationMatrix.Rows.Count = 0 Then
-            ShowValidation("No formulation details found for the selected product.")
+            ShowInlineValidation("Grid", "No formulation details found for the selected product.")
             Exit Sub
         End If
 
@@ -382,30 +398,31 @@ Partial Class FormulationMatrix
             Dim errorMessage As String = String.Empty
             If Not TryAddGridRowToSaveTable(gridRow, saveTable, errorMessage) Then
                 If errorMessage = "Please enter a valid Rate greater than 0." Then
-                    ShowValidation("Please enter a valid Rate greater than 0 for all raw materials.")
+                    ShowInlineValidation("Grid", "Please enter a valid Rate greater than 0 for all raw materials.")
                 Else
-                    ShowValidation(errorMessage)
+                    ShowInlineValidation("Grid", errorMessage)
                 End If
                 Exit Sub
             End If
         Next
 
         If saveTable.Rows.Count = 0 Then
-            ShowValidation("No formulation details found for the selected product.")
+            ShowInlineValidation("Grid", "No formulation details found for the selected product.")
             Exit Sub
         End If
 
         Try
             Dim rowsAffected As Integer = SaveFormulationMatrix(saveTable)
             If rowsAffected > 0 Then
+                ClearInlineValidation()
                 lblErrorMessage.Text = ""
                 Dim successMessage As String = If(btnSubmit.Text = "Update", "Updated Successfully.", "Submitted Successfully.")
                 RmActionPopup.ShowSuccess(Me, successMessage, "FormulationMatrixList.aspx")
             Else
-                ShowValidation("Unable to save formulation matrix. Please try again.")
+                ShowInlineValidation("Grid", "Unable to save formulation matrix. Please try again.")
             End If
         Catch ex As Exception
-            ShowValidation("Unable to save formulation matrix. Please try again.")
+            ShowInlineValidation("Grid", "Unable to save formulation matrix. Please try again.")
         End Try
     End Sub
 
@@ -413,8 +430,21 @@ Partial Class FormulationMatrix
         Response.Redirect("~/FormulationMatrixList.aspx")
     End Sub
 
-    Private Sub ShowValidation(ByVal message As String)
-        lblErrorMessage.Text = ""
-        RmActionPopup.ShowError(Me, message)
+    Private Sub ClearInlineValidation()
+        txtProductSearch.CssClass = "form-control"
+        valProductSearch.Text = String.Empty
+        valGrid.Text = String.Empty
+    End Sub
+
+    Private Sub ShowInlineValidation(ByVal fieldKey As String, ByVal message As String)
+        ClearInlineValidation()
+
+        Select Case fieldKey
+            Case "Product"
+                txtProductSearch.CssClass = "form-control field-invalid"
+                valProductSearch.Text = message
+            Case "Grid"
+                valGrid.Text = message
+        End Select
     End Sub
 End Class
