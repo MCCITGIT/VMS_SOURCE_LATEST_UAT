@@ -1,5 +1,6 @@
 ﻿
 Imports System.Data
+Imports NPOI.SS.Formula.Functions
 Imports VMS.Web
 
 Partial Class RmpDashboard
@@ -9,9 +10,9 @@ Partial Class RmpDashboard
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
         CheckLogin()
         If Not IsPostBack Then
-            BindDashboardDetails()
             'PopulateVendor()
             PopulateDuration()
+            BindDashboardDetails()
         End If
     End Sub
 
@@ -35,6 +36,7 @@ Partial Class RmpDashboard
             ddlDurationType.Items.Insert(0, New ListItem(Constant.Common.Selec, String.Empty, True))
             If DS.Tables(0).Rows.Count = 1 Then
                 ddlDurationType.SelectedIndex = 1
+                ddlDurationType.Enabled = False
                 ddlDurationType.Enabled = False
             End If
         End If
@@ -77,19 +79,70 @@ Partial Class RmpDashboard
     Private Sub BindDashboardDetails()
         'divKpiCards.Visible = False
         divCharts.Visible = False
-        gvRmPendingList.Visible = False
+        RmPendingList.Visible = False
+        divPurchaseRecord.Visible = False
+
+        If ddlDurationType.Items.FindByValue("MONTHLY") IsNot Nothing Then
+            ddlDurationType.SelectedValue = "MONTHLY"
+        End If
+
+
+        'Show Year and Month for Monthly selection
+        divYear.Visible = True
+        monthDiv.Visible = True
+
+        'Common dropdown binding
+        PopulateFinYear()
+        PopulateMonth()
+
+        'Select current year/month for both users
+        SelectCurrentYearMonth()
+
         If String.Equals(userInfo.userDepartmentEntity.ToString(), Constant.Common.userDept, StringComparison.OrdinalIgnoreCase) Then
-            monthDiv.Visible = False
-            divYear.Visible = False
-            divDuration.Visible = False
+            'monthDiv.Visible = False
+            'divYear.Visible = False
+            'divDuration.Visible = False
             PopulateUnit()
         Else
             divVendor.Visible = False
-            monthDiv.Visible = False
-            divYear.Visible = False
-            divDuration.Visible = False
+            'monthDiv.Visible = False
+            'divYear.Visible = False
+            'divDuration.Visible = False
+
+            Dim vendorCode As String = GetSelectedVendorCode()
+            BindDashboardData(vendorCode, ddlYear.SelectedValue, ddlMonth.SelectedValue)
+            BindPendingDispatchTable(vendorCode, ddlYear.SelectedValue, ddlMonth.SelectedValue)
+            BindVerifiedVendorList(vendorCode, ddlYear.SelectedValue, ddlMonth.SelectedValue)
         End If
         'BindDashboardData()
+    End Sub
+
+    Private Sub SelectCurrentYearMonth()
+        Dim today As DateTime = DateTime.Now
+
+        'Current Financial Year
+        Dim fyStartYear As Integer
+        If today.Month >= 4 Then
+            fyStartYear = today.Year
+        Else
+            fyStartYear = today.Year - 1
+        End If
+
+        Dim currentFY As String =
+        fyStartYear.ToString() & "-" &
+        (fyStartYear + 1).ToString()
+        If ddlYear.Items.FindByText(currentFY) IsNot Nothing Then
+            ddlYear.SelectedValue =
+            ddlYear.Items.FindByText(currentFY).Value
+        End If
+
+        'Current Month
+        'Dim currentMonth As String = today.Month.ToString()
+        Dim currentMonth As String =
+        today.Month.ToString("00")
+        If ddlMonth.Items.FindByValue(currentMonth) IsNot Nothing Then
+            ddlMonth.SelectedValue = currentMonth
+        End If
     End Sub
 
     Private Sub PopulateUnit()
@@ -98,25 +151,26 @@ Partial Class RmpDashboard
 
         UnitSet = UnitDespatch.GetUnitName(Constant.Common.ActiveStatus, String.Empty)
         If (Not (UnitSet Is Nothing) AndAlso UnitSet.Tables.Count > 0 AndAlso Not (UnitSet.Tables(0) Is Nothing) AndAlso UnitSet.Tables(0).Rows.Count > 0) Then
-            ddlVendor.DataSource = UnitSet.Tables(0)
-            ddlVendor.DataTextField = "unit_name"
-            ddlVendor.DataValueField = "unit_code"
-            ddlVendor.DataBind()
-            ddlVendor.Items.Insert(0, New ListItem(Constant.Common.All, String.Empty, True))
+            ddlvendor.DataSource = UnitSet.Tables(0)
+            ddlvendor.DataTextField = "unit_name"
+            ddlvendor.DataValueField = "unit_code"
+            ddlvendor.DataBind()
+            ddlvendor.Items.Insert(0, New ListItem(Constant.Common.All, String.Empty, True))
         End If
         If (userInfo.userGroupCodeEntity = "UNIT") Then
-            ddlVendor.SelectedValue = userInfo.userBranchEntity
-            ddlVendor.Enabled = False
+            ddlvendor.SelectedValue = userInfo.userBranchEntity
+            ddlvendor.Enabled = False
         End If
     End Sub
 
-    Private Sub BindDashboardData(ByVal vendorCode As String)
+    Private Sub BindDashboardData(ByVal vendorCode As String, ByVal Year As String, ByVal Month As String)
 
         If String.IsNullOrWhiteSpace(vendorCode) OrElse vendorCode = "0" Then
 
             'divKpiCards.Visible = False
             divCharts.Visible = False
-            gvRmPendingList.Visible = False
+            RmPendingList.Visible = False
+            divPurchaseRecord.Visible = False
 
             hdnRmChartData.Value = "[]"
 
@@ -126,15 +180,16 @@ Partial Class RmpDashboard
 
         'divKpiCards.Visible = True
         divCharts.Visible = True
-        gvRmPendingList.Visible = True
+        RmPendingList.Visible = True
+        divPurchaseRecord.Visible = True
 
-        PopulateRmChart(vendorCode)
+        PopulateRmChart(vendorCode, Year, Month)
 
     End Sub
 
-    Private Sub PopulateRmChart(ByVal userId As String)
+    Private Sub PopulateRmChart(ByVal userId As String, ByVal Year As String, ByVal Month As String)
         Dim obj As POLinkingRequestClass = New POLinkingRequestClass()
-        Dim ds As DataSet = obj.GetRmConsumedDetails(userId)
+        Dim ds As DataSet = obj.GetRmConsumedDetails(userId, Year, Month)
         If ds IsNot Nothing AndAlso ds.Tables.Count > 0 AndAlso ds.Tables(0) IsNot Nothing AndAlso ds.Tables(0).Rows.Count > 0 Then
             Dim chartData As New List(Of Object)()
             For Each row As DataRow In ds.Tables(0).Rows
@@ -159,12 +214,46 @@ Partial Class RmpDashboard
         End If
     End Sub
 
-    Private Sub BindPendingDispatchTable(ByVal userId As String)
-        userId = "U02"
+    Private Sub BindPendingDispatchTable(ByVal userId As String, ByVal Year As String, ByVal Month As String)
+        'userId = "U02"
         Dim obj As POLinkingRequestClass = New POLinkingRequestClass()
-        Dim ds As DataSet = obj.GetPendingDispatchData(userId)
+        Dim ds As DataSet = obj.GetPendingDispatchData(userId, Year, Month)
         Dim table As DataTable = RmGridHelper.GetTable(ds)
-        RmGridHelper.BindPaged(gvRmPendingList, table)
+        'RmGridHelper.BindPaged(gvRmPendingList, table)
+        If table IsNot Nothing AndAlso table.Rows.Count > 0 Then
+
+            gvRmPendingList.Visible = True
+            divGvPenList.Visible = False
+            RmGridHelper.BindPaged(gvRmPendingList, table)
+
+        Else
+            divGvPenList.Visible = True
+            gvRmPendingList.DataSource = Nothing
+            gvRmPendingList.DataBind()
+            gvRmPendingList.Visible = False
+
+        End If
+    End Sub
+
+    Private Sub BindVerifiedVendorList(ByVal userId As String, ByVal Year As String, ByVal Month As String)
+        'userId = "U02"
+        Dim obj As POLinkingRequestClass = New POLinkingRequestClass()
+        Dim ds As DataSet = obj.GetVerifiedVendorList(userId, Year, Month)
+        Dim table As DataTable = RmGridHelper.GetTable(ds)
+        'RmGridHelper.BindPaged(gvVerifiedVendorList, table)
+        If table IsNot Nothing AndAlso table.Rows.Count > 0 Then
+
+            gvVerifiedVendorList.Visible = True
+            divGvVerList.Visible = False
+            RmGridHelper.BindPaged(gvVerifiedVendorList, table)
+
+        Else
+            divGvVerList.Visible = True
+            gvVerifiedVendorList.DataSource = Nothing
+            gvVerifiedVendorList.DataBind()
+            gvVerifiedVendorList.Visible = False
+
+        End If
     End Sub
 
     Protected Sub ddlDurationType_SelectedIndexChanged(sender As Object, e As EventArgs)
@@ -184,14 +273,28 @@ Partial Class RmpDashboard
     End Sub
 
     Protected Sub btnSearch_Click(sender As Object, e As EventArgs)
-        BindDashboardData(ddlvendor.SelectedValue)
-        BindPendingDispatchTable(ddlvendor.SelectedValue)
+        Dim vendorCode As String = GetSelectedVendorCode()
+        BindDashboardData(vendorCode, ddlYear.SelectedValue, ddlMonth.SelectedValue)
+        BindPendingDispatchTable(vendorCode, ddlYear.SelectedValue, ddlMonth.SelectedValue)
+        BindVerifiedVendorList(vendorCode, ddlYear.SelectedValue, ddlMonth.SelectedValue)
     End Sub
+
+    Private Function GetSelectedVendorCode() As String
+
+        'For Sysadmin / Unit login
+        If String.Equals(userInfo.userDepartmentEntity.ToString(), Constant.Common.userDept, StringComparison.OrdinalIgnoreCase) Then
+            Return ddlvendor.SelectedValue
+        End If
+
+        'For Vendor login
+        Return userInfo.userBranchEntity
+
+    End Function
 
     Protected Function GetStatusCss(status As String) As String
 
         If String.IsNullOrWhiteSpace(status) Then
-            Return "rmp-status pending"
+            Return "rm-status-pill is-inactive"
         End If
 
         Select Case status.Trim().ToLower()
@@ -200,12 +303,33 @@ Partial Class RmpDashboard
                 Return "rmp-status transit"
 
             Case "pending"
-                Return "rmp-status pending"
+                Return "rm-status-pill is-inactive"
 
             Case Else
-                Return "rmp-status pending"
+                Return "rm-status-pill is-inactive"
 
         End Select
 
     End Function
+
+    'Protected Sub btnRmListClose_Click(sender As Object, e As EventArgs)
+    '    mpRmList.Hide()
+    'End Sub
+
+    Protected Sub gvRmPendingList_RowCommand(sender As Object, e As GridViewCommandEventArgs)
+        If e.CommandName = "Details" Then
+            Dim rowIndex As Integer = Convert.ToInt32(e.CommandArgument)
+            Dim row As GridViewRow = gvRmPendingList.Rows(rowIndex)
+            Dim reqId As Integer = Convert.ToInt32(CType(row.FindControl("lblReqId"), Label).Text)
+            Dim vendorCode As String = GetSelectedVendorCode()
+            Dim rmVendorCode As String = CType(row.FindControl("hdnRmCode"), HiddenField).Value
+
+            Dim obj As POLinkingRequestClass = New POLinkingRequestClass()
+            Dim ds As DataSet = obj.Get_Rm_List(reqId, vendorCode, rmVendorCode)
+            gvRmList.DataSource = ds.Tables(0)
+            gvRmList.DataBind()
+            mpRmList.Show()
+            upPendingList.Update()
+        End If
+    End Sub
 End Class
