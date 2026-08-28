@@ -4,6 +4,25 @@
 
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
     <link href="includes/rm-procurement.css?v=<%= DateTime.Now.Ticks %>" rel="stylesheet" type="text/css" />
+    <style type="text/css">
+        .form-control.field-invalid {
+            border-color: #dc3545 !important;
+            box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.12);
+        }
+
+        .dispatch-field-error {
+            display: block;
+            color: #dc3545;
+            font-size: 12px;
+            font-weight: 500;
+            margin-top: 4px;
+            line-height: 1.35;
+        }
+
+            .dispatch-field-error:empty {
+                display: none;
+            }
+    </style>
     <div class="rm-module rm-compact rm-rawmat-master">
     <%-- AutoComplete suggestion list styling now lives in includes/upgrad-style.css
          (.vmsAutoComplete / .vmsAutoCompleteItem / .vmsAutoCompleteItemHighlight) --%>
@@ -36,10 +55,16 @@
             document.getElementById('<%=txtSearchText.ClientID%>').value = text ;
             //sender.get_element().value = text + " (" + value + ")";
             sender.get_element().value = text;
+            if (typeof clearRawMatValidation === 'function') {
+                clearRawMatValidation();
+            }
         }
 
         function clearRawMaterialSelection() {
             document.getElementById('<%=txtrawmatid.ClientID%>').value = '';
+            if (typeof clearRawMatValidation === 'function') {
+                clearRawMatValidation();
+            }
         }
 
         function resetProductField() {
@@ -53,10 +78,13 @@
                 rawMatCode.value = '';
             }
 
+            if (typeof clearRawMatValidation === 'function') {
+                clearRawMatValidation();
+            }
+
             return false;
         }
     </script>
-    <script type="text/javascript" src="Scripts/FunctionValidator.js"></script>
     <script type="text/javascript" src="Scripts/ValidateRawMaterialMaster.js?time=<%= DateTime.Now.ToString("yyyy.MM.dd-HH.mm.ss.fff") %>"></script>
     <div class="breadcrumbs">
         <div class="leftFung">
@@ -78,7 +106,7 @@
                         <label class="form-control-label">Search Raw Material:<span id="Span2" class="mandatory">*</span></label>
                         <div class="rm-add-form-controls">
                             <div class="input-group product-search-group" style="flex: 1 1 auto; min-width: 0;">
-                                <asp:TextBox ID="txtSearchText" ClientIDMode="Static" class="form-control" runat="server" AutoComplete="Off" onkeyup="clearRawMaterialSelection();" Placeholder="Enter Here"></asp:TextBox>
+                                <asp:TextBox ID="txtSearchText" ClientIDMode="Static" CssClass="form-control" runat="server" AutoComplete="Off" onkeyup="clearRawMaterialSelection();" Placeholder="Enter Here"></asp:TextBox>
                                 <div class="input-group-append">
                                     <button type="button" class="btn btn-outline-secondary product-reset-btn" onclick="resetProductField(); return false;" title="Reset SKU"><i class="fas fa-sync-alt fa-xs"></i></button>
                                 </div>
@@ -87,6 +115,7 @@
                             <asp:Button ID="btnSubmit" ClientIDMode="Static" runat="server" Text="Submit" CssClass="btn btn-primary btn-sm" OnClick="btnSubmit_Click" />
                             <asp:Button ID="btnReset" runat="server" Text="Reset" CssClass="btn btn-outline-danger btn-sm" OnClick="btnReset_Click" />
                         </div>
+                        <asp:Label ID="valSearchText" runat="server" ClientIDMode="Static" CssClass="dispatch-field-error"></asp:Label>
                         <asp:AutoCompleteExtender ID="aceRawMaterialSearch" runat="server"
                             TargetControlID="txtSearchText"
                             ServiceMethod="RawMaterialSearch"

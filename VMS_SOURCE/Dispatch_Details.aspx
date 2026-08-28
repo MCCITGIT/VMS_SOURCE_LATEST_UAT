@@ -1203,11 +1203,12 @@
                                 <ItemStyle HorizontalAlign="Center" Width="6%" />
                             </asp:TemplateField>
 
-                            <asp:TemplateField HeaderText="RAW MATERIAL CODE">
+                            <asp:TemplateField HeaderText="RAW MATERIAL NAME">
                                 <ItemTemplate>
                                     <span class="rm-code-cell">
                                         <i class="fas fa-cube"></i>
-                                        <asp:Label ID="lblRmCode" runat="server" Text='<%# Eval("ord_rawmaterial_code") %>'></asp:Label>
+                                        <asp:Label ID="lblRmCode" runat="server" Text='<%# Eval("rmm_material_name") %>'></asp:Label>
+                                        <asp:HiddenField runat="server" ID="hdnRmCode" Value='<%# Bind("ord_rawmaterial_code") %>' />
                                     </span>
                                 </ItemTemplate>
                                 <HeaderStyle HorizontalAlign="Center" Width="18%" />
