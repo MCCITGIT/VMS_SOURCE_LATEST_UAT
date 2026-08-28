@@ -64,6 +64,62 @@ function formatRateTwoDecimal(control) {
     control.value = numValue.toFixed(2);
 }
 
+function getRmControl(controlId) {
+    return document.getElementById(controlId) || document.querySelector("[id$='" + controlId + "']");
+}
+
+function isDropDownSelected(control) {
+    if (!control) {
+        return false;
+    }
+
+    var value = (control.value || "").trim();
+    if (value === "" || value.toLowerCase() === "select" || value === "0") {
+        return false;
+    }
+
+    return control.selectedIndex > 0;
+}
+
+function validateRmDropDown(controlId, errorMessage) {
+    var control = getRmControl(controlId);
+    var resolvedId = control ? control.id : controlId;
+
+    if (!isDropDownSelected(control)) {
+        if (firstErrorControl === "") {
+            firstErrorControl = resolvedId;
+        }
+        errMsg += GetErrorRow(resolvedId, errorMessage);
+        if (control) {
+            SetErrorColor(resolvedId, false);
+        }
+        return false;
+    }
+
+    SetErrorColor(resolvedId, true);
+    return true;
+}
+
+function validateRawMaterialRequisitionSearch() {
+    firstErrorControl = "";
+    errMsg = "";
+
+    validateRmDropDown("ddlUnit", "Please select Vendor Name.");
+    validateRmDropDown("ddlVendor", "Please select RM Vendor.");
+
+    if (firstErrorControl !== "") {
+        SetControlFocus(firstErrorControl);
+        return rmFailValidation(errMsg);
+    }
+
+    var lblError = getRmControl("lblErrorMessage");
+    if (lblError) {
+        lblError.innerHTML = "";
+    }
+
+    return true;
+}
+
 function validateRawMaterialRequisitionSubmit() {
     firstErrorControl = "";
     errMsg = "";
@@ -186,10 +242,8 @@ function validateRawMaterialRequisitionApprove() {
             lblError.innerHTML = "";
         }
 
-        var approveBtn = document.getElementById("btnApprove");
-        return rmConfirmAction(approveBtn, "approve");
+        return rmConfirmPostback("btnApprove", "approve");
     } catch (ex) {
-        var approveBtnCatch = document.getElementById("btnApprove");
-        return rmConfirmAction(approveBtnCatch, "approve");
+        return rmConfirmPostback("btnApprove", "approve");
     }
 }

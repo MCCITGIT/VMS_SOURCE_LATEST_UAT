@@ -546,5 +546,133 @@ Public Class POLinkingRequestClass
             Throw ex
         End Try
     End Function
+
+    Public Function GetRmConsumedDetails(ByVal userId As String, ByVal Year As String, ByVal Month As String) As DataSet
+        Try
+            Dim DS As DataSet
+            Dim sqlParams(2) As SqlParameter
+
+            sqlParams(0) = New SqlParameter()
+            sqlParams(0).ParameterName = "@user_id"
+            sqlParams(0).DbType = DbType.String
+            sqlParams(0).Direction = ParameterDirection.Input
+            sqlParams(0).Value = If(String.IsNullOrEmpty(userId), DBNull.Value, CObj(userId))
+
+            sqlParams(1) = New SqlParameter()
+            sqlParams(1).ParameterName = "@year"
+            sqlParams(1).DbType = DbType.String
+            sqlParams(1).Direction = ParameterDirection.Input
+            sqlParams(1).Value = If(String.IsNullOrEmpty(Year), DBNull.Value, CObj(Year))
+
+            sqlParams(2) = New SqlParameter()
+            sqlParams(2).ParameterName = "@month"
+            sqlParams(2).DbType = DbType.String
+            sqlParams(2).Direction = ParameterDirection.Input
+            sqlParams(2).Value = If(String.IsNullOrEmpty(Month), DBNull.Value, CObj(Month))
+
+            DS = DBFactory.GetHelper().ExecuteDataSet("[dbo].[opc_rm_consumed_dtls]", CommandType.StoredProcedure, sqlParams)
+
+            Return DS
+
+        Catch ex As Exception
+            Throw
+        End Try
+    End Function
+
+    Public Function GetPendingDispatchData(ByVal userId As String, ByVal Year As String, ByVal Month As String) As DataSet
+        Try
+            Dim DS As DataSet
+            Dim sqlParams(2) As SqlParameter
+
+            sqlParams(0) = New SqlParameter()
+            sqlParams(0).ParameterName = "@user_id"
+            sqlParams(0).DbType = DbType.String
+            sqlParams(0).Direction = ParameterDirection.Input
+            sqlParams(0).Value = If(String.IsNullOrEmpty(userId), DBNull.Value, CObj(userId))
+
+            sqlParams(1) = New SqlParameter()
+            sqlParams(1).ParameterName = "@year"
+            sqlParams(1).DbType = DbType.String
+            sqlParams(1).Direction = ParameterDirection.Input
+            sqlParams(1).Value = If(String.IsNullOrEmpty(Year), DBNull.Value, CObj(Year))
+
+            sqlParams(2) = New SqlParameter()
+            sqlParams(2).ParameterName = "@month"
+            sqlParams(2).DbType = DbType.String
+            sqlParams(2).Direction = ParameterDirection.Input
+            sqlParams(2).Value = If(String.IsNullOrEmpty(Month), DBNull.Value, CObj(Month))
+
+            DS = DBFactory.GetHelper().ExecuteDataSet("[dbo].[opc_get_rm_pending_transit_list]", CommandType.StoredProcedure, sqlParams)
+
+            Return DS
+
+        Catch ex As Exception
+            Throw
+        End Try
+    End Function
+
+    Public Function GetVerifiedVendorList(ByVal userId As String, ByVal Year As String, ByVal Month As String) As DataSet
+        Try
+            Dim DS As DataSet
+            Dim sqlParams(2) As SqlParameter
+
+            sqlParams(0) = New SqlParameter()
+            sqlParams(0).ParameterName = "@user_id"
+            sqlParams(0).DbType = DbType.String
+            sqlParams(0).Direction = ParameterDirection.Input
+            sqlParams(0).Value = If(String.IsNullOrEmpty(userId), DBNull.Value, CObj(userId))
+
+            sqlParams(1) = New SqlParameter()
+            sqlParams(1).ParameterName = "@year"
+            sqlParams(1).DbType = DbType.String
+            sqlParams(1).Direction = ParameterDirection.Input
+            sqlParams(1).Value = If(String.IsNullOrEmpty(Year), DBNull.Value, CObj(Year))
+
+            sqlParams(2) = New SqlParameter()
+            sqlParams(2).ParameterName = "@month"
+            sqlParams(2).DbType = DbType.String
+            sqlParams(2).Direction = ParameterDirection.Input
+            sqlParams(2).Value = If(String.IsNullOrEmpty(Month), DBNull.Value, CObj(Month))
+
+            DS = DBFactory.GetHelper().ExecuteDataSet("[dbo].[opc_get_verified_unverified_rm_vendor_list]", CommandType.StoredProcedure, sqlParams)
+
+            Return DS
+
+        Catch ex As Exception
+            Throw
+        End Try
+    End Function
+
+    Public Function Get_Rm_List(ByVal req_id As String, ByVal user_id As String, ByVal rm_code As String) As DataSet
+        Try
+            Dim DS As DataSet
+            Dim sqlParams(2) As SqlParameter
+
+            sqlParams(0) = New SqlParameter()
+            sqlParams(0).ParameterName = "@req_id"
+            sqlParams(0).DbType = DbType.Int32
+            sqlParams(0).Direction = ParameterDirection.Input
+            sqlParams(0).Value = req_id
+
+            sqlParams(1) = New SqlParameter()
+            sqlParams(1).ParameterName = "@user_id"
+            sqlParams(1).DbType = DbType.String
+            sqlParams(1).Direction = ParameterDirection.Input
+            sqlParams(1).Value = If(String.IsNullOrEmpty(user_id), DBNull.Value, CObj(user_id))
+
+            sqlParams(2) = New SqlParameter()
+            sqlParams(2).ParameterName = "@rm_code"
+            sqlParams(2).DbType = DbType.String
+            sqlParams(2).Direction = ParameterDirection.Input
+            sqlParams(2).Value = If(String.IsNullOrEmpty(rm_code), DBNull.Value, CObj(rm_code))
+
+            DS = DBFactory.GetHelper().ExecuteDataSet("[dbo].[opc_get_rm_list_details]", CommandType.StoredProcedure, sqlParams)
+
+            Return DS
+
+        Catch ex As Exception
+            Throw
+        End Try
+    End Function
 #End Region
 End Class

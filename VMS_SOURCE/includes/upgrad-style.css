@@ -1,4 +1,4 @@
-@import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css");
+﻿@import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css");
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 
 /* Scrollbar Styling */
@@ -76,7 +76,7 @@ body {
    page title with a supporting subtitle underneath.
    ========================================================================== */
 .breadcrumbs {
-    position: relative;
+    /*position: relative;
     background: #fff;
     background: -webkit-linear-gradient(top,rgba(255, 255, 255, 1) 0%, rgba(245, 248, 252, 1) 100%);
     background: linear-gradient(180deg,rgba(255, 255, 255, 1) 0%, rgba(245, 248, 252, 1) 100%);
@@ -90,7 +90,21 @@ body {
     align-items: center;
     justify-content: space-between;
     flex-wrap: wrap;
-    gap: 6px;
+    gap: 6px;*/
+    padding: 8px 16px !important;
+    min-height: 50px;
+    margin-bottom: 10px !important;
+    border-radius: 14px !important;
+    position: relative;
+    z-index: 1;
+    background: #ffffff !important;
+    border: 1px solid #eee8de !important;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    box-shadow: 0 8px 22px rgba(80, 60, 30, 0.05) !important;
 }
 
     /* Accent bar */
@@ -125,15 +139,15 @@ body {
     line-height: 14px;
 }
 
-.rightFung:empty {
-    display: none;
-}
+    .rightFung:empty {
+        display: none;
+    }
 
 /* Home button */
 .breadcrumbs .leftFung > a {
     flex: 0 0 auto;
-    width: 28px;
-    height: 28px;
+    width: 30px;
+    height: 30px;
     min-width: 28px;
     min-height: 28px;
     display: inline-flex;
@@ -166,17 +180,17 @@ body {
     }
 
 .breadcrumbs .fa-home {
-    font-size: 13px;
+    font-size: 15px;
     color: #10385a;
     line-height: 1;
 }
 
 .diveider {
     flex: 0 0 auto;
-    margin: 0px 6px;
+    margin: 0px 10px;
     padding: 0px;
     color: #c3cfdd;
-    font-size: 13px;
+    font-size: 20px;
     font-weight: 300;
     line-height: 1;
 }
@@ -196,7 +210,7 @@ body {
 
 .pageTitle {
     color: #10385a;
-    font-size: 14px;
+    font-size: 15px;
     line-height: 17px;
     font-weight: 600;
     letter-spacing: 0.1px;
@@ -209,8 +223,8 @@ body {
 
 .pageSubTitle {
     color: #6b7b8f;
-    font-size: 11px;
-    line-height: 13px;
+    font-size: 12px;
+    line-height: 14px;
     font-weight: 400;
     letter-spacing: 0.1px;
     margin: 0px;
@@ -335,27 +349,48 @@ body {
     z-index: 9;
 }
 
+
+.input-group-append .btn {
+    border-radius: 0px 16px 16px 0px !important;
+    border-color: #bfc9d3;
+}
+
+.mandatory {
+    font-size: 13px;
+}
+
+.CheckBoxList {
+    max-height: 200px;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    padding: 5px 10px;
+    margin: 3px 0px 15px 0px;
+}
+/* Start Grid */
 .upgradDataGrid {
-    width: 100%;
-    border-color: #ddd;
-    /*margin-bottom:10px;*/
+    width: 100% !important;
+    border: 0 !important;
+    background: transparent !important;
+    color: #1f2937 !important;
+    border-collapse: collapse;
+    border-spacing: 0;
+    border: 1px solid #ededed !important;
 }
 
     .upgradDataGrid .gridBtn {
-        padding: 3px 4px !important;
-        font-size: 11px;
-        line-height: 13px;
+        padding: 2px 5px !important;
+        font-size: 10px;
+        line-height: 12px;
         text-transform: uppercase;
         font-weight: 500;
-        letter-spacing: 0.5px;
+        letter-spacing: 0.4px;
         display: inline-block;
         width: auto !important;
-        margin: 1px;
-        border-radius: 4px !important;
+        margin: 0 1px;
+        border-radius: 50% !important;
     }
 
     .upgradDataGrid.gvVendorDtlsGrid tr:first-child {
-        /*background: #3F855A;*/
         background: #3f7185;
         background: -webkit-linear-gradient(180deg,rgba(63, 113, 133, 1) 0%, rgba(81, 153, 181, 1) 100%);
         background: -moz-linear-gradient(180deg,rgba(63, 113, 133, 1) 0%, rgba(81, 153, 181, 1) 100%);
@@ -369,30 +404,25 @@ body {
         .upgradDataGrid.gvVendorDtlsGrid tr:first-child th {
             color: #FFF;
             font-weight: 500;
-            padding: 7px 5px;
+            padding: 5px 6px;
         }
 
     .upgradDataGrid tr.headerGrid {
-        background: #eff2f5;
-        /*background: #10395a;
-        background: -webkit-linear-gradient(180deg,rgba(29, 95, 150, 1) 0%, rgba(16, 57, 90, 1) 100%);
-        background: -moz-linear-gradient(180deg,rgba(29, 95, 150, 1) 0%, rgba(16, 57, 90, 1) 100%);
-        background: linear-gradient(180deg,rgba(29, 95, 150, 1) 0%, rgba(16, 57, 90, 1) 100%);
-        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr="#10395a", endColorstr="#1d5f96", GradientType=0 );*/
         position: sticky;
         top: 0;
         z-index: 2;
+        background-color: #efefef;
     }
 
-        .upgradDataGrid tr.headerGrid:hover {
+    /*.upgradDataGrid tr.headerGrid:hover {
             background: #eff2f5;
-        }
+        }*/
 
-        .upgradDataGrid tr.headerGrid th {
+    /*.upgradDataGrid tr.headerGrid th {
             color: #403c49;
             font-weight: 500;
-            padding: 7px 5px;
-        }
+            padding: 5px 6px;
+        }*/
 
     .upgradDataGrid tr.footerGrid td {
         font-weight: 500;
@@ -407,27 +437,30 @@ body {
         color: #333;
     }
 
-        .upgradDataGrid tr td {
-            /*color: #333;*/
+        /*.upgradDataGrid tr td {
             font-weight: normal;
-            padding: 3px 5px;
+            padding: 3px 6px;
+        }*/
+
+        .upgradDataGrid tr td .form-control,
+        .upgradDataGrid tr td select.form-control,
+        .upgradDataGrid tr td input.form-control {
+            padding: 2px 6px;
+            height: 24px;
+            font-size: 12px;
+            line-height: 14px;
+            border-radius: 4px;
         }
 
-            .upgradDataGrid tr td .form-control {
-                padding: .3rem .75rem;
-                height: calc(1.5em + .7rem + 0px);
-                border-radius: 4px;
-            }
-
-        .upgradDataGrid tr th, .upgradDataGrid tr td {
-            font-size: 13px;
-            line-height: 16px;
+        /*.upgradDataGrid tr th, .upgradDataGrid tr td {
+            font-size: 12px;
+            line-height: 15px;
             vertical-align: middle;
-        }
+        }*/
 
             .upgradDataGrid tr th a i, .upgradDataGrid tr td a i {
-                font-size: 14px;
-                margin: 0px 2px;
+                font-size: 12px;
+                margin: 0px 1px;
                 font-weight: 600;
             }
 
@@ -446,22 +479,68 @@ body {
         color: #0056b3;
     }
 
+    .upgradDataGrid input[type="checkbox"],
+    .upgradDataGrid input[type="radio"] {
+        width: 14px;
+        height: 14px;
+        margin: 0;
+        vertical-align: middle;
+    }
+
+    .upgradDataGrid th,
+    .upgradDataGrid td {
+        border: 0 !important;
+        border-bottom: 1px solid #eef1f5 !important;
+        background: transparent !important;
+        vertical-align: middle !important;
+    }
+
+    .upgradDataGrid th {
+        color: #838ea1 !important;
+        font-size: 10px !important;
+        font-weight: 700 !important;
+        letter-spacing: 0.04em;
+        text-transform: uppercase !important;
+        padding: 6px 8px !important;
+        line-height: 13px !important;
+        white-space: nowrap;
+    }
+
+    .upgradDataGrid td {
+        color: #1f2937 !important;
+        font-size: 12px !important;
+        padding: 6px 8px !important;
+        line-height: 15px !important;
+        transition: background-color 0.18s ease;
+    }
+
+    .upgradDataGrid tr:hover td {
+        background: #fafbfd !important;
+    }
+
+    .upgradDataGrid .btn,
+    .upgradDataGrid .btn-sm {
+        padding: 2px 8px;
+        font-size: 11px;
+        line-height: 14px;
+    }
+
     .upgradDataGrid .PagerGrid table td {
-        padding: 0px 3px !important;
+        padding: 0px 2px !important;
         border: 0px !important;
     }
 
         .upgradDataGrid .PagerGrid table td span {
-            width: 24px;
-            height: 24px;
-            display: flex;
+            width: 22px;
+            height: 22px;
+            display: inline-flex;
             align-items: center;
             justify-content: center;
             border: 1px solid #ccc;
-            border-radius: 50%;
+            border-radius: 6px;
             background: #10385a;
-            font-size: 13px;
-            line-height: 16px;
+            font-size: 11px;
+            line-height: 12px;
             font-weight: 400;
             color: #FFF;
             margin: 0px;
@@ -469,63 +548,60 @@ body {
         }
 
         .upgradDataGrid .PagerGrid table td a {
-            width: 24px;
-            height: 24px;
-            display: flex;
+            width: 22px;
+            height: 22px;
+            display: inline-flex;
             align-items: center;
             justify-content: center;
             border: 1px solid #ccc;
-            border-radius: 50%;
-            background: #FFF;
-            font-size: 13px;
-            line-height: 16px;
+            border-radius: 6px;
+            background: #e8f0ff;
+            font-size: 11px;
+            line-height: 12px;
             font-weight: 400;
             color: #0056b3;
             margin: 0px;
             padding: 0px;
         }
 
-.input-group-append .btn {
-    border-radius: 0px 16px 16px 0px !important;
-    border-color: #bfc9d3;
-}
-
-.mandatory {
-    font-size: 13px;
-}
-
-.CheckBoxList {
-    max-height: 200px;
-    overflow-y: auto;
-    border: 1px solid #ddd;
-    padding: 5px 10px;
-    margin: 3px 0px 15px 0px;
-}
-
-    .CheckBoxList table tr td {
-        padding: 5px 0px;
+    .upgradDataGrid tr:not(.PagerGrid) td[colspan] {
+        text-align: center;
+        color: #8a93a3 !important;
+        padding: 10px 8px !important;
+        white-space: normal;
     }
 
-        .CheckBoxList table tr td input {
-            width: 16px;
-            height: 16px;
-            margin: 0px;
-            padding: 0px;
-            display: inline;
-        }
+    .upgradDataGrid .PagerGrid td,
+    .upgradDataGrid tr.PagerGrid td {
+        padding: 4px 2px !important;
+        border-bottom: 0 !important;
+    }
 
-        .CheckBoxList table tr td label {
-            font-weight: 500;
-            font-weight: 500;
-            color: #495057;
-            font-size: 12px;
-            line-height: 15px;
-            margin: 0px;
-            padding: 0px 10px 0px 4px;
-            vertical-align: top;
-            white-space: normal;
-            display: inline;
-        }
+/* End Grid */
+.CheckBoxList table tr td {
+    padding: 5px 0px;
+}
+
+    .CheckBoxList table tr td input {
+        width: 16px;
+        height: 16px;
+        margin: 0px;
+        padding: 0px;
+        display: inline;
+    }
+
+    .CheckBoxList table tr td label {
+        font-weight: 500;
+        font-weight: 500;
+        color: #495057;
+        font-size: 12px;
+        line-height: 15px;
+        margin: 0px;
+        padding: 0px 10px 0px 4px;
+        vertical-align: top;
+        white-space: normal;
+        display: inline;
+    }
 
 .checkAll input {
     margin: 0px 4px 0px 0px;
@@ -1492,8 +1568,8 @@ body {
         }
 /*=================================================*/
 .select2-container .select2-selection--single {
-    height: 33px;
-    border-radius: 13px;
+    height: 33px !important;
+    border-radius: 13px !important;
 }
 
 .select2-container--default .select2-selection--single .select2-selection__arrow {
@@ -1612,8 +1688,8 @@ body {
 
 .formCalndIcon {
     position: absolute;
-    top: 22px;
-    right: 22px;
+    top: 27px;
+    right: 32px;
     z-index: 1;
 }
 
@@ -2984,19 +3060,19 @@ body {
 .mst-panel-header-left {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 8px;
 }
 
 .mst-panel-icon {
-    width: 40px;
-    height: 40px;
-    border-radius: 12px;
+    width: 30px;
+    height: 30px;
+    border-radius: 10px;
     background: #eaf1ff;
     color: #10385a;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 16.5px;
+    font-size: 14px;
     flex-shrink: 0;
 }
 
@@ -3010,6 +3086,7 @@ body {
     font-size: 12.5px;
     color: #6b7b8f;
     margin: 3px 0 0 0;
+    display: none;
 }
 
 .product-search-group {
@@ -3215,3 +3292,424 @@ body {
             width: 100%;
         }
 }
+
+
+/* ========================================
+   Stats Section
+   ======================================== */
+.stats-section {
+    padding: 0 4px;
+}
+
+/* Stat Cards */
+.allocationBColr {
+    border-color: #e6f3ff;
+}
+
+.supplyBColr {
+    border-color: #effff6;
+}
+
+.consumptionBColr {
+    border-color: #fff5ed;
+}
+
+.remainingBColr {
+    border-color: #f4f0ff;
+}
+
+.stat-card {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 12px 10px;
+    height: 100%;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    border-width: 5px;
+    border-style: solid;
+}
+
+    .stat-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+.stat-card-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+    position: relative;
+}
+
+.stat-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 10px;
+}
+
+    .stat-icon i {
+        font-size: 16px;
+        color: white;
+    }
+
+/* Icon color variants */
+.allocation-icon {
+    background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
+}
+
+.supply-icon {
+    background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+}
+
+.consumption-icon {
+    background: linear-gradient(135deg, #ed8936 0%, #dd6b20 100%);
+}
+
+.remaining-icon {
+    background: linear-gradient(135deg, #9f7aea 0%, #805ad5 100%);
+}
+
+.stat-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #2d3748;
+    margin: 0;
+    flex-grow: 1;
+}
+
+.stat-decoration {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+    .stat-decoration i {
+        font-size: 42px;
+        opacity: 0.1;
+    }
+
+.allocation-card .stat-decoration i {
+    color: #4299e1;
+}
+
+.supply-card .stat-decoration i {
+    color: #48bb78;
+}
+
+.consumption-card .stat-decoration i {
+    color: #ed8936;
+}
+
+.remaining-card .stat-decoration i {
+    color: #9f7aea;
+}
+
+.stat-card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.stat-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 8px;
+    border: 1px solid #F3F4F6;
+    background: #F9FAFB;
+    padding: 7px 10px;
+    margin: 3px 0px;
+}
+
+.stat-label {
+    display: flex;
+    flex-direction: column;
+}
+
+.label-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: #2d3748;
+}
+
+.per-unit {
+    font-size: 11px;
+    color: #a0aec0;
+}
+
+.allocation-card .per-unit {
+    color: #4299e1;
+}
+
+.supply-card .per-unit {
+    color: #48bb78;
+}
+
+.consumption-card .per-unit {
+    color: #ed8936;
+}
+
+.remaining-card .per-unit {
+    color: #9f7aea;
+}
+
+.stat-value {
+    font-size: 16px;
+    font-weight: 700;
+    color: #2d3748;
+}
+
+/*11-03-2026//:pallabmondal*/
+.right-arrow {
+    position: absolute;
+    right: -34px;
+    top: 22px;
+    z-index: 0;
+}
+
+.fade-arrow {
+    display: flex;
+    align-items: center;
+    width: 38px;
+}
+
+.fade-arrow__shaft {
+    height: 12px;
+    flex: 1;
+}
+
+.fade-arrow__head {
+    width: 0;
+    height: 0;
+    border-top: 8px solid transparent;
+    border-bottom: 8px solid transparent;
+    flex-shrink: 0;
+}
+
+.fa1-shaft {
+    background: linear-gradient(to right, transparent,#b4e7ff);
+}
+
+.fa1-head {
+    border-left: 8px solid #b4e7ff;
+}
+
+.fa2-shaft {
+    background: linear-gradient(to right, transparent, #b1f7e4);
+}
+
+.fa2-head {
+    border-left: 8px solid #b1f7e4;
+}
+
+.fa3-shaft {
+    background: linear-gradient(to right, transparent, #fec5ff);
+}
+
+.fa3-head {
+    border-left: 8px solid #fec5ff;
+}
+
+
+/* ── GRIDVIEW BASE ── */
+.p-upgradDataGrid {
+    width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0;
+    font-size: 4px;
+    border: 1px solid #ededed;
+}
+
+    /* ── HEADER ── */
+    .p-upgradDataGrid .headerGrid th {
+        background: #2d4a6e;
+        color: #e8f0fb;
+        font-family: 'Inter', sans-serif;
+        font-weight: 600;
+        font-size: 12px;
+        letter-spacing: .07em;
+        text-transform: uppercase;
+        text-align: center;
+        vertical-align: middle;
+        padding: 8px 14px;
+        border-right: 1px solid #3d5a80;
+        white-space: nowrap;
+    }
+
+        .p-upgradDataGrid .headerGrid th:last-child {
+            border-right: none;
+        }
+
+    /* ── LIGHT ROW (odd) ── */
+    .p-upgradDataGrid .tlrowlight td {
+        background: #ffffff;
+        color: #334155;
+        text-align: center;
+        vertical-align: middle;
+        padding: 6px 16px;
+        border-bottom: 1px solid #e8edf3;
+        border-right: 1px solid #e8edf3;
+        font-size: 13px;
+        font-weight: 500;
+    }
+
+        .p-upgradDataGrid .tlrowlight td:last-child {
+            border-right: none;
+        }
+
+    .p-upgradDataGrid .tlrowlight:hover td {
+        background: #f5f8ff;
+    }
+
+    /* ── DARK / ALTERNATE ROW (even) ── */
+    .p-upgradDataGrid .tlrowdark td {
+        background: #f7f9fc;
+        color: #334155;
+        text-align: center;
+        vertical-align: middle;
+        padding: 6px 16px;
+        border-bottom: 1px solid #e8edf3;
+        border-right: 1px solid #e8edf3;
+        font-size: 13px;
+        font-weight: 500;
+    }
+
+        .p-upgradDataGrid .tlrowdark td:last-child {
+            border-right: none;
+        }
+
+    .p-upgradDataGrid .tlrowdark:hover td {
+        background: #eef2fa;
+    }
+
+    /* ── FOOTER ── */
+    .p-upgradDataGrid .footerGrid td {
+        background: #f1f5f9;
+        color: #64748b;
+        text-align: center;
+        vertical-align: middle;
+        padding: 13px 16px;
+        border-top: 2px solid #dde3ec;
+        font-size: 13px;
+        font-weight: 500;
+    }
+
+/* ── SLNO ── */
+.lbl-slno {
+    font-weight: 700;
+    font-size: 15px;
+    color: #3b7dd8;
+}
+
+/* ── PRODUCT ── */
+.product-wrap {
+    display: inline-block;
+    text-align: center;
+}
+
+.product-name {
+    font-weight: 600;
+    font-size: 13.5px;
+    color: #1e293b;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    justify-content: center;
+}
+
+.product-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: #3b7dd8;
+    flex-shrink: 0;
+}
+
+.product-code {
+    font-size: 11.5px;
+    color: #94a3b8;
+    margin-top: 3px;
+}
+
+/* ── VOLUME ── */
+.lbl-volume {
+    font-size: 13px;
+    color: #475569;
+    font-weight: 500;
+}
+
+/* ── BADGES ── */
+.badge {
+    display: inline-block;
+    padding: 4px 14px;
+    border-radius: 20px;
+    font-size: 12.5px;
+    font-weight: 600;
+}
+
+.badge-mhec {
+    background: #ede9fe;
+    color: #6d28d9;
+}
+
+.badge-rdp {
+    background: #e0e7ff;
+    color: #4338ca;
+}
+
+.badge-wc {
+    background: #f1f5f9;
+    color: #475569;
+    border: 1px solid #cbd5e1;
+}
+
+/* ── DOSAGE ── */
+.lbl-dosage {
+    font-weight: 600;
+    font-size: 13px;
+    color: #3b7dd8;
+    padding: 2px 10px;
+    border-radius: 10px;
+}
+
+/* ── CONSUMPTION ── */
+.lbl-consumption {
+    font-weight: 600;
+    font-size: 14px;
+    color: #1e293b;
+}
+
+.prod-label {
+    text-align: center;
+    padding: 10px;
+    border-radius: 6px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 34.5px 0;
+}
+
+.p-products-heading {
+    padding: 8px 15px;
+    background: #2d4a6e;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1px;
+}
+.p-products-heading p {
+    margin: 0;
+    font-weight: 600;
+}
+.p-upgradDataGrid  {
+    margin-bottom: 0;
+
+
+}
+

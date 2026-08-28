@@ -10,11 +10,11 @@ Partial Class Dispatch_List
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
         Page.MaintainScrollPositionOnPostBack = True
         If (Not IsPostBack) Then
-            'Dim rmVendorCode As String = String.Empty
-            'If Request.QueryString("rmvendor_code") IsNot Nothing Then
-            '    rmVendorCode = Request.QueryString("rmvendor_code").ToString()
-            'End If
-            Dim rmVendorCode As String = "5023412"
+            Dim rmVendorCode As String = String.Empty
+            If Request.QueryString("rmvendor_code") IsNot Nothing Then
+                rmVendorCode = Request.QueryString("rmvendor_code").ToString()
+            End If
+            'Dim rmVendorCode As String = "RM002"
             ViewState("RmVendorCode") = rmVendorCode
             divVendor.Visible = False
             populateStatus()
@@ -90,7 +90,7 @@ Partial Class Dispatch_List
             RmGridHelper.BindPaged(gvDispatchList, Nothing)
         End If
 
-        BindSummaryCounts(rmVendorCode, ddlStatus.SelectedValue, ds)
+        BindSummaryCounts(ds)
     End Sub
 
     Protected Function GetVendorInitials(ByVal nameObj As Object) As String
@@ -107,30 +107,26 @@ Partial Class Dispatch_List
         Return (parts(0).Substring(0, 1) & parts(1).Substring(0, 1)).ToUpper()
     End Function
 
-    Private Sub BindSummaryCounts(ByVal rmVendorCode As String, ByVal selectedStatus As String, ByVal currentDs As DataSet)
-        Dim currentCount As Integer = 0
-        If currentDs IsNot Nothing AndAlso currentDs.Tables.Count > 1 AndAlso currentDs.Tables(1) IsNot Nothing Then
-            currentCount = currentDs.Tables(1).Rows.Count
-        End If
+    Private Sub BindSummaryCounts(ByVal currentDs As DataSet)
 
         Dim pendingCount As Integer = 0
         Dim completedCount As Integer = 0
-        Dim statusValue As String = If(selectedStatus, String.Empty).Trim().ToUpper()
+        Dim totalCount As Integer = 0
 
-        If statusValue = "PENDING" Then
-            pendingCount = currentCount
-            completedCount = GetDispatchCount(rmVendorCode, "DISPATCHED")
-        ElseIf statusValue = "DISPATCHED" Then
-            completedCount = currentCount
-            pendingCount = GetDispatchCount(rmVendorCode, "PENDING")
-        Else
-            pendingCount = GetDispatchCount(rmVendorCode, "PENDING")
-            completedCount = GetDispatchCount(rmVendorCode, "DISPATCHED")
+        If currentDs IsNot Nothing AndAlso currentDs.Tables.Count > 2 AndAlso currentDs.Tables(2).Rows.Count > 0 Then
+
+            Dim summaryRow As DataRow = currentDs.Tables(2).Rows(0)
+
+            pendingCount = If(IsDBNull(summaryRow("pen_qty")), 0, Convert.ToInt32(summaryRow("pen_qty")))
+            completedCount = If(IsDBNull(summaryRow("des_qty")), 0, Convert.ToInt32(summaryRow("des_qty")))
+            totalCount = If(IsDBNull(summaryRow("tot_req")), 0, Convert.ToInt32(summaryRow("tot_req")))
+
         End If
 
         lblPendingRequests.Text = pendingCount.ToString()
         lblCompletedRequests.Text = completedCount.ToString()
-        lblTotalRequests.Text = (pendingCount + completedCount).ToString()
+        lblTotalRequests.Text = totalCount.ToString()
+
     End Sub
 
     Private Function GetDispatchCount(ByVal rmVendorCode As String, ByVal dispatchStatus As String) As Integer
@@ -177,7 +173,8 @@ Partial Class Dispatch_List
             Dim url As String =
                 "Dispatch_Details.aspx?orh_id=" & Server.UrlEncode(orhId) &
                 "&orh_vendor_code=" & Server.UrlEncode(orhVendorCode) &
-                "&dispatch_status=" & Server.UrlEncode(dispatchStatus)
+                "&dispatch_status=" & Server.UrlEncode(dispatchStatus) &
+                "&rm_vendor_code=" & Server.UrlEncode(RmVendorCode)
 
             Response.Redirect(url)
 

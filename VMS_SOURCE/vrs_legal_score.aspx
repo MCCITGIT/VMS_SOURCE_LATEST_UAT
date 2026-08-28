@@ -73,7 +73,7 @@
                         <div class="col-md-3">
                             <div class="form-group pb-0">
                                 <label class="form-control-label">Fin Year:</label>
-                                <asp:DropDownList ID="ddlFinYear" class="form-control select2" runat="server" AutoPostBack="true" OnSelectedIndexChanged="ddlFinYear_SelectedIndexChanged"/>
+                                <asp:DropDownList ID="ddlFinYear" class="form-control select2" runat="server" AutoPostBack="true" OnSelectedIndexChanged="ddlFinYear_SelectedIndexChanged" />
                             </div>
                         </div>
                         <div class="col-md-3">
@@ -82,14 +82,14 @@
                                 <asp:DropDownList ID="ddlquartor" class="form-control select2" runat="server" />
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-4">
                             <div class="form-group pb-0">
                                 <label class="form-control-label">Vendor:</label>
                                 <asp:DropDownList ID="ddlvendor" class="form-control select2" runat="server" />
                             </div>
                         </div>
 
-                        <div class="col-md-3 form-btn-mt">
+                        <div class="col-md-2 form-btn-mt">
                             <asp:UpdatePanel runat="server" ID="UpdatePanel8">
                                 <ContentTemplate>
                                     <asp:Button ID="btnsearch" runat="server" Text="Search" CssClass="btn btn-primary btn-sm" />
@@ -107,6 +107,15 @@
     <asp:UpdatePanel ID="UpdatePanel1" runat="server">
         <ContentTemplate>
             <div class="card" runat="server" id="div2" visible="false">
+                <div class="mst-panel-header">
+                    <div class="mst-panel-header-left">
+                        <span class="mst-panel-icon"><i class="fas fa-list"></i></span>
+                        <div>
+                            <h5 class="mst-panel-title">Legal Score</h5>
+                            <p class="mst-panel-subtitle">Legal compliance scores used in vendor rating</p>
+                        </div>
+                    </div>
+                </div>
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-12">
@@ -237,7 +246,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="text-center mt-2">
+                    <div class="text-center mt-3">
                         <asp:Button ID="btnSubmit" runat="server" Visible="false" Text="Save" CssClass="btn btn-primary btn-sm" />
                         <asp:Button ID="btnConSub" runat="server" Text="Save & Submit" CssClass="btn btn-warning btn-sm" />
                         <asp:Button ID="btnCancel" runat="server" Text="Back" CssClass="btn btn-secondary btn-sm" />

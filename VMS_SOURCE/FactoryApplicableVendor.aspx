@@ -70,7 +70,6 @@
                                 </asp:UpdatePanel>
                             </div>
                         </div>
-
                         <div class="col-md-1">
                             <asp:Button
                                 ID="btnSearch"
@@ -80,21 +79,30 @@
                                 Style="margin-top: 19px" />
                         </div>
                     </div>
-
-                    <div class="row mt-3" id="vendorRow" runat="server">
+                    <div class="mst-panel-header" style="padding: 15px 0;">
+                        <div class="mst-panel-header-left">
+                            <span class="mst-panel-icon"><i class="fas fa-list"></i></span>
+                            <div>
+                                <h5 class="mst-panel-title">Factory Applicable Vendor</h5>
+                                <p class="mst-panel-subtitle">Map vendors applicable to each factory</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-2" id="vendorRow" runat="server">
                         <div class="col-md-12">
                             <div class="form-group">
                                 <label class="form-control-label">Vendors:</label>
                                 <asp:UpdatePanel runat="server" ID="UpdatePanelVendors">
                                     <ContentTemplate>
-                                        <div class="checkRadioGroup" style="max-height: 300px; overflow-y: auto;">
+                                        <div class="CheckBoxList" style="max-height: 300px; overflow-y: auto;">
                                             <asp:CheckBoxList
                                                 ID="cblVendors"
                                                 runat="server"
                                                 CssClass="form-check checkbox-spacing"
                                                 RepeatLayout="Table"
                                                 RepeatDirection="Horizontal"
-                                                RepeatColumns="3">
+                                                RepeatColumns="3"
+                                                style="padding-left: 0 !important;">
                                             </asp:CheckBoxList>
                                         </div>
                                     </ContentTemplate>
@@ -102,9 +110,7 @@
                             </div>
                         </div>
                     </div>
-
-
-                    <div class="row mt-4">
+                    <div class="row mt-2">
                         <div class="col-12 d-flex justify-content-center">
                             <asp:UpdatePanel runat="server" ID="UpdatePanelButtons">
                                 <ContentTemplate>

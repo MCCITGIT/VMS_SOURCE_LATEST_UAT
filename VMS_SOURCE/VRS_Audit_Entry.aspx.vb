@@ -14,7 +14,7 @@ Partial Class VRS_Audit_Entry
         CheckLogin()
         If Not IsPostBack Then
             PopulateVendor()
-            PopulateQuarter()
+            PopulateFinYear()
             btnSubmit.Visible = False
             btnConSub.Visible = False
             'ddlQuarter.Enabled = True
@@ -89,6 +89,39 @@ Partial Class VRS_Audit_Entry
 
 #End Region
 
+#Region "Populate FinYear"
+    Private Sub PopulateFinYear()
+        CheckLogin()
+        Try
+            Dim Obj As New vrs_legalscore_class
+            Dim ds As New DataSet
+            ddlFinYear.Items.Clear()
+            ds = Obj.GetFinYear(userInfo.userIDEntity)
+            If (Not (ds Is Nothing) AndAlso ds.Tables.Count > 0 AndAlso Not (ds.Tables(0) Is Nothing) AndAlso ds.Tables(0).Rows.Count > 0) Then
+                ddlFinYear.DataSource = ds.Tables(0)
+                ddlFinYear.DataTextField = "fin_year_text"
+                ddlFinYear.DataValueField = "fin_year"
+                ddlFinYear.DataBind()
+                ddlFinYear.Items.Insert(0, New ListItem(Constant.Common.Selec, String.Empty, True))
+                'If Not (ds.Tables(0).Rows.Count = 1) Then
+                '    ddlvendor.Items.Insert(0, New ListItem(Constant.Common.Selec, String.Empty, True))
+                'End If
+
+                If ds.Tables(0).Rows.Count = 1 Then
+                    ddlFinYear.SelectedIndex = 1
+                    ddlFinYear.Enabled = False
+                    PopulateQuarter()
+                End If
+
+            End If
+        Catch ex As Exception
+            Dim returnUrl As String = "~/ExceptionPage.aspx"
+            Session(Constant.SessionKeys.ErrMessage) = Constant.ErrorMessages.GeneralError
+            Server.Transfer(returnUrl)
+        End Try
+    End Sub
+#End Region
+
 #Region "Populate Quarter dropdown."
 
     Private Sub PopulateQuarter()
@@ -105,7 +138,7 @@ Partial Class VRS_Audit_Entry
 
         Try
 
-            ds = obj.GetQuarterDetails(userInfo.userIDEntity)
+            ds = obj.Get_QuarterList_vr1(userInfo.userIDEntity, ddlFinYear.SelectedValue)
 
             If Not (ds Is Nothing) Then
 
@@ -417,6 +450,14 @@ Partial Class VRS_Audit_Entry
             Response.Redirect(path)
         End If
 
+    End Sub
+
+    Protected Sub ddlFinYear_SelectedIndexChanged(sender As Object, e As EventArgs)
+        If String.IsNullOrEmpty(ddlFinYear.SelectedValue) Then
+            ddlQuarter.Items.Clear()
+        Else
+            PopulateQuarter()
+        End If
     End Sub
 
 End Class

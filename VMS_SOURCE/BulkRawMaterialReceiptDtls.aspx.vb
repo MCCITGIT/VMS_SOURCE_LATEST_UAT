@@ -85,7 +85,15 @@ Partial Class BulkRawMaterialReceiptDtls
                 Dim qsDespatchId As String = Convert.ToString(Request.QueryString("despatch_id"))
                 hdnDespatchId.Value = If(Not String.IsNullOrWhiteSpace(qsDespatchId), qsDespatchId, GetColumnValue(hdr, "despatch_id", "despatchid"))
                 hdnRequisitionId.Value = GetColumnValue(hdr, "requisition_id", "request_id")
+
                 txtCourierno.Text = GetColumnValue(hdr, "courier_id")
+                txtcouriernm.Text = ds.Tables(0).Rows(0)("couriernm")
+                If ds.Tables(0).Rows(0)("courier_date").Equals(DBNull.Value) Then
+                    txtcourierDT.Text = String.Empty
+                Else
+                    txtcourierDT.Text = Convert.ToDateTime(ds.Tables(0).Rows(0)("courier_date")).ToString("dd/MM/yyyy")
+                End If
+
                 If ds.Tables(0).Rows(0)("despatch_date").Equals(DBNull.Value) Then
                     txtDOJ.Text = String.Empty
                 Else
@@ -98,6 +106,7 @@ Partial Class BulkRawMaterialReceiptDtls
                     txtinvdate.Text = Convert.ToDateTime(ds.Tables(0).Rows(0)("inv_date")).ToString("dd/MM/yyyy")
                 End If
                 txtTransporterNM.Text = ds.Tables(0).Rows(0)("trans_name")
+                txttransno.Text = ds.Tables(0).Rows(0)("transid")
                 txtlrno.Text = ds.Tables(0).Rows(0)("lrno")
 
                 If ds.Tables(0).Rows(0)("lrdate").Equals(DBNull.Value) Then

@@ -37,7 +37,7 @@
             <div class="diveider">/</div>
             <div class="pageTitleWrap">
                 <h3 class="pageTitle">Brand Master</h3>
-                <p class="pageSubTitle">Maintain brand and product details</p>
+                <p class="pageSubTitle">Maintain brand details</p>
             </div>
         </div>
         <div class="rightFung"></div>

@@ -82,14 +82,23 @@ Partial Class RawMaterialRequisitionList
     End Sub
 
     Protected Sub gvRequisition_RowDataBound(sender As Object, e As GridViewRowEventArgs)
-        If e.Row.RowType = DataControlRowType.DataRow Then
-            Dim chkSelect As CheckBox = CType(e.Row.FindControl("chkSelect"), CheckBox)
-            Dim lblApprovalStatus As Label = CType(e.Row.FindControl("lblApprovalStatus"), Label)
-            If chkSelect IsNot Nothing AndAlso lblApprovalStatus IsNot Nothing Then
-                If String.Equals(lblApprovalStatus.Text.Trim(), "Approved", StringComparison.OrdinalIgnoreCase) Then
-                    chkSelect.Enabled = False
-                End If
+        If e.Row.RowType <> DataControlRowType.DataRow Then
+            Exit Sub
+        End If
+
+        Dim chkSelect As CheckBox = CType(e.Row.FindControl("chkSelect"), CheckBox)
+        Dim lblApprovalStatus As Label = CType(e.Row.FindControl("lblApprovalStatus"), Label)
+        If chkSelect IsNot Nothing AndAlso lblApprovalStatus IsNot Nothing Then
+            If String.Equals(lblApprovalStatus.Text.Trim(), "Approved", StringComparison.OrdinalIgnoreCase) Then
+                chkSelect.Enabled = False
             End If
+        End If
+
+        Dim litRawmaterialList As Literal = CType(e.Row.FindControl("litRawmaterialList"), Literal)
+        Dim hdnRawmaterialList As HiddenField = CType(e.Row.FindControl("hdnRawmaterialList"), HiddenField)
+        If litRawmaterialList IsNot Nothing Then
+            Dim rawList As String = If(hdnRawmaterialList Is Nothing, String.Empty, Convert.ToString(hdnRawmaterialList.Value))
+            litRawmaterialList.Text = FormatRawMaterialListHtml(rawList)
         End If
     End Sub
 
@@ -116,7 +125,7 @@ Partial Class RawMaterialRequisitionList
                         Dim hdnrmVendoremail As HiddenField = CType(row.FindControl("hdnrmVendoremail"), HiddenField)
                         Dim lblVendorName As Label = CType(row.FindControl("lblVendorName"), Label)
                         Dim lblRawMatVendorName As Label = CType(row.FindControl("lblRawMatVendorName"), Label)
-                        Dim lblRawmaterialList As Label = CType(row.FindControl("lblRawmaterialList"), Label)
+                        Dim hdnRawmaterialList As HiddenField = CType(row.FindControl("hdnRawmaterialList"), HiddenField)
                         Dim hdnccemail As HiddenField = CType(row.FindControl("hdnccemail"), HiddenField)
 
                         Dim mailInfo As New Dictionary(Of String, String)()
@@ -125,7 +134,7 @@ Partial Class RawMaterialRequisitionList
                         mailInfo("rm_vendor_email") = If(hdnrmVendoremail IsNot Nothing, Convert.ToString(hdnrmVendoremail.Value).Trim(), String.Empty)
                         mailInfo("vendor_name") = If(lblVendorName IsNot Nothing, Convert.ToString(lblVendorName.Text).Trim(), String.Empty)
                         mailInfo("rm_vendor_name") = If(lblRawMatVendorName IsNot Nothing, Convert.ToString(lblRawMatVendorName.Text).Trim(), String.Empty)
-                        mailInfo("raw_material_list") = If(lblRawmaterialList IsNot Nothing, Convert.ToString(lblRawmaterialList.Text).Trim(), String.Empty)
+                        mailInfo("raw_material_list") = If(hdnRawmaterialList IsNot Nothing, Convert.ToString(hdnRawmaterialList.Value).Trim(), String.Empty)
                         mailInfo("hdnccemail") = If(hdnccemail IsNot Nothing, Convert.ToString(hdnccemail.Value).Trim(), String.Empty)
                         mailRows.Add(mailInfo)
                     End If
@@ -184,7 +193,7 @@ Partial Class RawMaterialRequisitionList
     Private Function BuildDispatchListUrl(ByVal rmVendorCode As String) As String
         Dim redirectUrl As String = "Dispatch_List.aspx?rmvendor_code=" & Server.UrlEncode(rmVendorCode)
         'Dim baseUrl As String = "https://bpilweb.bergerindia.com/vms/"
-        Dim baseUrl As String = "http://localhost:15723/"
+        Dim baseUrl As String = "http://localhost:64930/"
         Return New Uri(New Uri(baseUrl), redirectUrl).ToString()
     End Function
 
@@ -243,7 +252,7 @@ Partial Class RawMaterialRequisitionList
             mailBody.Append("<td style='border:1px solid #ccc;padding:6px;'>" & Server.HtmlEncode(vendorName) & "</td>")
             'mailBody.Append("<td style='border:1px solid #ccc;padding:6px;text-align:center;'>" & Server.HtmlEncode(rmVendorCode) & "</td>")
             mailBody.Append("<td style='border:1px solid #ccc;padding:6px;'>" & Server.HtmlEncode(rmVendorName) & "</td>")
-            mailBody.Append("<td style='border:1px solid #ccc;padding:6px;'>" & Server.HtmlEncode(rawMaterialList) & "</td>")
+            mailBody.Append("<td style='border:1px solid #ccc;padding:6px;'>" & FormatRawMaterialListHtml(rawMaterialList) & "</td>")
             mailBody.Append("<td style='border:1px solid #ccc;padding:6px;text-align:center;'>Approved</td>")
             mailBody.Append("</tr>")
             mailBody.Append("</table>")
@@ -346,10 +355,8 @@ Partial Class RawMaterialRequisitionList
 
 #Region "Populate Unit"
     Private Sub PopulateUnit()
-        Dim UnitDespatch As New PendingDespatchesClass
-        Dim UnitSet As New DataSet
-
-        UnitSet = UnitDespatch.GetUnitName(Constant.Common.ActiveStatus, String.Empty)
+        Dim obj As New OPC_VendorClass()
+        Dim UnitSet As DataSet = obj.GetUnitName(Constant.Common.ActiveStatus)
         If (Not (UnitSet Is Nothing) AndAlso UnitSet.Tables.Count > 0 AndAlso Not (UnitSet.Tables(0) Is Nothing) AndAlso UnitSet.Tables(0).Rows.Count > 0) Then
             ddlvendor.DataSource = UnitSet.Tables(0)
             ddlvendor.DataTextField = "unit_name"
@@ -363,6 +370,60 @@ Partial Class RawMaterialRequisitionList
         End If
     End Sub
 #End Region
+
+    Private Function FormatRawMaterialListHtml(ByVal rawList As String) As String
+        If String.IsNullOrWhiteSpace(rawList) Then
+            Return String.Empty
+        End If
+
+        Dim normalizedList As String = rawList.Replace(vbCrLf, ",").Replace(vbLf, ",").Replace("<br/>", ",").Replace("<br />", ",")
+        Dim items As String() = normalizedList.Split(New Char() {","c}, StringSplitOptions.RemoveEmptyEntries)
+        Dim html As New StringBuilder()
+        html.Append("<div class=""rm-rawmat-list"">")
+
+        For Each item As String In items
+            Dim text As String = item.Trim()
+            If text = "" Then
+                Continue For
+            End If
+
+            Dim materialName As String = text
+            Dim qtyText As String = String.Empty
+            Dim lastDash As Integer = text.LastIndexOf("-"c)
+            If lastDash >= 0 AndAlso lastDash < text.Length - 1 Then
+                Dim maybeQty As String = text.Substring(lastDash + 1).Trim()
+                Dim qtyValue As Decimal = 0D
+                If Decimal.TryParse(maybeQty, System.Globalization.NumberStyles.Number, System.Globalization.CultureInfo.InvariantCulture, qtyValue) OrElse
+                   Decimal.TryParse(maybeQty, qtyValue) Then
+                    qtyText = qtyValue.ToString("0.##")
+                    materialName = text.Substring(0, lastDash).Trim()
+                End If
+            End If
+
+            Dim firstDash As Integer = materialName.IndexOf("-"c)
+            If firstDash > 0 AndAlso firstDash < materialName.Length - 1 Then
+                Dim codePart As String = materialName.Substring(0, firstDash).Trim()
+                If codePart.Length >= 8 AndAlso codePart.IndexOf(" "c) < 0 Then
+                    materialName = materialName.Substring(firstDash + 1).Trim()
+                End If
+            End If
+
+            html.Append("<div class=""rm-rawmat-line"">")
+            html.Append("<span class=""rm-rawmat-name"">")
+            html.Append(Server.HtmlEncode(materialName))
+            html.Append("</span>")
+            html.Append("<span class=""qty"">")
+            If qtyText <> "" Then
+                html.Append(" Qty: ")
+                html.Append(Server.HtmlEncode(qtyText))
+            End If
+            html.Append("</span>")
+            html.Append("</div>")
+        Next
+
+        html.Append("</div>")
+        Return html.ToString()
+    End Function
 
     Private Sub ShowPendingActionResult()
         Dim saveMessage As String = Convert.ToString(Session("RmActionResultMsg"))

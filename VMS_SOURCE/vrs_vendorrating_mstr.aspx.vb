@@ -8,18 +8,6 @@ Imports System.Drawing
 
 Partial Class vrs_vendorrating_mstr
     Inherits System.Web.UI.Page
-
-    '// Start Only for Side Bar hide
-    Protected Overrides Sub OnPreRender(e As EventArgs)
-        MyBase.OnPreRender(e)
-
-        Dim master As MasterPage = TryCast(Me.Master, MasterPage)
-        If master IsNot Nothing Then
-            master.HideSidebar = True
-        End If
-    End Sub
-    '// End Only for Side Bar hide
-
 #Region "Global Variable"
     Dim userInfo As VMSUserEntity = New VMSUserEntity()
 
@@ -35,7 +23,8 @@ Partial Class vrs_vendorrating_mstr
         CheckLogin()
         AddAttributes()
         If Not IsPostBack Then
-            Populate_Quarter()
+            'Populate_Quarter()
+            PopulateFinYear()
             Dim vendor As String = ddlVendor.SelectedValue
             ' PopulateVendor()
             Populate_VendorGroup()
@@ -62,6 +51,7 @@ Partial Class vrs_vendorrating_mstr
             End If
 
             divSrcVendor.Visible = False
+            divSrcHeadGrp.Visible = False
             'divSrcProductGroup.Visible = False
             'divSrcProduct.Visible = False
 
@@ -83,13 +73,46 @@ Partial Class vrs_vendorrating_mstr
     End Sub
 #End Region
 
+#Region "Populate FinYear"
+    Private Sub PopulateFinYear()
+        CheckLogin()
+        Try
+            Dim Obj As New vrs_legalscore_class
+            Dim ds As New DataSet
+            ddlFinYear.Items.Clear()
+            ds = Obj.GetFinYear(userInfo.userIDEntity)
+            If (Not (ds Is Nothing) AndAlso ds.Tables.Count > 0 AndAlso Not (ds.Tables(0) Is Nothing) AndAlso ds.Tables(0).Rows.Count > 0) Then
+                ddlFinYear.DataSource = ds.Tables(0)
+                ddlFinYear.DataTextField = "fin_year_text"
+                ddlFinYear.DataValueField = "fin_year"
+                ddlFinYear.DataBind()
+                ddlFinYear.Items.Insert(0, New ListItem(Constant.Common.Selec, String.Empty, True))
+                'If Not (ds.Tables(0).Rows.Count = 1) Then
+                '    ddlvendor.Items.Insert(0, New ListItem(Constant.Common.Selec, String.Empty, True))
+                'End If
+
+                If ds.Tables(0).Rows.Count = 1 Then
+                    ddlFinYear.SelectedIndex = 1
+                    ddlFinYear.Enabled = False
+                    Populate_Quarter()
+                End If
+
+            End If
+        Catch ex As Exception
+            Dim returnUrl As String = "~/ExceptionPage.aspx"
+            Session(Constant.SessionKeys.ErrMessage) = Constant.ErrorMessages.GeneralError
+            Server.Transfer(returnUrl)
+        End Try
+    End Sub
+#End Region
+
 #Region "Populate Quarter"
     Private Sub Populate_Quarter()
         Try
             Dim obj As New vrs_legalscore_class
             Dim ds As New DataSet
             ddlquartor.Items.Clear()
-            ds = obj.Get_QuarterList(userInfo.userIDEntity)
+            ds = obj.Get_QuarterList_vr1(userInfo.userIDEntity, ddlFinYear.SelectedValue)
 
             If (Not (ds Is Nothing) AndAlso ds.Tables.Count > 0 AndAlso Not (ds.Tables(0) Is Nothing) AndAlso ds.Tables(0).Rows.Count > 0) Then
                 ddlquartor.DataSource = ds.Tables(0)
@@ -201,7 +224,12 @@ Partial Class vrs_vendorrating_mstr
             Dim obj As New Vendor_RatingClass
             Dim ds As New DataSet
             Dim vendor As String = ddlVendor.SelectedValue
-            ds = obj.Get_VendorRatingList_All(vendor, ddlquartor.SelectedValue.ToString(), ddlProduct.SelectedValue.ToString(), ddlVendorGrp.SelectedValue.ToString(), ddlBrand.SelectedValue.ToString(), ddlType.SelectedValue)
+            If ddlType.SelectedValue.Equals("HEAD") Then
+                ds = obj.Get_VendorRatingList_All(vendor, ddlFinYear.SelectedValue.ToString(), ddlquartor.SelectedValue.ToString(), ddlProduct.SelectedValue.ToString(), ddlVendorGrp.SelectedValue.ToString(), ddlBrand.SelectedValue.ToString(), ddlHead.SelectedValue)
+            Else
+                ds = obj.Get_VendorRatingList_All(vendor, ddlFinYear.SelectedValue.ToString(), ddlquartor.SelectedValue.ToString(), ddlProduct.SelectedValue.ToString(), ddlVendorGrp.SelectedValue.ToString(), ddlBrand.SelectedValue.ToString(), ddlType.SelectedValue)
+
+            End If
 
             If (Not (ds Is Nothing) AndAlso ds.Tables.Count > 0 AndAlso Not (ds.Tables(0) Is Nothing) AndAlso ds.Tables(0).Rows.Count > 0) Then
 
@@ -215,6 +243,7 @@ Partial Class vrs_vendorrating_mstr
                         ViewState("GroupScoreDtls") = ds.Tables(0)
                         reptVendorGroup.DataSource = ds.Tables(0)
                         reptVendorGroup.DataBind()
+
                         BindPerformanceChart(ds.Tables(1))
                         topVendorname.InnerText = ds.Tables(1).Rows(0)("vendor").ToString()
                         topObtainWeightage.InnerText = ds.Tables(1).Rows(0)("current_quarter_value").ToString()
@@ -253,6 +282,40 @@ Partial Class vrs_vendorrating_mstr
                                 lblTop1Grade.Attributes.Add("class", "badgeTx bronze")
                             End If
                         End If
+
+                        gvTopvendor.DataSource = ds.Tables(2)
+                        gvTopvendor.DataBind()
+                        lblError.Text = ""
+                        gvTy.DataSource = ds.Tables(3)
+                        gvTy.DataBind()
+                        gvLy.DataSource = ds.Tables(4)
+                        gvLy.DataBind()
+
+                    ElseIf ddlType.SelectedValue.Equals("HEAD", StringComparison.InvariantCulture) Then
+
+                        divTopVendor.Visible = True
+                        divVendorScoreCategoryLyTyWise.Visible = True
+                        ViewState("HeadScoreDtls") = ds.Tables(0)
+                        rptHeadGrp.DataSource = ds.Tables(0)
+                        rptHeadGrp.DataBind()
+
+                        BindPerformanceChart(ds.Tables(1))
+                        topVendorname.InnerText = ds.Tables(1).Rows(0)("vendor").ToString()
+                        topObtainWeightage.InnerText = ds.Tables(1).Rows(0)("current_quarter_value").ToString()
+
+                        lblGoldCount.Text = Convert.ToString(ds.Tables(5).Rows(0)("Gold_count"))
+                        lblPlatinumCount.Text = Convert.ToString(ds.Tables(5).Rows(0)("Platinum_count"))
+                        lblSilverCount.Text = Convert.ToString(ds.Tables(5).Rows(0)("Silver_count"))
+                        lblBronzeCount.Text = Convert.ToString(ds.Tables(5).Rows(0)("Bronze_count"))
+
+                        progPlatinum.Style("width") = Convert.ToString(ds.Tables(5).Rows(0)("Platinum_pct")) + "%"
+                        progPlatinum.InnerText = Convert.ToString(ds.Tables(5).Rows(0)("Platinum_pct")) + "%"
+                        progGold.Style("width") = Convert.ToString(ds.Tables(5).Rows(0)("Gold_pct")) + "%"
+                        progGold.InnerText = Convert.ToString(ds.Tables(5).Rows(0)("Gold_pct")) + "%"
+                        progSilver.Style("width") = Convert.ToString(ds.Tables(5).Rows(0)("Silver_pct")) + "%"
+                        progSilver.InnerText = Convert.ToString(ds.Tables(5).Rows(0)("Silver_pct")) + "%"
+                        progBronze.Style("width") = Convert.ToString(ds.Tables(5).Rows(0)("Bronze_pct")) + "%"
+                        progBronze.InnerText = Convert.ToString(ds.Tables(5).Rows(0)("Bronze_pct")) + "%"
 
                         gvTopvendor.DataSource = ds.Tables(2)
                         gvTopvendor.DataBind()
@@ -341,7 +404,7 @@ Partial Class vrs_vendorrating_mstr
             Dim obj As New Vendor_RatingClass
             Dim ds As New DataSet
             Dim vendor As String = ddlVendor.SelectedValue
-            ds = obj.Get_VendorRatingList_All(vendor, ddlquartor.SelectedValue.ToString(), ddlProduct.SelectedValue.ToString(), ddlVendorGrp.SelectedValue.ToString(), ddlBrand.SelectedValue.ToString(), "INDIVIDUAL")
+            ds = obj.Get_VendorRatingList_All(vendor, ddlFinYear.SelectedValue.ToString(), ddlquartor.SelectedValue.ToString(), ddlProduct.SelectedValue.ToString(), ddlVendorGrp.SelectedValue.ToString(), ddlBrand.SelectedValue.ToString(), "INDIVIDUAL")
 
             If (Not (ds Is Nothing) AndAlso ds.Tables.Count > 0 AndAlso Not (ds.Tables(0) Is Nothing) AndAlso ds.Tables(0).Rows.Count > 0) Then
                 RatingRepeater.DataSource = ds.Tables(0)
@@ -729,8 +792,17 @@ Partial Class vrs_vendorrating_mstr
                     divVendorRating.Visible = False
                     divSrcVendorGroup.Visible = True
                     divSrcVendor.Visible = False
-
+                    divHeaderList.Visible = False
+                ElseIf type.Equals("HEAD") Then
+                    divVendorGroup.Visible = False
+                    divVendorRating.Visible = False
+                    divSrcVendorGroup.Visible = False
+                    divSrcVendor.Visible = False
+                    divSrcProductGroup.Visible = False
+                    divSrcProduct.Visible = False
+                    divHeaderList.Visible = True
                 Else
+                    divHeaderList.Visible = False
                     divVendorGroup.Visible = False
                     divVendorRating.Visible = True
                     divSrcVendorGroup.Visible = True
@@ -1247,7 +1319,9 @@ Partial Class vrs_vendorrating_mstr
         Dim type As String = ddlType.SelectedValue
         If Not String.IsNullOrEmpty(type) Then
             If type.Equals("GRPS") Then
+                divSrcHeadGrp.Visible = False
                 divTopVendor.Visible = False
+                divHeaderList.Visible = False
                 divVendorScoreCategoryLyTyWise.Visible = False
                 divVendorGroup.Visible = True
                 divVendorRating.Visible = False
@@ -1257,8 +1331,22 @@ Partial Class vrs_vendorrating_mstr
                 divSrcProduct.Visible = True
                 ddlVendorGrp.SelectedIndex = -1
                 ddlVendor.SelectedIndex = -1
-            Else
+            ElseIf type.Equals("HEAD") Then
+                divSrcHeadGrp.Visible = True
                 divTopVendor.Visible = False
+                divVendorScoreCategoryLyTyWise.Visible = False
+                divVendorGroup.Visible = False
+                divVendorRating.Visible = False
+                divSrcVendorGroup.Visible = False
+                divSrcVendor.Visible = False
+                divSrcProductGroup.Visible = False
+                divSrcProduct.Visible = False
+                ddlVendorGrp.SelectedIndex = -1
+                ddlVendor.SelectedIndex = -1
+            Else
+                divSrcHeadGrp.Visible = False
+                divTopVendor.Visible = False
+                divHeaderList.Visible = False
                 divVendorScoreCategoryLyTyWise.Visible = False
                 divVendorGroup.Visible = False
                 divVendorRating.Visible = False
@@ -1391,4 +1479,81 @@ Partial Class vrs_vendorrating_mstr
             End If
         End If
     End Sub
+
+    'Protected Sub reptHeadGrp_ItemDataBound(sender As Object, e As RepeaterItemEventArgs)
+
+    'End Sub
+    'Protected Sub reptHeadGrp_ItemCommand(source As Object, e As RepeaterCommandEventArgs)
+
+    'End Sub
+    Protected Sub rptHeadGrp_ItemDataBound(sender As Object, e As RepeaterItemEventArgs)
+        Dim obj As New Vendor_RatingClass
+        Dim item As RepeaterItem = e.Item
+        Dim dt As DataTable
+
+        dt = ViewState("HeadScoreDtls")
+
+        Dim progressBar As HtmlGenericControl = TryCast(item.FindControl("LineHeadProgressBar"), HtmlGenericControl)
+        Dim lblHeadTotalScore As Label = TryCast(item.FindControl("lblHeadTotalScore"), Label)
+        Dim hdrheadname As HiddenField = TryCast(item.FindControl("hdrheadname"), HiddenField)
+        'Dim imgGrpGrade As Image = TryCast(item.FindControl("imgGrpGrade"), Image)
+        Dim imgGrpHead As System.Web.UI.WebControls.Image =
+            TryCast(e.Item.FindControl("imgGrpHead"), System.Web.UI.WebControls.Image)
+
+        If lblHeadTotalScore IsNot Nothing AndAlso progressBar IsNot Nothing AndAlso hdrheadname IsNot Nothing Then
+            Dim score As Decimal = Convert.ToDecimal(lblHeadTotalScore.Text)
+            progressBar.Style("width") = Convert.ToString(score) + "%"
+
+            If score > 79 AndAlso score <= 100 Then
+                progressBar.Style("background-color") = "#b68900"
+            ElseIf score > 59 AndAlso score <= 79 Then
+                progressBar.Style("background-color") = "#66b201"
+            ElseIf score > 50 AndAlso score <= 59 Then
+                progressBar.Style("background-color") = "#b31400"
+            ElseIf score >= 0 AndAlso score <= 50 Then
+                progressBar.Style("background-color") = "#008db6"
+            End If
+            'progressBar.Style("background-color") = "#b68900"
+
+        End If
+
+        Dim head As String = hdrheadname.Value
+        If head IsNot Nothing And Not String.IsNullOrEmpty(head) Then
+            If head.Equals("Statutory") Then
+                imgGrpHead.Attributes.Add("src", "images/well.png")
+            End If
+            If head.Equals("Quality") Then
+                imgGrpHead.Attributes.Add("src", "images/quality.png")
+            End If
+            If head.Equals("Audit") Then
+                imgGrpHead.Attributes.Add("src", "images/audit.png")
+            End If
+            If head.Equals("Service") Then
+                imgGrpHead.Attributes.Add("src", "images/service.png")
+            End If
+            If head.Equals("Complaints") Then
+                imgGrpHead.Attributes.Add("src", "images/complaint.png")
+            End If
+
+        End If
+
+    End Sub
+    Protected Sub rptHeadGrp_ItemCommand(source As Object, e As RepeaterCommandEventArgs)
+
+    End Sub
+    Protected Sub ddlHead_SelectedIndexChanged(sender As Object, e As EventArgs)
+        divVendorScoreCategoryLyTyWise.Visible = False
+        divTopVendor.Visible = False
+        divHeaderList.Visible = False
+    End Sub
+
+    Protected Sub ddlFinYear_SelectedIndexChanged(sender As Object, e As EventArgs)
+        If String.IsNullOrEmpty(ddlFinYear.SelectedValue) Then
+            ddlquartor.Items.Clear()
+        Else
+            Populate_Quarter()
+        End If
+    End Sub
+
+
 End Class

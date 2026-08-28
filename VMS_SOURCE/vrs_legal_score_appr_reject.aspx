@@ -82,13 +82,19 @@
             <div class="card">
                 <div class="card-body">
                     <div class="row">
-                        <div class="col-md-3">
+                         <div class="col-md-2">
+                                    <div class="form-group pb-0">
+                                        <label class="form-control-label">Fin Year:</label>
+                                        <asp:DropDownList ID="ddlFinYear" class="form-control select2" runat="server" AutoPostBack="true" OnSelectedIndexChanged="ddlFinYear_SelectedIndexChanged" />
+                                    </div>
+                                </div>
+                        <div class="col-md-2">
                             <div class="form-group pb-0">
                                 <label class="form-control-label">Quarter:</label>
                                 <asp:DropDownList ID="ddlquartor" class="form-control select2" runat="server" AutoPostBack="true" OnSelectedIndexChanged="ddlquartor_SelectedIndexChanged" />
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <div class="form-group pb-0">
                                 <label class="form-control-label">Status:</label>
                                 <asp:DropDownList ID="ddlStatus" class="form-control select2" AutoPostBack="true" OnSelectedIndexChanged="ddlStatus_SelectedIndexChanged" runat="server" />
@@ -113,6 +119,15 @@
                 </div>
             </div>
             <div class="card" runat="server" id="div2" visible="false">
+                <div class="mst-panel-header">
+                    <div class="mst-panel-header-left">
+                        <span class="mst-panel-icon"><i class="fas fa-list"></i></span>
+                        <div>
+                            <h5 class="mst-panel-title">Legal Score Approval</h5>
+                            <p class="mst-panel-subtitle">Approve or reject submitted legal scores</p>
+                        </div>
+                    </div>
+                </div>
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-12">

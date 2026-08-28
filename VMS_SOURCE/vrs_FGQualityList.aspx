@@ -22,8 +22,18 @@
 
     <div class="card">
         <div class="card-body">
-            <div class="row">
-                <div class="col-md-3">
+            <div class="row" style="flex-wrap: nowrap;">
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <asp:UpdatePanel runat="server" ID="UpdatePanel6">
+                            <ContentTemplate>
+                                <label class="form-control-label">Fin Year:</label>
+                                <asp:DropDownList ID="ddlFinYear" class="form-control form-control-sm select2" runat="server" OnSelectedIndexChanged="ddlFinYear_SelectedIndexChanged" AutoPostBack="true" />
+                            </ContentTemplate>
+                        </asp:UpdatePanel>
+                    </div>
+                </div>
+                <div class="col-md-2">
                     <div class="form-group">
                         <asp:UpdatePanel runat="server" ID="UpdatePanel4">
                             <ContentTemplate>
@@ -33,7 +43,7 @@
                         </asp:UpdatePanel>
                     </div>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <div class="form-group">
                         <asp:UpdatePanel runat="server" ID="UpdatePanel5">
                             <ContentTemplate>
@@ -54,7 +64,7 @@
                     </div>
                 </div>
 
-                <div class="col-md-3 form-btn-mt">
+                <div class="col-md-4 form-btn-mt">
                     <asp:UpdatePanel runat="server" ID="UpdatePanel3">
                         <ContentTemplate>
                             <asp:Button ID="btnUpload" runat="server" ToolTip="Click to Upload File" Text="Upload" CssClass="btn btn-primary btn-sm" Visible="false" />
@@ -74,6 +84,15 @@
     </div>
 
     <div class="card">
+        <div class="mst-panel-header">
+            <div class="mst-panel-header-left">
+                <span class="mst-panel-icon"><i class="fas fa-list"></i></span>
+                <div>
+                    <h5 class="mst-panel-title">Deviations in FG quality List</h5>
+                    <p class="mst-panel-subtitle">Browse finished goods quality deviations</p>
+                </div>
+            </div>
+        </div>
         <div class="card-body">
             <div class="row">
                 <div class="col-md-12">
