@@ -44,6 +44,8 @@ Partial Class UnitDespatchPlanAddUpdateVr1
                 PopulateDeliveryDepotName()
                 PopulatePONo()
                 PopulateSiteDetails()
+                'Modified-by MUKESH BHAGAT on 24-08-2026 : reference GSTNs on first load
+                PopulateGstnDetails()
                 PageSizeDropdown()
             End If
             AddAttributes()
@@ -307,6 +309,17 @@ Partial Class UnitDespatchPlanAddUpdateVr1
                 End If
             End If
 
+            'Modified-by MUKESH BHAGAT on 24-08-2026 : invoice OCR gate.
+            'A newly uploaded bill must have been read and matched by OCR (gross value +
+            'invoice no/date). The browser sets hdnOcrVerified; this server-side check makes
+            'sure the validation cannot be skipped by disabling script.
+            If sch_fld1.HasFile Then
+                If Not String.Equals(hdnOcrVerified.Value, "Y", StringComparison.OrdinalIgnoreCase) Then
+                    ScriptManager.RegisterStartupScript(Me.Page, Me.GetType(), "alert", "alert('Please click Extract & Validate Invoice and make sure the entered invoice details match the uploaded bill.');", True)
+                    Exit Sub
+                End If
+            End If
+
 
             If Not (ddlSite.SelectedValue = String.Empty Or ddlPONo.SelectedValue = String.Empty Or txtTransporter.Text = String.Empty Or txtTruckNo.Text = String.Empty) Then
 
@@ -351,6 +364,8 @@ Partial Class UnitDespatchPlanAddUpdateVr1
     End Sub
     Protected Sub ddlSite_SelectedIndexChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles ddlSite.SelectedIndexChanged
         PopulatePONo()
+        'Modified-by MUKESH BHAGAT on 24-08-2026 : supplier GSTN follows the selected site
+        PopulateGstnDetails()
         BindGrid()
     End Sub
     'Protected Sub ddlDeliveryDepot_SelectedIndexChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles ddlDeliveryDepot.SelectedIndexChanged
@@ -636,6 +651,54 @@ Partial Class UnitDespatchPlanAddUpdateVr1
         ddlSite.Items.Insert(0, New ListItem(Constant.Common.Selec, String.Empty, True))
 
     End Sub
+
+    'Modified-by MUKESH BHAGAT on 24-08-2026 : reference GSTNs shown on the despatch screen -
+    'invoicing depot GSTN from the depot master, supplier GSTN from the selected site.
+    'Written defensively: a missing column or row must never break the despatch entry screen.
+    Public Sub PopulateGstnDetails()
+        Try
+            txtDepotGstn.Text = String.Empty
+            txtSupplierGstn.Text = String.Empty
+
+            ' ---- invoicing depot GSTN ----
+            ' Modified-by MUKESH BHAGAT on 27-08-2026 : read directly from MSTRDB.dbo.mstr_org
+            ' (org_code = depot code, column org_gstn_no) through the dedicated SP
+            ' [Get_Depot_Gstn]. The earlier route via [Get_DepotDetails] depended on that SP
+            ' returning a GSTN_No column, which not every environment's copy does.
+            If Not String.IsNullOrEmpty(ddlDeliveryDepot.SelectedValue) Then
+                Dim depotObj As New UnitDespatchClassVr1
+                Dim depotDS As DataSet = depotObj.GetDepotGstn(ddlDeliveryDepot.SelectedValue)
+                If (Not (depotDS Is Nothing) AndAlso depotDS.Tables.Count > 0 AndAlso Not (depotDS.Tables(0) Is Nothing) AndAlso depotDS.Tables(0).Rows.Count > 0) Then
+                    If depotDS.Tables(0).Columns.Contains("org_gstn_no") Then
+                        txtDepotGstn.Text = Convert.ToString(depotDS.Tables(0).Rows(0)("org_gstn_no"))
+                    End If
+                End If
+            End If
+
+            ' ---- supplier GSTN : belongs to the SITE, not to the unit ----
+            ' Modified-by MUKESH BHAGAT on 26-08-2026 : the GST registration is held against the
+            ' vendor site in RFQDB.MSTR.vendor_site_dtls.gst_number. The site is whichever one is
+            ' selected in ddlSite (its value is vendor_site_id); when nothing is selected yet the
+            ' SP falls back to the site mapped to the logged-in user in
+            ' dbo.user_applicable_site_dtls. This replaces the earlier vendor_mstr approach.
+            Dim siteId As Integer = 0
+            If Not String.IsNullOrEmpty(ddlSite.SelectedValue) Then
+                Integer.TryParse(ddlSite.SelectedValue, siteId)
+            End If
+
+            Dim gstObj As New UnitDespatchClassVr1
+            Dim gstDS As DataSet = gstObj.GetSupplierGstnBySite(siteId, userInfo.userIDEntity)
+            If (Not (gstDS Is Nothing) AndAlso gstDS.Tables.Count > 0 AndAlso Not (gstDS.Tables(0) Is Nothing) AndAlso gstDS.Tables(0).Rows.Count > 0) Then
+                If gstDS.Tables(0).Columns.Contains("gst_number") Then
+                    txtSupplierGstn.Text = Convert.ToString(gstDS.Tables(0).Rows(0)("gst_number"))
+                End If
+            End If
+        Catch ex As Exception
+            ' reference information only - never block the despatch screen
+            txtDepotGstn.Text = String.Empty
+            txtSupplierGstn.Text = String.Empty
+        End Try
+    End Sub
     Private Function TotalKg() As Integer
         Dim chk As CheckBox
         Dim txt As TextBox
@@ -759,6 +822,10 @@ Partial Class UnitDespatchPlanAddUpdateVr1
             If sqlConn IsNot Nothing Then
                 sqlConn.Close()
             End If
+            'Modified-by MUKESH BHAGAT on 24-08-2026 : optional E-Way bill document
+            'Modified-by MUKESH BHAGAT on 26-08-2026 : moved after the commit - the E-Way bill
+            'is optional and must never be able to roll back a challan that is already saved.
+            SaveEwayBillDocument(GetChallanId)
         Else
             sqlTrans.Rollback()
             If sqlConn IsNot Nothing Then
@@ -927,6 +994,8 @@ Partial Class UnitDespatchPlanAddUpdateVr1
             PopulateIndent()
             PopulateSiteDetails()
             ddlSite.SelectedValue = DespatchDS.Tables(0).Rows(0)("desph_site_id").ToString
+            'Modified-by MUKESH BHAGAT on 24-08-2026 : reference GSTNs in update mode
+            PopulateGstnDetails()
             PopulatePONo()
             ddlPONo.SelectedValue = Convert.ToString(DespatchDS.Tables(0).Rows(0)("desph_po_no"))
 
@@ -955,6 +1024,9 @@ Partial Class UnitDespatchPlanAddUpdateVr1
             'formatted yyyy-MM-dd. The raw .ToString left them blank in edit mode, so re-saving wiped the dates.
             txtEwayBillDate.Text = ToHtml5Date(DespatchDS.Tables(0).Rows(0)("desph_eway_bill_dt"))
             txtValidUpto.Text = ToHtml5Date(DespatchDS.Tables(0).Rows(0)("desph_valid_upto_dt"))
+            'Modified-by MUKESH BHAGAT on 26-08-2026 : show the E-Way bill download link
+            'when a document has already been attached to this challan.
+            PopulateEwayDocument(challanNo)
             'Modified-by MUKESH BHAGAT on 20-08-2026 : restored Indent feature from old UAT source
             ddlIndent.SelectedValue = DespatchDS.Tables(0).Rows(0)("desph_third_party_indent_no").ToString
             ddlIndent.Enabled = False
@@ -1070,6 +1142,10 @@ Partial Class UnitDespatchPlanAddUpdateVr1
         If Not (GetChallanId < 0) Then
             DeleteDetail(sqlConn, sqlTrans)
             InsertDetail(hdnChallanno.Value, sqlConn, sqlTrans)
+            'Modified-by MUKESH BHAGAT on 26-08-2026 : allow the E-Way bill to be attached
+            '(or replaced) while editing an existing challan. Runs on its own connection
+            'outside this transaction, so it cannot affect the challan update either way.
+            SaveEwayBillDocument(Convert.ToInt64(hdnChallanno.Value))
         Else
             sqlTrans.Rollback()
         End If
@@ -1189,6 +1265,8 @@ System.Web.Services.WebMethod()>
         PopulatePONo()
         'Modified-by MUKESH BHAGAT on 20-08-2026 : restored Indent feature from old UAT source
         PopulateIndent()
+        'Modified-by MUKESH BHAGAT on 24-08-2026 : refresh the reference GSTNs
+        PopulateGstnDetails()
         BindGrid()
     End Sub
 
@@ -1267,6 +1345,115 @@ System.Web.Services.WebMethod()>
 
         Return numRowsAffected
     End Function
+#End Region
+
+#Region "Save / Download E-Way Bill Document"
+    'Modified-by MUKESH BHAGAT on 24-08-2026 : optional E-Way bill document.
+    'Modified-by MUKESH BHAGAT on 26-08-2026 : the document is now also recorded in
+    'dbo.challan_document_repository as doc_type='EWAY_DOC' (srl no 2) so it can be
+    'downloaded again from this screen. The invoice copy stays doc_type='CHALLAN_DOC'
+    '(srl no 1); the four procedures that read the table were filtered on
+    'doc_type='CHALLAN_DOC' first, so the invoice download path is untouched.
+    'Stored beside the invoice copy in Challan_Docs\<dd_MM_yyyy> and named
+    'EWAY_<challan no>_<original name>, which also makes the file name unique per challan.
+    'Never allowed to break the despatch: this runs after the challan is committed, on its
+    'own connection with no transaction, and any failure is reported without losing the challan.
+    Private Const EwayDocType As String = "EWAY_DOC"
+    Private Const EwayDocSrlNo As Integer = 2
+
+    Private Sub SaveEwayBillDocument(ByVal ChallanNo As Int64)
+        Try
+            If sch_fld_eway.PostedFile Is Nothing OrElse sch_fld_eway.PostedFile.ContentLength <= 0 Then
+                Exit Sub
+            End If
+
+            If ChallanNo <= 0 Then
+                Exit Sub
+            End If
+
+            Dim DocPath As String = Format(Date.Now, "dd_MM_yyyy")
+            Dim projectPath As String = ConfigurationManager.AppSettings.Get("UPLOAD_DOCS_FOLDER_ABS_PATH") & userInfo.userCompanyEntity & "\" & "Challan_Docs" & "\" & DocPath
+
+            If Not (Directory.Exists(projectPath)) Then
+                Directory.CreateDirectory(projectPath)
+            End If
+
+            Dim originalName As String = System.IO.Path.GetFileName(sch_fld_eway.PostedFile.FileName)
+            Dim storedName As String = "EWAY_" & ChallanNo.ToString() & "_" & originalName
+            Dim saveLocation As String = projectPath & "\" & storedName
+
+            sch_fld_eway.PostedFile.SaveAs(saveLocation)
+
+            'Record it so the screen can offer it back for download.
+            Dim DocUpld As New UnitDespatchClassVr1
+            DocUpld.InsertChallanTypedDocument(ChallanNo, storedName, storedName, DocPath,
+                                               userInfo.userIDEntity, userInfo.userBranchEntity,
+                                               EwayDocType, EwayDocSrlNo)
+
+            hdnEwayDocPath.Value = DocPath
+            hdnEwayDocFile.Value = storedName
+            lnkDownloadEway.Visible = True
+        Catch ex As Exception
+            lblErrorMessage.Text = "Challan saved, but the E-Way bill document could not be stored."
+            lblErrorMessage.ForeColor = Drawing.Color.Red
+        End Try
+    End Sub
+
+    'Modified-by MUKESH BHAGAT on 26-08-2026 : in update mode, show the download link when
+    'an E-Way bill has already been attached to this challan.
+    Private Sub PopulateEwayDocument(ByVal ChallanNo As Int64)
+        Try
+            hdnEwayDocPath.Value = String.Empty
+            hdnEwayDocFile.Value = String.Empty
+            lnkDownloadEway.Visible = False
+
+            If ChallanNo <= 0 Then
+                Exit Sub
+            End If
+
+            Dim DocObj As New UnitDespatchClassVr1
+            Dim DocDS As DataSet = DocObj.GetChallanTypedDocument(ChallanNo, userInfo.userBranchEntity, EwayDocType)
+
+            If DocDS Is Nothing OrElse DocDS.Tables.Count = 0 OrElse DocDS.Tables(0).Rows.Count = 0 Then
+                Exit Sub
+            End If
+
+            Dim docRow As DataRow = DocDS.Tables(0).Rows(0)
+            hdnEwayDocPath.Value = Convert.ToString(docRow("doc_doc_path"))
+            hdnEwayDocFile.Value = Convert.ToString(docRow("doc_org_filename"))
+            lnkDownloadEway.Visible = Not String.IsNullOrEmpty(hdnEwayDocFile.Value)
+        Catch ex As Exception
+            'A missing document must never stop the challan from opening.
+            lnkDownloadEway.Visible = False
+        End Try
+    End Sub
+
+    'Modified-by MUKESH BHAGAT on 26-08-2026 : streams the stored E-Way bill to the browser.
+    Protected Sub lnkDownloadEway_Click(ByVal sender As Object, ByVal e As EventArgs)
+        CheckLogin()
+
+        If String.IsNullOrEmpty(hdnEwayDocFile.Value) Then
+            Exit Sub
+        End If
+
+        Dim genReportPath As String = ConfigurationManager.AppSettings.Get("UPLOAD_DOCS_FOLDER_ABS_PATH") & userInfo.userCompanyEntity & "\" & "Challan_Docs" & "\"
+        Dim absolutePath As String = genReportPath & hdnEwayDocPath.Value & "\" & hdnEwayDocFile.Value
+
+        If Not File.Exists(absolutePath) Then
+            ScriptManager.RegisterStartupScript(Me, Me.GetType(), "ewaymissing", "alert('E-Way bill document not found on the server.');", True)
+            Exit Sub
+        End If
+
+        Response.Clear()
+        Response.Charset = ""
+        Response.ContentType = "application/octet-stream"
+        Response.AppendHeader("content-disposition", "attachment; filename=""" & hdnEwayDocFile.Value & """")
+        Response.Cache.SetCacheability(HttpCacheability.NoCache)
+        Response.TransmitFile(absolutePath)
+        Response.Flush()
+        Response.SuppressContent = True
+        HttpContext.Current.ApplicationInstance.CompleteRequest()
+    End Sub
 #End Region
 
 #Region "Get File Extension"
