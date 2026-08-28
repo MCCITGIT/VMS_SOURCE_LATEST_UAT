@@ -128,7 +128,7 @@
 
 /* Cards */
 .rm-module .card {
-    background: #ffffff;
+    /*background: #ffffff;*/
     border: 1px solid #eee8de !important;
     border-radius: 18px !important;
     box-shadow: 0 8px 22px rgba(80, 60, 30, 0.05) !important;
