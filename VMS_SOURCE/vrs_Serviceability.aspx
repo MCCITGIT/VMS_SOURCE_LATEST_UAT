@@ -51,7 +51,7 @@
                     <ContentTemplate>
                         <h6>Final Serviceability</h6>
                         <div class="card">
-                            <div class="card-body p-0">
+                            <div class="card-body">
                                 <div class="row">
                                     <div class="col-md-12">
                                         <asp:UpdatePanel runat="server">
@@ -159,7 +159,7 @@
                 <ContentTemplate>
                       <h6>Direct Dispatch</h6>
                     <div class="card">
-                        <div class="card-body p-0">
+                        <div class="card-body">
                             <div class="row">
                                 
                                 <div class="col-md-12">

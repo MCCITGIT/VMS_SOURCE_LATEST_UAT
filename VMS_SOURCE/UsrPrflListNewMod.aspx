@@ -91,7 +91,7 @@
         <div class="card-body">
             <div class="table-responsive">
                 <asp:GridView ID="gvUserProfile" runat="server" AutoGenerateColumns="false" AllowPaging="True"
-                    Visible="true" OnRowDataBound="gvUserProfile_RowDataBound" OnPageIndexChanging="gvUserProfile_IndexChanging" BorderWidth="1" CssClass="table table-hover upgradDataGrid">
+                    Visible="true" OnRowDataBound="gvUserProfile_RowDataBound" OnPageIndexChanging="gvUserProfile_IndexChanging" CssClass="table table-hover upgradDataGrid">
                     <RowStyle CssClass="tlrowlight" />
                     <PagerStyle CssClass="PagerGrid" HorizontalAlign="Right" />
                     <HeaderStyle CssClass="headerGrid" />
