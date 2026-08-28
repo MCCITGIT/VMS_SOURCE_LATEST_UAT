@@ -17,9 +17,9 @@ Partial Class VendorRawMaterialLink
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
         CheckLogin()
         Page.MaintainScrollPositionOnPostBack = True
+        AddAttributes()
 
         If (Not IsPostBack) Then
-            AddAttributes()
             'PopulateVendor()
             InitializeGridTable()
             If Not String.IsNullOrWhiteSpace(Request.QueryString("vendorcode")) Then
@@ -125,33 +125,18 @@ Partial Class VendorRawMaterialLink
 
         btnSubmit.Visible = True
 
-        'If ddlVendor.SelectedIndex <= 0 Then
-        '    lblErrorMessage.ForeColor = System.Drawing.Color.Red
-        '    lblErrorMessage.Text = "Please select Vendor."
-        '    Exit Sub
-        'End If
-        If String.IsNullOrWhiteSpace(hdnVendorCode.Value) Then
-            lblErrorMessage.Text = ""
-            RmActionPopup.ShowError(Me, "Please enter Vendor.")
-            Exit Sub
-        End If
-
-        If String.IsNullOrWhiteSpace(txtrawmatid.Value) Then
-            lblErrorMessage.Text = ""
-            RmActionPopup.ShowError(Me, "Please enter Raw Material.")
+        If Not ValidateAddInputs() Then
             Exit Sub
         End If
 
         Dim dt As DataTable = GetGridTable()
         Dim selectedRawMatCode As String = txtrawmatid.Value.Trim()
-        'Dim selectedVendorCode As String = ddlVendor.SelectedValue.Trim()
         Dim selectedVendorCode As String = hdnVendorCode.Value
 
         For Each row As DataRow In dt.Rows
             If Convert.ToString(row("vendor_code")).Trim().Equals(selectedVendorCode, StringComparison.OrdinalIgnoreCase) AndAlso
                Convert.ToString(row("rawmat_code")).Trim().Equals(selectedRawMatCode, StringComparison.OrdinalIgnoreCase) Then
-                lblErrorMessage.Text = ""
-                RmActionPopup.ShowError(Me, "Selected Raw Material already added.")
+                ShowInlineValidation("RawMaterial", "Selected Raw Material already added.")
                 Exit Sub
             End If
         Next
@@ -163,8 +148,6 @@ Partial Class VendorRawMaterialLink
 
         Dim dr As DataRow = dt.NewRow()
         dr("id") = String.Empty
-        'dr("vendor_code") = ddlVendor.SelectedValue
-        'dr("vendor_name") = ddlVendor.SelectedItem.Text
         dr("vendor_code") = hdnVendorCode.Value
         dr("vendor_name") = txtVendorSearch.Text
         dr("rawmat_code") = selectedRawMatCode
@@ -175,7 +158,7 @@ Partial Class VendorRawMaterialLink
 
         gvVendorRawMat.EditIndex = -1
         BindRawMatGrid()
-        ' txtVendorSearch.Text = String.Empty
+        ClearInlineValidation()
         txtSearchText.Text = String.Empty
         txtrawmatid.Value = String.Empty
         lblErrorMessage.Text = ""
@@ -319,8 +302,7 @@ Partial Class VendorRawMaterialLink
             Next
             dt1.AcceptChanges()
             If dt1.Rows.Count <= 0 Then
-                lblErrorMessage.Text = ""
-                RmActionPopup.ShowError(Me, "Please add at least one new Raw Material.")
+                ShowInlineValidation("Grid", "Please add at least one new Raw Material.")
                 Return
             End If
 
@@ -337,14 +319,12 @@ Partial Class VendorRawMaterialLink
                 gvVendorRawMat.Visible = False
 
             Else
-                lblErrorMessage.Text = ""
-                RmActionPopup.ShowError(Me, "Something went wrong. Try again.")
+                ShowInlineValidation("Grid", "Something went wrong. Try again.")
             End If
 
         Catch ex As SqlException
             If ex.Number = 2627 OrElse ex.Number = 2601 Then
-                lblErrorMessage.Text = ""
-                RmActionPopup.ShowError(Me, "Same Vendor and Raw Material already exists.")
+                ShowInlineValidation("Grid", "Same Vendor and Raw Material already exists.")
                 gvVendorRawMat.EditIndex = -1
                 Binddata()
                 Return
@@ -448,4 +428,54 @@ Partial Class VendorRawMaterialLink
 
         Return vendorDetails.ToArray()
     End Function
+
+    Private Function ValidateAddInputs() As Boolean
+        ClearInlineValidation()
+
+        Dim isValid As Boolean = True
+
+        If String.IsNullOrWhiteSpace(txtVendorSearch.Text.Trim()) Then
+            AppendInlineValidation("Vendor", "Please enter Vendor name.")
+            isValid = False
+        ElseIf String.IsNullOrWhiteSpace(hdnVendorCode.Value) Then
+            AppendInlineValidation("Vendor", "Please select Vendor from the list.")
+            isValid = False
+        End If
+
+        If String.IsNullOrWhiteSpace(txtSearchText.Text.Trim()) Then
+            AppendInlineValidation("RawMaterial", "Please enter Raw Material name.")
+            isValid = False
+        ElseIf String.IsNullOrWhiteSpace(txtrawmatid.Value) Then
+            AppendInlineValidation("RawMaterial", "Please select Raw Material from the list.")
+            isValid = False
+        End If
+
+        Return isValid
+    End Function
+
+    Private Sub ClearInlineValidation()
+        txtVendorSearch.CssClass = "form-control"
+        txtSearchText.CssClass = "form-control"
+        valVendorSearch.Text = String.Empty
+        valSearchText.Text = String.Empty
+        valGrid.Text = String.Empty
+    End Sub
+
+    Private Sub AppendInlineValidation(ByVal fieldKey As String, ByVal message As String)
+        Select Case fieldKey
+            Case "Vendor"
+                txtVendorSearch.CssClass = "form-control field-invalid"
+                valVendorSearch.Text = message
+            Case "RawMaterial"
+                txtSearchText.CssClass = "form-control field-invalid"
+                valSearchText.Text = message
+            Case "Grid"
+                valGrid.Text = message
+        End Select
+    End Sub
+
+    Private Sub ShowInlineValidation(ByVal fieldKey As String, ByVal message As String)
+        ClearInlineValidation()
+        AppendInlineValidation(fieldKey, message)
+    End Sub
 End Class

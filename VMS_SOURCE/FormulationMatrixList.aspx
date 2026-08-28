@@ -68,7 +68,7 @@
                         <asp:Label ID="lblErrorMessage" CssClass="errormsg" Visible="true" runat="server"></asp:Label>
                         <div class="rm-filter-stats-row">
                             <div class="rm-filter-fields">
-                                <div class="row">
+                                <div class="row" style="align-items: center;">
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             <label class="form-control-label">Vendor:</label>
@@ -131,8 +131,8 @@
                                             </asp:AutoCompleteExtender>
                                         </div>
                                     </div>--%>
-                                    <div class="col-md-12 text-center">
-                                        <div class="rm-filter-actions">
+                                    <div class="col-md-3 text-center">
+                                        <div class="rm-filter-actions" style="justify-content: left">
                                             <asp:LinkButton CssClass="btn btn-primary btn-sm rm-btn-icon" ID="imgbtnSearch" runat="server" ClientIDMode="Static" ToolTip="Search"><i class="fas fa-search"></i></asp:LinkButton>
                                             <asp:LinkButton ID="ImgbtnAdd" runat="server" CssClass="btn btn-success btn-sm rm-btn-icon" ClientIDMode="Static" ToolTip="Add"><i class="fas fa-plus"></i></asp:LinkButton>
                                         </div>

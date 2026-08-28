@@ -1,57 +1,148 @@
-var firstErrorControl;
-var errMsg;
+function clearProductValidation() {
+    var control = document.getElementById("txtProductSearch");
+    var label = document.getElementById("valProductSearch");
 
-function validateFormulationMatrixSubmit() {
-    firstErrorControl = "";
-    errMsg = "";
+    if (control) {
+        control.classList.remove("field-invalid");
+    }
+
+    if (label) {
+        label.innerHTML = "";
+    }
+}
+
+function setProductFieldError(message) {
+    var control = document.getElementById("txtProductSearch");
+    var label = document.getElementById("valProductSearch");
+
+    if (control) {
+        control.classList.add("field-invalid");
+    }
+
+    if (label) {
+        label.innerHTML = message;
+    }
+
+    if (control && control.scrollIntoView) {
+        control.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+}
+
+function clearGridValidation() {
+    var label = document.getElementById("valGrid");
+    var grid = document.getElementById("gvFormulationMatrix");
+
+    if (label) {
+        label.innerHTML = "";
+    }
+
+    if (grid) {
+        var rateInputs = grid.querySelectorAll("input[id$='txtRate']");
+        for (var i = 0; i < rateInputs.length; i++) {
+            rateInputs[i].classList.remove("field-invalid");
+        }
+    }
+}
+
+function setGridFieldError(message, rateInput) {
+    var label = document.getElementById("valGrid");
+    var grid = document.getElementById("gvFormulationMatrix");
+
+    clearGridValidation();
+
+    if (label) {
+        label.innerHTML = message;
+    }
+
+    if (rateInput) {
+        rateInput.classList.add("field-invalid");
+        if (rateInput.scrollIntoView) {
+            rateInput.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+    } else if (grid && grid.scrollIntoView) {
+        grid.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+}
+
+function clearFormulationMatrixValidation() {
+    clearProductValidation();
+    clearGridValidation();
+}
+
+function validateProductSearch() {
+    var txtProductSearch = document.getElementById("txtProductSearch");
+    var hdnProductCode = document.getElementById("hdnProductCode");
+    var hdnSkucode = document.getElementById("hdnSkucode");
+
+    clearFormulationMatrixValidation();
+
+    if (!txtProductSearch || txtProductSearch.value.trim() === "") {
+        setProductFieldError("Please enter Product name.");
+        return false;
+    }
+
+    var productCode = hdnProductCode ? (hdnProductCode.value || "").trim() : "";
+    var skuCode = hdnSkucode ? (hdnSkucode.value || "").trim() : "";
+
+    if (productCode === "" && skuCode === "") {
+        setProductFieldError("Please select Product from the list.");
+        return false;
+    }
 
     var lblErrorMessage = document.getElementById("lblErrorMessage");
-    var hdnProductCode = document.getElementById("hdnProductCode");
-    var grid = document.getElementById("gvFormulationMatrix");
-    var rateInputs = grid ? grid.querySelectorAll("input[id$='txtRate']") : [];
-    var submitBtn = document.getElementById("btnSubmit");
-
     if (lblErrorMessage) {
         lblErrorMessage.innerHTML = "";
     }
 
-    if (!hdnProductCode || (hdnProductCode.value || "").trim() === "") {
-        if (firstErrorControl === "") {
-            firstErrorControl = "txtProductSearch";
-        }
-        errMsg += GetErrorRow("txtProductSearch", "Please select Product.");
+    return true;
+}
+
+function validateFormulationMatrixSubmit() {
+    var hdnProductCode = document.getElementById("hdnProductCode");
+    var hdnSkucode = document.getElementById("hdnSkucode");
+    var grid = document.getElementById("gvFormulationMatrix");
+    var rateInputs = grid ? grid.querySelectorAll("input[id$='txtRate']") : [];
+    var submitBtn = document.getElementById("btnSubmit");
+    var txtProductSearch = document.getElementById("txtProductSearch");
+
+    clearFormulationMatrixValidation();
+
+    if (!txtProductSearch || txtProductSearch.value.trim() === "") {
+        setProductFieldError("Please enter Product name.");
+        return false;
+    }
+
+    var productCode = hdnProductCode ? (hdnProductCode.value || "").trim() : "";
+    var skuCode = hdnSkucode ? (hdnSkucode.value || "").trim() : "";
+
+    if (productCode === "" && skuCode === "") {
+        setProductFieldError("Please select Product from the list.");
+        return false;
     }
 
     if (!rateInputs || rateInputs.length === 0) {
-        if (firstErrorControl === "") {
-            firstErrorControl = "gvFormulationMatrix";
-        }
-        errMsg += GetErrorRow("gvFormulationMatrix", "No formulation details found for the selected product.");
+        setGridFieldError("No formulation details found for the selected product.");
+        return false;
     }
 
     for (var i = 0; i < rateInputs.length; i++) {
         var rateValue = (rateInputs[i].value || "").trim();
+
         if (rateValue === "") {
-            if (firstErrorControl === "") {
-                firstErrorControl = rateInputs[i].id;
-            }
-            errMsg += GetErrorRow(rateInputs[i].id, "Please enter Rate for all raw materials.");
-            break;
+            setGridFieldError("Please enter Rate for all raw materials.", rateInputs[i]);
+            return false;
         }
 
         var numericRate = parseFloat(rateValue);
         if (isNaN(numericRate) || numericRate <= 0) {
-            if (firstErrorControl === "") {
-                firstErrorControl = rateInputs[i].id;
-            }
-            errMsg += GetErrorRow(rateInputs[i].id, "Please enter a valid Rate greater than 0.");
-            break;
+            setGridFieldError("Please enter a valid Rate greater than 0.", rateInputs[i]);
+            return false;
         }
     }
 
-    if (firstErrorControl !== "") {
-        SetControlFocus(firstErrorControl);
-        return rmFailValidation(errMsg);
+    var lblErrorMessage = document.getElementById("lblErrorMessage");
+    if (lblErrorMessage) {
+        lblErrorMessage.innerHTML = "";
     }
 
     var buttonText = submitBtn ? ((submitBtn.value || "") + "").toLowerCase() : "submit";
@@ -63,17 +154,22 @@ function validateFormulationMatrixUpdate(el) {
     if (source && source.closest) {
         source = source.closest("a") || source;
     }
+
     var row = source ? source.closest("tr") : null;
     var rateInput = row ? row.querySelector("input[id$='txtRate']") : null;
     var rateValue = rateInput ? (rateInput.value || "").trim() : "";
 
+    clearGridValidation();
+
     if (rateValue === "") {
-        return rmFailValidation("Please enter Rate.");
+        setGridFieldError("Please enter Rate.", rateInput);
+        return false;
     }
 
     var numericRate = parseFloat(rateValue);
     if (isNaN(numericRate) || numericRate <= 0) {
-        return rmFailValidation("Please enter a valid Rate greater than 0.");
+        setGridFieldError("Please enter a valid Rate greater than 0.", rateInput);
+        return false;
     }
 
     var hdnId = row ? row.querySelector("input[id$='hdnId']") : null;

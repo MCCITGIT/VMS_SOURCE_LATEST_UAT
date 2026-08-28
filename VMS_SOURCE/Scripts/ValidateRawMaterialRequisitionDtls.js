@@ -1,6 +1,3 @@
-var firstErrorControl;
-var errMsg;
-
 function allowRateTwoDecimal(evt, control) {
     var charCode = evt.which ? evt.which : evt.keyCode;
 
@@ -68,6 +65,36 @@ function getRmControl(controlId) {
     return document.getElementById(controlId) || document.querySelector("[id$='" + controlId + "']");
 }
 
+function clearFieldValidation(controlId, labelId) {
+    var control = getRmControl(controlId);
+    var label = labelId ? getRmControl(labelId) : null;
+
+    if (control) {
+        control.classList.remove("field-invalid");
+    }
+
+    if (label) {
+        label.innerHTML = "";
+    }
+}
+
+function setFieldError(controlId, labelId, message, scrollToField) {
+    var control = getRmControl(controlId);
+    var label = labelId ? getRmControl(labelId) : null;
+
+    if (control) {
+        control.classList.add("field-invalid");
+    }
+
+    if (label) {
+        label.innerHTML = message;
+    }
+
+    if (scrollToField && control && control.scrollIntoView) {
+        control.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+}
+
 function isDropDownSelected(control) {
     if (!control) {
         return false;
@@ -81,35 +108,106 @@ function isDropDownSelected(control) {
     return control.selectedIndex > 0;
 }
 
-function validateRmDropDown(controlId, errorMessage) {
-    var control = getRmControl(controlId);
-    var resolvedId = control ? control.id : controlId;
+function clearUnitValidation() {
+    clearFieldValidation("ddlUnit", "valUnit");
+}
 
-    if (!isDropDownSelected(control)) {
-        if (firstErrorControl === "") {
-            firstErrorControl = resolvedId;
-        }
-        errMsg += GetErrorRow(resolvedId, errorMessage);
-        if (control) {
-            SetErrorColor(resolvedId, false);
-        }
-        return false;
+function clearVendorValidation() {
+    clearFieldValidation("ddlVendor", "valVendor");
+}
+
+function clearGridValidation() {
+    var label = getRmControl("valGrid");
+    var grid = getRmControl("gvVendorRawMat");
+
+    if (label) {
+        label.innerHTML = "";
     }
 
-    SetErrorColor(resolvedId, true);
-    return true;
+    if (grid) {
+        var inputs = grid.querySelectorAll("input[id$='txtQuantity'], input[id$='txtReqDate']");
+        for (var i = 0; i < inputs.length; i++) {
+            inputs[i].classList.remove("field-invalid");
+        }
+    }
+}
+
+function clearRequisitionSearchValidation() {
+    clearUnitValidation();
+    clearVendorValidation();
+}
+
+function clearRequisitionSubmitValidation() {
+    clearVendorValidation();
+    clearGridValidation();
+}
+
+function clearRequisitionGridFieldValidation(control) {
+    if (control) {
+        control.classList.remove("field-invalid");
+    }
+
+    var valGrid = getRmControl("valGrid");
+    if (!valGrid) {
+        return;
+    }
+
+    var grid = getRmControl("gvVendorRawMat");
+    if (!grid) {
+        valGrid.innerHTML = "";
+        return;
+    }
+
+    var invalidInputs = grid.querySelectorAll("input[id$='txtQuantity'].field-invalid, input[id$='txtReqDate'].field-invalid");
+    if (!invalidInputs || invalidInputs.length === 0) {
+        valGrid.innerHTML = "";
+    }
+}
+
+function scrollToFirstInvalidRequisitionField() {
+    var dropdownIds = ["ddlUnit", "ddlVendor"];
+
+    for (var i = 0; i < dropdownIds.length; i++) {
+        var dropdown = getRmControl(dropdownIds[i]);
+        if (dropdown && dropdown.classList.contains("field-invalid") && dropdown.scrollIntoView) {
+            dropdown.scrollIntoView({ behavior: "smooth", block: "center" });
+            return;
+        }
+    }
+
+    var grid = getRmControl("gvVendorRawMat");
+    if (grid) {
+        var invalidInput = grid.querySelector("input[id$='txtQuantity'].field-invalid, input[id$='txtReqDate'].field-invalid");
+        if (invalidInput && invalidInput.scrollIntoView) {
+            invalidInput.scrollIntoView({ behavior: "smooth", block: "center" });
+            return;
+        }
+
+        var valGrid = getRmControl("valGrid");
+        if (valGrid && (valGrid.innerHTML || "").trim() !== "" && grid.scrollIntoView) {
+            grid.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+    }
 }
 
 function validateRawMaterialRequisitionSearch() {
-    firstErrorControl = "";
-    errMsg = "";
+    var hasError = false;
 
-    validateRmDropDown("ddlUnit", "Please select Vendor Name.");
-    validateRmDropDown("ddlVendor", "Please select RM Vendor.");
+    clearRequisitionSearchValidation();
 
-    if (firstErrorControl !== "") {
-        SetControlFocus(firstErrorControl);
-        return rmFailValidation(errMsg);
+    if (!isDropDownSelected(getRmControl("ddlUnit"))) {
+        setFieldError("ddlUnit", "valUnit", "Please select Vendor Name.", false);
+        hasError = true;
+    }
+
+    if (!isDropDownSelected(getRmControl("ddlVendor"))) {
+        setFieldError("ddlVendor", "valVendor", "Please select RM Vendor.", false);
+        hasError = true;
+    }
+
+    if (hasError) {
+        scrollToFirstInvalidRequisitionField();
+        return false;
     }
 
     var lblError = getRmControl("lblErrorMessage");
@@ -121,23 +219,32 @@ function validateRawMaterialRequisitionSearch() {
 }
 
 function validateRawMaterialRequisitionSubmit() {
-    firstErrorControl = "";
-    errMsg = "";
-
-    ValidateDropDown1("ddlVendor", "Please select RM Vendor.");
-
-    var grid = document.getElementById("gvVendorRawMat");
-    var hasDataRow = false;
+    var hasError = false;
     var hasValidRow = false;
+    var hasPartialRowError = false;
     var hasMissingDateError = false;
     var hasMissingQtyError = false;
+    var grid = getRmControl("gvVendorRawMat");
+    var valGrid = getRmControl("valGrid");
 
-    if (grid) {
-        var rows = grid.querySelectorAll("tr");
-        hasDataRow = rows.length > 1;
+    clearRequisitionSubmitValidation();
 
-        for (var i = 1; i < rows.length; i++) {
-            var row = rows[i];
+    if (!isDropDownSelected(getRmControl("ddlVendor"))) {
+        setFieldError("ddlVendor", "valVendor", "Please select RM Vendor.", false);
+        hasError = true;
+    }
+
+    var dataRows = grid ? grid.querySelectorAll("tbody tr.tlrowlight") : [];
+    var hasDataRow = dataRows && dataRows.length > 0;
+
+    if (!hasDataRow) {
+        if (valGrid) {
+            valGrid.innerHTML = "Please search and load Raw Material details.";
+        }
+        hasError = true;
+    } else {
+        for (var i = 0; i < dataRows.length; i++) {
+            var row = dataRows[i];
             var qtyControl = row.querySelector("input[id$='txtQuantity']");
             var dateControl = row.querySelector("input[id$='txtReqDate']");
 
@@ -146,6 +253,7 @@ function validateRawMaterialRequisitionSubmit() {
             }
 
             formatRateTwoDecimal(qtyControl);
+
             var qtyValue = (qtyControl.value || "").trim();
             var dateValue = (dateControl.value || "").trim();
             var qtyNumber = parseFloat(qtyValue);
@@ -153,71 +261,60 @@ function validateRawMaterialRequisitionSubmit() {
             var hasDate = dateValue !== "";
 
             if (!hasQty && !hasDate) {
-                SetErrorColor(dateControl.id, true);
-                SetErrorColor(qtyControl.id, true);
                 continue;
             }
 
             if (hasQty && hasDate) {
                 hasValidRow = true;
-                SetErrorColor(dateControl.id, true);
-                SetErrorColor(qtyControl.id, true);
             } else if (hasQty && !hasDate) {
-                if (firstErrorControl === "") {
-                    firstErrorControl = dateControl.id;
-                }
-                if (!hasMissingDateError) {
-                    errMsg += GetErrorRow(dateControl.id, "Please enter Requisition Date.");
-                    hasMissingDateError = true;
-                }
-                SetErrorColor(dateControl.id, false);
-                SetErrorColor(qtyControl.id, true);
+                dateControl.classList.add("field-invalid");
+                hasPartialRowError = true;
+                hasMissingDateError = true;
+                hasError = true;
             } else if (hasDate && !hasQty) {
-                if (firstErrorControl === "") {
-                    firstErrorControl = qtyControl.id;
-                }
-                if (!hasMissingQtyError) {
-                    errMsg += GetErrorRow(qtyControl.id, "Please enter Quantity.");
-                    hasMissingQtyError = true;
-                }
-                SetErrorColor(qtyControl.id, false);
-                SetErrorColor(dateControl.id, true);
+                qtyControl.classList.add("field-invalid");
+                hasPartialRowError = true;
+                hasMissingQtyError = true;
+                hasError = true;
+            }
+        }
+
+        if (!hasValidRow && !hasPartialRowError) {
+            if (valGrid) {
+                valGrid.innerHTML = "Please enter Quantity and Requisition Date for at least one Raw Material.";
+            }
+            hasError = true;
+        } else if (hasPartialRowError && valGrid) {
+            if (hasMissingDateError && hasMissingQtyError) {
+                valGrid.innerHTML = "Please enter Quantity and Requisition Date for each selected Raw Material.";
+            } else if (hasMissingDateError) {
+                valGrid.innerHTML = "Please enter Requisition Date.";
+            } else if (hasMissingQtyError) {
+                valGrid.innerHTML = "Please enter Quantity.";
             }
         }
     }
 
-    if (!hasDataRow) {
-        if (firstErrorControl === "") {
-            firstErrorControl = "gvVendorRawMat";
-        }
-        errMsg += GetErrorRow("gvVendorRawMat", "Please search and load Raw Material details.");
-    } else if (!hasValidRow) {
-        if (firstErrorControl === "") {
-            firstErrorControl = "gvVendorRawMat";
-            errMsg += GetErrorRow("gvVendorRawMat", "Please enter Quantity and Requisition Date for at least one Raw Material.");
-        }
+    if (hasError) {
+        scrollToFirstInvalidRequisitionField();
+        return false;
     }
 
-    if (firstErrorControl !== "") {
-        SetControlFocus(firstErrorControl);
-        return rmFailValidation(errMsg);
+    var lblError = getRmControl("lblErrorMessage");
+    if (lblError) {
+        lblError.innerHTML = "";
     }
 
-    document.getElementById("lblErrorMessage").innerHTML = "";
-    return rmConfirmPostback("btnSubmit", "submit");
+    var submitBtn = getRmControl("btnSubmit");
+    var buttonText = submitBtn ? ((submitBtn.value || "") + "").toLowerCase() : "submit";
+    return rmConfirmPostback("btnSubmit", buttonText.indexOf("update") >= 0 ? "update" : "submit");
 }
 
 function validateRawMaterialRequisitionApprove() {
     try {
-        firstErrorControl = "";
-        errMsg = "";
-
-        var grid = document.getElementById("gvRequisition");
-        if (!grid) {
-            grid = document.querySelector("[id$='gvRequisition']");
-        }
-
+        var grid = getRmControl("gvRequisition");
         var hasSelected = false;
+
         if (grid) {
             var checkboxes = grid.querySelectorAll("input[type='checkbox'][id$='chkSelect']");
             for (var i = 0; i < checkboxes.length; i++) {
@@ -228,14 +325,14 @@ function validateRawMaterialRequisitionApprove() {
             }
         }
 
-        var lblError = document.getElementById("lblErrorMessage");
-        if (!lblError) {
-            lblError = document.querySelector("[id$='lblErrorMessage']");
-        }
+        var lblError = getRmControl("lblErrorMessage");
 
         if (!hasSelected) {
-            firstErrorControl = "gvRequisition";
-            return rmFailValidation("Please select at least one pending requisition to approve.");
+            if (typeof rmFailValidation === "function") {
+                return rmFailValidation("Please select at least one pending requisition to approve.");
+            }
+            alert("Please select at least one pending requisition to approve.");
+            return false;
         }
 
         if (lblError) {

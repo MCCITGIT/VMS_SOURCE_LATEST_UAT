@@ -102,10 +102,21 @@ Partial Class BulkRawMaterialReceiptList
     Private Sub BindData()
         Try
             Dim obj As New OPC_VendorClass()
+
             Dim ds As DataSet = obj.GetRawMaterialReceiptList(ddlRawMatvendor.SelectedValue, ddlStatus.SelectedValue)
-            Dim table As DataTable = RmGridHelper.GetTable(ds)
+
+            'Grid
+            Dim table As DataTable = ds.Tables(0)
             RmGridHelper.BindPaged(gvReceipt, table)
-            UpdateSummary(table)
+
+
+            'Summary
+            If ds.Tables.Count > 1 Then
+                UpdateSummary(ds.Tables(1))
+            Else
+                UpdateSummary(Nothing)
+            End If
+
         Catch ex As Exception
             Dim returnUrl As String = "~/ExceptionPage.aspx"
             Session(Constant.SessionKeys.ErrMessage) = ex.ToString()
@@ -113,35 +124,23 @@ Partial Class BulkRawMaterialReceiptList
         End Try
     End Sub
 
-    Private Sub UpdateSummary(ByVal sourceTable As DataTable)
+    Private Sub UpdateSummary(ByVal summaryTable As DataTable)
+
         Dim totalCount As Integer = 0
         Dim pendingCount As Integer = 0
         Dim receivedCount As Integer = 0
 
-        If sourceTable IsNot Nothing Then
-            totalCount = sourceTable.Rows.Count
-            For Each row As DataRow In sourceTable.Rows
-                Dim receivedId As String = String.Empty
-                If sourceTable.Columns.Contains("received_id") Then
-                    receivedId = Convert.ToString(row("received_id")).Trim()
-                End If
-
-                Dim isReceived As Boolean = Not String.IsNullOrWhiteSpace(receivedId)
-                If Not isReceived AndAlso sourceTable.Columns.Contains("status") Then
-                    isReceived = RmGridHelper.IsYes(row("status"))
-                End If
-
-                If isReceived Then
-                    receivedCount += 1
-                Else
-                    pendingCount += 1
-                End If
-            Next
+        If summaryTable IsNot Nothing AndAlso summaryTable.Rows.Count > 0 Then
+            Dim row As DataRow = summaryTable.Rows(0)
+            totalCount = If(IsDBNull(row("TotalRecords")), 0, Convert.ToInt32(row("TotalRecords")))
+            pendingCount = If(IsDBNull(row("TotalPendingRecords")), 0, Convert.ToInt32(row("TotalPendingRecords")))
+            receivedCount = If(IsDBNull(row("TotalReceivedRecords")), 0, Convert.ToInt32(row("TotalReceivedRecords")))
         End If
 
         lblTotalCount.Text = totalCount.ToString()
         lblPendingCount.Text = pendingCount.ToString()
         lblReceivedCount.Text = receivedCount.ToString()
+
     End Sub
 
     Protected Sub gvReceipt_PageIndexChanging(sender As Object, e As GridViewPageEventArgs) Handles gvReceipt.PageIndexChanging
