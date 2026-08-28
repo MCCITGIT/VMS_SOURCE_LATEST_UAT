@@ -863,6 +863,133 @@ Public Class UnitDespatchClassVr1
         End Try
     End Function
 
+    'Modified-by MUKESH BHAGAT on 27-08-2026 : depot GSTN for the despatch screen.
+    'The GST registration of a depot lives in MSTRDB.dbo.mstr_org (org_code = depot code,
+    'column org_gstn_no) - dbo.depot_mstr has no GSTN column. Dedicated SP so the screen
+    'does not depend on whichever version of [Get_DepotDetails] a given database carries.
+    Public Function GetDepotGstn(ByVal DepotCode As String) As DataSet
+        Dim sqlparams(0) As SqlParameter
+
+        sqlparams(0) = New SqlParameter
+        sqlparams(0).ParameterName = "@DepotCode"
+        sqlparams(0).DbType = DbType.String
+        sqlparams(0).Direction = ParameterDirection.Input
+        sqlparams(0).Value = DepotCode
+
+        Return DBFactory.GetHelper().ExecuteDataSet("[Get_Depot_Gstn]", Data.CommandType.StoredProcedure, sqlparams)
+    End Function
+
+    'Modified-by MUKESH BHAGAT on 26-08-2026 : supplier GSTN for the despatch screen.
+    'The GST registration is held against the vendor SITE in RFQDB.MSTR.vendor_site_dtls.
+    'Pass the selected site id; when it is 0 the SP falls back to the site mapped to the
+    'logged-in user in dbo.user_applicable_site_dtls.
+    Public Function GetSupplierGstnBySite(ByVal SiteId As Integer, ByVal UserId As String) As DataSet
+        Dim sqlparams(1) As SqlParameter
+
+        sqlparams(0) = New SqlParameter
+        sqlparams(0).ParameterName = "@SiteId"
+        sqlparams(0).DbType = DbType.Int32
+        sqlparams(0).Direction = ParameterDirection.Input
+        sqlparams(0).Value = SiteId
+
+        sqlparams(1) = New SqlParameter
+        sqlparams(1).ParameterName = "@UserId"
+        sqlparams(1).DbType = DbType.String
+        sqlparams(1).Direction = ParameterDirection.Input
+        sqlparams(1).Value = UserId
+
+        Return DBFactory.GetHelper().ExecuteDataSet("[Get_Supplier_Gstn_By_Site]", Data.CommandType.StoredProcedure, sqlparams)
+    End Function
+
+    'Modified-by MUKESH BHAGAT on 26-08-2026 : E-Way bill document support.
+    'Writes a typed row (@DocType / @SrlNo) through the same [challan_entry_insert_doc]
+    'procedure the invoice copy uses. Deliberately runs on its own connection with NO
+    'transaction: the E-Way bill is optional and must never be able to roll back a
+    'despatch challan that has already been committed.
+    Public Function InsertChallanTypedDocument(ByVal ChallanNo As Int64, ByVal FileName As String, ByVal OrgFileName As String, ByVal Doc_Path As String, ByVal UserId As String, ByVal UnitCode As String, ByVal DocType As String, ByVal SrlNo As Integer) As Integer
+        Try
+            Dim sqlparams(7) As SqlParameter
+
+            sqlparams(0) = New SqlParameter
+            sqlparams(0).ParameterName = "@ChallanNo"
+            sqlparams(0).DbType = DbType.Int64
+            sqlparams(0).Direction = ParameterDirection.Input
+            sqlparams(0).Value = ChallanNo
+
+            sqlparams(1) = New SqlParameter
+            sqlparams(1).ParameterName = "@FileName"
+            sqlparams(1).DbType = DbType.String
+            sqlparams(1).Direction = ParameterDirection.Input
+            sqlparams(1).Value = FileName
+
+            sqlparams(2) = New SqlParameter
+            sqlparams(2).ParameterName = "@OrgFileName"
+            sqlparams(2).DbType = DbType.String
+            sqlparams(2).Direction = ParameterDirection.Input
+            sqlparams(2).Value = OrgFileName
+
+            sqlparams(3) = New SqlParameter
+            sqlparams(3).ParameterName = "@Doc_Path"
+            sqlparams(3).DbType = DbType.String
+            sqlparams(3).Direction = ParameterDirection.Input
+            sqlparams(3).Value = Doc_Path
+
+            sqlparams(4) = New SqlParameter
+            sqlparams(4).ParameterName = "@UserId"
+            sqlparams(4).DbType = DbType.String
+            sqlparams(4).Direction = ParameterDirection.Input
+            sqlparams(4).Value = UserId
+
+            sqlparams(5) = New SqlParameter
+            sqlparams(5).ParameterName = "@UnitCode"
+            sqlparams(5).DbType = DbType.String
+            sqlparams(5).Direction = ParameterDirection.Input
+            sqlparams(5).Value = UnitCode
+
+            sqlparams(6) = New SqlParameter
+            sqlparams(6).ParameterName = "@DocType"
+            sqlparams(6).DbType = DbType.String
+            sqlparams(6).Direction = ParameterDirection.Input
+            sqlparams(6).Value = DocType
+
+            sqlparams(7) = New SqlParameter
+            sqlparams(7).ParameterName = "@SrlNo"
+            sqlparams(7).DbType = DbType.Int32
+            sqlparams(7).Direction = ParameterDirection.Input
+            sqlparams(7).Value = SrlNo
+
+            Return DBFactory.GetHelper().ExecuteNonQuery("[challan_entry_insert_doc]", Data.CommandType.StoredProcedure, sqlparams)
+        Catch ex As Exception
+            Throw ex
+        End Try
+    End Function
+
+    'Modified-by MUKESH BHAGAT on 26-08-2026 : reads back one typed document row so the
+    'screen can offer a download link for it.
+    Public Function GetChallanTypedDocument(ByVal ChallanNo As Int64, ByVal UnitCode As String, ByVal DocType As String) As DataSet
+        Dim sqlparams(2) As SqlParameter
+
+        sqlparams(0) = New SqlParameter
+        sqlparams(0).ParameterName = "@ChallanNo"
+        sqlparams(0).DbType = DbType.Int64
+        sqlparams(0).Direction = ParameterDirection.Input
+        sqlparams(0).Value = ChallanNo
+
+        sqlparams(1) = New SqlParameter
+        sqlparams(1).ParameterName = "@UnitCode"
+        sqlparams(1).DbType = DbType.String
+        sqlparams(1).Direction = ParameterDirection.Input
+        sqlparams(1).Value = UnitCode
+
+        sqlparams(2) = New SqlParameter
+        sqlparams(2).ParameterName = "@DocType"
+        sqlparams(2).DbType = DbType.String
+        sqlparams(2).Direction = ParameterDirection.Input
+        sqlparams(2).Value = DocType
+
+        Return DBFactory.GetHelper().ExecuteDataSet("[challan_entry_get_doc]", Data.CommandType.StoredProcedure, sqlparams)
+    End Function
+
     Public Function GetFinalInvoiceValue() As DataSet
         Dim InvoiceVal As New DataSet
         InvoiceVal = DBFactory.GetHelper().ExecuteDataSet("[Get_Final_Invoice_Value]", Data.CommandType.StoredProcedure)

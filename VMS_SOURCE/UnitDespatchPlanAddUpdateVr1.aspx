@@ -399,6 +399,131 @@
                             </Triggers>
                         </asp:UpdatePanel>
                         <asp:HiddenField ID="hdnFileName" runat="server" />
+                        <%-- Modified-by MUKESH BHAGAT on 24-08-2026 : invoice OCR extract + validation
+                             (same OCR service as Dispatch_Details.aspx -> InvoiceOcrExtract.ashx)
+                             Modified-by MUKESH BHAGAT on 27-08-2026 : the visible "Extract & Validate"
+                             button is gone - the OCR check now runs silently when Submit is clicked,
+                             and this message area / the panel below appear only when the bill fails. --%>
+                        <div id="divInvoiceOcrMessage" style="margin-top: 5px; font-size: 12px;"></div>
+                        <asp:HiddenField ID="hdnOcrVerified" runat="server" Value="N" />
+                    </div>
+                </div>
+                <%-- Modified-by MUKESH BHAGAT on 24-08-2026 : optional E-Way bill document.
+                     Saved next to the invoice copy under Challan_Docs\<dd_MM_yyyy>.
+                     Modified-by MUKESH BHAGAT on 27-08-2026 : moved out of the "E-Way Bill No"
+                     column into its own column beside the invoice upload, so the two upload
+                     fields line up and the top row keeps a uniform height. --%>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="form-control-label">Upload E-Way Bill:</label>
+                        <asp:UpdatePanel ID="UpdatePanelEway" runat="server">
+                            <ContentTemplate>
+                                <asp:FileUpload ID="sch_fld_eway" runat="server" CssClass="form-control" />
+                                <%-- Modified-by MUKESH BHAGAT on 26-08-2026 : download link for the
+                                     stored E-Way bill. Hidden until a document actually exists. --%>
+                                <asp:HiddenField ID="hdnEwayDocPath" runat="server" />
+                                <asp:HiddenField ID="hdnEwayDocFile" runat="server" />
+                                <asp:LinkButton ID="lnkDownloadEway" runat="server" Visible="false"
+                                    CssClass="btn btn-primary btn-sm" CausesValidation="false"
+                                    OnClick="lnkDownloadEway_Click"
+                                    ToolTip="Download the uploaded E-Way bill"
+                                    style="margin-top: 5px;">
+                                    <i class="fa fa-download"></i>&nbsp;Download E-Way Bill
+                                </asp:LinkButton>
+                            </ContentTemplate>
+                            <Triggers>
+                                <asp:PostBackTrigger ControlID="btnSubmit" />
+                                <asp:PostBackTrigger ControlID="lnkDownloadEway" />
+                            </Triggers>
+                        </asp:UpdatePanel>
+                    </div>
+                </div>
+            </div>
+
+            <%-- Modified-by MUKESH BHAGAT on 24-08-2026 : GSTN of the invoicing depot (from the depot
+                 master) and of the supplier (from the selected site). Read-only - they are reference
+                 values the uploaded bill is checked against. --%>
+            <%-- Modified-by MUKESH BHAGAT on 27-08-2026 : both boxes must sit inside an UpdatePanel.
+                 ddlDeliveryDepot and ddlSite post back asynchronously, so anything outside an
+                 UpdatePanel is never re-rendered - the server was setting these values correctly but
+                 the browser never received them, which is why the Depot GSTN stayed blank. --%>
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="form-control-label">Invoicing Depot GSTN:<span class="mandatory">*</span></label>
+                        <asp:UpdatePanel ID="UpdatePanelDepotGstn" runat="server" UpdateMode="Always">
+                            <ContentTemplate>
+                                <asp:TextBox ID="txtDepotGstn" runat="server" CssClass="form-control" ReadOnly="true"></asp:TextBox>
+                            </ContentTemplate>
+                            <Triggers>
+                                <asp:AsyncPostBackTrigger ControlID="ddlDeliveryDepot" EventName="SelectedIndexChanged" />
+                                <asp:AsyncPostBackTrigger ControlID="ddlSite" EventName="SelectedIndexChanged" />
+                            </Triggers>
+                        </asp:UpdatePanel>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="form-control-label">Supplier GSTN:<span class="mandatory">*</span></label>
+                        <asp:UpdatePanel ID="UpdatePanelSupplierGstn" runat="server" UpdateMode="Always">
+                            <ContentTemplate>
+                                <asp:TextBox ID="txtSupplierGstn" runat="server" CssClass="form-control" ReadOnly="true"></asp:TextBox>
+                            </ContentTemplate>
+                            <Triggers>
+                                <asp:AsyncPostBackTrigger ControlID="ddlDeliveryDepot" EventName="SelectedIndexChanged" />
+                                <asp:AsyncPostBackTrigger ControlID="ddlSite" EventName="SelectedIndexChanged" />
+                            </Triggers>
+                        </asp:UpdatePanel>
+                    </div>
+                </div>
+            </div>
+
+            <%-- Modified-by MUKESH BHAGAT on 24-08-2026 : values read from the uploaded bill by OCR.
+                 Read-only - shown for verification against what the user entered above. --%>
+            <div class="row" id="divInvoiceOcrPanel" style="display: none;">
+                <div class="col-md-12">
+                    <div class="card" style="border-left: 3px solid #1F4E79;">
+                        <div class="card-body" style="padding: 10px 15px;">
+                            <label class="form-control-label" style="font-weight: 600;">Values read from the uploaded bill (OCR)</label>
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label class="form-control-label">Invoice No:</label>
+                                        <input type="text" id="txtOcrInvoiceNo" class="form-control" readonly="readonly" />
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label class="form-control-label">Invoice Date:</label>
+                                        <input type="text" id="txtOcrInvoiceDate" class="form-control" readonly="readonly" />
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label class="form-control-label">Gross Value:<span class="mandatory">*</span></label>
+                                        <input type="text" id="txtOcrGrossValue" class="form-control" readonly="readonly" />
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label class="form-control-label">Total Quantity:</label>
+                                        <input type="text" id="txtOcrTotalQty" class="form-control" readonly="readonly" />
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label class="form-control-label">Supplier GSTN:</label>
+                                        <input type="text" id="txtOcrSupplierGstn" class="form-control" readonly="readonly" />
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label class="form-control-label">Recipient GSTN:</label>
+                                        <input type="text" id="txtOcrRecipientGstn" class="form-control" readonly="readonly" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -781,6 +906,323 @@
             });
 
         });
+
+    </script>
+
+    <%-- ================================================================================
+         Modified-by MUKESH BHAGAT on 24-08-2026 : Invoice OCR extract + validation.
+         Re-uses the existing OCR service already used by Dispatch_Details.aspx
+         (InvoiceOcrExtract.ashx -> COLORANT_OCR api/extract-invoice). The handler writes
+         the RAW api json back to the browser, so any field the api returns is readable here.
+         Validation rules:
+           Gross value ....... mandatory - must match Final Invoice Value (After Tax)
+           Invoice no / date . mandatory - must match exactly, else the bill is rejected
+           Total quantity .... optional  - shown, mismatch only warns
+           Supplier/Recipient GSTN . optional - shown, mismatch only warns
+         NOTE: control ids are emitted through ClientID because this page runs under
+         MasterPage.master (bare getElementById would not resolve).
+         ================================================================================ --%>
+    <script type="text/javascript">
+
+        // Flip to false if UAT shows the OCR service does not reliably return a gross value.
+        var OCR_REQUIRE_GROSS_VALUE = true;
+
+        // Money comparison tolerance (rounding noise between OCR and keyed value).
+        var OCR_AMOUNT_TOLERANCE = 0.01;
+
+        // Candidate json field names. The first one present in the response wins.
+        // Finalise these once the sample OCR response is available.
+        var OCR_FIELDS = {
+            invoiceNo: ['invoice_no', 'invoiceNo', 'invoice_number', 'bill_no'],
+            invoiceDate: ['invoice_date', 'invoiceDate', 'bill_date'],
+            grossValue: ['amount', 'gross_value', 'grossValue', 'total_amount', 'invoice_value', 'grand_total'],
+            totalQty: ['total_quantity', 'totalQuantity', 'quantity', 'total_qty', 'qty'],
+            supplierGstn: ['supplier_gstn', 'supplierGstn', 'supplier_gst', 'seller_gstin', 'supplier_gstin', 'gstin_supplier'],
+            recipientGstn: ['recipient_gstn', 'recipientGstn', 'recipient_gst', 'buyer_gstin', 'recipient_gstin', 'gstin_recipient']
+        };
+
+        function ocrPick(obj, names) {
+            for (var i = 0; i < names.length; i++) {
+                var v = obj[names[i]];
+                if (v !== undefined && v !== null && String(v).trim() !== '') {
+                    return String(v).trim();
+                }
+            }
+            return '';
+        }
+
+        function ocrEl(id) { return document.getElementById(id); }
+
+        function ocrMsg(text, type) {
+            var d = ocrEl('divInvoiceOcrMessage');
+            if (!d) { return; }
+            var cls = (type === 'danger') ? 'text-danger' : (type === 'success') ? 'text-success' : 'text-muted';
+            d.innerHTML = '<span class="' + cls + '" style="font-weight:600;">' + text + '</span>';
+        }
+
+        // dd-MM-yyyy / yyyy-MM-dd / dd/MM/yyyy  ->  dd/MM/yyyy (the format this page uses)
+        function ocrNormalizeDate(value) {
+            if (!value) { return ''; }
+            var s = String(value).trim().replace(/\//g, '-');
+            var p = s.split('-');
+            if (p.length !== 3) { return String(value).trim(); }
+            var d, m, y;
+            if (p[0].length === 4) { y = p[0]; m = p[1]; d = p[2]; }
+            else { d = p[0]; m = p[1]; y = p[2]; }
+            if (y.length === 2) { y = '20' + y; }
+            return ('0' + d).slice(-2) + '/' + ('0' + m).slice(-2) + '/' + y;
+        }
+
+        function ocrNormalizeText(value) {
+            return String(value || '').trim().toUpperCase().replace(/\s+/g, '');
+        }
+
+        function ocrToNumber(value) {
+            if (value === undefined || value === null) { return NaN; }
+            var s = String(value).replace(/[^0-9.\-]/g, '');
+            return s === '' ? NaN : parseFloat(s);
+        }
+
+        // Modified-by MUKESH BHAGAT on 27-08-2026 : quantity actually being despatched -
+        // the sum of every "This Despatch" box whose grid row is ticked.
+        function ocrGridDespatchTotal() {
+            var boxes = document.querySelectorAll('input[id$="txtThisDesp"]');
+            var total = 0, found = false;
+            for (var i = 0; i < boxes.length; i++) {
+                var row = boxes[i].closest ? boxes[i].closest('tr') : null;
+                var chk = row ? row.querySelector('input[type="checkbox"][id*="chkSelect"]') : null;
+                if (chk && !chk.checked) { continue; }
+                var v = ocrToNumber(boxes[i].value);
+                if (!isNaN(v)) { total += v; found = true; }
+            }
+            return found ? total : NaN;
+        }
+
+        function ocrSetVerified(flag) {
+            var h = ocrEl('<%= hdnOcrVerified.ClientID %>');
+            if (h) { h.value = flag ? 'Y' : 'N'; }
+        }
+
+        // Any manual edit after a successful check invalidates the verification, so the
+        // next Submit silently re-validates against the bill.
+        function ocrBindInvalidators() {
+            var ids = ['<%= txtCenvatNo.ClientID %>', '<%= txtCenvatDt.ClientID %>', '<%= txtFinalInvoiceValue.ClientID %>', '<%= sch_fld1.ClientID %>'];
+            for (var i = 0; i < ids.length; i++) {
+                var el = ocrEl(ids[i]);
+                if (el && !el.getAttribute('data-ocr-bound')) {
+                    el.setAttribute('data-ocr-bound', '1');
+                    el.addEventListener('change', function () { ocrSetVerified(false); });
+                }
+            }
+        }
+
+        // Modified-by MUKESH BHAGAT on 27-08-2026 : the OCR check is no longer a separate
+        // button. Submit is intercepted: the bill is validated silently first, and only a
+        // failed bill blocks the save and shows the panel with what the bill contains.
+        // If the OCR service itself is unreachable the save proceeds (fail-open) so a
+        // service outage can never stop despatches - flip OCR_FAIL_OPEN to change that.
+        var OCR_FAIL_OPEN = true;
+        var ocrPassThrough = false;
+
+        function bindInvoiceUploadExtract() {
+            var btn = ocrEl('<%= btnSubmit.ClientID %>');
+            if (btn && !btn.getAttribute('data-ocr-bound')) {
+                btn.setAttribute('data-ocr-bound', '1');
+                btn.addEventListener('click', function (e) {
+                    if (ocrPassThrough) { ocrPassThrough = false; return; }   // continuing after a passed check
+
+                    var h = ocrEl('<%= hdnOcrVerified.ClientID %>');
+                    if (h && h.value === 'Y') { return; }                     // already validated, nothing changed
+
+                    var fileUpload = ocrEl('<%= sch_fld1.ClientID %>');
+                    if (!fileUpload || !fileUpload.files || fileUpload.files.length === 0) {
+                        return;                                               // no new bill -> existing behaviour
+                    }
+
+                    if (!/\.pdf$/i.test(fileUpload.files[0].name)) {
+                        e.preventDefault();
+                        ocrMsg('Please upload a PDF invoice file.', 'danger');
+                        fileUpload.value = '';
+                        return;
+                    }
+
+                    e.preventDefault();                                       // hold the save, check the bill first
+                    triggerInvoiceOcrUpload(fileUpload, btn);
+                });
+            }
+            ocrBindInvalidators();
+        }
+
+        function ocrContinueSubmit(btn) {
+            ocrPassThrough = true;
+            btn.click();
+        }
+
+        function triggerInvoiceOcrUpload(fileUpload, btn) {
+            var file = fileUpload.files[0];
+            var formData = new FormData();
+            formData.append('file', file, file.name);
+
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', 'InvoiceOcrExtract.ashx', true);
+
+            btn.disabled = true;
+            ocrSetVerified(false);
+            ocrMsg('Validating the uploaded invoice, please wait...', 'info');
+
+            xhr.onload = function () {
+                btn.disabled = false;
+
+                var result;
+                try { result = JSON.parse(xhr.responseText); }
+                catch (e) { result = null; }
+
+                if (xhr.status === 200 && result && result.success) {
+                    applyInvoiceOcrResult(result, fileUpload, btn);
+                } else if (result && result.message) {
+                    // the service answered and rejected the document -> block the save
+                    ocrSetVerified(false);
+                    fileUpload.value = '';
+                    ocrMsg('Bill rejected: ' + result.message, 'danger');
+                } else if (OCR_FAIL_OPEN) {
+                    // the service itself failed -> do not hold up the despatch
+                    ocrContinueSubmit(btn);
+                } else {
+                    ocrMsg('Invoice validation service is unavailable. Please try again.', 'danger');
+                }
+            };
+
+            xhr.onerror = function () {
+                btn.disabled = false;
+                if (OCR_FAIL_OPEN) {
+                    ocrContinueSubmit(btn);
+                } else {
+                    ocrMsg('Invoice validation service is unavailable. Please try again.', 'danger');
+                }
+            };
+
+            xhr.send(formData);
+        }
+
+        function applyInvoiceOcrResult(result, fileUpload, btn) {
+
+            var ocrInvNo = ocrPick(result, OCR_FIELDS.invoiceNo);
+            var ocrInvDate = ocrNormalizeDate(ocrPick(result, OCR_FIELDS.invoiceDate));
+            var ocrGross = ocrPick(result, OCR_FIELDS.grossValue);
+            var ocrQty = ocrPick(result, OCR_FIELDS.totalQty);
+            var ocrSupGstn = ocrPick(result, OCR_FIELDS.supplierGstn);
+            var ocrRecGstn = ocrPick(result, OCR_FIELDS.recipientGstn);
+
+            // filled in either way, but only shown when the bill fails validation
+            ocrEl('txtOcrInvoiceNo').value = ocrInvNo;
+            ocrEl('txtOcrInvoiceDate').value = ocrInvDate;
+            ocrEl('txtOcrGrossValue').value = ocrGross;
+            ocrEl('txtOcrTotalQty').value = ocrQty;
+            ocrEl('txtOcrSupplierGstn').value = ocrSupGstn;
+            ocrEl('txtOcrRecipientGstn').value = ocrRecGstn;
+
+            var txtInvNo = ocrEl('<%= txtCenvatNo.ClientID %>');
+            var txtInvDate = ocrEl('<%= txtCenvatDt.ClientID %>');
+            var txtValue = ocrEl('<%= txtFinalInvoiceValue.ClientID %>');
+
+            var errors = [];
+            var warnings = [];
+
+            // ---- Invoice number : mandatory, must match exactly ----
+            if (!ocrInvNo) {
+                errors.push('Invoice number could not be read from the bill.');
+            } else if (ocrNormalizeText(txtInvNo.value) === '') {
+                txtInvNo.value = ocrInvNo;                       // empty -> fill from the bill
+            } else if (ocrNormalizeText(txtInvNo.value) !== ocrNormalizeText(ocrInvNo)) {
+                errors.push('Invoice No does not match the uploaded bill (bill shows "' + ocrInvNo + '").');
+            }
+
+            // ---- Invoice date : mandatory, must match exactly ----
+            if (!ocrInvDate) {
+                errors.push('Invoice date could not be read from the bill.');
+            } else if (ocrNormalizeText(txtInvDate.value) === '') {
+                txtInvDate.value = ocrInvDate;
+            } else if (ocrNormalizeDate(txtInvDate.value) !== ocrInvDate) {
+                errors.push('Invoice Date does not match the uploaded bill (bill shows "' + ocrInvDate + '").');
+            }
+
+            // ---- Gross value : mandatory ----
+            var ocrGrossNum = ocrToNumber(ocrGross);
+            if (isNaN(ocrGrossNum)) {
+                if (OCR_REQUIRE_GROSS_VALUE) {
+                    errors.push('Gross value could not be read from the bill.');
+                }
+            } else if (ocrToNumber(txtValue.value) === 0 || txtValue.value === '') {
+                txtValue.value = ocrGrossNum;
+            } else if (Math.abs(ocrToNumber(txtValue.value) - ocrGrossNum) > OCR_AMOUNT_TOLERANCE) {
+                errors.push('Final Invoice Value does not match the bill (bill shows ' + ocrGrossNum + ').');
+            }
+
+            // ---- Total quantity : optional ----
+            // Modified-by MUKESH BHAGAT on 27-08-2026 : compare against the quantity actually being
+            // despatched - the sum of the "This Despatch" boxes on ticked grid rows. (The earlier
+            // anchor, lblTotalDespatchQuantity, sits in the per-SKU popup and is never filled in,
+            // so the check silently never ran.)
+            var gridQty = ocrGridDespatchTotal();
+            var ocrQtyNum = ocrToNumber(ocrQty);
+            if (!isNaN(ocrQtyNum) && !isNaN(gridQty) && gridQty > 0 && Math.abs(ocrQtyNum - gridQty) > 0.001) {
+                warnings.push('quantity on the bill (' + ocrQtyNum + ') differs from the despatched quantity (' + gridQty + ')');
+            }
+
+            // ---- GSTN : optional, compared against the master values when available ----
+            var mstSup = ocrEl('<%= txtSupplierGstn.ClientID %>');
+            var mstRec = ocrEl('<%= txtDepotGstn.ClientID %>');
+            if (ocrSupGstn && mstSup && ocrNormalizeText(mstSup.value) !== '' &&
+                ocrNormalizeText(mstSup.value) !== ocrNormalizeText(ocrSupGstn)) {
+                warnings.push('supplier GSTN on the bill differs from the site GSTN');
+            }
+            if (ocrRecGstn && mstRec && ocrNormalizeText(mstRec.value) !== '' &&
+                ocrNormalizeText(mstRec.value) !== ocrNormalizeText(ocrRecGstn)) {
+                warnings.push('recipient GSTN on the bill differs from the invoicing depot GSTN');
+            }
+
+            // ---- E-Way bill number : optional convenience ----
+            // Modified-by MUKESH BHAGAT on 27-08-2026 : the COLOURANT_INV_AI service reads the
+            // e-way bill number off the invoice; fill the field when empty, warn on mismatch.
+            var ocrEway = ocrPick(result, ['eway_bill_no', 'ewayBillNo', 'eway_no']);
+            var txtEway = ocrEl('<%= txtEwayBillNo.ClientID %>');
+            if (ocrEway && txtEway) {
+                if (ocrNormalizeText(txtEway.value) === '') {
+                    txtEway.value = ocrEway;
+                } else if (ocrNormalizeText(txtEway.value) !== ocrNormalizeText(ocrEway)) {
+                    warnings.push('E-Way bill no on the bill (' + ocrEway + ') differs from the entered value');
+                }
+            }
+
+            if (errors.length > 0) {
+                // mandatory check failed -> the save is blocked and, only now, the user is
+                // shown what the bill contains alongside the reasons
+                ocrSetVerified(false);
+                fileUpload.value = '';
+                ocrEl('divInvoiceOcrPanel').style.display = '';
+                ocrMsg('Bill rejected: ' + errors.join(' ') + ' Please correct the details and upload the correct bill.', 'danger');
+                return;
+            }
+
+            // bill matches -> continue the save the user asked for; warnings never block
+            ocrSetVerified(true);
+            ocrEl('divInvoiceOcrPanel').style.display = 'none';
+            ocrMsg('', 'info');
+            ocrContinueSubmit(btn);
+        }
+
+        document.addEventListener('DOMContentLoaded', function () { bindInvoiceUploadExtract(); });
+
+        // re-bind after every partial postback and reset stale verification
+        // (an UpdatePanel refresh clears the file input, so the bill must be re-selected)
+        if (typeof Sys !== 'undefined' && Sys.WebForms) {
+            Sys.WebForms.PageRequestManager.getInstance().add_endRequest(function () {
+                bindInvoiceUploadExtract();
+                var panel = ocrEl('divInvoiceOcrPanel');
+                if (panel) { panel.style.display = 'none'; }
+                ocrSetVerified(false);
+            });
+        }
 
     </script>
 </asp:Content>
