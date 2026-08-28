@@ -35,11 +35,20 @@
     </div>
 
     <div class="card">
+        <div class="mst-panel-header">
+            <div class="mst-panel-header-left">
+                <span class="mst-panel-icon"><i class="fas fa-list"></i></span>
+                <div>
+                    <h5 class="mst-panel-title">Lov Details List</h5>
+                    <p class="mst-panel-subtitle">Values maintained under each list of values</p>
+                </div>
+            </div>
+        </div>
         <div class="card-body">
             <div class="table-responsive">
                 <asp:GridView ID="gvLovDetails" runat="server" AutoGenerateColumns="false" AllowPaging="false" Visible="true" ShowFooter="true"
                     OnRowCancelingEdit="gvLovDetails_RowCancelingEdit" OnRowEditing="gvLovDetails_RowEditing" EmptyDataText="There are No Data..."
-                    OnRowDataBound="gvLovDetails_RowDataBound" BorderWidth="1" CssClass="table table-hover upgradDataGrid">
+                    OnRowDataBound="gvLovDetails_RowDataBound" BorderWidth="1" CssClass="table table-hover upgradDataGrid" style="margin-bottom: 0;">
                     <RowStyle CssClass="tlrowlight" />
                     <PagerStyle CssClass="PagerGrid" HorizontalAlign="Right" />
                     <HeaderStyle CssClass="headerGrid" />

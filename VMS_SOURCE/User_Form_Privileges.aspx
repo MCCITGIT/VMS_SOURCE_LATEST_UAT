@@ -18,13 +18,24 @@
     </div>
 
     <div class="card">
-        <div class="card-body">
-            <div class="form-group row ddlPageSize">
+        <div style="display: flex; align-items: center; justify-content: space-between; padding: 15px 10px 0">
+            <div class="mst-panel-header" style="padding: 10px;">
+                <div class="mst-panel-header-left">
+                    <span class="mst-panel-icon"><i class="fas fa-list"></i></span>
+                    <div>
+                        <h5 class="mst-panel-title">User Form Privileges</h5>
+                        <p class="mst-panel-subtitle">Grant form level privileges to users</p>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group ddlPageSize" style="display: flex; align-items: center; padding: 0 15px;">
                 <label class="col-auto form-control-label">User Group</label>
-                <div class="col-md-4">
+                <div style="min-width: 180px;">
                     <asp:DropDownList ID="ddlUsrGrp" CssClass="form-control select2" runat="server" AutoPostBack="true"></asp:DropDownList>
                 </div>
             </div>
+        </div>
+        <div class="card-body">
 
             <div class="table-responsive">
                 <asp:GridView ID="gvUsrFrmAccess" runat="server" AutoGenerateColumns="false" AllowPaging="False" ShowFooter="true"

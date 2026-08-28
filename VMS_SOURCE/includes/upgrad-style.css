@@ -458,11 +458,11 @@ body {
             vertical-align: middle;
         }*/
 
-            .upgradDataGrid tr th a i, .upgradDataGrid tr td a i {
-                font-size: 12px;
-                margin: 0px 1px;
-                font-weight: 600;
-            }
+        .upgradDataGrid tr th a i, .upgradDataGrid tr td a i {
+            font-size: 12px;
+            margin: 0px 1px;
+            font-weight: 600;
+        }
 
     .upgradDataGrid .tlrowdark {
         background-color: #f4fff8 !important;
@@ -1568,7 +1568,7 @@ body {
         }
 /*=================================================*/
 .select2-container .select2-selection--single {
-    height: 33px !important;
+    height: 30px !important;
     border-radius: 13px !important;
 }
 
@@ -3054,7 +3054,7 @@ body {
     align-items: center;
     justify-content: space-between;
     gap: 12px;
-    padding: 1rem 1rem 0.6rem 1rem;
+    padding: 1rem 1rem 0 1rem;
 }
 
 .mst-panel-header-left {
@@ -3108,6 +3108,43 @@ body {
         justify-content: center;
     }
 /* End User Help / Maintenance Page */
+
+.upgradDataGrid {
+    width: 100%;
+    border-collapse: separate !important;
+    border-spacing: 0 10px;
+    background: transparent !important;
+    border: 0 !important;
+}
+
+    .upgradDataGrid > tbody > tr > td,
+    .upgradDataGrid > tbody > tr > th {
+        border: 0 !important;
+    }
+
+
+    .upgradDataGrid .tlrowlight {
+        border: 1px solid #ededed !important;
+        box-shadow: 0 0 2px 0 #00000020 !important;
+        background-color: #f9f9f9;
+    }
+
+/* Hover lift */
+.table-hover > tbody > tr.t1rowlight:hover > td {
+    background: #fbfcfd !important;
+    box-shadow: 0 3px 8px rgba(16, 24, 40, .08);
+}
+
+
+/* Hover lift */
+.table-hover > tbody > tr.t1rowlight:hover > td {
+    background: #fbfcfd !important;
+    box-shadow: 0 3px 8px rgba(16, 24, 40, .08);
+}
+
+.table-responsive table {
+    margin-bottom: 0;
+}
 
 /* Responsive */
 @media (max-width: 520px) {
@@ -3703,13 +3740,12 @@ body {
     justify-content: center;
     margin-top: 1px;
 }
-.p-products-heading p {
-    margin: 0;
-    font-weight: 600;
-}
-.p-upgradDataGrid  {
+
+    .p-products-heading p {
+        margin: 0;
+        font-weight: 600;
+    }
+
+.p-upgradDataGrid {
     margin-bottom: 0;
-
-
 }
-
