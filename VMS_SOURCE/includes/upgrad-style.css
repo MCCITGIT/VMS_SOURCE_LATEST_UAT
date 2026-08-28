@@ -293,6 +293,7 @@ body {
     box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.15);
     margin-bottom: 0.8rem;
     border-radius: 16px;
+    background-color: #fbfbfb;
 }
 
 .card-body {
@@ -411,12 +412,13 @@ body {
         position: sticky;
         top: 0;
         z-index: 2;
-        background-color: #efefef;
+        /*background-color: #efefef;*/
     }
 
-    /*.upgradDataGrid tr.headerGrid:hover {
-            background: #eff2f5;
-        }*/
+    .upgradDataGrid tr.headerGrid:hover {
+            /*background: #eff2f5;*/
+            background: transparent;
+        }
 
     /*.upgradDataGrid tr.headerGrid th {
             color: #403c49;
@@ -509,11 +511,13 @@ body {
     .upgradDataGrid td {
         color: #1f2937 !important;
         font-size: 12px !important;
-        padding: 6px 8px !important;
+        padding: 7px 8px !important;
         line-height: 15px !important;
         transition: background-color 0.18s ease;
     }
-
+    .upgradDataGrid tr td:last-child {
+        border-right:1px ;
+    }
     .upgradDataGrid tr:hover td {
         background: #fafbfd !important;
     }
@@ -3112,7 +3116,7 @@ body {
 .upgradDataGrid {
     width: 100%;
     border-collapse: separate !important;
-    border-spacing: 0 10px;
+    border-spacing: 0 6px;
     background: transparent !important;
     border: 0 !important;
 }
@@ -3126,7 +3130,7 @@ body {
     .upgradDataGrid .tlrowlight {
         border: 1px solid #ededed !important;
         box-shadow: 0 0 2px 0 #00000020 !important;
-        background-color: #f9f9f9;
+        /*background-color: #f9f9f9;*/
     }
 
 /* Hover lift */
