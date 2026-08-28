@@ -21,6 +21,15 @@
     </div>
 
     <div class="card">
+        <div class="mst-panel-header">
+            <div class="mst-panel-header-left">
+                <span class="mst-panel-icon"><i class="fas fa-list"></i></span>
+                <div>
+                    <h5 class="mst-panel-title">LOV Master List</h5>
+                    <p class="mst-panel-subtitle">Maintain system lists of values</p>
+                </div>
+            </div>
+        </div>
         <div class="card-body">
             <asp:Label ID="lblLOVCode" runat="server" Style="color: Red; font-size: small; font-weight: bold;"></asp:Label>
             <asp:Label ID="lblErrorMessage" CssClass="errormsg" Visible="true" runat="server"></asp:Label>
