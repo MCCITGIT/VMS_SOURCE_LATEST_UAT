@@ -88,9 +88,9 @@ Partial Class AddProductMaster
                 If gvbrandDetails.PageIndex >= pageCount Then
                     gvbrandDetails.PageIndex = Math.Max(pageCount - 1, 0)
                 End If
-                gvbrandDetails.DataSource = ds
+                gvbrandDetails.DataSource = ds.Tables(0)
                 gvbrandDetails.DataBind()
-                UpdateBrandSummary(ds.Tables(0))
+                UpdateBrandSummary(ds.Tables(1))
             Else
                 gvbrandDetails.PageIndex = 0
                 gvbrandDetails.DataSource = Nothing
@@ -108,15 +108,14 @@ Partial Class AddProductMaster
         Dim activeCount As Integer = 0
         Dim inactiveCount As Integer = 0
 
-        If brandTable IsNot Nothing Then
-            totalCount = brandTable.Rows.Count
-            For Each row As DataRow In brandTable.Rows
-                If NormalizeActiveValue(Convert.ToString(row("active"))) = "Y" Then
-                    activeCount += 1
-                Else
-                    inactiveCount += 1
-                End If
-            Next
+        If brandTable IsNot Nothing AndAlso brandTable.Rows.Count > 0 Then
+
+            Dim row As DataRow = brandTable.Rows(0)
+
+            totalCount = If(IsDBNull(row("tot_brand")), 0, Convert.ToInt32(row("tot_brand")))
+            activeCount = If(IsDBNull(row("active_brand")), 0, Convert.ToInt32(row("active_brand")))
+            inactiveCount = If(IsDBNull(row("inactive_brand")), 0, Convert.ToInt32(row("inactive_brand")))
+
         End If
 
         lblTotalBrands.Text = totalCount.ToString()

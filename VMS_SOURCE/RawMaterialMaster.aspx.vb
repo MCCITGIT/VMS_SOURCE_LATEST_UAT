@@ -58,34 +58,37 @@ Partial Class RawMaterialMaster
         Dim MsgID As Integer
 
         Try
-            'Checking Access For Submit Button 
-            ''''''''''''''''''''''''''''''''''''''''''''''''''
-            If Not String.IsNullOrEmpty(txtSearchText.Text.Trim()) Then
-                If btnSubmit.Text = Constant.GeneralMessages.btnSubmit Then
-                    RawmatObj.RawMatCode = txtrawmatid.Value
-                    RawmatObj.CreatedUser = userInfo.userIDEntity
-                    RawmatObj.Trantype = 1
-                    RawmatObj.ActiveStatus = "Y"
+            If String.IsNullOrEmpty(txtSearchText.Text.Trim()) Then
+                ShowInlineValidation("Please enter Raw Material name.")
+                Return
+            End If
 
-                    MsgID = obj.InsertUpdateRawMatMasterDtls(RawmatObj)
+            If String.IsNullOrEmpty(txtrawmatid.Value.Trim()) Then
+                ShowInlineValidation("Please select Raw Material from the list.")
+                Return
+            End If
 
-                    If MsgID = 1 Then
-                        lblErrorMessage.Text = ""
-                        txtSearchText.Text = ""
-                        gvrawMatDetails.PageIndex = 0
-                        BindData()
-                        RmActionPopup.ShowSuccess(Me, "Raw Material Saved Successfully.")
-                    ElseIf MsgID = 2 Then
-                        lblErrorMessage.Text = ""
-                        RmActionPopup.ShowError(Me, "Raw Material with the same name already exists.")
-                    Else
-                        lblErrorMessage.Text = ""
-                        RmActionPopup.ShowError(Me, "Raw Material not saved.")
-                    End If
+            If btnSubmit.Text = Constant.GeneralMessages.btnSubmit Then
+                RawmatObj.RawMatCode = txtrawmatid.Value
+                RawmatObj.CreatedUser = userInfo.userIDEntity
+                RawmatObj.Trantype = 1
+                RawmatObj.ActiveStatus = "Y"
+
+                MsgID = obj.InsertUpdateRawMatMasterDtls(RawmatObj)
+
+                If MsgID = 1 Then
+                    ClearInlineValidation()
+                    lblErrorMessage.Text = ""
+                    txtSearchText.Text = ""
+                    txtrawmatid.Value = String.Empty
+                    gvrawMatDetails.PageIndex = 0
+                    BindData()
+                    RmActionPopup.ShowSuccess(Me, "Raw Material Saved Successfully.")
+                ElseIf MsgID = 2 Then
+                    ShowInlineValidation("Raw Material with the same name already exists.")
+                Else
+                    ShowInlineValidation("Raw Material not saved.")
                 End If
-            Else
-                lblErrorMessage.Text = ""
-                RmActionPopup.ShowError(Me, "Please enter Raw Material name.")
             End If
         Catch ex As Exception
             Dim returnUrl As String = "~/ExceptionPage.aspx"
@@ -174,8 +177,7 @@ Partial Class RawMaterialMaster
                 BindData()
                 RmActionPopup.ShowSuccess(Me, "Raw Material Updated Successfully.")
             Else
-                lblErrorMessage.Text = ""
-                RmActionPopup.ShowError(Me, "Unable to update raw material.")
+                lblErrorMessage.Text = "Unable to update raw material."
             End If
         End If
     End Sub
@@ -220,5 +222,16 @@ Partial Class RawMaterialMaster
         Else
             Response.Redirect(path)
         End If
+    End Sub
+
+    Private Sub ClearInlineValidation()
+        txtSearchText.CssClass = "form-control"
+        valSearchText.Text = String.Empty
+    End Sub
+
+    Private Sub ShowInlineValidation(ByVal message As String)
+        ClearInlineValidation()
+        txtSearchText.CssClass = "form-control field-invalid"
+        valSearchText.Text = message
     End Sub
 End Class
