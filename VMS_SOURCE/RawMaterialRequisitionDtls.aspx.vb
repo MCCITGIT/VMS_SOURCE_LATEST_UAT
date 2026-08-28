@@ -19,9 +19,10 @@ Partial Class RawMaterialRequisitionDtls
 #Region "Page Load Event Handler"
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
         CheckLogin()
+        btnSubmit.Attributes.Add("onclick", "return validateRawMaterialRequisitionSubmit();")
+        imgbtnSearch.Attributes.Add("onclick", "return validateRawMaterialRequisitionSearch();")
+
         If (Not IsPostBack) Then
-            btnSubmit.Attributes.Add("onclick", "return validateRawMaterialRequisitionSubmit();")
-            imgbtnSearch.Attributes.Add("onclick", "return validateRawMaterialRequisitionSearch();")
             PopulateUnit()
             PopulateVendor()
 
@@ -148,15 +149,7 @@ Partial Class RawMaterialRequisitionDtls
 #End Region
 
     Protected Sub imgbtnSearch_Click(sender As Object, e As EventArgs)
-        If ddlUnit.SelectedIndex <= 0 OrElse String.IsNullOrWhiteSpace(ddlUnit.SelectedValue) Then
-            lblErrorMessage.Text = ""
-            RmActionPopup.ShowError(Me, "Please select Vendor Name.")
-            Return
-        End If
-
-        If ddlVendor.SelectedIndex <= 0 OrElse String.IsNullOrWhiteSpace(ddlVendor.SelectedValue) Then
-            lblErrorMessage.Text = ""
-            RmActionPopup.ShowError(Me, "Please select RM Vendor.")
+        If Not ValidateSearchInputs() Then
             Return
         End If
 
@@ -213,18 +206,11 @@ Partial Class RawMaterialRequisitionDtls
         Try
             lblErrorMessage.Text = String.Empty
 
-            If ddlVendor.SelectedIndex <= 0 OrElse String.IsNullOrWhiteSpace(ddlVendor.SelectedValue) Then
-                lblErrorMessage.Text = ""
-                RmActionPopup.ShowError(Me, "Please select RM Vendor.")
+            If Not ValidateSubmitInputs() Then
                 Return
             End If
 
             dtDetails = BuildRequisitionDetailTable()
-            If dtDetails.Rows.Count = 0 Then
-                lblErrorMessage.Text = ""
-                RmActionPopup.ShowError(Me, "Please enter Quantity greater than 0 for at least one Raw Material.")
-                Return
-            End If
 
             headerEntity.VendorCode = ddlUnit.SelectedValue.ToString() 'userInfo.userIDEntity
             headerEntity.RawMaterialVendorCode = ddlVendor.SelectedValue.Trim()
@@ -362,4 +348,67 @@ Partial Class RawMaterialRequisitionDtls
         End If
     End Sub
 #End Region
+
+    Private Function ValidateSearchInputs() As Boolean
+        ClearInlineValidation()
+
+        Dim isValid As Boolean = True
+
+        If ddlUnit.SelectedIndex <= 0 OrElse String.IsNullOrWhiteSpace(ddlUnit.SelectedValue) Then
+            AppendInlineValidation("Unit", "Please select Vendor Name.")
+            isValid = False
+        End If
+
+        If ddlVendor.SelectedIndex <= 0 OrElse String.IsNullOrWhiteSpace(ddlVendor.SelectedValue) Then
+            AppendInlineValidation("Vendor", "Please select RM Vendor.")
+            isValid = False
+        End If
+
+        Return isValid
+    End Function
+
+    Private Function ValidateSubmitInputs() As Boolean
+        ClearInlineValidation()
+
+        Dim isValid As Boolean = True
+
+        If ddlVendor.SelectedIndex <= 0 OrElse String.IsNullOrWhiteSpace(ddlVendor.SelectedValue) Then
+            AppendInlineValidation("Vendor", "Please select RM Vendor.")
+            isValid = False
+        End If
+
+        Dim dtDetails As DataTable = BuildRequisitionDetailTable()
+        If dtDetails.Rows.Count = 0 Then
+            AppendInlineValidation("Grid", "Please enter Quantity greater than 0 for at least one Raw Material.")
+            isValid = False
+        End If
+
+        Return isValid
+    End Function
+
+    Private Sub ClearInlineValidation()
+        ddlUnit.CssClass = "form-control select2"
+        ddlVendor.CssClass = "form-control select2"
+        valUnit.Text = String.Empty
+        valVendor.Text = String.Empty
+        valGrid.Text = String.Empty
+    End Sub
+
+    Private Sub AppendInlineValidation(ByVal fieldKey As String, ByVal message As String)
+        Select Case fieldKey
+            Case "Unit"
+                ddlUnit.CssClass = "form-control select2 field-invalid"
+                valUnit.Text = message
+            Case "Vendor"
+                ddlVendor.CssClass = "form-control select2 field-invalid"
+                valVendor.Text = message
+            Case "Grid"
+                valGrid.Text = message
+        End Select
+    End Sub
+
+    Private Sub ShowInlineValidation(ByVal fieldKey As String, ByVal message As String)
+        ClearInlineValidation()
+        AppendInlineValidation(fieldKey, message)
+    End Sub
 End Class

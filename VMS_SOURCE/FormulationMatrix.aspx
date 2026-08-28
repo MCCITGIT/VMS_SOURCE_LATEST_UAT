@@ -4,8 +4,27 @@
 
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
     <link href="includes/rm-procurement.css?v=<%= DateTime.Now.Ticks %>" rel="stylesheet" type="text/css" />
+    <style type="text/css">
+        .form-control.field-invalid {
+            border-color: #dc3545 !important;
+            box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.12);
+        }
+
+        .dispatch-field-error {
+            display: block;
+            color: #dc3545;
+            font-size: 12px;
+            font-weight: 500;
+            margin-top: 4px;
+            line-height: 1.35;
+        }
+
+            .dispatch-field-error:empty {
+                display: none;
+            }
+    </style>
     <div class="rm-module rm-compact rm-formulation-matrix">
-        <script type="text/javascript" src="Scripts/FunctionValidator.js"></script>
+        <script type="text/javascript" src="Scripts/rm-status-confirm.js?v=<%= DateTime.Now.Ticks %>"></script>
         <script type="text/javascript" src="Scripts/ValidateFormulationMatrix.js?time=<%= DateTime.Now.ToString("yyyy.MM.dd-HH.mm.ss.fff") %>"></script>
         <script type="text/javascript">
             function setProductSearchState(isLocked) {
@@ -34,10 +53,16 @@
                 document.getElementById('<%=hdnProductName.ClientID%>').value = text;
                 setProductSearchState(true);
                 sender.get_element().value = text;
+                if (typeof clearProductValidation === "function") {
+                    clearProductValidation();
+                }
             }
 
             function clearProductSelection() {
                 document.getElementById('<%=hdnProductCode.ClientID%>').value = '';
+                if (typeof clearProductValidation === "function") {
+                    clearProductValidation();
+                }
             }
 
             function resetProductField() {
@@ -62,6 +87,9 @@
                 }
 
                 setProductSearchState(false);
+                if (typeof clearProductValidation === "function") {
+                    clearProductValidation();
+                }
                 __doPostBack('<%=btnResetProductPostback.UniqueID%>', '');
             }
 
@@ -185,6 +213,7 @@
                             <asp:AutoCompleteExtender ID="aceProductSearch" runat="server" TargetControlID="txtProductSearch" ServiceMethod="ProductSearch" CompletionInterval="200" EnableCaching="false" CompletionSetCount="20" FirstRowSelected="true" OnClientItemSelected="onProductSelected"
                                 CompletionListCssClass="vmsAutoComplete" CompletionListItemCssClass="vmsAutoCompleteItem" CompletionListHighlightedItemCssClass="vmsAutoCompleteItemHighlight">
                             </asp:AutoCompleteExtender>
+                            <asp:Label ID="valProductSearch" runat="server" ClientIDMode="Static" CssClass="dispatch-field-error"></asp:Label>
                             <asp:LinkButton ID="btnResetProductPostback" runat="server" Style="display: none;" OnClick="btnResetProductPostback_Click"></asp:LinkButton>
                         </div>
                     </div>
@@ -281,7 +310,7 @@
                                 <ItemTemplate>
                                     <asp:TextBox ID="txtRate" runat="server" CssClass="form-control form-control-sm text-right" Text='<%# Bind("rate") %>' AutoComplete="Off"
                                         onkeypress="return allowRateTwoDecimal(event, this);"
-                                        oninput="sanitizeRateTwoDecimal(this);"
+                                        oninput="sanitizeRateTwoDecimal(this); if (typeof clearGridValidation === 'function') { clearGridValidation(); }"
                                         onblur="formatRateTwoDecimal(this);"></asp:TextBox>
                                 </ItemTemplate>
                                 <HeaderStyle HorizontalAlign="Center" Width="12%" />
@@ -299,15 +328,15 @@
                         </Columns>
                     </asp:GridView>
                 </div>
+                <asp:Label ID="valGrid" runat="server" ClientIDMode="Static" CssClass="dispatch-field-error"></asp:Label>
                 <div class="row">
                     <div class="col-md-12 text-center">
                         <asp:Button ID="btnSubmit" runat="server" Text="Submit" CssClass="btn btn-primary btn-sm" ClientIDMode="Static" Visible="false"
-                            CausesValidation="false" OnClientClick="return validateFormulationMatrixSubmit();" />
+                            CausesValidation="false" OnClick="btnSubmit_Click" />
                         <asp:Button ID="btnCancel" runat="server" Text="Back" CssClass="btn btn-secondary btn-sm" CausesValidation="false" />
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <script type="text/javascript" src="Scripts/rm-status-confirm.js?v=<%= DateTime.Now.Ticks %>"></script>
 </asp:Content>

@@ -58,37 +58,34 @@ Partial Class RawMaterialMaster
         Dim MsgID As Integer
 
         Try
-            If String.IsNullOrEmpty(txtSearchText.Text.Trim()) Then
-                ShowInlineValidation("Please enter Raw Material name.")
-                Return
-            End If
+            'Checking Access For Submit Button 
+            ''''''''''''''''''''''''''''''''''''''''''''''''''
+            If Not String.IsNullOrEmpty(txtSearchText.Text.Trim()) Then
+                If btnSubmit.Text = Constant.GeneralMessages.btnSubmit Then
+                    RawmatObj.RawMatCode = txtrawmatid.Value
+                    RawmatObj.CreatedUser = userInfo.userIDEntity
+                    RawmatObj.Trantype = 1
+                    RawmatObj.ActiveStatus = "Y"
 
-            If String.IsNullOrEmpty(txtrawmatid.Value.Trim()) Then
-                ShowInlineValidation("Please select Raw Material from the list.")
-                Return
-            End If
+                    MsgID = obj.InsertUpdateRawMatMasterDtls(RawmatObj)
 
-            If btnSubmit.Text = Constant.GeneralMessages.btnSubmit Then
-                RawmatObj.RawMatCode = txtrawmatid.Value
-                RawmatObj.CreatedUser = userInfo.userIDEntity
-                RawmatObj.Trantype = 1
-                RawmatObj.ActiveStatus = "Y"
-
-                MsgID = obj.InsertUpdateRawMatMasterDtls(RawmatObj)
-
-                If MsgID = 1 Then
-                    ClearInlineValidation()
-                    lblErrorMessage.Text = ""
-                    txtSearchText.Text = ""
-                    txtrawmatid.Value = String.Empty
-                    gvrawMatDetails.PageIndex = 0
-                    BindData()
-                    RmActionPopup.ShowSuccess(Me, "Raw Material Saved Successfully.")
-                ElseIf MsgID = 2 Then
-                    ShowInlineValidation("Raw Material with the same name already exists.")
-                Else
-                    ShowInlineValidation("Raw Material not saved.")
+                    If MsgID = 1 Then
+                        lblErrorMessage.Text = ""
+                        txtSearchText.Text = ""
+                        gvrawMatDetails.PageIndex = 0
+                        BindData()
+                        RmActionPopup.ShowSuccess(Me, "Raw Material Saved Successfully.")
+                    ElseIf MsgID = 2 Then
+                        lblErrorMessage.Text = ""
+                        RmActionPopup.ShowError(Me, "Raw Material with the same name already exists.")
+                    Else
+                        lblErrorMessage.Text = ""
+                        RmActionPopup.ShowError(Me, "Raw Material not saved.")
+                    End If
                 End If
+            Else
+                lblErrorMessage.Text = ""
+                RmActionPopup.ShowError(Me, "Please enter Raw Material name.")
             End If
         Catch ex As Exception
             Dim returnUrl As String = "~/ExceptionPage.aspx"
@@ -101,34 +98,58 @@ Partial Class RawMaterialMaster
         End If
     End Sub
     Private Sub BindData()
+
         Dim ds As DataSet
         Dim obj As New OPC_VendorClass()
+
         ds = obj.GetRawmaterialMstrList()
 
-        Dim table As DataTable = RmGridHelper.GetTable(ds)
-        RmGridHelper.BindPaged(gvrawMatDetails, table)
-        UpdateSummary(table)
+        If ds IsNot Nothing AndAlso ds.Tables.Count > 0 Then
+
+            'Bind Grid
+            Dim table As DataTable = ds.Tables(0)
+
+            RmGridHelper.BindPaged(gvrawMatDetails, table)
+
+
+            'Bind Summary Labels
+            If ds.Tables.Count > 1 Then
+                UpdateSummary(ds.Tables(1))
+            Else
+                UpdateSummary(Nothing)
+            End If
+
+        Else
+
+            RmGridHelper.BindPaged(gvrawMatDetails, Nothing)
+            UpdateSummary(Nothing)
+
+        End If
+
     End Sub
 
-    Private Sub UpdateSummary(ByVal sourceTable As DataTable)
+    Private Sub UpdateSummary(ByVal summaryTable As DataTable)
+
         Dim totalCount As Integer = 0
         Dim activeCount As Integer = 0
         Dim inactiveCount As Integer = 0
 
-        If sourceTable IsNot Nothing Then
-            totalCount = sourceTable.Rows.Count
-            For Each row As DataRow In sourceTable.Rows
-                If NormalizeActiveValue(Convert.ToString(row("active"))) = "Y" Then
-                    activeCount += 1
-                Else
-                    inactiveCount += 1
-                End If
-            Next
+
+        If summaryTable IsNot Nothing AndAlso summaryTable.Rows.Count > 0 Then
+
+            Dim row As DataRow = summaryTable.Rows(0)
+
+            totalCount = If(IsDBNull(row("TotalCount")), 0, Convert.ToInt32(row("TotalCount")))
+            activeCount = If(IsDBNull(row("ActiveCount")), 0, Convert.ToInt32(row("ActiveCount")))
+            inactiveCount = If(IsDBNull(row("InactiveCount")), 0, Convert.ToInt32(row("InactiveCount")))
+
         End If
+
 
         lblTotalCount.Text = totalCount.ToString()
         lblActiveCount.Text = activeCount.ToString()
         lblInactiveCount.Text = inactiveCount.ToString()
+
     End Sub
 
     Protected Sub gvrawMatDetails_PageIndexChanging(sender As Object, e As GridViewPageEventArgs) Handles gvrawMatDetails.PageIndexChanging
@@ -177,7 +198,8 @@ Partial Class RawMaterialMaster
                 BindData()
                 RmActionPopup.ShowSuccess(Me, "Raw Material Updated Successfully.")
             Else
-                lblErrorMessage.Text = "Unable to update raw material."
+                lblErrorMessage.Text = ""
+                RmActionPopup.ShowError(Me, "Unable to update raw material.")
             End If
         End If
     End Sub
@@ -222,16 +244,5 @@ Partial Class RawMaterialMaster
         Else
             Response.Redirect(path)
         End If
-    End Sub
-
-    Private Sub ClearInlineValidation()
-        txtSearchText.CssClass = "form-control"
-        valSearchText.Text = String.Empty
-    End Sub
-
-    Private Sub ShowInlineValidation(ByVal message As String)
-        ClearInlineValidation()
-        txtSearchText.CssClass = "form-control field-invalid"
-        valSearchText.Text = message
     End Sub
 End Class

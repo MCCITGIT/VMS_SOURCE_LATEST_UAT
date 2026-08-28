@@ -2,6 +2,25 @@
 
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
     <link href="includes/rm-procurement.css?v=<%= DateTime.Now.Ticks %>" rel="stylesheet" type="text/css" />
+    <style type="text/css">
+        .form-control.field-invalid {
+            border-color: #dc3545 !important;
+            box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.12);
+        }
+
+        .dispatch-field-error {
+            display: block;
+            color: #dc3545;
+            font-size: 12px;
+            font-weight: 500;
+            margin-top: 4px;
+            line-height: 1.35;
+        }
+
+            .dispatch-field-error:empty {
+                display: none;
+            }
+    </style>
     <div class="rm-module rm-compact rm-brand-master">
     <script type="text/javascript">
         document.onkeydown = checkValue;
@@ -24,7 +43,6 @@
             window.history.forward(1);
         }
     </script>
-    <script type="text/javascript" src="Scripts/FunctionValidator.js"></script>
     <script type="text/javascript" src="Scripts/ValidateAddUpdate_ProductMaster.js?time=<%= DateTime.Now.ToString("yyyy.MM.dd-HH.mm.ss.fff") %>"></script>
     <style>
         .errormsg {
@@ -50,11 +68,12 @@
                     <div class="form-group pb-0 mb-0">
                         <label class="form-control-label">Brand Name:<span id="Span2" class="mandatory">*</span></label>
                         <div class="rm-add-form-controls">
-                            <asp:TextBox ID="txtBrandName" ClientIDMode="Static" class="form-control" runat="server" AutoComplete="Off" Placeholder="Enter Here"></asp:TextBox>
+                            <asp:TextBox ID="txtBrandName" ClientIDMode="Static" CssClass="form-control" runat="server" AutoComplete="Off" onkeyup="clearBrandValidation();" Placeholder="Enter Here"></asp:TextBox>
                             <asp:HiddenField ID="txtBrandId" ClientIDMode="Static" runat="server" />
                             <asp:Button ID="btnSubmit" ClientIDMode="Static" runat="server" Text="Submit" CssClass="btn btn-primary btn-sm" OnClick="btnSubmit_Click" />
                             <asp:Button ID="btnReset" runat="server" Text="Reset" CssClass="btn btn-outline-danger btn-sm" OnClick="btnReset_Click" />
                         </div>
+                        <asp:Label ID="valBrandName" runat="server" ClientIDMode="Static" CssClass="dispatch-field-error"></asp:Label>
                     </div>
                 </div>
                 <div class="rm-stat-row">
@@ -89,7 +108,7 @@
             </div>
             <asp:UpdatePanel ID="UpdatePanel5" runat="server">
                 <ContentTemplate>
-                    <asp:Label ID="lblErrorMessage" ClientIDMode="Static" Visible="true" runat="server" Style="text-align: left; font-size: 10px; font-weight: bold; color: red" Text=""></asp:Label>
+                    <asp:Label ID="lblErrorMessage" ClientIDMode="Static" CssClass="errormsg" Visible="true" runat="server" Style="text-align: left; font-size: 10px; font-weight: bold; color: red;" Text=""></asp:Label>
                 </ContentTemplate>
             </asp:UpdatePanel>
         </div>

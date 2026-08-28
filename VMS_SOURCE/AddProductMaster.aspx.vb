@@ -27,34 +27,31 @@ Partial Class AddProductMaster
         Dim MsgID As Integer
 
         Try
-            'Checking Access For Submit Button 
-            ''''''''''''''''''''''''''''''''''''''''''''''''''
-            If Not String.IsNullOrEmpty(txtBrandName.Text.Trim()) Then
-                If btnSubmit.Text = Constant.GeneralMessages.btnSubmit Then
-                    ProdMstrEntity.PName = txtBrandName.Text
-                    ProdMstrEntity.CreatedUser = userInfo.userIDEntity
-                    ProdMstrEntity.Trantype = 1
-                    ProdMstrEntity.ActiveStatus = "Y"
+            If String.IsNullOrEmpty(txtBrandName.Text.Trim()) Then
+                ShowInlineValidation("Please enter Brand Name.")
+                Return
+            End If
 
-                    MsgID = obj.InsertUpdateBrandMasterDtls(ProdMstrEntity)
+            If btnSubmit.Text = Constant.GeneralMessages.btnSubmit Then
+                ProdMstrEntity.PName = txtBrandName.Text
+                ProdMstrEntity.CreatedUser = userInfo.userIDEntity
+                ProdMstrEntity.Trantype = 1
+                ProdMstrEntity.ActiveStatus = "Y"
 
-                    If MsgID = 1 Then
-                        lblErrorMessage.Text = ""
-                        txtBrandName.Text = ""
-                        gvbrandDetails.PageIndex = 0
-                        BrandDetailsListLoad()
-                        RmActionPopup.ShowSuccess(Me, "Brand Saved Successfully.")
-                    ElseIf MsgID = 2 Then
-                        lblErrorMessage.Text = ""
-                        RmActionPopup.ShowError(Me, "Brand with the same name already exists.")
-                    Else
-                        lblErrorMessage.Text = ""
-                        RmActionPopup.ShowError(Me, "Brand not saved.")
-                    End If
+                MsgID = obj.InsertUpdateBrandMasterDtls(ProdMstrEntity)
+
+                If MsgID = 1 Then
+                    ClearInlineValidation()
+                    lblErrorMessage.Text = ""
+                    txtBrandName.Text = ""
+                    gvbrandDetails.PageIndex = 0
+                    BrandDetailsListLoad()
+                    RmActionPopup.ShowSuccess(Me, "Brand Saved Successfully.")
+                ElseIf MsgID = 2 Then
+                    ShowInlineValidation("Brand with the same name already exists.")
+                Else
+                    ShowInlineValidation("Brand not saved.")
                 End If
-            Else
-                lblErrorMessage.Text = ""
-                RmActionPopup.ShowError(Me, "Please enter brand name.")
             End If
         Catch ex As Exception
             Dim returnUrl As String = "~/ExceptionPage.aspx"
@@ -210,5 +207,16 @@ Partial Class AddProductMaster
     Protected Sub gvbrandDetails_RowCancelingEdit(sender As Object, e As GridViewCancelEditEventArgs) Handles gvbrandDetails.RowCancelingEdit
         gvbrandDetails.EditIndex = -1
         BrandDetailsListLoad()
+    End Sub
+
+    Private Sub ClearInlineValidation()
+        txtBrandName.CssClass = "form-control"
+        valBrandName.Text = String.Empty
+    End Sub
+
+    Private Sub ShowInlineValidation(ByVal message As String)
+        ClearInlineValidation()
+        txtBrandName.CssClass = "form-control field-invalid"
+        valBrandName.Text = message
     End Sub
 End Class

@@ -76,11 +76,23 @@ Partial Class RawMaterialVendorMstrList
         Try
             Dim ds As DataSet
             Dim obj As New OPC_VendorClass()
+
             ds = obj.GetRawMaterialVendorMasterList(ddlVendor.SelectedValue)
 
+
+            'Grid Binding
             Dim table As DataTable = RmGridHelper.GetTable(ds)
             RmGridHelper.BindPaged(gvRawMatVendorDetails, table)
-            UpdateSummary(table)
+
+
+            'Summary Binding
+            If ds IsNot Nothing AndAlso ds.Tables.Count > 1 Then
+                UpdateSummary(ds.Tables(1))
+            Else
+                UpdateSummary(Nothing)
+            End If
+
+
         Catch ex As Exception
             Dim returnUrl As String = "~/ExceptionPage.aspx"
             Session(Constant.SessionKeys.ErrMessage) = ex.ToString()
@@ -88,25 +100,28 @@ Partial Class RawMaterialVendorMstrList
         End Try
     End Sub
 
-    Private Sub UpdateSummary(ByVal sourceTable As DataTable)
+    Private Sub UpdateSummary(ByVal summaryTable As DataTable)
+
         Dim totalCount As Integer = 0
         Dim activeCount As Integer = 0
         Dim inactiveCount As Integer = 0
 
-        If sourceTable IsNot Nothing Then
-            totalCount = sourceTable.Rows.Count
-            For Each row As DataRow In sourceTable.Rows
-                If RmGridHelper.IsYes(row("active")) Then
-                    activeCount += 1
-                Else
-                    inactiveCount += 1
-                End If
-            Next
+
+        If summaryTable IsNot Nothing AndAlso summaryTable.Rows.Count > 0 Then
+
+            Dim row As DataRow = summaryTable.Rows(0)
+
+            totalCount = If(IsDBNull(row("TotalCount")), 0, Convert.ToInt32(row("TotalCount")))
+            activeCount = If(IsDBNull(row("ActiveCount")), 0, Convert.ToInt32(row("ActiveCount")))
+            inactiveCount = If(IsDBNull(row("InactiveCount")), 0, Convert.ToInt32(row("InactiveCount")))
+
         End If
+
 
         lblTotalCount.Text = totalCount.ToString()
         lblActiveCount.Text = activeCount.ToString()
         lblInactiveCount.Text = inactiveCount.ToString()
+
     End Sub
 
     Protected Sub gvRawMatVendorDetails_PageIndexChanging(sender As Object, e As GridViewPageEventArgs) Handles gvRawMatVendorDetails.PageIndexChanging
