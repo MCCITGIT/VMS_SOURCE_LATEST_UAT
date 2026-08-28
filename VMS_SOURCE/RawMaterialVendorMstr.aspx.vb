@@ -10,6 +10,7 @@ Partial Class RawMaterialVendorMstr
 
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
         CheckLogin()
+        btnSubmit.Attributes.Add("onclick", "return rmConfirmVendorStatusSubmit();")
 
         If Not IsPostBack Then
             ShowSavedMessage()
@@ -39,9 +40,7 @@ Partial Class RawMaterialVendorMstr
         Dim MsgID As Integer
 
         Try
-            If String.IsNullOrWhiteSpace(txtUnitName.Text.Trim()) Then
-                lblErrorMessage.Text = ""
-                RmActionPopup.ShowError(Me, "Please enter Vendor Name.")
+            If Not ValidateVendorInputs() Then
                 Exit Sub
             End If
 
@@ -82,12 +81,10 @@ Partial Class RawMaterialVendorMstr
                 End If
                 Context.ApplicationInstance.CompleteRequest()
             ElseIf MsgID = 2 Then
-                lblErrorMessage.Text = ""
-                RmActionPopup.ShowError(Me, "Vendor Code already exists.")
+                ShowInlineValidation("UnitName", "Vendor Code already exists.")
                 btnSubmit.Enabled = True
             Else
-                lblErrorMessage.Text = ""
-                RmActionPopup.ShowError(Me, "Vendor not saved.")
+                ShowInlineValidation("UnitName", "Vendor not saved.")
                 btnSubmit.Enabled = True
             End If
         Catch ex As Exception
@@ -180,6 +177,134 @@ Partial Class RawMaterialVendorMstr
         txtEmail.Text = String.Empty
         rbtnActiveY.Checked = True
         rbtnActiveN.Checked = False
+    End Sub
+
+    Private Function ValidateVendorInputs() As Boolean
+        ClearInlineValidation()
+
+        Dim isValid As Boolean = True
+
+        If String.IsNullOrWhiteSpace(txtUnitName.Text.Trim()) Then
+            AppendInlineValidation("UnitName", "Please enter Vendor Name.")
+            isValid = False
+        End If
+
+        If String.IsNullOrWhiteSpace(txtGstRegNo.Text.Trim()) Then
+            AppendInlineValidation("GstRegNo", "Please enter GST Registration Number.")
+            isValid = False
+        End If
+
+        If String.IsNullOrWhiteSpace(txtLine1.Text.Trim()) Then
+            AppendInlineValidation("Line1", "Please enter Address.")
+            isValid = False
+        End If
+
+        If String.IsNullOrWhiteSpace(txtCity.Text.Trim()) Then
+            AppendInlineValidation("City", "Please enter City.")
+            isValid = False
+        End If
+
+        If String.IsNullOrWhiteSpace(txtState.Text.Trim()) Then
+            AppendInlineValidation("State", "Please enter State.")
+            isValid = False
+        End If
+
+        If String.IsNullOrWhiteSpace(txtPin.Text.Trim()) Then
+            AppendInlineValidation("Pin", "Please enter Pincode.")
+            isValid = False
+        End If
+
+        If String.IsNullOrWhiteSpace(txtContactPerson.Text.Trim()) Then
+            AppendInlineValidation("ContactPerson", "Please enter Contact Person.")
+            isValid = False
+        End If
+
+        Dim mobileNo As String = txtMobileNo.Text.Trim()
+        If String.IsNullOrWhiteSpace(mobileNo) Then
+            AppendInlineValidation("MobileNo", "Please enter Mobile No.")
+            isValid = False
+        ElseIf Not System.Text.RegularExpressions.Regex.IsMatch(mobileNo, "^\d{10}$") Then
+            AppendInlineValidation("MobileNo", "Mobile No. must be exactly 10 digits.")
+            isValid = False
+        End If
+
+        Dim emailAddress As String = txtEmail.Text.Trim()
+        If String.IsNullOrWhiteSpace(emailAddress) Then
+            AppendInlineValidation("Email", "Please enter E-mail.")
+            isValid = False
+        ElseIf Not IsValidEmail(emailAddress) Then
+            AppendInlineValidation("Email", "Please enter valid E-mail.")
+            isValid = False
+        End If
+
+        Return isValid
+    End Function
+
+    Private Shared Function IsValidEmail(ByVal email As String) As Boolean
+        Try
+            Dim addr As New System.Net.Mail.MailAddress(email)
+            Return String.Equals(addr.Address, email, StringComparison.OrdinalIgnoreCase)
+        Catch
+            Return False
+        End Try
+    End Function
+
+    Private Sub ClearInlineValidation()
+        txtUnitName.CssClass = "form-control"
+        txtGstRegNo.CssClass = "form-control"
+        txtLine1.CssClass = "form-control"
+        txtCity.CssClass = "form-control"
+        txtState.CssClass = "form-control"
+        txtPin.CssClass = "form-control"
+        txtContactPerson.CssClass = "form-control"
+        txtMobileNo.CssClass = "form-control"
+        txtEmail.CssClass = "form-control"
+        valUnitName.Text = String.Empty
+        valGstRegNo.Text = String.Empty
+        valLine1.Text = String.Empty
+        valCity.Text = String.Empty
+        valState.Text = String.Empty
+        valPin.Text = String.Empty
+        valContactPerson.Text = String.Empty
+        valMobileNo.Text = String.Empty
+        valEmail.Text = String.Empty
+    End Sub
+
+    Private Sub AppendInlineValidation(ByVal fieldKey As String, ByVal message As String)
+        Select Case fieldKey
+            Case "UnitName"
+                txtUnitName.CssClass = "form-control field-invalid"
+                valUnitName.Text = message
+            Case "GstRegNo"
+                txtGstRegNo.CssClass = "form-control field-invalid"
+                valGstRegNo.Text = message
+            Case "Line1"
+                txtLine1.CssClass = "form-control field-invalid"
+                valLine1.Text = message
+            Case "City"
+                txtCity.CssClass = "form-control field-invalid"
+                valCity.Text = message
+            Case "State"
+                txtState.CssClass = "form-control field-invalid"
+                valState.Text = message
+            Case "Pin"
+                txtPin.CssClass = "form-control field-invalid"
+                valPin.Text = message
+            Case "ContactPerson"
+                txtContactPerson.CssClass = "form-control field-invalid"
+                valContactPerson.Text = message
+            Case "MobileNo"
+                txtMobileNo.CssClass = "form-control field-invalid"
+                valMobileNo.Text = message
+            Case "Email"
+                txtEmail.CssClass = "form-control field-invalid"
+                valEmail.Text = message
+        End Select
+    End Sub
+
+    Private Sub ShowInlineValidation(ByVal fieldKey As String, ByVal message As String)
+        ClearInlineValidation()
+        AppendInlineValidation(fieldKey, message)
     End Sub
 
     Private Function GetRowValue(ByVal row As DataRow, ParamArray columnNames As String()) As String

@@ -290,15 +290,29 @@ Partial Class RawMaterialRequisitionList
     Private Sub BindData()
         Try
             Dim obj As New OPC_VendorClass()
+
             If ddlApprovalstatus.SelectedValue = "A" Then
                 btnApprove.Visible = False
             Else
                 btnApprove.Visible = True
             End If
+
             Dim ds As DataSet = obj.GetRawMaterialRequestList(ddlvendor.SelectedValue, ddlRawMatvendor.SelectedValue, ddlApprovalstatus.SelectedValue)
+
+
+            'Grid Binding
             Dim table As DataTable = RmGridHelper.GetTable(ds)
             RmGridHelper.BindPaged(gvRequisition, table)
-            UpdateSummary(table)
+
+
+            'Summary Binding
+            If ds IsNot Nothing AndAlso ds.Tables.Count > 1 Then
+                UpdateSummary(ds.Tables(1))
+            Else
+                UpdateSummary(Nothing)
+            End If
+
+
         Catch ex As Exception
             Dim returnUrl As String = "~/ExceptionPage.aspx"
             Session(Constant.SessionKeys.ErrMessage) = ex.ToString()
@@ -306,25 +320,23 @@ Partial Class RawMaterialRequisitionList
         End Try
     End Sub
 
-    Private Sub UpdateSummary(ByVal sourceTable As DataTable)
+    Private Sub UpdateSummary(ByVal summaryTable As DataTable)
+
         Dim totalCount As Integer = 0
         Dim pendingCount As Integer = 0
         Dim approvedCount As Integer = 0
 
-        If sourceTable IsNot Nothing Then
-            totalCount = sourceTable.Rows.Count
-            For Each row As DataRow In sourceTable.Rows
-                If RmGridHelper.IsYes(row("approval_status")) Then
-                    approvedCount += 1
-                Else
-                    pendingCount += 1
-                End If
-            Next
+        If summaryTable IsNot Nothing AndAlso summaryTable.Rows.Count > 0 Then
+            Dim row As DataRow = summaryTable.Rows(0)
+            totalCount = If(IsDBNull(row("TotalRecords")), 0, Convert.ToInt32(row("TotalRecords")))
+            pendingCount = If(IsDBNull(row("TotalPendingRecords")), 0, Convert.ToInt32(row("TotalPendingRecords")))
+            approvedCount = If(IsDBNull(row("TotalReceivedRecords")), 0, Convert.ToInt32(row("TotalReceivedRecords")))
         End If
 
         lblTotalCount.Text = totalCount.ToString()
         lblPendingCount.Text = pendingCount.ToString()
         lblApprovedCount.Text = approvedCount.ToString()
+
     End Sub
 
     Protected Sub gvRequisition_PageIndexChanging(sender As Object, e As GridViewPageEventArgs) Handles gvRequisition.PageIndexChanging
