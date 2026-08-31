@@ -293,7 +293,9 @@ body {
     box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.15);
     margin-bottom: 0.8rem;
     border-radius: 16px;
-    background-color: #fbfbfb;
+    /*background-color: #fbfbfb;*/
+    /*background-color: #f8f9fb;*/
+    background-color: #fcfcfd;
 }
 
 .card-body {
@@ -366,6 +368,7 @@ body {
     border: 1px solid #ddd;
     padding: 5px 10px;
     margin: 3px 0px 15px 0px;
+    background: #ffffff;
 }
 /* Start Grid */
 .upgradDataGrid {
@@ -412,10 +415,10 @@ body {
         position: sticky;
         top: 0;
         z-index: 2;
-        /*background-color: #efefef;*/
+        background-color: #fcfcfd;
     }
 
-    .upgradDataGrid tr.headerGrid:hover {
+        .upgradDataGrid tr.headerGrid:hover {
             /*background: #eff2f5;*/
             background: transparent;
         }
@@ -515,9 +518,11 @@ body {
         line-height: 15px !important;
         transition: background-color 0.18s ease;
     }
+
     .upgradDataGrid tr td:last-child {
-        border-right:1px ;
+        border-right: 1px;
     }
+
     .upgradDataGrid tr:hover td {
         background: #fafbfd !important;
     }
@@ -1572,7 +1577,7 @@ body {
         }
 /*=================================================*/
 .select2-container .select2-selection--single {
-    height: 30px !important;
+    height: 32px !important;
     border-radius: 13px !important;
 }
 

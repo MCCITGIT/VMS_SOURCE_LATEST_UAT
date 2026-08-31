@@ -99,6 +99,9 @@
 
     <asp:Label ID="lblChallanNo" runat="server" CssClass="text-right mb-2 d-flex justify-content-end font-weight-bold"></asp:Label>
     <asp:HiddenField ID="hdnChallanno" runat="server" />
+    <%-- Modified-by MUKESH BHAGAT on 31-08-2026 : invoice number as loaded in edit mode, so the
+         duplicate-invoice check can skip the challan's own number when it is unchanged. --%>
+    <asp:HiddenField ID="hdnOriginalInvoiceNo" runat="server" />
     <asp:HiddenField ID="hdnNoMaster" runat="server" />
     <asp:HiddenField ID="hdnMaxDespLimit" runat="server" />
     <asp:HiddenField ID="hdnLotNo" runat="server" />
@@ -387,25 +390,42 @@
                         <asp:TextBox ID="txtFinalInvoiceValue" CssClass="form-control" MaxLength="10" TextMode="Number" TabIndex="10" runat="server"></asp:TextBox>
                     </div>
                 </div>
-                <div class="col-md-3">
-                    <div class="form-group">
-                        <label class="form-control-label">Upload Actual Invoice Copy:<span class="mandatory">*</span><span id="Span4" class="mandatory" runat="server"></span></label>
-                        <asp:UpdatePanel ID="UpdatePanel12" runat="server">
-                            <ContentTemplate>
-                                <asp:FileUpload ID="sch_fld1" runat="server" CssClass="form-control" />
-                            </ContentTemplate>
-                            <Triggers>
-                                <asp:PostBackTrigger ControlID="btnSubmit" />
-                            </Triggers>
-                        </asp:UpdatePanel>
-                        <asp:HiddenField ID="hdnFileName" runat="server" />
-                        <%-- Modified-by MUKESH BHAGAT on 24-08-2026 : invoice OCR extract + validation
+                <div class="col-md-6">
+                    <div class="form-group" style="display: flex; align-items: flex-start; gap: 30px;">
+                        <div style="width: 48%">
+                            <label class="form-control-label">Upload Actual Invoice Copy:<span class="mandatory">*</span><span id="Span4" class="mandatory" runat="server"></span></label>
+                            <asp:UpdatePanel ID="UpdatePanel12" runat="server">
+                                <ContentTemplate>
+                                    <asp:FileUpload ID="sch_fld1" runat="server" CssClass="form-control" />
+                                </ContentTemplate>
+                                <Triggers>
+                                    <asp:PostBackTrigger ControlID="btnSubmit" />
+                                </Triggers>
+                            </asp:UpdatePanel>
+                            <asp:HiddenField ID="hdnFileName" runat="server" />
+                            <%-- Modified-by MUKESH BHAGAT on 24-08-2026 : invoice OCR extract + validation
                              (same OCR service as Dispatch_Details.aspx -> InvoiceOcrExtract.ashx)
                              Modified-by MUKESH BHAGAT on 27-08-2026 : the visible "Extract & Validate"
                              button is gone - the OCR check now runs silently when Submit is clicked,
                              and this message area / the panel below appear only when the bill fails. --%>
-                        <div id="divInvoiceOcrMessage" style="margin-top: 5px; font-size: 12px;"></div>
-                        <asp:HiddenField ID="hdnOcrVerified" runat="server" Value="N" />
+                            <div id="divInvoiceOcrMessage" style="margin-top: 5px; font-size: 12px;"></div>
+                            <asp:HiddenField ID="hdnOcrVerified" runat="server" Value="N" />
+                            <%-- Modified-by MUKESH BHAGAT on 31-08-2026 : stored invoice copy - shows the
+                             uploaded file's name and a download button when a document exists. --%>
+                            <asp:HiddenField ID="hdnInvDocPath" runat="server" />
+                            <asp:HiddenField ID="hdnInvDocFile" runat="server" />
+                        </div>
+                        <div>
+                            <asp:Label ID="lblInvDocName" runat="server" Visible="false"
+                                Style="display: block; font-size: 11px; color: #6c757d; margin-top: 4px; white-space: nowrap; overflow: hidden"></asp:Label>
+                            <asp:LinkButton ID="lnkDownloadInvoice" runat="server" Visible="false"
+                                CssClass="btn btn-primary btn-sm" CausesValidation="false"
+                                OnClick="lnkDownloadInvoice_Click"
+                                ToolTip="Download the uploaded invoice copy"
+                                Style="margin-top: 4px;">
+                            <i class="fa fa-download"></i>&nbsp;Download Invoice
+                            </asp:LinkButton>
+                        </div>
                     </div>
                 </div>
                 <%-- Modified-by MUKESH BHAGAT on 24-08-2026 : optional E-Way bill document.
@@ -413,23 +433,32 @@
                      Modified-by MUKESH BHAGAT on 27-08-2026 : moved out of the "E-Way Bill No"
                      column into its own column beside the invoice upload, so the two upload
                      fields line up and the top row keeps a uniform height. --%>
-                <div class="col-md-3">
+                <div class="col-md-6">
                     <div class="form-group">
-                        <label class="form-control-label">Upload E-Way Bill:</label>
-                        <asp:UpdatePanel ID="UpdatePanelEway" runat="server">
+
+                        <asp:UpdatePanel ID="UpdatePanelEway" runat="server" style="display: flex; align-items: center; gap: 30px;">
                             <ContentTemplate>
-                                <asp:FileUpload ID="sch_fld_eway" runat="server" CssClass="form-control" />
-                                <%-- Modified-by MUKESH BHAGAT on 26-08-2026 : download link for the
+                                <div style="width: 48%">
+                                    <label class="form-control-label">Upload E-Way Bill:</label>
+                                    <asp:FileUpload ID="sch_fld_eway" runat="server" CssClass="form-control" />
+                                    <%-- Modified-by MUKESH BHAGAT on 26-08-2026 : download link for the
                                      stored E-Way bill. Hidden until a document actually exists. --%>
-                                <asp:HiddenField ID="hdnEwayDocPath" runat="server" />
-                                <asp:HiddenField ID="hdnEwayDocFile" runat="server" />
-                                <asp:LinkButton ID="lnkDownloadEway" runat="server" Visible="false"
-                                    CssClass="btn btn-primary btn-sm" CausesValidation="false"
-                                    OnClick="lnkDownloadEway_Click"
-                                    ToolTip="Download the uploaded E-Way bill"
-                                    style="margin-top: 5px;">
+                                    <asp:HiddenField ID="hdnEwayDocPath" runat="server" />
+                                    <asp:HiddenField ID="hdnEwayDocFile" runat="server" />
+                                </div>
+                                <%-- Modified-by MUKESH BHAGAT on 31-08-2026 : show the stored file's
+                                     name above the download button. --%>
+                                <div>
+                                    <asp:Label ID="lblEwayDocName" runat="server" Visible="false"
+                                        Style="display: block; font-size: 11px; color: #6c757d; margin-top: 4px;white-space: nowrap;"></asp:Label>
+                                    <asp:LinkButton ID="lnkDownloadEway" runat="server" Visible="false"
+                                        CssClass="btn btn-primary btn-sm" CausesValidation="false"
+                                        OnClick="lnkDownloadEway_Click"
+                                        ToolTip="Download the uploaded E-Way bill"
+                                        Style="margin-top: 4px;">
                                     <i class="fa fa-download"></i>&nbsp;Download E-Way Bill
-                                </asp:LinkButton>
+                                    </asp:LinkButton>
+                                </div>
                             </ContentTemplate>
                             <Triggers>
                                 <asp:PostBackTrigger ControlID="btnSubmit" />
@@ -1058,6 +1087,16 @@
             btn.click();
         }
 
+        // Modified-by MUKESH BHAGAT on 31-08-2026 : while the bill is being validated the
+        // user must not be able to Delete or Cancel out from under the pending save.
+        function ocrLockActions(lock) {
+            var ids = ['<%= btnSubmit.ClientID %>', '<%= btnDelete.ClientID %>', '<%= btnCancel.ClientID %>'];
+            for (var i = 0; i < ids.length; i++) {
+                var el = ocrEl(ids[i]);
+                if (el) { el.disabled = lock; }
+            }
+        }
+
         function triggerInvoiceOcrUpload(fileUpload, btn) {
             var file = fileUpload.files[0];
             var formData = new FormData();
@@ -1066,12 +1105,12 @@
             var xhr = new XMLHttpRequest();
             xhr.open('POST', 'InvoiceOcrExtract.ashx', true);
 
-            btn.disabled = true;
+            ocrLockActions(true);
             ocrSetVerified(false);
             ocrMsg('Validating the uploaded invoice, please wait...', 'info');
 
             xhr.onload = function () {
-                btn.disabled = false;
+                ocrLockActions(false);
 
                 var result;
                 try { result = JSON.parse(xhr.responseText); }
@@ -1093,7 +1132,7 @@
             };
 
             xhr.onerror = function () {
-                btn.disabled = false;
+                ocrLockActions(false);
                 if (OCR_FAIL_OPEN) {
                     ocrContinueSubmit(btn);
                 } else {
@@ -1204,7 +1243,23 @@
                 return;
             }
 
-            // bill matches -> continue the save the user asked for; warnings never block
+            // Modified-by MUKESH BHAGAT on 31-08-2026 : optional checks (quantity, GSTN,
+            // E-Way no) no longer pass silently - the user must consciously accept them
+            // through a confirm dialog. OK -> save proceeds; Cancel -> save is held, the
+            // panel shows what the bill contains, and the next Submit re-validates.
+            if (warnings.length > 0) {
+                var proceed = window.confirm(
+                    'Please note:\n\n- ' + warnings.join('\n- ') +
+                    '\n\nDo you want to continue saving this despatch?');
+                if (!proceed) {
+                    ocrSetVerified(false);
+                    ocrEl('divInvoiceOcrPanel').style.display = '';
+                    ocrMsg('Save cancelled: ' + warnings.join('; ') + '.', 'danger');
+                    return;
+                }
+            }
+
+            // bill matches -> continue the save the user asked for
             ocrSetVerified(true);
             ocrEl('divInvoiceOcrPanel').style.display = 'none';
             ocrMsg('', 'info');
