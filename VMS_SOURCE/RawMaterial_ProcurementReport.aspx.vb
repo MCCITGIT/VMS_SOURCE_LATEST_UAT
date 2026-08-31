@@ -7,6 +7,7 @@ Imports NPOI.HSSF.UserModel
 Imports NPOI.HSSF.Util
 Imports NPOI.SS.UserModel
 Imports NPOI.XSSF.UserModel
+Imports System.Globalization
 
 Partial Class RawMaterial_ProcurementReport
     Inherits System.Web.UI.Page
@@ -22,10 +23,10 @@ Partial Class RawMaterial_ProcurementReport
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
         CheckLogin()
         If (Not IsPostBack) Then
-
             PopulateUnit()
             PopulateVendor()
-
+            txtFromDate.Text = DateTime.Now.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture())
+            txtTodate.Text = DateTime.Now.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture())
         End If
     End Sub
 #End Region
@@ -75,7 +76,9 @@ Partial Class RawMaterial_ProcurementReport
         Dim cls As New OPC_VendorClass
         Dim ExcelSet As New DataSet
         Try
-            ExcelSet = cls.GetRawMeterial_ProcurementReport(ddlUnit.SelectedValue, ddlVendor.SelectedValue)
+            Dim FromDate As SqlDateTime = FormatDate(txtFromDate.Text)
+            Dim ToDate As SqlDateTime = FormatDate(txtTodate.Text)
+            ExcelSet = cls.GetRawMeterial_ProcurementReport(ddlUnit.SelectedValue, ddlVendor.SelectedValue, FromDate, ToDate)
 
             If (ExcelSet.Tables(0).Rows.Count > 0) Then
                 ExportToExcelSheet(ExcelSet)
@@ -177,7 +180,7 @@ Partial Class RawMaterial_ProcurementReport
                 styleDate.DataFormat = formatIdDate
             End If
 
-            Dim sheet As XSSFSheet = templateWorkbook.GetSheet("Sheet1")
+            Dim sheet As XSSFSheet = templateWorkbook.GetSheet("Summary")
             Dim RowsIndex As Integer
 
             Dim row As XSSFRow
@@ -186,98 +189,191 @@ Partial Class RawMaterial_ProcurementReport
             Dim DateString As String = "_" & DateTime.Today.ToString("dd_MM_yyyy")
             row = sheet.GetRow(0)
             cell = row.GetCell(0)
-            cell.SetCellValue("Raw Material Procurement Report Report")
+            cell.SetCellValue("Raw Material Procurement Report As on -" + Format(Now, "dd-MM-yyyy").ToString)
 
             RowsIndex = 2
             Dim count = 0
             Dim colIndex As Integer = 0
 
             For i = 0 To dset.Tables(0).Rows.Count - 1
+                Dim drSummary As DataRow = dset.Tables(0).Rows(i)
                 row = sheet.CreateRow(RowsIndex)
                 colIndex = 0
 
                 cell = row.CreateCell(colIndex)
-                cell.SetCellValue(Convert.ToString(dset.Tables(0).Rows(i)("vendor_code")))
+                cell.SetCellValue(GetRowString(drSummary, "vendor_code"))
                 cell.CellStyle = styleCenter
                 colIndex += 1
 
                 cell = row.CreateCell(colIndex)
-                cell.SetCellValue(Convert.ToString(dset.Tables(0).Rows(i)("vendor_name")))
+                cell.SetCellValue(GetRowString(drSummary, "vendor_name"))
                 cell.CellStyle = styleLeft
                 colIndex += 1
 
                 cell = row.CreateCell(colIndex)
-                cell.SetCellValue(Convert.ToString(dset.Tables(0).Rows(i)("rawmat_vendor_code")))
+                cell.SetCellValue(GetRowString(drSummary, "rawmat_vendor_code"))
                 cell.CellStyle = styleCenter
                 colIndex += 1
 
                 cell = row.CreateCell(colIndex)
-                cell.SetCellValue(Convert.ToString(dset.Tables(0).Rows(i)("rawmat_vendor_name")))
+                cell.SetCellValue(GetRowString(drSummary, "rawmat_vendor_name"))
                 cell.CellStyle = styleLeft
                 colIndex += 1
 
                 cell = row.CreateCell(colIndex)
-                cell.SetCellValue(Convert.ToString(dset.Tables(0).Rows(i)("request_id")))
+                cell.SetCellValue(GetRowString(drSummary, "request_id"))
                 cell.CellStyle = styleCenter
                 colIndex += 1
 
                 cell = row.CreateCell(colIndex)
-                Try
-                    cell.SetCellValue(Convert.ToDateTime(dset.Tables(0).Rows(i)("Request_date")))
-                Catch ex As Exception
-                End Try
+                TrySetDateCell(cell, drSummary, "Request_date")
                 cell.CellStyle = styleDate
                 colIndex += 1
 
                 cell = row.CreateCell(colIndex)
-                cell.SetCellValue(Convert.ToDouble(dset.Tables(0).Rows(i)("request_qty")))
+                cell.SetCellValue(GetRowDouble(drSummary, "request_qty"))
                 cell.CellStyle = styleValue
                 colIndex += 1
 
                 cell = row.CreateCell(colIndex)
-                cell.SetCellValue(Convert.ToString(dset.Tables(0).Rows(i)("despatch_id")))
-                cell.CellStyle = styleValue
-                colIndex += 1
-
-                cell = row.CreateCell(colIndex)
-                Try
-                    cell.SetCellValue(Convert.ToDateTime(dset.Tables(0).Rows(i)("despatch_date")))
-                Catch ex As Exception
-                End Try
-                cell.CellStyle = styleDate
-                colIndex += 1
-
-                cell = row.CreateCell(colIndex)
-                cell.SetCellValue(Convert.ToDouble(dset.Tables(0).Rows(i)("despatch_qty")))
-                cell.CellStyle = styleValue
-                colIndex += 1
-
-
-                cell = row.CreateCell(colIndex)
-                cell.SetCellValue(Convert.ToString(dset.Tables(0).Rows(i)("received_id")))
+                cell.SetCellValue(GetRowString(drSummary, "despatch_id"))
                 cell.CellStyle = styleCenter
                 colIndex += 1
 
                 cell = row.CreateCell(colIndex)
-                Try
-                    cell.SetCellValue(Convert.ToDateTime(dset.Tables(0).Rows(i)("received_date")))
-                Catch ex As Exception
-                End Try
+                TrySetDateCell(cell, drSummary, "despatch_date")
                 cell.CellStyle = styleDate
                 colIndex += 1
 
                 cell = row.CreateCell(colIndex)
-                cell.SetCellValue(Convert.ToDouble(dset.Tables(0).Rows(i)("received_qty")))
+                cell.SetCellValue(GetRowDouble(drSummary, "despatch_qty"))
                 cell.CellStyle = styleValue
                 colIndex += 1
 
                 cell = row.CreateCell(colIndex)
-                cell.SetCellValue(Convert.ToDouble(dset.Tables(0).Rows(i)("pending_qty")))
+                cell.SetCellValue(GetRowString(drSummary, "received_id"))
+                cell.CellStyle = styleCenter
+                colIndex += 1
+
+                cell = row.CreateCell(colIndex)
+                TrySetDateCell(cell, drSummary, "received_date")
+                cell.CellStyle = styleDate
+                colIndex += 1
+
+                cell = row.CreateCell(colIndex)
+                cell.SetCellValue(GetRowDouble(drSummary, "received_qty"))
+                cell.CellStyle = styleValue
+                colIndex += 1
+
+                cell = row.CreateCell(colIndex)
+                cell.SetCellValue(GetRowDouble(drSummary, "pending_qty"))
                 cell.CellStyle = styleValue
                 colIndex += 1
 
                 RowsIndex = RowsIndex + 1
             Next
+
+            If dset.Tables.Count > 1 AndAlso Not (dset.Tables(1) Is Nothing) Then
+                Dim detailSheet As XSSFSheet = templateWorkbook.GetSheet("Details")
+                row = detailSheet.GetRow(0)
+                cell = row.GetCell(0)
+                cell.SetCellValue("Raw Material Procurement Details Report As on -" + Format(Now, "dd-MM-yyyy").ToString)
+
+                RowsIndex = 2
+                Dim dtDetails As DataTable = dset.Tables(1)
+                For i = 0 To dtDetails.Rows.Count - 1
+                    Dim dr As DataRow = dtDetails.Rows(i)
+                    row = detailSheet.CreateRow(RowsIndex)
+                    colIndex = 0
+
+                    cell = row.CreateCell(colIndex)
+                    cell.SetCellValue(GetRowString(dr, "vendor_code"))
+                    cell.CellStyle = styleCenter
+                    colIndex += 1
+
+                    cell = row.CreateCell(colIndex)
+                    cell.SetCellValue(GetRowString(dr, "vendor_name"))
+                    cell.CellStyle = styleLeft
+                    colIndex += 1
+
+                    cell = row.CreateCell(colIndex)
+                    cell.SetCellValue(GetRowString(dr, "rawmat_vendor_code"))
+                    cell.CellStyle = styleCenter
+                    colIndex += 1
+
+                    cell = row.CreateCell(colIndex)
+                    cell.SetCellValue(GetRowString(dr, "rawmat_vendor_name"))
+                    cell.CellStyle = styleLeft
+                    colIndex += 1
+
+                    cell = row.CreateCell(colIndex)
+                    cell.SetCellValue(GetRowString(dr, "request_id"))
+                    cell.CellStyle = styleCenter
+                    colIndex += 1
+
+                    cell = row.CreateCell(colIndex)
+                    TrySetDateCell(cell, dr, "Request_date")
+                    cell.CellStyle = styleDate
+                    colIndex += 1
+
+                    cell = row.CreateCell(colIndex)
+                    cell.SetCellValue(GetRowDouble(dr, "request_qty"))
+                    cell.CellStyle = styleValue
+                    colIndex += 1
+
+                    cell = row.CreateCell(colIndex)
+                    cell.SetCellValue(GetRowString(dr, "request_rawmaterial"))
+                    cell.CellStyle = styleLeft
+                    colIndex += 1
+
+                    cell = row.CreateCell(colIndex)
+                    cell.SetCellValue(GetRowString(dr, "despatch_id"))
+                    cell.CellStyle = styleCenter
+                    colIndex += 1
+
+                    cell = row.CreateCell(colIndex)
+                    TrySetDateCell(cell, dr, "despatch_date")
+                    cell.CellStyle = styleDate
+                    colIndex += 1
+
+                    cell = row.CreateCell(colIndex)
+                    cell.SetCellValue(GetRowDouble(dr, "despatch_qty"))
+                    cell.CellStyle = styleValue
+                    colIndex += 1
+
+                    cell = row.CreateCell(colIndex)
+                    cell.SetCellValue(GetRowString(dr, "despatch_rawmaterial"))
+                    cell.CellStyle = styleLeft
+                    colIndex += 1
+
+                    cell = row.CreateCell(colIndex)
+                    cell.SetCellValue(GetRowString(dr, "received_id"))
+                    cell.CellStyle = styleCenter
+                    colIndex += 1
+
+                    cell = row.CreateCell(colIndex)
+                    TrySetDateCell(cell, dr, "received_date")
+                    cell.CellStyle = styleDate
+                    colIndex += 1
+
+                    cell = row.CreateCell(colIndex)
+                    cell.SetCellValue(GetRowDouble(dr, "received_qty"))
+                    cell.CellStyle = styleValue
+                    colIndex += 1
+
+                    cell = row.CreateCell(colIndex)
+                    cell.SetCellValue(GetRowString(dr, "received_rawmaterial"))
+                    cell.CellStyle = styleLeft
+                    colIndex += 1
+
+                    cell = row.CreateCell(colIndex)
+                    cell.SetCellValue(GetRowDouble(dr, "pending_qty"))
+                    cell.CellStyle = styleValue
+                    colIndex += 1
+
+                    RowsIndex = RowsIndex + 1
+                Next
+            End If
 
             Dim genReportPath As String = AppDomain.CurrentDomain.BaseDirectory & "Excel_Reports\"
             If Not (Directory.Exists(genReportPath)) Then
@@ -304,4 +400,57 @@ Partial Class RawMaterial_ProcurementReport
 
 
     End Sub
+
+    Private Function GetRowString(ByVal dr As DataRow, ByVal columnName As String) As String
+        If dr Is Nothing OrElse dr.Table Is Nothing OrElse Not dr.Table.Columns.Contains(columnName) Then
+            Return String.Empty
+        End If
+        If dr(columnName) Is Nothing OrElse dr(columnName) Is DBNull.Value Then
+            Return String.Empty
+        End If
+        Return Convert.ToString(dr(columnName))
+    End Function
+
+    Private Function GetRowDouble(ByVal dr As DataRow, ByVal columnName As String) As Double
+        Dim textValue As String = GetRowString(dr, columnName)
+        Dim numericValue As Double
+        If Double.TryParse(textValue, numericValue) Then
+            Return numericValue
+        End If
+        Return 0
+    End Function
+
+    Private Sub TrySetDateCell(ByVal cell As XSSFCell, ByVal dr As DataRow, ByVal columnName As String)
+        Dim textValue As String = GetRowString(dr, columnName)
+        If String.IsNullOrWhiteSpace(textValue) Then
+            Return
+        End If
+        Try
+            cell.SetCellValue(Convert.ToDateTime(textValue))
+        Catch ex As Exception
+        End Try
+    End Sub
+
+#Region "Date Format"
+    Public Function FormatDate(ByVal stringdate As String) As SqlDateTime
+        If Not (stringdate = String.Empty) Then
+            Dim ddate As String() = stringdate.Split("/")
+            Dim arrlist As New ArrayList
+            Dim index As Integer = 0
+
+            While index <= ddate.Length - 1
+                arrlist.Add(ddate(index))
+                System.Math.Min(System.Threading.Interlocked.Increment(index), index - 1)
+            End While
+            Dim dd As Integer = System.Convert.ToInt32(arrlist.Item(0))
+            Dim mm As Integer = System.Convert.ToInt32(arrlist.Item(1))
+            Dim yyyy As Integer = System.Convert.ToInt32(arrlist.Item(2))
+
+            Dim dt As DateTime = New DateTime(yyyy, mm, dd)
+            dt = FormatDateTime(dt, DateFormat.LongDate)
+
+            Return dt
+        End If
+    End Function
+#End Region
 End Class

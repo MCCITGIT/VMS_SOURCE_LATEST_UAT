@@ -46,7 +46,7 @@
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label class="form-control-label">Process Month:<span id="Span" class="mandatory">* (mm)</span></label>
-                                <asp:TextBox ID="txtMonth" runat="server" Columns="50" CssClass="form-control select2" MaxLength="2" Rows="1"></asp:TextBox>
+                                <asp:TextBox ID="txtMonth" runat="server" Columns="50" CssClass="form-control" MaxLength="2" Rows="1"></asp:TextBox>
                             </div>
                         </div>
                         <div class="col-md-3">
