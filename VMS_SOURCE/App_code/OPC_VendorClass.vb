@@ -1214,9 +1214,9 @@ Public Class OPC_VendorClass
     'End Function
 #End Region
 #Region "Reports"
-    Function GetRawMeterial_ProcurementReport(ByVal vendorcode As String, ByVal rawmat_vendorcode As String) As DataSet
+    Function GetRawMeterial_ProcurementReport(ByVal vendorcode As String, ByVal rawmat_vendorcode As String, ByVal FromDate As SqlDateTime, ByVal ToDate As SqlDateTime) As DataSet
         Dim DS As System.Data.DataSet
-        Dim sqlParams(1) As SqlParameter
+        Dim sqlParams(3) As SqlParameter
 
         sqlParams(0) = New SqlParameter()
         sqlParams(0).ParameterName = "@vendor_code"
@@ -1230,7 +1230,41 @@ Public Class OPC_VendorClass
         sqlParams(1).Direction = Data.ParameterDirection.Input
         sqlParams(1).Value = If(Not String.IsNullOrWhiteSpace(rawmat_vendorcode), CObj(rawmat_vendorcode.Trim()), DBNull.Value)
 
+        sqlParams(2) = New SqlParameter()
+        sqlParams(2).ParameterName = "@fromDate"
+        sqlParams(2).DbType = DbType.Date
+        sqlParams(2).Direction = Data.ParameterDirection.Input
+        sqlParams(2).Value = (If(FromDate <> SqlDateTime.MinValue, FromDate, CObj(DBNull.Value)))
+
+        sqlParams(3) = New SqlParameter()
+        sqlParams(3).ParameterName = "@toDate"
+        sqlParams(3).DbType = DbType.Date
+        sqlParams(3).Direction = Data.ParameterDirection.Input
+        sqlParams(3).Value = (If(ToDate <> SqlDateTime.MinValue, ToDate, CObj(DBNull.Value)))
+
         DS = DBFactory.GetHelper().ExecuteDataSet("[dbo].[GetRawMetirialProcurementList]", Data.CommandType.StoredProcedure, sqlParams)
+
+        'Dim detailParams(3) As SqlParameter
+        'For i As Integer = 0 To sqlParams.Length - 1
+        '    Dim src As SqlParameter = sqlParams(i)
+        '    Dim dest As New SqlParameter()
+        '    dest.ParameterName = src.ParameterName
+        '    dest.DbType = src.DbType
+        '    dest.Direction = src.Direction
+        '    dest.Value = src.Value
+        '    detailParams(i) = dest
+        'Next
+
+        'Dim dsDetails As DataSet = DBFactory.GetHelper().ExecuteDataSet("[dbo].[GetRawMetirialProcurementDetailsList]", Data.CommandType.StoredProcedure, detailParams)
+        'If Not (DS Is Nothing) AndAlso Not (dsDetails Is Nothing) AndAlso dsDetails.Tables.Count > 0 Then
+        '    Dim dtDetails As DataTable = dsDetails.Tables(0).Copy()
+        '    dtDetails.TableName = "Details"
+        '    If DS.Tables.Count > 1 Then
+        '        DS.Tables.RemoveAt(1)
+        '    End If
+        '    DS.Tables.Add(dtDetails)
+        'End If
+
         Return DS
     End Function
 #End Region

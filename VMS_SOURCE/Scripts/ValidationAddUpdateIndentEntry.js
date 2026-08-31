@@ -13,8 +13,38 @@
 
 // JScript File
 var errMsg = "";
-function validateSKUList()
-{
+
+function getIndentErrorLabel() {
+    return document.getElementById("lblErrorMessage")
+        || document.querySelector('span[id$="lblErrorMessage"]');
+}
+
+function setIndentErrorMessage(messageHtml) {
+    var lblErrorMessage = getIndentErrorLabel();
+    if (lblErrorMessage) {
+        lblErrorMessage.innerHTML = messageHtml || "";
+    }
+}
+
+function getIndentControl(controlId) {
+    return document.getElementById(controlId)
+        || document.querySelector('[id$="_' + controlId + '"]');
+}
+
+function validateIndentFieldRequired(controlId, errorMessage) {
+    var control = getIndentControl(controlId);
+    if (!control) {
+        if (!firstErrorControl) {
+            firstErrorControl = controlId;
+        }
+        errMsg += GetErrorRow(controlId, errorMessage);
+        return false;
+    }
+
+    return ValidateRequired(control.id, errorMessage);
+}
+
+function validateSKUList() {
 
     var theGridView = document.getElementById('gvIndentSKUList');
 
@@ -23,7 +53,7 @@ function validateSKUList()
 
     var txtNewLoad_id = null;
 
-    document.getElementById("lblErrorMessage").innerHTML = "";
+    setIndentErrorMessage("");
 
     errMsg = "";
 
@@ -31,110 +61,133 @@ function validateSKUList()
     //ValidateDropDown("ddlVendorUnit", "Please Select Vendor Unit.");
     //ValidateDropDown("ddlVendorProduct", "Please Select Product.")
 
-    if (ValidateRequired("ddlDepot", "Please Select a Depot.")) {
-        var select = document.querySelector("#" + "ddlDepot" + "+ .select2-container .selection .select2-selection");
+    var ddlDepotCtrl = getIndentControl("ddlDepot");
+    var ddlDepotId = ddlDepotCtrl ? ddlDepotCtrl.id : "ddlDepot";
+    if (ddlDepotCtrl && ValidateRequired(ddlDepotId, "Please Select a Depot.")) {
+        var select = document.querySelector("#" + ddlDepotId + "+ .select2-container .selection .select2-selection");
         if (select != null) {
             select.style.backgroundColor = "white";
         }
     }
     else {
-        firstErrorControl = "ddlDepot";
-        var select = document.querySelector("#" + "ddlDepot" + "+ .select2-container .selection .select2-selection");
+        firstErrorControl = ddlDepotId;
+        if (!ddlDepotCtrl) {
+            errMsg += GetErrorRow(ddlDepotId, "Please Select a Depot.");
+        }
+        var select = document.querySelector("#" + ddlDepotId + "+ .select2-container .selection .select2-selection");
         if (select != null) {
             select.style.backgroundColor = "yellow";
         }
     }
-    if (ValidateRequired("ddlVendorUnit", "Please Select Vendor Unit.")) {
-        var select = document.querySelector("#" + "ddlVendorUnit" + "+ .select2-container .selection .select2-selection");
-        if (select != null) {
-            select.style.backgroundColor = "white";
-        }
-    }
-    else {
-        firstErrorControl = "ddlVendorUnit";
-        var select = document.querySelector("#" + "ddlVendorUnit" + "+ .select2-container .selection .select2-selection");
-        if (select != null) {
-            select.style.backgroundColor = "yellow";
-        }
-    }
-    if (ValidateRequired("ddlVendorProduct", "Please Select Product.")) {
-        var select = document.querySelector("#" + "ddlVendorProduct" + "+ .select2-container .selection .select2-selection");
-        if (select != null) {
-            select.style.backgroundColor = "white";
-        }
-    }
-    else {
-        firstErrorControl = "ddlVendorProduct";
-        var select = document.querySelector("#" + "ddlVendorProduct" + "+ .select2-container .selection .select2-selection");
-        if (select != null) {
-            select.style.backgroundColor = "yellow";
-        }
-    }
-    
-    if (theGridView != null) 
-    {
 
-        for (var rowCount = 1; rowCount < theGridView.rows.length; rowCount++)
-        {
-            theGridView.rows[rowCount].cells[9].children[0].style.backgroundColor = "#ffffff";
+    var ddlVendorUnitCtrl = getIndentControl("ddlVendorUnit");
+    var ddlVendorUnitId = ddlVendorUnitCtrl ? ddlVendorUnitCtrl.id : "ddlVendorUnit";
+    if (ddlVendorUnitCtrl && ValidateRequired(ddlVendorUnitId, "Please Select Vendor Unit.")) {
+        var select = document.querySelector("#" + ddlVendorUnitId + "+ .select2-container .selection .select2-selection");
+        if (select != null) {
+            select.style.backgroundColor = "white";
         }
-    
+    }
+    else {
+        firstErrorControl = ddlVendorUnitId;
+        if (!ddlVendorUnitCtrl) {
+            errMsg += GetErrorRow(ddlVendorUnitId, "Please Select Vendor Unit.");
+        }
+        var select = document.querySelector("#" + ddlVendorUnitId + "+ .select2-container .selection .select2-selection");
+        if (select != null) {
+            select.style.backgroundColor = "yellow";
+        }
+    }
+
+    var ddlVendorProductCtrl = getIndentControl("ddlVendorProduct");
+    var ddlVendorProductId = ddlVendorProductCtrl ? ddlVendorProductCtrl.id : "ddlVendorProduct";
+    if (ddlVendorProductCtrl && ValidateRequired(ddlVendorProductId, "Please Select Product.")) {
+        var select = document.querySelector("#" + ddlVendorProductId + "+ .select2-container .selection .select2-selection");
+        if (select != null) {
+            select.style.backgroundColor = "white";
+        }
+    }
+    else {
+        firstErrorControl = ddlVendorProductId;
+        if (!ddlVendorProductCtrl) {
+            errMsg += GetErrorRow(ddlVendorProductId, "Please Select Product.");
+        }
+        var select = document.querySelector("#" + ddlVendorProductId + "+ .select2-container .selection .select2-selection");
+        if (select != null) {
+            select.style.backgroundColor = "yellow";
+        }
+    }
+
+    if (theGridView != null) {
+
         for (var rowCount = 1; rowCount < theGridView.rows.length; rowCount++) {
-            txtNewLoad_id = theGridView.rows[rowCount].cells[8].children[0].id;
+            if (theGridView.rows[rowCount].cells[9] && theGridView.rows[rowCount].cells[9].children[0]) {
+                theGridView.rows[rowCount].cells[9].children[0].style.backgroundColor = "#ffffff";
+            }
+        }
 
-            if (lTrim(document.getElementById(txtNewLoad_id).value, " ") != "0") {
+        for (var rowCount = 1; rowCount < theGridView.rows.length; rowCount++) {
+            if (!theGridView.rows[rowCount].cells[8] || !theGridView.rows[rowCount].cells[8].children[0]) {
+                continue;
+            }
+
+            txtNewLoad_id = theGridView.rows[rowCount].cells[8].children[0].id;
+            var txtNewLoad = document.getElementById(txtNewLoad_id);
+
+            if (txtNewLoad && lTrim(txtNewLoad.value, " ") != "0") {
                 flag = 1;
                 break;
             }
         }
     }
-    if (flag == 0 || errMsg != "")
-    {
+    if (flag == 0 || errMsg != "") {
         //document.getElementById("lblErrorMessage").innerHTML = "Atleast one entry should be non zero.";
         if (flag == 0) {
             firstErrorControl = theGridView;
             errMsg += "Atleast one entry should be non zero.";
         }
-        document.getElementById("lblErrorMessage").innerHTML = "<table style='width:100%;'>" + errMsg + "</table>";
+        setIndentErrorMessage("<table style='width:100%;'>" + errMsg + "</table>");
         return false;
     }
-    else
-    {
+    else {
         var txtLoad_id = null;
         var justification = null;
 
         var flag1 = 0;
-        
-        for (var rowCount = 1; rowCount < theGridView.rows.length; rowCount++)
-        {
-            txtLoad_id = theGridView.rows[rowCount].cells[8].children[0].id;
 
-            if (lTrim(document.getElementById(txtLoad_id).value, " ") != "0")
-            {
-                justification = theGridView.rows[rowCount].cells[9].children[0].id;
-                if (ValidateRequired(justification, "Enter justification for additional load.")==false)
-                {
-                    flag1 = 1;
+        for (var rowCount = 1; rowCount < theGridView.rows.length; rowCount++) {
+            if (!theGridView.rows[rowCount].cells[8] || !theGridView.rows[rowCount].cells[8].children[0]) {
+                continue;
+            }
+
+            txtLoad_id = theGridView.rows[rowCount].cells[8].children[0].id;
+            var txtLoad = document.getElementById(txtLoad_id);
+
+            if (txtLoad && lTrim(txtLoad.value, " ") != "0") {
+                if (theGridView.rows[rowCount].cells[9] && theGridView.rows[rowCount].cells[9].children[0]) {
+                    justification = theGridView.rows[rowCount].cells[9].children[0].id;
+                    if (validateIndentFieldRequired(justification, "Enter justification for additional load.") == false) {
+                        flag1 = 1;
+                    }
                 }
             }
         }
 
-        if (flag1 == 0)
-        {
-            if (confirm('Are you sure to submit?')) 
-            {
-                document.getElementById('btnSubmit').disabled = true;
-                __doPostBack(document.getElementById('btnSubmit').name, '');
+        if (flag1 == 0) {
+            if (confirm('Are you sure to submit?')) {
+                var btnSubmit = getIndentControl('btnSubmit');
+                if (btnSubmit) {
+                    btnSubmit.disabled = true;
+                    __doPostBack(btnSubmit.name, '');
+                }
 
             }
-            else 
-            {
+            else {
                 return false;
             }
         }
-        else
-        {
-            document.getElementById("lblErrorMessage").innerHTML = "<table>" + errMsg + "</table>";
+        else {
+            setIndentErrorMessage("<table>" + errMsg + "</table>");
             return false;
         }
     }
@@ -175,74 +228,67 @@ function left(source, len) {
 }
 
 
-function calculatePercentage(tsl, depot_indent_nop, percent_label, indent_nop) 
-{
-   var percent = 0;
+function calculatePercentage(tsl, depot_indent_nop, percent_label, indent_nop) {
+    var percent = 0;
 
-   if (parseInt(tsl) != 0)
-   {
-       if (document.getElementById(indent_nop).value != "") 
-       {
-           percent = Math.round(((parseInt(depot_indent_nop) + parseInt(document.getElementById(indent_nop).value))) * 100 / tsl);
+    if (parseInt(tsl) != 0) {
+        if (document.getElementById(indent_nop).value != "") {
+            percent = Math.round(((parseInt(depot_indent_nop) + parseInt(document.getElementById(indent_nop).value))) * 100 / tsl);
 
-           if (percent > 70)
-           {
-               //alert("Invalid Entry. Indent to Estimate % exceeded 70%.");
-               //document.getElementById(indent_nop).style.backgroundColor = "yellow";
-               //document.getElementById(indent_nop).focus();
-               document.getElementById(percent_label).innerHTML = percent.toString() + " %";
-               document.getElementById(indent_nop).style.backgroundColor = "";
-               AddTotalLtrKg()
-               return true;
-               //return false;
-           }
-           else
-           {
-               document.getElementById(percent_label).innerHTML = percent.toString() + " %";
-               document.getElementById(indent_nop).style.backgroundColor = "";
-               AddTotalLtrKg()
-               return true;
-           }           
-       }
-       else 
-       {
-           document.getElementById(indent_nop).value = "0";
-           percent = Math.round(((parseInt(depot_indent_nop) + 0)) * 100 / tsl);
-           document.getElementById(percent_label).innerHTML = percent.toString() + " %";
+            if (percent > 70) {
+                //alert("Invalid Entry. Indent to Estimate % exceeded 70%.");
+                //document.getElementById(indent_nop).style.backgroundColor = "yellow";
+                //document.getElementById(indent_nop).focus();
+                document.getElementById(percent_label).innerHTML = percent.toString() + " %";
+                document.getElementById(indent_nop).style.backgroundColor = "";
+                AddTotalLtrKg()
+                return true;
+                //return false;
+            }
+            else {
+                document.getElementById(percent_label).innerHTML = percent.toString() + " %";
+                document.getElementById(indent_nop).style.backgroundColor = "";
+                AddTotalLtrKg()
+                return true;
+            }
+        }
+        else {
+            document.getElementById(indent_nop).value = "0";
+            percent = Math.round(((parseInt(depot_indent_nop) + 0)) * 100 / tsl);
+            document.getElementById(percent_label).innerHTML = percent.toString() + " %";
 
-           if (percent > 70)
-           {
-//               alert("Invalid Entry. Indent to Estimate % exceeded 70%.");
-//               document.getElementById(indent_nop).style.backgroundColor = "yellow";
-//               document.getElementById(indent_nop).focus();
-               //               return false;
+            if (percent > 70) {
+                //               alert("Invalid Entry. Indent to Estimate % exceeded 70%.");
+                //               document.getElementById(indent_nop).style.backgroundColor = "yellow";
+                //               document.getElementById(indent_nop).focus();
+                //               return false;
 
-               document.getElementById(percent_label).innerHTML = percent.toString() + " %";
-               document.getElementById(indent_nop).style.backgroundColor = "";
-               AddTotalLtrKg()
-               return true;
-           }
-           else
-           {
-               document.getElementById(percent_label).innerHTML = percent.toString() + " %";
-               document.getElementById(indent_nop).style.backgroundColor = "";
-               AddTotalLtrKg()
-               return true;
-           }
-       }
-   }
+                document.getElementById(percent_label).innerHTML = percent.toString() + " %";
+                document.getElementById(indent_nop).style.backgroundColor = "";
+                AddTotalLtrKg()
+                return true;
+            }
+            else {
+                document.getElementById(percent_label).innerHTML = percent.toString() + " %";
+                document.getElementById(indent_nop).style.backgroundColor = "";
+                AddTotalLtrKg()
+                return true;
+            }
+        }
+    }
 
-   AddTotalLtrKg()}
+    AddTotalLtrKg()
+}
 
 
 function AddTotalLtrKg() {
     var Grid = document.getElementById('gvIndentSKUList');
     var rowcount = Grid.rows.length - 1;
     var txt, hdnUom, hdnPackSize;
-    
+
     var totValLtr = 0;
     var totValKg = 0;
-    
+
     for (var rowno = 1; rowno < Grid.rows.length; rowno++) {
         try {
             txt = Grid.rows[rowno].cells[8].children[0].children[1].id;
@@ -257,7 +303,7 @@ function AddTotalLtrKg() {
         var uom = document.getElementById(hdnUom).value;
         var packSize = parseFloat(document.getElementById(hdnPackSize).value);
         var enteredVal;
-        
+
         try {
             enteredVal = parseFloat(document.getElementById(txt).value);
         }
@@ -271,117 +317,137 @@ function AddTotalLtrKg() {
             totValLtr = totValLtr + (enteredVal * packSize);
         }
     }
-             document.getElementById('lblTotKg').innerHTML = totValKg;
-            document.getElementById('lblTotLtr').innerHTML = totValLtr;
+    document.getElementById('lblTotKg').innerHTML = totValKg;
+    document.getElementById('lblTotLtr').innerHTML = totValLtr;
 
 
+}
+
+
+
+
+
+
+
+function validateSKUListAdd() {
+    var theGridView = document.getElementById('gvIndentSKUList');
+
+    var flag = 0;
+    firstErrorControl = "";
+
+    var txtNewLoad_id = null;
+
+    setIndentErrorMessage("");
+
+    errMsg = "";
+
+    var ddlDepotCtrl = getIndentControl("ddlDepot");
+    var ddlDepotId = ddlDepotCtrl ? ddlDepotCtrl.id : "ddlDepot";
+    if (ddlDepotCtrl && ValidateRequired(ddlDepotId, "Please Select a Depot.")) {
+        var select = document.querySelector("#" + ddlDepotId + "+ .select2-container .selection .select2-selection");
+        if (select != null) {
+            select.style.backgroundColor = "white";
+        }
+    }
+    else {
+        firstErrorControl = ddlDepotId;
+        if (!ddlDepotCtrl) {
+            errMsg += GetErrorRow(ddlDepotId, "Please Select a Depot.");
+        }
+        var select = document.querySelector("#" + ddlDepotId + "+ .select2-container .selection .select2-selection");
+        if (select != null) {
+            select.style.backgroundColor = "yellow";
+        }
+    }
+
+    var ddlVendorUnitCtrl = getIndentControl("ddlVendorUnit");
+    var ddlVendorUnitId = ddlVendorUnitCtrl ? ddlVendorUnitCtrl.id : "ddlVendorUnit";
+    if (ddlVendorUnitCtrl && ValidateRequired(ddlVendorUnitId, "Please Select Vendor Unit.")) {
+        var select = document.querySelector("#" + ddlVendorUnitId + "+ .select2-container .selection .select2-selection");
+        if (select != null) {
+            select.style.backgroundColor = "white";
+        }
+    }
+    else {
+        firstErrorControl = ddlVendorUnitId;
+        if (!ddlVendorUnitCtrl) {
+            errMsg += GetErrorRow(ddlVendorUnitId, "Please Select Vendor Unit.");
+        }
+        var select = document.querySelector("#" + ddlVendorUnitId + "+ .select2-container .selection .select2-selection");
+        if (select != null) {
+            select.style.backgroundColor = "yellow";
+        }
+    }
+
+    if (theGridView != null) {
+
+        for (var rowCount = 1; rowCount < theGridView.rows.length; rowCount++) {
+            if (theGridView.rows[rowCount].cells[9] && theGridView.rows[rowCount].cells[9].children[0]) {
+                theGridView.rows[rowCount].cells[9].children[0].style.backgroundColor = "#ffffff";
+            }
         }
 
-
-
-
-
-
-
-        function validateSKUListAdd() {
-
-            var theGridView = document.getElementById('gvIndentSKUList');
-
-            var flag = 0;
-            firstErrorControl = "";
-
-            var txtNewLoad_id = null;
-
-            document.getElementById("lblErrorMessage").innerHTML = "";
-
-            errMsg = "";
-
-            //ValidateDropDown("ddlDepot", "Please Select a Depot.");
-            //ValidateDropDown("ddlVendorUnit", "Please Select Vendor Unit.");
-
-            if (ValidateRequired("ddlDepot", "Please Select a Depot.")) {
-                var select = document.querySelector("#" + "ddlDepot" + "+ .select2-container .selection .select2-selection");
-                if (select != null) {
-                    select.style.backgroundColor = "white";
-                }
+        for (var rowCount = 1; rowCount < theGridView.rows.length; rowCount++) {
+            if (!theGridView.rows[rowCount].cells[8] || !theGridView.rows[rowCount].cells[8].children[0]) {
+                continue;
             }
-            else {
-                firstErrorControl = "ddlDepot";
-                var select = document.querySelector("#" + "ddlDepot" + "+ .select2-container .selection .select2-selection");
-                if (select != null) {
-                    select.style.backgroundColor = "yellow";
-                }
+
+            txtNewLoad_id = theGridView.rows[rowCount].cells[8].children[0].id;
+            var txtNewLoad = document.getElementById(txtNewLoad_id);
+            if (txtNewLoad && lTrim(txtNewLoad.value, " ") != "0") {
+                flag = 1;
+                break;
             }
-            if (ValidateRequired("ddlVendorUnit", "Please Select Vendor Unit.")) {
-                var select = document.querySelector("#" + "ddlVendorUnit" + "+ .select2-container .selection .select2-selection");
-                if (select != null) {
-                    select.style.backgroundColor = "white";
-                }
+        }
+    }
+    if (flag == 0 || errMsg != "") {
+        if (flag == 0) {
+            firstErrorControl = theGridView;
+            errMsg += "Atleast one entry should be non zero.";
+        }
+        setIndentErrorMessage("<table style='width:100%;'>" + errMsg + "</table>");
+        return false;
+    }
+    else {
+        var txtLoad_id = null;
+        var justification = null;
+
+        var flag1 = 0;
+
+        for (var rowCount = 1; rowCount < theGridView.rows.length; rowCount++) {
+            if (!theGridView.rows[rowCount].cells[8] || !theGridView.rows[rowCount].cells[8].children[0]) {
+                continue;
             }
-            else {
-                firstErrorControl = "ddlVendorUnit";
-                var select = document.querySelector("#" + "ddlVendorUnit" + "+ .select2-container .selection .select2-selection");
-                if (select != null) {
-                    select.style.backgroundColor = "yellow";
-                }
-            }
-//            ValidateDropDown("ddlVendorProduct", "Please Select Product.")
 
-            if (theGridView != null) {
-
-                for (var rowCount = 1; rowCount < theGridView.rows.length; rowCount++) {
-                    theGridView.rows[rowCount].cells[9].children[0].style.backgroundColor = "#ffffff";
-                }
-
-                for (var rowCount = 1; rowCount < theGridView.rows.length; rowCount++) {
-                    txtNewLoad_id = theGridView.rows[rowCount].cells[8].children[0].id;
-
-                    if (lTrim(document.getElementById(txtNewLoad_id).value, " ") != "0") {
-                        flag = 1;
-                        break;
+            txtLoad_id = theGridView.rows[rowCount].cells[8].children[0].id;
+            var txtLoad = document.getElementById(txtLoad_id);
+            if (txtLoad && lTrim(txtLoad.value, " ") != "0") {
+                if (theGridView.rows[rowCount].cells[9] && theGridView.rows[rowCount].cells[9].children[0]) {
+                    justification = theGridView.rows[rowCount].cells[9].children[0].id;
+                    if (validateIndentFieldRequired(justification, "Enter justification for additional load.") == false) {
+                        flag1 = 1;
                     }
                 }
             }
-            if (flag == 0 || errMsg != "") {
-                //document.getElementById("lblErrorMessage").innerHTML = "Atleast one entry should be non zero.";
-                if (flag == 0) {
-                    firstErrorControl = theGridView;
-                    errMsg += "Atleast one entry should be non zero.";
+        }
+
+        if (flag1 == 0) {
+            if (confirm('Are you sure to submit?')) {
+                var btnSubmit = getIndentControl('btnSubmit');
+                if (btnSubmit) {
+                    btnSubmit.disabled = true;
+                    __doPostBack(btnSubmit.name, '');
                 }
-                document.getElementById("lblErrorMessage").innerHTML = "<table style='width:100%;'>" + errMsg + "</table>";
+
+            }
+            else {
                 return false;
             }
-            else {
-                var txtLoad_id = null;
-                var justification = null;
-
-                var flag1 = 0;
-
-                for (var rowCount = 1; rowCount < theGridView.rows.length; rowCount++) {
-                    txtLoad_id = theGridView.rows[rowCount].cells[8].children[0].id;
-
-                    if (lTrim(document.getElementById(txtLoad_id).value, " ") != "0") {
-                        justification = theGridView.rows[rowCount].cells[9].children[0].id;
-                        if (ValidateRequired(justification, "Enter justification for additional load.") == false) {
-                            flag1 = 1;
-                        }
-                    }
-                }
-
-                if (flag1 == 0) {
-                    if (confirm('Are you sure to submit?')) {
-                        document.getElementById('btnSubmit').disabled = true;
-                        __doPostBack(document.getElementById('btnSubmit').name, '');
-
-                    }
-                    else {
-                        return false;
-                    }
-                }
-                else {
-                    document.getElementById("lblErrorMessage").innerHTML = "<table>" + errMsg + "</table>";
-                    return false;
-                }
-            }
-
         }
+        else {
+            setIndentErrorMessage("<table>" + errMsg + "</table>");
+            return false;
+        }
+    }
+
+}

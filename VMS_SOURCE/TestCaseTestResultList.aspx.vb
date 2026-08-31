@@ -659,7 +659,7 @@ Partial Class TestCaseTestResultList
     Protected Sub gvTestList_RowDataBound(ByVal sender As Object, ByVal e As GridViewRowEventArgs) Handles gvTestList.RowDataBound
         If (e.Row.RowType = DataControlRowType.DataRow) Then
             Dim rowView As DataRowView = CType(e.Row.DataItem, DataRowView)
-            Dim btnEdit As Button = CType(e.Row.FindControl("btnEdit"), Button)
+            Dim btnEdit As LinkButton = CType(e.Row.FindControl("btnEdit"), LinkButton)
             If rowView("editable_yn") = "Y" Then
                 btnEdit.Visible = True
                 btnEdit.PostBackUrl = "TestCaseResultEntry.aspx?id=" & rowView("result_id").ToString()
