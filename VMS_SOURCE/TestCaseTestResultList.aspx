@@ -159,9 +159,13 @@
                                                 <span>View</span>
                                             </HeaderTemplate>
                                             <ItemTemplate>
-                                                <asp:Button ID="imgBtnSubmit" CommandName="EditTest" Visible="true" runat="server" CssClass="btn btn-info gridBtn" Text="View" title="View" ToolTip="View" CommandArgument='<%# Bind("result_id") %>'></asp:Button>
-                                                &nbsp;
-                                                    <asp:Button ID="btnEdit" Visible="false" runat="server" CssClass="btn btn-success gridBtn" Text="Edit" title="Edit" ToolTip="Edit"></asp:Button>
+                                                <%--<asp:Button ID="imgBtnSubmit" CommandName="EditTest" Visible="true" runat="server" CssClass="btn btn-info gridBtn" Text="View" title="View" ToolTip="View" CommandArgument='<%# Bind("result_id") %>'></asp:Button>--%>
+                                                <div style="display: flex;align-items: center;">
+                                                    <asp:LinkButton ID="imgBtnSubmit" runat="server" Visible="true" Text="View" CommandName="EditTest" CommandArgument='<%# Bind("result_id") %>' ToolTip="View"><i class="fa fa-eye"></i></asp:LinkButton>
+                                                    &nbsp;
+                                                   <%-- <asp:Button ID="btnEdit" Visible="false" runat="server" CssClass="btn btn-success gridBtn" Text="Edit" title="Edit" ToolTip="Edit"></asp:Button>--%>
+                                                    <asp:LinkButton ID="btnEdit" runat="server" Visible="true" Text="View" ToolTip="View History"><i class="fa fa-pen" style="color: #ffbd21"></i></asp:LinkButton>
+                                                </div>
                                             </ItemTemplate>
                                             <ControlStyle Width="100%"></ControlStyle>
                                             <HeaderStyle HorizontalAlign="Center" />

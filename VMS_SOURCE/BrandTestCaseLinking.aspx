@@ -112,7 +112,8 @@
                                                 <asp:Button ID="btnCancel" CommandName="cancel" runat="server" CssClass="btn btn-secondary gridBtn" Text="Cancel" title="Cancel" ToolTip="Cancel"></asp:Button>
                                             </EditItemTemplate>
                                             <FooterTemplate>
-                                                <asp:Button ID="btnInsert" CommandName="insert" runat="server" CssClass="btn btn-success gridBtn" Text="Save" title="Save" ToolTip="Save"></asp:Button>
+                                              <%--  <asp:Button ID="btnInsert" CommandName="insert" runat="server" CssClass="btn btn-success gridBtn" Text="Save" title="Save" ToolTip="Save"></asp:Button>--%>
+                                                 <asp:LinkButton ID="btnInsert" runat="server" Visible="true" Text="View" CommandName="insert"  ToolTip="Save"><i class="fa fa-documnet"></i></asp:LinkButton>
                                             </FooterTemplate>
                                         </asp:TemplateField>
                                     </Columns>
@@ -147,7 +148,8 @@
                                         </asp:DropDownList>
                                     </td>
                                     <td style="text-align: center; width: 15%;">
-                                        <asp:Button ID="btnInsert" runat="server" CssClass="btn btn-success gridBtn" Text="Save" title="Save" ToolTip="Save"></asp:Button>
+                                       <%-- <asp:Button ID="btnInsert" runat="server" CssClass="btn btn-success gridBtn" Text="Save" title="Save" ToolTip="Save"></asp:Button>--%>
+                                        <asp:LinkButton ID="btnInsert" runat="server" Visible="true" Text="View"   ToolTip="Save"><i class="fa fa-file"></i></asp:LinkButton>
                                     </td>
                                 </tr>
                             </table>
