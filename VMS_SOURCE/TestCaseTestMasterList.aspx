@@ -122,7 +122,9 @@
                                                 <span>View</span>
                                             </HeaderTemplate>
                                             <ItemTemplate>
-                                                <asp:Button ID="imgBtnSubmit" CommandName="EditTest" Visible="true" runat="server" CssClass="btn btn-info gridBtn" Text="View" title="View" ToolTip="View" CommandArgument='<%# Bind("test_id") %>'></asp:Button>
+                                            <%--    <asp:Button ID="imgBtnSubmit" CommandName="EditTest" Visible="true" runat="server" CssClass="btn btn-info gridBtn" Text="View" title="View" ToolTip="View" CommandArgument='<%# Bind("test_id") %>'></asp:Button>
+                                                --%>
+                                                    <asp:LinkButton ID="btnView" runat="server" Visible="true" CommandName="ViewHistory" CommandArgument='<%# Bind("test_id") %>' ToolTip="View"><i class="fa fa-eye"></i></asp:LinkButton>
                                             </ItemTemplate>
                                             <ControlStyle Width="100%"></ControlStyle>
                                             <HeaderStyle HorizontalAlign="Center" />
