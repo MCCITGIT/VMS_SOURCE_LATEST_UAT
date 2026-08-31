@@ -24,7 +24,7 @@ Partial Class DeviationsFGQuality
         End If
         If Not IsPostBack Then
             AddAttributes()
-            PopulateQuarter()
+            ' PopulateQuarter()
             PopulateVendor()
             btnSubmit.Visible = False
             btnConsubmit.Visible = False
@@ -39,6 +39,9 @@ Partial Class DeviationsFGQuality
                 Dim Quarter As String = Request.QueryString("quarter")
                 Dim Productcode As String = Request.QueryString("product")
                 Dim skucode As String = Request.QueryString("skucode")
+                Dim finyear As String = Request.QueryString("finyear")
+                hdnFinYear.Value = finyear
+                PopulateQuarter()
 
                 ddlQuarter.SelectedValue = Quarter
                 ddlVendor.SelectedValue = vendorId
