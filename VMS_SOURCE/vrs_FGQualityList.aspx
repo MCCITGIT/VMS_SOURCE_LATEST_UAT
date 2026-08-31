@@ -161,8 +161,9 @@
                                     </asp:TemplateField>
                                     <asp:TemplateField HeaderText="Action">
                                         <ItemTemplate>
-                                            <asp:Button ID="btnView" runat="server" CommandName="ViewProductDetails" CommandArgument='<%# Eval("vq_vendorid") & "|" & Eval("vq_brand_id") & "|" & Eval("vq_quarter") & "|" & Eval("vq_product_code") & "|" & Eval("vq_sku_code") %>'
-                                                Text="View" CssClass="btn btn-info btn-sm tableBtnXs" />
+                                            <%--<asp:Button ID="btnView" runat="server" CommandName="ViewProductDetails" CommandArgument='<%# Eval("vq_vendorid") & "|" & Eval("vq_brand_id") & "|" & Eval("vq_quarter") & "|" & Eval("vq_product_code") & "|" & Eval("vq_sku_code") %>'
+                                                Text="View" CssClass="btn btn-info btn-sm tableBtnXs" />--%>
+                                                    <asp:LinkButton ID="btnView" runat="server" Visible="true"  CommandName="ViewProductDetails" CommandArgument='<%# Eval("vq_vendorid") & "|" & Eval("vq_brand_id") & "|" & Eval("vq_quarter") & "|" & Eval("vq_product_code") & "|" & Eval("vq_sku_code") %>' ToolTip="View History"><i class="fa fa-eye"></i></asp:LinkButton>
                                         </ItemTemplate>
                                         <ControlStyle></ControlStyle>
                                         <HeaderStyle HorizontalAlign="Center" />
