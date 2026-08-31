@@ -183,142 +183,218 @@ document.addEventListener("DOMContentLoaded", function () {
     updateVendorRawMatRatioTotal();
 });
 function validateAddRawMaterial() {
-    firstErrorControl = "";
-    errMsg = "";
-
-    var lblErrorMessage = document.getElementById("lblErrorMessage");
+    var hasError = false;
     var ddlBrand = document.getElementById("ddlBrand");
     var ddlvendor = document.getElementById("ddlvendor");
     var hdnProductCode = document.getElementById("hdnProductCode");
     var txtrawmatid = document.getElementById("txtrawmatid");
+    var txtSearchText = document.getElementById("txtSearchText");
     var txtRatio = document.getElementById("txtRatio");
     var ratio = NaN;
     var totalRatio = getVendorRawMatGridRatioTotal();
+    var lblErrorMessage = document.getElementById("lblErrorMessage");
+
+    clearFormulationValidation();
 
     if (lblErrorMessage) {
         lblErrorMessage.innerHTML = "";
     }
 
     if (!ddlBrand || ddlBrand.value === "" || ddlBrand.selectedIndex <= 0) {
-        if (firstErrorControl === "") {
-            firstErrorControl = "ddlBrand";
-        }
-        errMsg += GetErrorRow("ddlBrand", "Please select Brand.");
+        setFieldError("ddlBrand", "valBrand", "Please select Brand.", false);
+        hasError = true;
     }
 
     if (!ddlvendor || ddlvendor.value === "" || ddlvendor.selectedIndex <= 0) {
-        if (firstErrorControl === "") {
-            firstErrorControl = "ddlvendor";
-        }
-        errMsg += GetErrorRow("ddlvendor", "Please select Vendor.");
+        setFieldError("ddlvendor", "valVendor", "Please select Vendor.", false);
+        hasError = true;
     }
 
     if (!hdnProductCode || (hdnProductCode.value || "").trim() === "") {
-        if (firstErrorControl === "") {
-            firstErrorControl = "txtProductSearch";
-        }
-        errMsg += GetErrorRow("txtProductSearch", "Please enter Product.");
+        setFieldError("txtProductSearch", "valProduct", "Please enter Product.", false);
+        hasError = true;
     }
 
-    if (!txtrawmatid || (txtrawmatid.value || "").trim() === "") {
-        if (firstErrorControl === "") {
-            firstErrorControl = "txtSearchText";
-        }
-        errMsg += GetErrorRow("txtSearchText", "Please enter Raw Material.");
+    if (!txtSearchText || (txtSearchText.value || "").trim() === "") {
+        setFieldError("txtSearchText", "valSearchText", "Please enter Raw Material.", false);
+        hasError = true;
+    } else if (!txtrawmatid || (txtrawmatid.value || "").trim() === "") {
+        setFieldError("txtSearchText", "valSearchText", "Please select Raw Material from the list.", false);
+        hasError = true;
     }
 
     if (!txtRatio || (txtRatio.value || "").trim() === "") {
-        if (firstErrorControl === "") {
-            firstErrorControl = "txtRatio";
-        }
-        errMsg += GetErrorRow("txtRatio", "Please enter Consumption Ratio.");
+        setFieldError("txtRatio", "valRatio", "Please enter Consumption Ratio.", false);
+        hasError = true;
     } else {
         ratio = parseFloat((txtRatio.value || "").trim());
 
         if (isNaN(ratio)) {
-            if (firstErrorControl === "") {
-                firstErrorControl = "txtRatio";
-            }
-            errMsg += GetErrorRow("txtRatio", "Please enter a valid Consumption Ratio.");
+            setFieldError("txtRatio", "valRatio", "Please enter a valid Consumption Ratio.", false);
+            hasError = true;
         } else if (ratio <= 0) {
-            if (firstErrorControl === "") {
-                firstErrorControl = "txtRatio";
-            }
-            errMsg += GetErrorRow("txtRatio", "Consumption Ratio must be greater than 0.");
+            setFieldError("txtRatio", "valRatio", "Consumption Ratio must be greater than 0.", false);
+            hasError = true;
         } else {
             totalRatio = Math.round((totalRatio + ratio) * 100) / 100;
             if (totalRatio > 100) {
-                if (firstErrorControl === "") {
-                    firstErrorControl = "txtRatio";
-                }
-                errMsg += GetErrorRow("txtRatio", "Total Consumption Ratio should not be greater than 100%.");
+                setFieldError("txtRatio", "valRatio", "Total Consumption Ratio should not be greater than 100%.", false);
+                hasError = true;
             }
         }
     }
 
-    if (firstErrorControl !== "") {
-        SetControlFocus(firstErrorControl);
-        return rmFailValidation(errMsg);
+    if (hasError) {
+        scrollToFirstInvalidField();
+        return false;
     }
 
     return rmConfirmPostback("btnAdd", "add");
 }
 
 function validateFormulationSubmit() {
-    firstErrorControl = "";
-    errMsg = "";
-
-    var lblErrorMessage = document.getElementById("lblErrorMessage");
+    var hasError = false;
     var ddlBrand = document.getElementById("ddlBrand");
     var ddlvendor = document.getElementById("ddlvendor");
     var hdnProductCode = document.getElementById("hdnProductCode");
     var totalRatio = getVendorRawMatGridRatioTotal();
     var grid = document.getElementById("gvVendorRawMat");
     var ratioLabels = grid ? grid.querySelectorAll("tbody tr.tlrowlight span[id$='lblRatio']") : [];
+    var lblErrorMessage = document.getElementById("lblErrorMessage");
+
+    clearFormulationValidation();
 
     if (lblErrorMessage) {
         lblErrorMessage.innerHTML = "";
     }
 
     if (!ddlBrand || ddlBrand.value === "" || ddlBrand.selectedIndex <= 0) {
-        if (firstErrorControl === "") {
-            firstErrorControl = "ddlBrand";
-        }
-        errMsg += GetErrorRow("ddlBrand", "Please select Brand.");
+        setFieldError("ddlBrand", "valBrand", "Please select Brand.", false);
+        hasError = true;
     }
 
     if (!ddlvendor || ddlvendor.value === "" || ddlvendor.selectedIndex <= 0) {
-        if (firstErrorControl === "") {
-            firstErrorControl = "ddlvendor";
-        }
-        errMsg += GetErrorRow("ddlvendor", "Please select Vendor.");
+        setFieldError("ddlvendor", "valVendor", "Please select Vendor.", false);
+        hasError = true;
     }
 
     if (!hdnProductCode || (hdnProductCode.value || "").trim() === "") {
-        if (firstErrorControl === "") {
-            firstErrorControl = "txtProductSearch";
-        }
-        errMsg += GetErrorRow("txtProductSearch", "Please enter Product.");
+        setFieldError("txtProductSearch", "valProduct", "Please enter Product.", false);
+        hasError = true;
     }
 
     if (!ratioLabels || ratioLabels.length === 0) {
-        if (firstErrorControl === "") {
-            firstErrorControl = "gvVendorRawMat";
-        }
-        errMsg += GetErrorRow("gvVendorRawMat", "Please enter at least one record in the grid.");
+        setGridFieldError("Please enter at least one record in the grid.");
+        hasError = true;
+    } else if (totalRatio !== 100) {
+        setGridFieldError("Total Consumption Ratio should be equal 100%.");
+        hasError = true;
     }
 
-    if (ratioLabels && ratioLabels.length > 0 && totalRatio !== 100) {
-        if (firstErrorControl === "") {
-            firstErrorControl = "gvVendorRawMat";
-        }
-        errMsg += GetErrorRow("gvVendorRawMat", "Total Consumption Ratio should be equal 100%.");
-    }
-
-    if (firstErrorControl !== "") {
-        SetControlFocus(firstErrorControl);
-        return rmFailValidation(errMsg);
+    if (hasError) {
+        scrollToFirstInvalidField();
+        return false;
     }
 
     return rmConfirmPostback("btnSubmit", "submit");
+}
+
+function clearFieldValidation(controlId, labelId) {
+    var control = document.getElementById(controlId);
+    var label = document.getElementById(labelId);
+
+    if (control) {
+        control.classList.remove("field-invalid");
+    }
+
+    if (label) {
+        label.innerHTML = "";
+    }
+}
+
+function setFieldError(controlId, labelId, message, scrollToField) {
+    var control = document.getElementById(controlId);
+    var label = document.getElementById(labelId);
+
+    if (control) {
+        control.classList.add("field-invalid");
+    }
+
+    if (label) {
+        label.innerHTML = message;
+    }
+
+    if (scrollToField && control && control.scrollIntoView) {
+        control.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+}
+
+function clearRawMaterialValidation() {
+    clearFieldValidation("txtSearchText", "valSearchText");
+}
+
+function clearRatioValidation() {
+    clearFieldValidation("txtRatio", "valRatio");
+}
+
+function clearBrandValidation() {
+    clearFieldValidation("ddlBrand", "valBrand");
+}
+
+function clearVendorValidation() {
+    clearFieldValidation("ddlvendor", "valVendor");
+}
+
+function clearProductValidation() {
+    clearFieldValidation("txtProductSearch", "valProduct");
+}
+
+function clearGridValidation() {
+    var label = document.getElementById("valGrid");
+    if (label) {
+        label.innerHTML = "";
+    }
+}
+
+function setGridFieldError(message) {
+    var label = document.getElementById("valGrid");
+
+    if (label) {
+        label.innerHTML = message;
+    }
+}
+
+function clearFormulationValidation() {
+    clearBrandValidation();
+    clearVendorValidation();
+    clearProductValidation();
+    clearRawMaterialValidation();
+    clearRatioValidation();
+    clearGridValidation();
+}
+
+function scrollToFirstInvalidField() {
+    var fields = [
+        { controlId: "ddlBrand" },
+        { controlId: "ddlvendor" },
+        { controlId: "txtProductSearch" },
+        { controlId: "txtSearchText" },
+        { controlId: "txtRatio" }
+    ];
+
+    for (var i = 0; i < fields.length; i++) {
+        var control = document.getElementById(fields[i].controlId);
+        if (control && control.classList.contains("field-invalid") && control.scrollIntoView) {
+            control.scrollIntoView({ behavior: "smooth", block: "center" });
+            return;
+        }
+    }
+
+    var valGrid = document.getElementById("valGrid");
+    if (valGrid && valGrid.innerHTML) {
+        var grid = document.getElementById("gvVendorRawMat");
+        if (grid && grid.scrollIntoView) {
+            grid.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+    }
 }
