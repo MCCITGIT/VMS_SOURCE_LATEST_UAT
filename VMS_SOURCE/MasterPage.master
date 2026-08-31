@@ -20,6 +20,15 @@
     <script type="text/javascript" src="Scripts/date.js"></script>
     <script type="text/javascript" src="Scripts/Currency.js"></script>
     <%--    <script type="text/javascript" src="Scripts/FunctionValidator.js"></script>--%>
+    <script type="text/javascript">
+        // Modified-by MUKESH BHAGAT on 31-08-2026 : fnNewWindow used to come from
+        // FunctionValidator.js (commented out above); several pages open reports through it
+        // from code-behind and were failing silently. Defined here as a fallback - a page
+        // (or red.js) that declares its own fnNewWindow later still overrides this one.
+        window.fnNewWindow = function (strUrl, strtarget) {
+            window.open(strUrl, strtarget, "status=no,toolbar=no,menubar=no,location=no,scrollbars=yes,modal=yes,resizable=yes");
+        };
+    </script>
     <script type="text/javascript" src="Scripts/Messages.js"></script>
     <script type="text/javascript" src="Scripts/RegEX.js"></script>
     <script type="text/javascript" src="Scripts/AjaxServices.js"></script>

@@ -1387,7 +1387,6 @@ body:has(.rm-formulation-list) .rm-formulation-list .select2-container--default 
     position: sticky;
     top: 0;
     z-index: 2;
-    background: #ffffff !important;
 }
 
 .rm-compact .rm-grid-scroll .PagerGrid {
