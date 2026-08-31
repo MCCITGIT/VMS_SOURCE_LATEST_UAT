@@ -289,10 +289,20 @@ Partial Class UnitDespatchPlanAddUpdateVr1
             'End If
 
             Dim invoiceExists As Integer = 0
-            Dim dscheck As DataSet = Obj.CheckInvoiceNumberExsists(lblYear.Text, txtCenvatNo.Text, userInfo.userIDEntity)
+            'Modified-by MUKESH BHAGAT on 31-08-2026 : in update mode the challan's own invoice
+            'number is in the table already, so an unchanged number must not count as a
+            'duplicate. A CHANGED number is still checked against every challan (correct -
+            'this challan still holds its old number until the update is saved).
+            Dim isOwnUnchangedInvoiceNo As Boolean =
+                hdnChallanno.Value.Trim() <> String.Empty AndAlso
+                String.Equals(txtCenvatNo.Text.Trim(), hdnOriginalInvoiceNo.Value.Trim(), StringComparison.OrdinalIgnoreCase)
 
-            If dscheck IsNot Nothing AndAlso dscheck.Tables.Count > 0 AndAlso dscheck.Tables(0).Rows.Count > 0 Then
-                invoiceExists = Convert.ToInt32(dscheck.Tables(0).Rows(0)("InvoiceExists"))
+            If Not isOwnUnchangedInvoiceNo Then
+                Dim dscheck As DataSet = Obj.CheckInvoiceNumberExsists(lblYear.Text, txtCenvatNo.Text, userInfo.userIDEntity)
+
+                If dscheck IsNot Nothing AndAlso dscheck.Tables.Count > 0 AndAlso dscheck.Tables(0).Rows.Count > 0 Then
+                    invoiceExists = Convert.ToInt32(dscheck.Tables(0).Rows(0)("InvoiceExists"))
+                End If
             End If
 
             If invoiceExists = 1 Then
@@ -970,6 +980,9 @@ Partial Class UnitDespatchPlanAddUpdateVr1
 
 
             txtCenvatNo.Text = DespatchDS.Tables(0).Rows(0)("desph_excise_gp_no").ToString
+            'Modified-by MUKESH BHAGAT on 31-08-2026 : keep the loaded invoice number so the
+            'duplicate check can recognise the challan's own number on update.
+            hdnOriginalInvoiceNo.Value = txtCenvatNo.Text.Trim()
             txtCenvatDt.Text = DespatchDS.Tables(0).Rows(0)("desph_excise_gp_dt").ToString
             txtChallanDt.Text = DespatchDS.Tables(0).Rows(0)("desph_challan_date").ToString
             txtTransporter.Text = DespatchDS.Tables(0).Rows(0)("desph_transporter_name").ToString
@@ -1142,12 +1155,24 @@ Partial Class UnitDespatchPlanAddUpdateVr1
         If Not (GetChallanId < 0) Then
             DeleteDetail(sqlConn, sqlTrans)
             InsertDetail(hdnChallanno.Value, sqlConn, sqlTrans)
+            'Modified-by MUKESH BHAGAT on 31-08-2026 : the update transaction was NEVER
+            'committed (long-standing defect, present in the old source too). The edit was
+            'silently lost, and worse: the idle connection kept the open transaction and its
+            'locks on despatch_hdr/despatch_dtl, blocking every other query on those tables
+            'until the pooled connection was reset - pages appeared to hang forever.
+            sqlTrans.Commit()
+            If sqlConn IsNot Nothing Then
+                sqlConn.Close()
+            End If
             'Modified-by MUKESH BHAGAT on 26-08-2026 : allow the E-Way bill to be attached
             '(or replaced) while editing an existing challan. Runs on its own connection
-            'outside this transaction, so it cannot affect the challan update either way.
+            'after the commit, so it cannot affect the challan update either way.
             SaveEwayBillDocument(Convert.ToInt64(hdnChallanno.Value))
         Else
             sqlTrans.Rollback()
+            If sqlConn IsNot Nothing Then
+                sqlConn.Close()
+            End If
         End If
     End Sub
     Private Sub DeleteDetail(ByVal sqlConn As SqlConnection, ByVal sqlTrans As SqlTransaction)
@@ -1392,6 +1417,8 @@ System.Web.Services.WebMethod()>
 
             hdnEwayDocPath.Value = DocPath
             hdnEwayDocFile.Value = storedName
+            lblEwayDocName.Text = "Uploaded: " & storedName
+            lblEwayDocName.Visible = True
             lnkDownloadEway.Visible = True
         Catch ex As Exception
             lblErrorMessage.Text = "Challan saved, but the E-Way bill document could not be stored."
@@ -1401,31 +1428,82 @@ System.Web.Services.WebMethod()>
 
     'Modified-by MUKESH BHAGAT on 26-08-2026 : in update mode, show the download link when
     'an E-Way bill has already been attached to this challan.
+    'Modified-by MUKESH BHAGAT on 31-08-2026 : also loads the stored invoice copy, and shows
+    'each stored file's name above its download button.
     Private Sub PopulateEwayDocument(ByVal ChallanNo As Int64)
         Try
             hdnEwayDocPath.Value = String.Empty
             hdnEwayDocFile.Value = String.Empty
             lnkDownloadEway.Visible = False
+            lblEwayDocName.Visible = False
+            hdnInvDocPath.Value = String.Empty
+            hdnInvDocFile.Value = String.Empty
+            lnkDownloadInvoice.Visible = False
+            lblInvDocName.Visible = False
 
             If ChallanNo <= 0 Then
                 Exit Sub
             End If
 
             Dim DocObj As New UnitDespatchClassVr1
-            Dim DocDS As DataSet = DocObj.GetChallanTypedDocument(ChallanNo, userInfo.userBranchEntity, EwayDocType)
 
-            If DocDS Is Nothing OrElse DocDS.Tables.Count = 0 OrElse DocDS.Tables(0).Rows.Count = 0 Then
-                Exit Sub
+            'stored invoice copy (doc_type CHALLAN_DOC)
+            Dim InvDS As DataSet = DocObj.GetChallanTypedDocument(ChallanNo, userInfo.userBranchEntity, "CHALLAN_DOC")
+            If InvDS IsNot Nothing AndAlso InvDS.Tables.Count > 0 AndAlso InvDS.Tables(0).Rows.Count > 0 Then
+                Dim invRow As DataRow = InvDS.Tables(0).Rows(0)
+                hdnInvDocPath.Value = Convert.ToString(invRow("doc_doc_path"))
+                hdnInvDocFile.Value = Convert.ToString(invRow("doc_org_filename"))
+                If Not String.IsNullOrEmpty(hdnInvDocFile.Value) Then
+                    lblInvDocName.Text = "Uploaded: " & hdnInvDocFile.Value
+                    lblInvDocName.Visible = True
+                    lnkDownloadInvoice.Visible = True
+                End If
             End If
 
-            Dim docRow As DataRow = DocDS.Tables(0).Rows(0)
-            hdnEwayDocPath.Value = Convert.ToString(docRow("doc_doc_path"))
-            hdnEwayDocFile.Value = Convert.ToString(docRow("doc_org_filename"))
-            lnkDownloadEway.Visible = Not String.IsNullOrEmpty(hdnEwayDocFile.Value)
+            'stored E-Way bill (doc_type EWAY_DOC)
+            Dim DocDS As DataSet = DocObj.GetChallanTypedDocument(ChallanNo, userInfo.userBranchEntity, EwayDocType)
+            If DocDS IsNot Nothing AndAlso DocDS.Tables.Count > 0 AndAlso DocDS.Tables(0).Rows.Count > 0 Then
+                Dim docRow As DataRow = DocDS.Tables(0).Rows(0)
+                hdnEwayDocPath.Value = Convert.ToString(docRow("doc_doc_path"))
+                hdnEwayDocFile.Value = Convert.ToString(docRow("doc_org_filename"))
+                If Not String.IsNullOrEmpty(hdnEwayDocFile.Value) Then
+                    lblEwayDocName.Text = "Uploaded: " & hdnEwayDocFile.Value
+                    lblEwayDocName.Visible = True
+                    lnkDownloadEway.Visible = True
+                End If
+            End If
         Catch ex As Exception
             'A missing document must never stop the challan from opening.
             lnkDownloadEway.Visible = False
+            lnkDownloadInvoice.Visible = False
         End Try
+    End Sub
+
+    'Modified-by MUKESH BHAGAT on 31-08-2026 : streams the stored invoice copy to the browser.
+    Protected Sub lnkDownloadInvoice_Click(ByVal sender As Object, ByVal e As EventArgs)
+        CheckLogin()
+
+        If String.IsNullOrEmpty(hdnInvDocFile.Value) Then
+            Exit Sub
+        End If
+
+        Dim genReportPath As String = ConfigurationManager.AppSettings.Get("UPLOAD_DOCS_FOLDER_ABS_PATH") & userInfo.userCompanyEntity & "\" & "Challan_Docs" & "\"
+        Dim absolutePath As String = genReportPath & hdnInvDocPath.Value & "\" & hdnInvDocFile.Value
+
+        If Not File.Exists(absolutePath) Then
+            ScriptManager.RegisterStartupScript(Me, Me.GetType(), "invmissing", "alert('Invoice document not found on the server.');", True)
+            Exit Sub
+        End If
+
+        Response.Clear()
+        Response.Charset = ""
+        Response.ContentType = "application/octet-stream"
+        Response.AppendHeader("content-disposition", "attachment; filename=""" & hdnInvDocFile.Value & """")
+        Response.Cache.SetCacheability(HttpCacheability.NoCache)
+        Response.TransmitFile(absolutePath)
+        Response.Flush()
+        Response.SuppressContent = True
+        HttpContext.Current.ApplicationInstance.CompleteRequest()
     End Sub
 
     'Modified-by MUKESH BHAGAT on 26-08-2026 : streams the stored E-Way bill to the browser.

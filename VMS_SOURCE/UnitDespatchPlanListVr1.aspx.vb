@@ -95,6 +95,21 @@ Partial Class UnitDespatchPlanListVr1
 
         End If
 
+        'Modified-by MUKESH BHAGAT on 31-08-2026 : E-Way bill download - same path layout as the
+        'invoice copy, values filled in RowDataBound from the eway_* columns of the list SP.
+        If (e.CommandName = "DownloadEway") Then
+            Dim gvRow As GridViewRow = CType(CType(e.CommandSource, LinkButton).NamingContainer, GridViewRow)
+            CheckLogin()
+            Dim row As GridViewRow = gvChallanDetails.Rows(gvRow.RowIndex)
+            Dim hdnEwayPath As HiddenField = row.FindControl("hdnEwayDocPath")
+            Dim hdnEwayName As HiddenField = row.FindControl("hdnEwayOrgName")
+
+            If (hdnEwayName.Value <> "") Then
+                Dim genReportPath As String = ConfigurationManager.AppSettings.Get("UPLOAD_DOCS_FOLDER_ABS_PATH") & userInfo.userCompanyEntity & "\" & "Challan_Docs" & "\"
+                DownloadDocument(genReportPath, hdnEwayPath.Value & "\" & hdnEwayName.Value, hdnEwayName.Value)
+            End If
+        End If
+
     End Sub
     Private Sub DownloadDocument(ByVal genReportPath As String, ByVal DocumentName As String, ByVal FileName As String)
         If genReportPath <> String.Empty AndAlso DocumentName <> String.Empty Then
@@ -135,6 +150,34 @@ Partial Class UnitDespatchPlanListVr1
             Dim chk As CheckBox = e.Row.FindControl("chkSelect")
             Dim ImgbtnDeleteChallan As LinkButton = e.Row.FindControl("ImgbtnDeleteChallan")
             Dim ImgbtnPrint As LinkButton = e.Row.FindControl("ImgbtnPrint")
+
+            'Modified-by MUKESH BHAGAT on 31-08-2026 : this grid sits inside an UpdatePanel
+            '(the old page had none). A file cannot be streamed through an async partial
+            'postback, so the download buttons must be registered for a FULL postback -
+            'without this the Download click completes silently and nothing is saved.
+            Dim btnDownloadChallan As LinkButton = e.Row.FindControl("ImgbtndownloadChallan")
+            If btnDownloadChallan IsNot Nothing AndAlso ScriptManager.GetCurrent(Me.Page) IsNot Nothing Then
+                ScriptManager.GetCurrent(Me.Page).RegisterPostBackControl(btnDownloadChallan)
+            End If
+
+            'Modified-by MUKESH BHAGAT on 31-08-2026 : E-Way bill download button. Filled from
+            'the eway columns when the SP provides them; the button stays hidden otherwise, so
+            'the page also works against a database not yet carrying the SP patch.
+            Dim rowViewDoc As DataRowView = CType(e.Row.DataItem, DataRowView)
+            Dim btnDownloadEway As LinkButton = e.Row.FindControl("ImgbtndownloadEway")
+            If btnDownloadEway IsNot Nothing Then
+                If rowViewDoc.Row.Table.Columns.Contains("eway_org_filename") AndAlso
+                   Not String.IsNullOrEmpty(Convert.ToString(rowViewDoc("eway_org_filename"))) Then
+                    Dim hdnEwayPath As HiddenField = e.Row.FindControl("hdnEwayDocPath")
+                    Dim hdnEwayName As HiddenField = e.Row.FindControl("hdnEwayOrgName")
+                    hdnEwayPath.Value = Convert.ToString(rowViewDoc("eway_doc_path"))
+                    hdnEwayName.Value = Convert.ToString(rowViewDoc("eway_org_filename"))
+                    btnDownloadEway.Visible = True
+                    If ScriptManager.GetCurrent(Me.Page) IsNot Nothing Then
+                        ScriptManager.GetCurrent(Me.Page).RegisterPostBackControl(btnDownloadEway)
+                    End If
+                End If
+            End If
             Dim pageIdx As Integer = gvChallanDetails.PageIndex * ddlPageSize.SelectedValue
             e.Row.Cells(0).Text = pageIdx + (e.Row.RowIndex + 1)
             Dim rowView As DataRowView = CType(e.Row.DataItem, DataRowView)

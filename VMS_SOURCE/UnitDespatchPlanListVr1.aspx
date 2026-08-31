@@ -17,7 +17,41 @@
             }
             return false;
         }
+
+        // Modified-by MUKESH BHAGAT on 31-08-2026 : the Print button opens the report via
+        // fnNewWindow, defined in FunctionValidator.js which the redesigned MasterPage no
+        // longer includes - so the click failed silently. Defined locally, same as
+        // Stock_Upload_Summary.aspx / User_Profile_List_Report.aspx already do.
+        function fnNewWindow(strUrl, strtarget) {
+            window.open(strUrl, strtarget, "status=no,toolbar=no,menubar=no,location=no,scrollbars=yes,modal=yes,resizable=yes");
+        }
     </script>
+
+    <%-- Modified-by MUKESH BHAGAT on 31-08-2026 : pill styling for the document download
+         buttons. Done as classes (not inline styles) so the hover state can repaint the
+         background - an inline background overrides Bootstrap's :hover and left white
+         text on a white pill. --%>
+    <style type="text/css">
+        .btn-doc-pill {
+            min-width: 92px;
+            border-radius: 20px;
+            background-color: #fff;
+        }
+
+        .btn-doc-invoice:hover, .btn-doc-invoice:focus {
+            background-color: #28a745;
+            color: #fff;
+        }
+
+        .btn-doc-eway {
+            margin-top: 4px;
+        }
+
+        .btn-doc-eway:hover, .btn-doc-eway:focus {
+            background-color: #17a2b8;
+            color: #fff;
+        }
+    </style>
 
     <div class="breadcrumbs">
         <div class="leftFung">
@@ -228,7 +262,15 @@
                                     <ItemTemplate>
                                         <%--<asp:ImageButton ID="ImgbtndownloadChallan" runat="server" AlternateText="Download Challan" Height="70px" ToolTip="Click to download challan" ImageUrl="~/images/download.gif"
                                             CommandName="DownloadChallan" />--%>
-                                        <asp:LinkButton CssClass="btn btn-success btn-sm" ID="ImgbtndownloadChallan" runat="server" AlternateText="Download Challan" ToolTip="Click to download challan" CommandName="DownloadChallan">Download</asp:LinkButton>
+                                        <%-- Modified-by MUKESH BHAGAT on 31-08-2026 : renamed "Download" to
+                                             "Invoice", matched widths, softer outline styling for both. --%>
+                                        <asp:LinkButton CssClass="btn btn-outline-success btn-sm btn-doc-pill btn-doc-invoice" ID="ImgbtndownloadChallan" runat="server" AlternateText="Download Invoice" ToolTip="Download the invoice copy" CommandName="DownloadChallan"><i class="fa fa-download"></i>&nbsp;Invoice</asp:LinkButton>
+                                        <%-- Modified-by MUKESH BHAGAT on 31-08-2026 : E-Way bill download.
+                                             Values are filled in RowDataBound (not Bind) so the page
+                                             keeps working even before the SP returns the eway columns. --%>
+                                        <asp:HiddenField ID="hdnEwayDocPath" runat="server" />
+                                        <asp:HiddenField ID="hdnEwayOrgName" runat="server" />
+                                        <asp:LinkButton CssClass="btn btn-outline-info btn-sm btn-doc-pill btn-doc-eway" ID="ImgbtndownloadEway" runat="server" Visible="false" ToolTip="Download the E-Way bill" CommandName="DownloadEway"><i class="fa fa-download"></i>&nbsp;E-Way</asp:LinkButton>
                                     </ItemTemplate>
                                     <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="5%" />
                                     <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="5%" />

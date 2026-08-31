@@ -4,7 +4,6 @@ var firstErrorControl;
 var errMsg;
 
 function ValidateAdditionalReceiptDetails() {
-
     firstErrorControl = "";
     errMsg = "";
 
