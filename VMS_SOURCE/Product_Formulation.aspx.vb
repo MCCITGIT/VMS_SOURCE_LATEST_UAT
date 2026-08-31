@@ -17,7 +17,7 @@ Partial Class Product_Formulation
 
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
         CheckLogin()
-        'btnSubmit.Attributes.Add("onclick", "return validateInputs();")
+        btnSubmit.Attributes.Add("onclick", "return validateFormulationSubmit();")
         btnAdd.Attributes.Add("onclick", "return validateAddRawMaterial();")
 
         If Not IsPostBack Then
@@ -185,6 +185,135 @@ Partial Class Product_Formulation
         RmActionPopup.ShowError(Me, message)
     End Sub
 
+    Private Function ValidateSubmitInputs() As Boolean
+        ClearInlineValidation()
+
+        Dim isValid As Boolean = True
+
+        If ddlBrand.SelectedIndex <= 0 Then
+            AppendInlineValidation("Brand", "Please select Brand.")
+            isValid = False
+        End If
+
+        If ddlvendor.SelectedIndex <= 0 Then
+            AppendInlineValidation("Vendor", "Please select Vendor.")
+            isValid = False
+        End If
+
+        If String.IsNullOrWhiteSpace(hdnProductCode.Value) Then
+            AppendInlineValidation("Product", "Please enter Product.")
+            isValid = False
+        End If
+
+        Dim gridRowCount As Integer = 0
+        Dim totalRatio As Integer = 0
+
+        For Each row As GridViewRow In gvVendorRawMat.Rows
+            If row.RowType <> DataControlRowType.DataRow Then
+                Continue For
+            End If
+
+            gridRowCount += 1
+            Dim lblRatio As Label = CType(row.FindControl("lblRatio"), Label)
+            Dim ratioText As String = If(lblRatio Is Nothing, String.Empty, Convert.ToString(lblRatio.Text).Trim())
+            Dim ratioValue As Integer = 0
+
+            If Not Integer.TryParse(ratioText, ratioValue) Then
+                AppendInlineValidation("Grid", "Please enter valid integer Consumption Ratio.")
+                Return False
+            End If
+
+            totalRatio += ratioValue
+        Next
+
+        If gridRowCount = 0 Then
+            AppendInlineValidation("Grid", "Please enter at least one record in the grid.")
+            isValid = False
+        ElseIf totalRatio <> 100 Then
+            AppendInlineValidation("Grid", "Total Consumption Ratio should be equal 100%.")
+            isValid = False
+        End If
+
+        Return isValid
+    End Function
+
+    Private Function ValidateAddInputs() As Boolean
+        ClearInlineValidation()
+
+        Dim isValid As Boolean = True
+
+        If ddlBrand.SelectedIndex <= 0 Then
+            AppendInlineValidation("Brand", "Please select Brand.")
+            isValid = False
+        End If
+
+        If ddlvendor.SelectedIndex <= 0 Then
+            AppendInlineValidation("Vendor", "Please select Vendor.")
+            isValid = False
+        End If
+
+        If String.IsNullOrWhiteSpace(hdnProductCode.Value) Then
+            AppendInlineValidation("Product", "Please enter Product.")
+            isValid = False
+        End If
+
+        If String.IsNullOrWhiteSpace(txtSearchText.Text.Trim()) Then
+            AppendInlineValidation("RawMaterial", "Please enter Raw Material.")
+            isValid = False
+        ElseIf String.IsNullOrWhiteSpace(txtrawmatid.Value) Then
+            AppendInlineValidation("RawMaterial", "Please select Raw Material from the list.")
+            isValid = False
+        End If
+
+        If String.IsNullOrWhiteSpace(txtRatio.Text) Then
+            AppendInlineValidation("Ratio", "Please enter Consumption Ratio.")
+            isValid = False
+        End If
+
+        Return isValid
+    End Function
+
+    Private Sub ClearInlineValidation()
+        ddlBrand.CssClass = "form-control select2"
+        ddlvendor.CssClass = "form-control select2"
+        txtProductSearch.CssClass = "form-control"
+        txtSearchText.CssClass = "form-control"
+        txtRatio.CssClass = "form-control"
+        valBrand.Text = String.Empty
+        valVendor.Text = String.Empty
+        valProduct.Text = String.Empty
+        valSearchText.Text = String.Empty
+        valRatio.Text = String.Empty
+        valGrid.Text = String.Empty
+    End Sub
+
+    Private Sub AppendInlineValidation(ByVal fieldKey As String, ByVal message As String)
+        Select Case fieldKey
+            Case "Brand"
+                ddlBrand.CssClass = "form-control select2 field-invalid"
+                valBrand.Text = message
+            Case "Vendor"
+                ddlvendor.CssClass = "form-control select2 field-invalid"
+                valVendor.Text = message
+            Case "Product"
+                txtProductSearch.CssClass = "form-control field-invalid"
+                valProduct.Text = message
+            Case "RawMaterial"
+                txtSearchText.CssClass = "form-control field-invalid"
+                valSearchText.Text = message
+            Case "Ratio"
+                txtRatio.CssClass = "form-control field-invalid"
+                valRatio.Text = message
+            Case "Grid"
+                valGrid.Text = message
+        End Select
+    End Sub
+
+    Private Sub ShowInlineValidation(ByVal fieldKey As String, ByVal message As String)
+        ClearInlineValidation()
+        AppendInlineValidation(fieldKey, message)
+    End Sub
+
     Protected Sub btnAdd_Click(sender As Object, e As EventArgs)
         If gvVendorRawMat.EditIndex >= 0 Then
             gvVendorRawMat.EditIndex = -1
@@ -193,35 +322,9 @@ Partial Class Product_Formulation
         CaptureGridRates()
         btnSubmit.Visible = True
 
-        If ddlBrand.SelectedIndex <= 0 Then
-            ShowValidation("Please select Brand.")
+        If Not ValidateAddInputs() Then
             Exit Sub
         End If
-
-        If String.IsNullOrWhiteSpace(hdnProductCode.Value) Then
-            ShowValidation("Please enter Product.")
-            Exit Sub
-        End If
-        If ddlvendor.SelectedIndex <= 0 Then
-            ShowValidation("Please select Vendor.")
-            Exit Sub
-        End If
-
-        If String.IsNullOrWhiteSpace(txtrawmatid.Value) Then
-            ShowValidation("Please enter Raw Material.")
-            Exit Sub
-        End If
-
-        If String.IsNullOrWhiteSpace(txtRatio.Text) Then
-            ShowValidation("Please enter Consumption Ratio.")
-            Exit Sub
-        End If
-
-        'If String.IsNullOrWhiteSpace(txtmeasurement.Text) Then
-        '    lblErrorMessage.ForeColor = System.Drawing.Color.Red
-        '    lblErrorMessage.Text = "Please enter Unit of Measurement."
-        '    Exit Sub
-        'End If
 
         Dim dt As DataTable = GetGridTable()
         Dim selectedbrandCode As String = ddlBrand.SelectedValue.Trim()
@@ -233,7 +336,7 @@ Partial Class Product_Formulation
             If Convert.ToString(row("brand_code")).Trim().Equals(selectedbrandCode, StringComparison.OrdinalIgnoreCase) AndAlso
                Convert.ToString(row("vendor_code")).Trim().Equals(selectedVendorCode, StringComparison.OrdinalIgnoreCase) AndAlso
                Convert.ToString(row("rawmat_code")).Trim().Equals(selectedRawMatCode, StringComparison.OrdinalIgnoreCase) Then
-                ShowValidation("Selected Raw Material already added.")
+                ShowInlineValidation("RawMaterial", "Selected Raw Material already added.")
                 Exit Sub
             End If
         Next
@@ -275,6 +378,7 @@ Partial Class Product_Formulation
 
         gvVendorRawMat.EditIndex = -1
         BindRawMatGrid()
+        ClearInlineValidation()
         ClearControl()
 
         Dim productCodeToKeep As String = hdnProductCode.Value.Trim()
@@ -370,20 +474,8 @@ Partial Class Product_Formulation
     Protected Sub btnSubmit_Click(sender As Object, e As EventArgs) Handles btnSubmit.Click
         Dim obj As New OPC_VendorClass()
         Dim rowsAffected As Integer = 0
-        Dim totalRatio As Integer = 0
         Try
-            If ddlBrand.SelectedIndex <= 0 Then
-                ShowValidation("Please select Brand.")
-                Exit Sub
-            End If
-
-            If ddlvendor.SelectedIndex <= 0 Then
-                ShowValidation("Please select Vendor.")
-                Exit Sub
-            End If
-
-            If String.IsNullOrWhiteSpace(hdnProductCode.Value) Then
-                ShowValidation("Please enter Product.")
+            If Not ValidateSubmitInputs() Then
                 Exit Sub
             End If
 
@@ -405,28 +497,17 @@ Partial Class Product_Formulation
                 Dim ratioText As String = If(lblRatio Is Nothing, String.Empty, Convert.ToString(lblRatio.Text).Trim())
                 Dim measurement As String = If(lblUnit Is Nothing, String.Empty, Convert.ToString(lblUnit.Text).Trim())
 
-                Dim ratioValue As Integer = 0
-                If Not Integer.TryParse(ratioText, ratioValue) Then
-                    ShowValidation("Please enter valid integer Consumption Ratio.")
-                    Exit Sub
-                End If
-
-                totalRatio += ratioText
-
                 Dim dr As DataRow = dt.NewRow()
                 dr("fd_rawmat_code") = rawmatcode
                 dr("fd_ratio") = ratioText
                 dr("fd_unit") = measurement
                 dt.Rows.Add(dr)
             Next
-            If totalRatio <> 100 Then
-                ShowValidation("Total Consumption Ratio should be equal 100%.")
-                Exit Sub
-            End If
 
             rowsAffected = obj.Insert_Formulation(Val(hdnId.Value), ddlBrand.SelectedValue, ddlvendor.SelectedValue, hdnProductCode.Value.Trim(), dt, userInfo.userIDEntity)
 
             If rowsAffected > 0 Then
+                ClearInlineValidation()
                 lblErrorMessage.Text = ""
                 RmActionPopup.ShowSuccess(Me, "Submitted Successfully.", "FormulationMstrList.aspx")
                 ddlBrand.SelectedIndex = 0
@@ -436,8 +517,7 @@ Partial Class Product_Formulation
                 gvVendorRawMat.DataSource = Nothing
                 gvVendorRawMat.DataBind()
             Else
-                lblErrorMessage.Text = ""
-                RmActionPopup.ShowError(Me, "Something went wrong. Try again.")
+                ShowInlineValidation("Grid", "Something went wrong. Try again.")
             End If
         Catch ex As Exception
             Dim returnUrl As String = "~/ExceptionPage.aspx"

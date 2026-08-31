@@ -4,15 +4,37 @@
 
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
     <link href="includes/rm-procurement.css?v=<%= DateTime.Now.Ticks %>" rel="stylesheet" type="text/css" />
+    <style type="text/css">
+        .rm-module .form-control.field-invalid,
+        .rm-module textarea.form-control.field-invalid,
+        .rm-module select.form-control.field-invalid + .select2-container .select2-selection--single {
+            border: 1px solid #dc3545 !important;
+            box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.12) !important;
+        }
+
+        .dispatch-field-error {
+            display: block;
+            color: #dc3545;
+            font-size: 12px;
+            font-weight: 500;
+            margin-top: 4px;
+            line-height: 1.35;
+        }
+
+            .dispatch-field-error:empty {
+                display: none;
+            }
+    </style>
     <div class="rm-module">
+    <script type="text/javascript" src="Scripts/rm-status-confirm.js?v=<%= DateTime.Now.Ticks %>"></script>
     <script type="text/javascript" src="Scripts/FunctionValidator.js"></script>
     <script type="text/javascript" src="Scripts/ValidateFormulationMstr.js?time=<%= DateTime.Now.ToString("yyyy.MM.dd-HH.mm.ss.fff") %>"></script>
     <script type="text/javascript">
         document.onkeydown = checkValue;
         function checkValue() {
-            if (event.keyCode == 118) {  // button Add (F7 keypress)
+            if (event.keyCode == 118) {  // button Submit (F7 keypress)
                 if (document.getElementById('btnSubmit').disabled == false)
-                    ValidateUPAControls();
+                    validateFormulationSubmit();
                 else
                     return false;
             }
@@ -55,6 +77,9 @@
             document.getElementById('<%=hdnProductName.ClientID%>').value = text;
             document.getElementById('<%=hdnSkucode.ClientID%>').value = skuCode
             setProductSearchState(true);
+            if (typeof clearProductValidation === 'function') {
+                clearProductValidation();
+            }
 
             //sender.get_element().value = text + " (" + productCode + ")";
             sender.get_element().value = text;
@@ -66,6 +91,9 @@
 
         function clearProductSelection() {
             document.getElementById('<%=hdnProductCode.ClientID%>').value = '';
+            if (typeof clearProductValidation === 'function') {
+                clearProductValidation();
+            }
         }
 
         function resetProductField() {
@@ -117,10 +145,16 @@
             sender.get_element().value = text + " (" + value + ")";--%>
             document.getElementById('<%=txtSearchText.ClientID%>').value = text;
             sender.get_element().value = text;
+            if (typeof clearRawMaterialValidation === 'function') {
+                clearRawMaterialValidation();
+            }
         }
 
         function clearRawMaterialSelection() {
             document.getElementById('<%=txtrawmatid.ClientID%>').value = '';
+            if (typeof clearRawMaterialValidation === 'function') {
+                clearRawMaterialValidation();
+            }
         }
         function resetRawMaterialField() {
             var rawMatText = document.getElementById('<%=txtSearchText.ClientID%>');
@@ -131,6 +165,10 @@
             }
             if (rawMatCode) {
                 rawMatCode.value = '';
+            }
+
+            if (typeof clearRawMaterialValidation === 'function') {
+                clearRawMaterialValidation();
             }
 
             return false;
@@ -184,14 +222,16 @@
                 <div class="col-md-3">
                     <div class="form-group">
                         <label class="form-control-label">Brand:<span id="Span1" class="mandatory">*</span></label>
-                        <asp:DropDownList ID="ddlBrand" ClientIDMode="Static" CssClass="form-control select2" TabIndex="1" runat="server" AutoPostBack="true" OnSelectedIndexChanged="ddlBrand_SelectedIndexChanged"></asp:DropDownList>
+                        <asp:DropDownList ID="ddlBrand" ClientIDMode="Static" CssClass="form-control select2" TabIndex="1" runat="server" AutoPostBack="true" OnSelectedIndexChanged="ddlBrand_SelectedIndexChanged" onchange="if(typeof clearBrandValidation==='function')clearBrandValidation();"></asp:DropDownList>
+                        <asp:Label ID="valBrand" runat="server" ClientIDMode="Static" CssClass="dispatch-field-error"></asp:Label>
                         <asp:HiddenField ID="hdnId" runat="server" ClientIDMode="Static" />
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="form-group">
                         <label class="form-control-label">Vendor:<span id="Span2" class="mandatory">*</span></label>
-                        <asp:DropDownList ID="ddlvendor" ClientIDMode="Static" CssClass="form-control select2" TabIndex="2" runat="server" AutoPostBack="true" OnSelectedIndexChanged="ddlvendor_SelectedIndexChanged"></asp:DropDownList>
+                        <asp:DropDownList ID="ddlvendor" ClientIDMode="Static" CssClass="form-control select2" TabIndex="2" runat="server" AutoPostBack="true" OnSelectedIndexChanged="ddlvendor_SelectedIndexChanged" onchange="if(typeof clearVendorValidation==='function')clearVendorValidation();"></asp:DropDownList>
+                        <asp:Label ID="valVendor" runat="server" ClientIDMode="Static" CssClass="dispatch-field-error"></asp:Label>
                         <asp:HiddenField ID="HiddenField1" runat="server" ClientIDMode="Static" />
                     </div>
                 </div>
@@ -214,6 +254,7 @@
                             CompletionListCssClass="vmsAutoComplete" CompletionListItemCssClass="vmsAutoCompleteItem" CompletionListHighlightedItemCssClass="vmsAutoCompleteItemHighlight">
                         </asp:AutoCompleteExtender>
                         <asp:LinkButton ID="btnLoadShade" runat="server" Style="display: none;"></asp:LinkButton>
+                        <asp:Label ID="valProduct" runat="server" ClientIDMode="Static" CssClass="dispatch-field-error"></asp:Label>
                     </div>
                 </div>
                 <div class="col-md-3">
@@ -234,14 +275,16 @@
                             EnableCaching="false" CompletionSetCount="20" FirstRowSelected="true" OnClientItemSelected="onRawMaterialSelected"
                             CompletionListCssClass="vmsAutoComplete" CompletionListItemCssClass="vmsAutoCompleteItem" CompletionListHighlightedItemCssClass="vmsAutoCompleteItemHighlight">
                         </asp:AutoCompleteExtender>
+                        <asp:Label ID="valSearchText" runat="server" ClientIDMode="Static" CssClass="dispatch-field-error"></asp:Label>
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="form-group">
                         <label class="form-control-label">Consumption Ratio:<span class="mandatory">*</span> </label>
                         <asp:TextBox ID="txtRatio" ClientIDMode="Static" CssClass="form-control" runat="server" AutoComplete="Off" Placeholder="Enter Consumption Ratio"
-                            oninput="validateRatioInput(this);">
+                            oninput="validateRatioInput(this); if(typeof clearRatioValidation==='function')clearRatioValidation();">
                         </asp:TextBox>
+                        <asp:Label ID="valRatio" runat="server" ClientIDMode="Static" CssClass="dispatch-field-error"></asp:Label>
                     </div>
                 </div>
             </div>
@@ -354,15 +397,18 @@
                 </asp:GridView>
             </div>
             <div class="row">
+                <div class="col-md-12">
+                    <asp:Label ID="valGrid" runat="server" ClientIDMode="Static" CssClass="dispatch-field-error"></asp:Label>
+                </div>
+            </div>
+            <div class="row">
                 <div class="col-md-12 text-center">
-                    <asp:Button ID="btnSubmit" runat="server" Text="Submit" CssClass="btn btn-primary btn-sm" ClientIDMode="Static" Visible="false"
-                        OnClientClick="return validateFormulationSubmit();" />
+                    <asp:Button ID="btnSubmit" runat="server" Text="Submit" CssClass="btn btn-primary btn-sm" ClientIDMode="Static" Visible="false" OnClick="btnSubmit_Click" />
                     <asp:Button ID="btnCancel" runat="server" Text="Back" CssClass="btn btn-secondary btn-sm" OnClick="btnCancel_Click1" />
                 </div>
             </div>
         </div>
     </div>
     </div>
-    <script type="text/javascript" src="Scripts/rm-status-confirm.js?v=<%= DateTime.Now.Ticks %>"></script>
 </asp:Content>
 
