@@ -1,5 +1,6 @@
 <%@ Page Title="Add / Update Indent Entry" Language="VB" MasterPageFile="~/MasterPage.master" AutoEventWireup="false" CodeFile="AddUpdateIndentEntry.aspx.vb" Inherits="AddUpdateIndentEntry" %>
 
+<%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
 
 
 <%--<asp:Content ID="Content1" ContentPlaceHolderID="Head1" runat="Server">
@@ -50,7 +51,7 @@
         <div class="card-body">
             <asp:UpdatePanel ID="UpdatePanel5" runat="server">
                 <ContentTemplate>
-                    <asp:Label ID="lblErrorMessage" CssClass="errormsg" Visible="true" runat="server" Text=""></asp:Label>
+                    <asp:Label ID="lblErrorMessage" ClientIDMode="Static" CssClass="errormsg" Visible="true" runat="server" Text=""></asp:Label>
                 </ContentTemplate>
                 <Triggers>
                     <asp:AsyncPostBackTrigger ControlID="ddlRegion" EventName="SelectedIndexChanged" />
@@ -83,7 +84,7 @@
                         <label class="form-control-label">Depot:<span id="Span1" class="mandatory">*</span></label>
                         <asp:UpdatePanel ID="UpdatePanel1" runat="server">
                             <ContentTemplate>
-                                <asp:DropDownList ID="ddlDepot" runat="server" AutoPostBack="True" CssClass="form-control select2">
+                                <asp:DropDownList ID="ddlDepot" ClientIDMode="Static" runat="server" AutoPostBack="True" CssClass="form-control select2">
                                 </asp:DropDownList>
                             </ContentTemplate>
                             <Triggers>
@@ -129,7 +130,7 @@
                         <label class="form-control-label">Vendor Source:<span id="Span2" class="mandatory">*</span></label>
                         <asp:UpdatePanel ID="UpdatePanel2" runat="server">
                             <ContentTemplate>
-                                <asp:DropDownList ID="ddlVendorUnit" runat="server" AutoPostBack="True" CssClass="form-control select2"></asp:DropDownList>
+                                <asp:DropDownList ID="ddlVendorUnit" ClientIDMode="Static" runat="server" AutoPostBack="True" CssClass="form-control select2"></asp:DropDownList>
                             </ContentTemplate>
                             <Triggers>
                                 <asp:AsyncPostBackTrigger ControlID="ddlRegion"
@@ -330,21 +331,32 @@
                                         </asp:UpdatePanel>    --%>
                             <%--</div>--%>
                             <label class="form-control-label">Depot:</label>
-                            <asp:Label ID="lbldepot" CssClass="form-control" runat="server"></asp:Label>
+                            <asp:Label ID="lbldepot" ClientIDMode="Static" CssClass="form-control" runat="server"></asp:Label>
                         </div>
                         <div class="col-md-3">
                             <label class="form-control-label">Vendor:<span style="color: red;">*</span></label>
                             <%--<asp:Label ID="lblvendor" CssClass="p-0 fw600" runat="server"></asp:Label>--%>
                             <asp:UpdatePanel ID="UpdatePanel7" runat="server">
                                 <ContentTemplate>
-                                    <asp:DropDownList ID="ddlvndor" runat="server" CssClass="form-control select2"></asp:DropDownList>
+                                    <asp:DropDownList ID="ddlvndor" ClientIDMode="Static" runat="server" CssClass="form-control select2"></asp:DropDownList>
                                 </ContentTemplate>
                             </asp:UpdatePanel>
                         </div>
 
                         <div class="col-md-3">
                             <label class="form-control-label">SKU Code:<span style="color: red;">*</span></label>
-                            <asp:TextBox ID="txtsku" CssClass="form-control" runat="server" placeholder="Sku Code"></asp:TextBox>
+                            <asp:TextBox ID="txtsku" ClientIDMode="Static" CssClass="form-control" runat="server" placeholder="Sku Code" autocomplete="off"></asp:TextBox>
+                            <asp:AutoCompleteExtender ID="aceIndentSku" runat="server"
+                                BehaviorID="aceIndentSkuSearch"
+                                TargetControlID="txtsku"
+                                ServiceMethod="SKUSearch"
+                                MinimumPrefixLength="3"
+                                EnableCaching="false"
+                                CompletionListCssClass="vmsAutoComplete"
+                                CompletionListItemCssClass="vmsAutoCompleteItem"
+                                CompletionListHighlightedItemCssClass="vmsAutoCompleteItemHighlight"
+                                OnClientItemSelected="onIndentSkuSelected"
+                                FirstRowSelected="true" />
                         </div>
 
                         <div class="col-md-3">
@@ -356,15 +368,15 @@
                         </div>
                         <asp:UpdatePanel ID="updatemodalpopup" runat="server">
                             <ContentTemplate>
-                                <asp:HiddenField ID="hdnskucodes" runat="server" />
-                                <asp:HiddenField ID="hdnskutext" runat="server" />
-                                <asp:HiddenField ID="hdnpo" runat="server" />
-                                <asp:HiddenField ID="hdnvendor" runat="server" />
-                                <asp:HiddenField ID="hdndepot" runat="server" />
+                                <asp:HiddenField ID="hdnskucodes" ClientIDMode="Static" runat="server" />
+                                <asp:HiddenField ID="hdnskutext" ClientIDMode="Static" runat="server" />
+                                <asp:HiddenField ID="hdnpo" ClientIDMode="Static" runat="server" />
+                                <asp:HiddenField ID="hdnvendor" ClientIDMode="Static" runat="server" />
+                                <asp:HiddenField ID="hdndepot" ClientIDMode="Static" runat="server" />
                             </ContentTemplate>
                         </asp:UpdatePanel>
                         <div class="col-md-12 text-center">
-                            <asp:Label runat="server" ID="lblMsg" Visible="true" Text=""></asp:Label>
+                            <asp:Label runat="server" ID="lblMsg" ClientIDMode="Static" Visible="true" Text=""></asp:Label>
                         </div>
                         <div class="col-md-12 mt-2" runat="server" id="skudetails" visible="false">
                             <asp:UpdatePanel ID="UpdatePanel6" runat="server">
@@ -432,6 +444,36 @@
     </div>
 
     <script type="text/javascript">
+        function onIndentSkuSelected(sender, e) {
+            document.getElementById('hdnskucodes').value = e.get_value();
+            document.getElementById('txtsku').value = e.get_text();
+        }
+
+        function updateIndentSkuSearchContext() {
+            var vendor = $('#ddlVendorUnit option:selected').val() || '';
+            var depot = $('#ddlDepot option:selected').val() || '';
+            var ace = $find('aceIndentSkuSearch');
+            if (ace) {
+                ace.set_contextKey(vendor + '|' + depot);
+            }
+        }
+
+        function getModalDepotLabel() {
+            return document.getElementById('lbldepot')
+                || document.querySelector('#exampleModal span[id$="_lbldepot"]');
+        }
+
+        $(document).on('shown.bs.modal', '#exampleModal', function () {
+            $('#hdnvendor').val($('#ddlvndor option:selected').val());
+            $('#hdndepot').val($('#ddlDepot option:selected').val());
+            var depot = $('#ddlDepot option:selected').text();
+            var lblDepot = getModalDepotLabel();
+            if (lblDepot) {
+                lblDepot.innerHTML = depot;
+            }
+            updateIndentSkuSearchContext();
+        });
+
         $(document).ready(function () {
             $("#btnadditional").click(function (e) {
                 //e.preventDefault();
@@ -451,54 +493,6 @@
             if ($('#exampleModal').hasClass('show')) {
                 showmodal();
             }
-        });
-
-        $(document).on('shown.bs.modal', '#exampleModal', function () {
-            $('#hdnvendor').val($('#ddlvndor option:selected').val());
-            $('#hdndepot').val($('#ddlDepot option:selected').val());
-            //var vendor = $('#ddlvndor option:selected').text() + ' (' + $('#ddlvndor option:selected').val() + ')';
-            var depot = $('#ddlDepot option:selected').text();
-            //$('#lblvendor').text(vendor);
-            $('#lbldepot').text(depot);
-            $("#txtsku").keydown(function () {
-
-                $("#txtsku").autocomplete({
-                    source: function (request, response) {
-                        var param = { skucode: $('#txtsku').val(), vendorcode: $('#ddlvndor option:selected').val(), depotcode: $('#ddlDepot option:selected').val() };
-
-                        if (request.term.length >= 3) {
-                            $.ajax({
-                                url: "AddUpdateSTPIndentEntry.aspx/SKUCodeSearch",
-                                data: JSON.stringify(param),
-                                dataType: "json",
-                                type: "POST",
-                                contentType: "application/json; charset=utf-8",
-                                success: function (data) {
-                                    response($.map(data.d, function (item) {
-                                        return { label: item[1], value: item[0] };
-                                    }));
-                                },
-                                error: function (XMLHttpRequest, textStatus, errorThrown) {
-                                    alert("Error: " + textStatus);
-                                }
-                            });
-                        }
-                    },
-                    focus: function (event, ui) {
-                        // You can remove this if you want the field to update while navigating
-                        event.preventDefault();
-                        $("#txtsku").val(ui.item.label);
-                    },
-                    select: function (e, ui) {
-                        setTimeout(function () {
-                            $("#hdnskucodes").val(ui.item.value);
-                            $("#txtsku").val(ui.item.label);
-                        }, 100);
-                    },
-                    minLength: 3
-                });
-            });
-
 
             $("#btnaddsku").click(function () {
                 if ($('#gvskudtls').length <= 0) {
@@ -512,20 +506,20 @@
                     }
                 }
             });
+
             $("#lnkadd").click(function () {
-                debugger;
                 firstErrorControl = "";
                 errMsg = "";
                 ValidateRequired("txtsku", "Please enter SKU.");
 
                 if (!ValidateRequired("ddlvndor", "Select Vertical Name.")) {
-                    var select = document.querySelector("ddlvndor")
+                    var select = document.getElementById("ddlvndor");
                     if (select != null) {
                         select.style.border = "2px solid #ffe900";
                     }
                 }
                 else {
-                    var select = document.querySelector("ddlvndor")
+                    var select = document.getElementById("ddlvndor");
                     if (select != null) {
                         select.style.border = "2px solid #ffffff6b";
                     }
@@ -537,23 +531,6 @@
                     document.getElementById("lblMsg").innerHTML = errMsg;
                     return false;
                 }
-
-                //debugger;
-                //var vendor = $('#ddlvndor option:selected').val();
-                //if (vendor == "") {
-                //    $("#ddlvndor").css("background-color", "yellow");
-                //    $("#ddlvndor").css("background-color", "yellow");
-                //    $("#lblMsg").html("Select a Vendor.").css("color", "red");
-                //    return false;
-                //}
-                //var skucode = $("#txtsku").val();
-                //if (skucode == "") {
-                //    $("#txtsku").css("background-color", "yellow");
-                //    $("#txtsku").css("background-color", "yellow");
-                //    $("#lblMsg").html("Enter SKU Code.").css("color", "red");
-                //    return false;
-                //}
-
             });
         });
     </script>

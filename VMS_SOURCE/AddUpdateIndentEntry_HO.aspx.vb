@@ -1261,6 +1261,45 @@ Partial Class AddUpdateIndentEntry_HO
     End Sub
     <System.Web.Script.Services.ScriptMethod()>
     <System.Web.Services.WebMethod()>
+    Public Shared Function SKUSearch(ByVal prefixText As String, ByVal count As Integer, ByVal contextKey As String) As String()
+        Dim vendorcode As String = String.Empty
+        Dim depotcode As String = String.Empty
+        Dim SKUdetails As List(Of String) = New List(Of String)()
+
+        If Not String.IsNullOrEmpty(contextKey) Then
+            Dim parts As String() = contextKey.Split("|"c)
+            If parts.Length > 0 Then
+                vendorcode = parts(0)
+            End If
+            If parts.Length > 1 Then
+                depotcode = parts(1)
+            End If
+        End If
+
+        If prefixText.Length >= 3 Then
+            Try
+                Dim ms As IndentMaster = New IndentMaster()
+                Dim ds As DataSet = ms.GetSKU(prefixText, vendorcode, depotcode)
+
+                If ((ds IsNot Nothing) AndAlso ds.Tables.Count > 0) Then
+                    If ((ds.Tables(0) IsNot Nothing) AndAlso ds.Tables(0).Rows.Count > 0) Then
+                        For i As Integer = 0 To ds.Tables(0).Rows.Count - 1
+                            SKUdetails.Add(AjaxControlToolkit.AutoCompleteExtender.CreateAutoCompleteItem(
+                                ds.Tables(0).Rows(i)("sku_desc").ToString(),
+                                ds.Tables(0).Rows(i)("sku_code").ToString()))
+                        Next
+                    End If
+                End If
+            Catch ex As Exception
+
+            End Try
+        End If
+
+        Return SKUdetails.ToArray()
+    End Function
+
+    <System.Web.Script.Services.ScriptMethod()>
+    <System.Web.Services.WebMethod()>
     Public Shared Function SKUCodeSearch(ByVal skucode As String, ByVal vendorcode As String, ByVal depotcode As String) As List(Of Object)
         Dim ms As IndentMaster = New IndentMaster()
         Dim SKUDetails As List(Of Object) = New List(Of Object)()
