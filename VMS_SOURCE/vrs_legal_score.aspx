@@ -218,13 +218,12 @@
                                                 <asp:Label ID="lblFileName" Text="" runat="server" Visible="False" />
 
                                                 <asp:LinkButton ID="lnkDownload" runat="server"
-                                                    Text="Download"
                                                     CommandArgument='<%# Eval("file_path") %>'
                                                     OnCommand="lnkDownload_Command"
                                                     Visible='<%# Not String.IsNullOrEmpty(Eval("file_path").ToString()) %>'
-                                                    CssClass="btn btn-sm btn-primary tableBtnXs"
+                                                    ToolTip="Download Document"
                                                     CausesValidation="false"
-                                                    UseSubmitBehavior="false" />
+                                                    UseSubmitBehavior="false"><i class="fa fa-download" style="color:#3adede;"></i></asp:LinkButton>
 
                                             </ItemTemplate>
                                             <ControlStyle></ControlStyle>
