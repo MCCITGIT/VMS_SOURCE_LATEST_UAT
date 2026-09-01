@@ -19,6 +19,13 @@
             return false;
         }
     </script>
+    <style>
+        .no-record-card table tr td {
+            border-radius: 10px;
+            background-color:white !important;
+            border: 1px solid #000000;
+        }
+    </style>
 
     <div class="breadcrumbs">
         <div class="leftFung">
@@ -143,7 +150,7 @@
                             <asp:DropDownList ID="ddlPageSize" runat="server" CssClass="form-control select2" AutoPostBack="true"></asp:DropDownList>
                         </div>
                     </div>
-                    <div class="table-responsive">
+                    <div class="table-responsive no-record-card">
                         <asp:GridView ID="gvChallanDetails" runat="server" AutoGenerateColumns="false" AllowPaging="True"
                             Visible="true" BorderWidth="1" CssClass="table table-hover upgradDataGrid" EmptyDataText="No Record Found">
                             <RowStyle CssClass="tlrowlight" />

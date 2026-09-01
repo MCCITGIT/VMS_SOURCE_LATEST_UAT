@@ -25,7 +25,13 @@
     <script type="text/javascript">
         var cal1 = new CalendarPopup();
     </script>
-
+    <style>
+        .no-record-card table tr td {
+            border-radius: 10px;
+            background-color:white !important;
+            border: 1px solid #000000;
+        }
+    </style>
     <div class="breadcrumbs">
         <div class="leftFung">
             <a href="Home.aspx" title="Home"><i class="fas fa-home"></i></a>
@@ -125,7 +131,7 @@
                 <div class="card-body">
                     <asp:UpdatePanel ID="UpdatePanel1" runat="server">
                         <ContentTemplate>
-                            <div class="table-responsive">
+                            <div class="table-responsive no-record-card">
                                 <asp:GridView ID="gvDespatchRecvList" EmptyDataText="No record(s) found." runat="server" AutoGenerateColumns="False" BorderWidth="1" CssClass="table table-hover upgradDataGrid">
                                     <RowStyle CssClass="tlrowlight" />
                                     <PagerStyle CssClass="PagerGrid" HorizontalAlign="Right" />
