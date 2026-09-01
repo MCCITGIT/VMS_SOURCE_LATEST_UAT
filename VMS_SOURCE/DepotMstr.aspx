@@ -23,6 +23,23 @@
         }
     </script>
 
+    <style type="text/css">
+        .box-label {
+            border: 1px solid #bfc9d3;
+            border-radius: 13px;
+            padding: 6px 12px;
+            min-height: 38px;
+            background-color: #fff;
+            font-weight: 400;
+            color: #24425c;
+        }
+
+        .box-label.textarea-label {
+            min-height: 72px;
+            white-space: pre-wrap;
+        }
+    </style>
+
     <div class="breadcrumbs">
         <div class="leftFung">
             <a href="Home.aspx" title="Home"><i class="fas fa-home"></i></a>
