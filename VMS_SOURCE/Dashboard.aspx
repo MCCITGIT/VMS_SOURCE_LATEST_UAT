@@ -184,15 +184,15 @@
                 <div id="dashSourceBody" class="collapse show">
                 <div class="dash-panel-body">
                     <div class="dash-toolbar">
-                        <div class="form-group row ddlFinYear">
-                            <label for="ddlPageSize" class="col-auto form-control-label">
+                        <div class="form-group ddlFinYear" style="display: flex;">
+                            <label for="ddlPageSize" class="col-auto form-control-label" style="padding: 0;">
                                 <asp:Label ID="Label4" runat="server" Text="Results Per Page:"></asp:Label>
                             </label>
                             <div class="col-auto">
                                 <asp:DropDownList ID="ddlPageSize" runat="server" CssClass="form-control select2" AutoPostBack="True"></asp:DropDownList>
                             </div>
                         </div>
-                        <div class="form-group row ddlPageSize dash-stock-chip">
+                        <div class="form-group ddlPageSize dash-stock-chip">
                             <label for="ddlPageSize" class="col-auto form-control-label">Last Update Stock As On:</label>
                             <asp:Label ID="lblLaststok" runat="server" CssClass="col-auto font-weight-bold" Text=""></asp:Label>
                         </div>

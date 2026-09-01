@@ -324,7 +324,7 @@ body {
     font-size: 13px;
     line-height: 15px;
     border: 1px solid #bfc9d3;
-    border-radius: 13px;
+    border-radius: 8px;
 }
 
 .card .card-body .btn {
@@ -359,7 +359,7 @@ body {
 }
 
 .mandatory {
-    font-size: 13px;
+    font-size: 12px;
 }
 
 .CheckBoxList {
@@ -451,9 +451,9 @@ body {
         .upgradDataGrid tr td select.form-control,
         .upgradDataGrid tr td input.form-control {
             padding: 4px 6px;
-            height: 32px;
+            height: 28px;
             font-size: 12px;
-            line-height: 14px;
+            line-height: 9px;
             border-radius: 8px;
         }
 
@@ -1599,7 +1599,7 @@ body {
         border: 1px solid #aaa !important;
         min-height: 33px !important;
         background-color: #fff !important;
-        border-radius: 13px !important;
+        border-radius: 8px !important;
         padding: 4px 20px 4px 8px !important;
         box-shadow: none;
     }
@@ -2227,7 +2227,7 @@ body {
     color: #495057;
     background-color: #fff;
     border: 1px solid #ced4da;
-    border-radius: 13px;
+    border-radius: 8px;
     transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
     font-size: 13px;
     line-height: 18px;

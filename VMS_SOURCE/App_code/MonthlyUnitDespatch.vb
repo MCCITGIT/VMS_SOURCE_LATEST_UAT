@@ -101,6 +101,52 @@ Public Class MonthlyUnitDespatch
         PrjectList = DBFactory.GetHelper().ExecuteDataSet("MonthlyUnitDespatch_Report_vr1", Data.CommandType.StoredProcedure, sqlParams)
         Return PrjectList
     End Function
+
+    Public Function GetMonthlyUnitDespatchReportVr2(ByVal region As String, ByVal depot As String, ByVal unit As String, ByVal FromDate As DateTime, ByVal ToDate As DateTime, ByVal active As String) As DataSet
+
+        Dim PrjectList As DataSet
+
+        Dim sqlParams(5) As SqlParameter
+
+        sqlParams(0) = New SqlParameter()
+        sqlParams(0).ParameterName = "@region"
+        sqlParams(0).DbType = DbType.String
+        sqlParams(0).Direction = Data.ParameterDirection.Input
+        sqlParams(0).Value = IIf(region <> String.Empty, region, DBNull.Value)
+
+        sqlParams(1) = New SqlParameter()
+        sqlParams(1).ParameterName = "@depot"
+        sqlParams(1).DbType = DbType.String
+        sqlParams(1).Direction = Data.ParameterDirection.Input
+        sqlParams(1).Value = IIf(depot <> String.Empty, depot, DBNull.Value)
+
+        sqlParams(2) = New SqlParameter()
+        sqlParams(2).ParameterName = "@unit"
+        sqlParams(2).DbType = DbType.String
+        sqlParams(2).Direction = Data.ParameterDirection.Input
+        sqlParams(2).Value = IIf(unit <> String.Empty, unit, DBNull.Value)
+
+        sqlParams(3) = New SqlParameter()
+        sqlParams(3).ParameterName = "@FromDate"
+        sqlParams(3).DbType = DbType.Date
+        sqlParams(3).Direction = Data.ParameterDirection.Input
+        sqlParams(3).Value = FromDate
+
+        sqlParams(4) = New SqlParameter()
+        sqlParams(4).ParameterName = "@ToDate"
+        sqlParams(4).DbType = DbType.Date
+        sqlParams(4).Direction = Data.ParameterDirection.Input
+        sqlParams(4).Value = ToDate
+
+        sqlParams(5) = New SqlParameter()
+        sqlParams(5).ParameterName = "@active"
+        sqlParams(5).DbType = DbType.String
+        sqlParams(5).Direction = Data.ParameterDirection.Input
+        sqlParams(5).Value = active
+
+        PrjectList = DBFactory.GetHelper().ExecuteDataSet("MonthlyUnitDespatch_Report_vr6", Data.CommandType.StoredProcedure, sqlParams)
+        Return PrjectList
+    End Function
 #End Region
 
 #Region "Get Year , Months from Standard params "
