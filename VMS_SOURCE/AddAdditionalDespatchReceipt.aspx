@@ -4,7 +4,7 @@
 <%--<asp:Content ID="Content1" ContentPlaceHolderID="Head1" runat="Server">
 </asp:Content>--%>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
-
+    <script type="text/javascript" src="Scripts/FunctionValidator.js"></script>
     <script src="Scripts/ValidationAdditionalDespatchReceipt.js" type="text/javascript"></script>
     <script type="text/javascript">
         document.onkeydown = checkValue;
@@ -45,7 +45,7 @@
         <ContentTemplate>
             <div class="card">
                 <div class="card-body">
-                    <asp:Label ID="lblErrorMessage" CssClass="errormsg" Visible="true" runat="server"></asp:Label>
+                    <asp:Label ID="lblErrorMessage" ClientIDMode="Static" CssClass="errormsg" Visible="true" runat="server"></asp:Label>
                     <div class="row">
                         <div class="col-md-3">
                             <div class="form-group">
@@ -56,7 +56,7 @@
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label class="form-control-label">Challan Date:<span id="Span1" class="mandatory">*</span></label>
-                                <asp:TextBox ID="txtChallanDate" runat="server" CssClass="form-control" MaxLength="10"></asp:TextBox>
+                                <asp:TextBox ID="txtChallanDate" ClientIDMode="Static" runat="server" CssClass="form-control" MaxLength="10"></asp:TextBox>
                                 <a class="formCalndIcon" href="javascript:cal1.select(document.forms[0].txtChallanDate,'ChallanDate','dd/MM/yyyy');">
                                     <img src="images/date_icon.gif" id="ChallanDate" alt="Calender" style="border: 0" />
                                 </a>
@@ -65,7 +65,7 @@
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label class="form-control-label">Region:<span id="Span5" class="mandatory">*</span></label>
-                                <asp:DropDownList ID="ddlRegion" runat="server" CssClass="form-control select2" AutoPostBack="True">
+                                <asp:DropDownList ID="ddlRegion" ClientIDMode="Static" runat="server" CssClass="form-control select2" AutoPostBack="True">
                                 </asp:DropDownList>
                             </div>
                         </div>
@@ -74,7 +74,7 @@
                                 <label class="form-control-label">Source:<span id="Span2" class="mandatory">*</span></label>
                                 <asp:UpdatePanel ID="UpdatePanel2" runat="server">
                                     <ContentTemplate>
-                                        <asp:DropDownList ID="ddlSource" CssClass="form-control select2" runat="server">
+                                        <asp:DropDownList ID="ddlSource" ClientIDMode="Static" CssClass="form-control select2" runat="server">
                                         </asp:DropDownList>
                                     </ContentTemplate>
                                     <Triggers>
@@ -112,31 +112,31 @@
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label class="form-control-label">Transporter Name:<span id="Span7" class="mandatory">*</span></label>
-                                <asp:TextBox ID="txtTransporterName" CssClass="form-control" runat="server" MaxLength="30"></asp:TextBox>
+                                <asp:TextBox ID="txtTransporterName" ClientIDMode="Static" CssClass="form-control" runat="server" MaxLength="30"></asp:TextBox>
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label class="form-control-label">Road Permit No.:<span id="Span8" class="mandatory">*</span></label>
-                                <asp:TextBox ID="txtRoadPermitNo" CssClass="form-control" runat="server" MaxLength="30"></asp:TextBox>
+                                <asp:TextBox ID="txtRoadPermitNo" ClientIDMode="Static" CssClass="form-control" runat="server" MaxLength="30"></asp:TextBox>
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label class="form-control-label">Truck No.:<span id="Span9" class="mandatory">*</span></label>
-                                <asp:TextBox ID="txtTruckNo" CssClass="form-control" runat="server" MaxLength="10"></asp:TextBox>
+                                <asp:TextBox ID="txtTruckNo" ClientIDMode="Static" CssClass="form-control" runat="server" MaxLength="10"></asp:TextBox>
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label class="form-control-label">Vendor Challan No.:<span id="Span10" class="mandatory">*</span></label>
-                                <asp:TextBox ID="txtCenvatNo" CssClass="form-control" runat="server" MaxLength="20"></asp:TextBox>
+                                <asp:TextBox ID="txtCenvatNo" ClientIDMode="Static" CssClass="form-control" runat="server" MaxLength="20"></asp:TextBox>
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label class="form-control-label">Vednor Challan Date:<span id="Span11" class="mandatory">*</span></label>
-                                <asp:TextBox ID="txtCenvatDate" CssClass="form-control" runat="server" MaxLength="10"></asp:TextBox>
+                                <asp:TextBox ID="txtCenvatDate" ClientIDMode="Static" CssClass="form-control" runat="server" MaxLength="10"></asp:TextBox>
                                 <a class="formCalndIcon" href="javascript:cal1.select(document.forms[0].txtCenvatDate,'CenvatDate','dd/MM/yyyy');">
                                     <img src="images/date_icon.gif" id="CenvatDate" alt="Calender" style="border: 0" />
                                 </a>
@@ -145,19 +145,19 @@
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label class="form-control-label">Received Ltr:<span id="Span12" class="mandatory">*</span></label>
-                                <asp:TextBox ID="txtReceivedLtr" CssClass="form-control" runat="server" MaxLength="16" Text="0.00"></asp:TextBox>
+                                <asp:TextBox ID="txtReceivedLtr" ClientIDMode="Static" CssClass="form-control" runat="server" MaxLength="16" Text="0.00"></asp:TextBox>
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label class="form-control-label">Received Kg:<span id="Span13" class="mandatory">*</span></label>
-                                <asp:TextBox ID="txtReceivedKg" CssClass="form-control" runat="server" MaxLength="16" Text="0.00"></asp:TextBox>
+                                <asp:TextBox ID="txtReceivedKg" ClientIDMode="Static" CssClass="form-control" runat="server" MaxLength="16" Text="0.00"></asp:TextBox>
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label class="form-control-label">Receipt Date:<span id="Span14" class="mandatory">*</span></label>
-                                <asp:TextBox ID="txtReceiptDate" CssClass="form-control" runat="server" MaxLength="10"></asp:TextBox>
+                                <asp:TextBox ID="txtReceiptDate" ClientIDMode="Static" CssClass="form-control" runat="server" MaxLength="10"></asp:TextBox>
                                 <a class="formCalndIcon" href="javascript:cal1.select(document.forms[0].txtReceiptDate,'ReceiptDate','dd/MM/yyyy');">
                                     <img src="images/date_icon.gif" id="ReceiptDate" alt="Calender" style="border: 0" />
                                 </a>
@@ -165,8 +165,8 @@
                         </div>
                         <div class="col-md-3 form-btn-mt">
                             <div class="form-group">
-                                <asp:Button ID="btnSubmit" runat="server" Text="Submit" CssClass="btn btn-success btn-sm" />
-                                <asp:Button ID="btnCancel" runat="server" Text="Cancel" CssClass="btn btn-secondary btn-sm" />
+                                <asp:Button ID="btnSubmit" ClientIDMode="Static" runat="server" Text="Submit" CssClass="btn btn-success btn-sm" />
+                                <asp:Button ID="btnCancel" ClientIDMode="Static" runat="server" Text="Cancel" CssClass="btn btn-secondary btn-sm" />
                             </div>
                         </div>
                     </div>
