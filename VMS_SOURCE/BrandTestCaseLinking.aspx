@@ -131,7 +131,7 @@
                                     <th style="width: 10%; text-align: center;">Active</th>
                                     <th style="width: 15%; text-align: center;">Action</th>
                                 </tr>
-                                <tr>
+                                <tr class="tlrowlight">
                                     <td>
                                         <asp:DropDownList class="form-control select2" ID="ddlTest" runat="server" AutoPostBack="true"></asp:DropDownList>
                                     </td>
