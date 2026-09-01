@@ -674,5 +674,43 @@ Public Class POLinkingRequestClass
             Throw
         End Try
     End Function
+
+    Public Function GetVendorPaymentDashboardDetails(ByVal vendorName As String, ByVal fromDate As DateTime, ByVal toDate As DateTime, ByVal userId As String) As DataSet
+
+        Try
+            Dim DS As DataSet
+            Dim sqlParams(3) As SqlParameter
+
+            sqlParams(0) = New SqlParameter()
+            sqlParams(0).ParameterName = "@from_date"
+            sqlParams(0).DbType = DbType.DateTime
+            sqlParams(0).Direction = ParameterDirection.Input
+            sqlParams(0).Value = fromDate
+
+            sqlParams(1) = New SqlParameter()
+            sqlParams(1).ParameterName = "@to_date"
+            sqlParams(1).DbType = DbType.DateTime
+            sqlParams(1).Direction = ParameterDirection.Input
+            sqlParams(1).Value = toDate
+
+            sqlParams(2) = New SqlParameter()
+            sqlParams(2).ParameterName = "@user_id"
+            sqlParams(2).DbType = DbType.String
+            sqlParams(2).Direction = ParameterDirection.Input
+            sqlParams(2).Value = If(String.IsNullOrEmpty(userId), DBNull.Value, CObj(userId))
+
+            sqlParams(3) = New SqlParameter()
+            sqlParams(3).ParameterName = "@vendor_name"
+            sqlParams(3).DbType = DbType.String
+            sqlParams(3).Direction = ParameterDirection.Input
+            sqlParams(3).Value = If(String.IsNullOrEmpty(vendorName), DBNull.Value, CObj(vendorName))
+
+            DS = DBFactory.GetHelper().ExecuteDataSet("[dbo].[payment_reconciliation_dashboard_dtls]", CommandType.StoredProcedure, sqlParams)
+            Return DS
+
+        Catch ex As Exception
+            Throw
+        End Try
+    End Function
 #End Region
 End Class
