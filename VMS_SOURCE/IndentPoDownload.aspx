@@ -205,7 +205,7 @@
 
                                 <asp:TemplateField HeaderText="Remarks">
                                     <ItemTemplate>
-                                        <asp:TextBox ID="txtRemarks" runat="server" TextMode="MultiLine" Text='<%# Bind("remarks") %>' Enabled="false"></asp:TextBox>
+                                        <asp:TextBox ID="txtRemarks" runat="server" TextMode="MultiLine" Text='<%# Bind("remarks") %>' Enabled="false" style="border-radius:8px; height: 33px"></asp:TextBox>
                                         <asp:HiddenField ID="hdnindentId" runat="server" Value='<%# Bind("indent_no") %>' />
                                         <asp:HiddenField ID="hdnfinyr" runat="server" Value='<%# Bind("fin_year") %>' />
                                         <asp:HiddenField ID="hdnfinmonth" runat="server" Value='<%# Bind("fin_month") %>' />

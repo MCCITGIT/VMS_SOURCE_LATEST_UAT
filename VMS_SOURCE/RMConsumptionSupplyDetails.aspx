@@ -9,6 +9,12 @@
     <script type="text/javascript" src="Scripts/FunctionValidator.js"></script>
     <%--<asp:ToolkitScriptManager runat="server"></asp:ToolkitScriptManager>--%>
 
+    <style>
+        .p-rm-supply-table table tbody tr:nth-child(4) {
+            box-shadow: none !important;
+        }
+    </style>
+
     <div class="breadcrumbs">
         <div class="leftFung">
             <a href="Home.aspx" title="Home"><i class="fas fa-home"></i></a>
@@ -64,7 +70,7 @@
         <div class="card-body">
             <asp:UpdatePanel ID="updetails" runat="server">
                 <ContentTemplate>
-                    <div class="table-responsive">
+                    <div class="table-responsive p-rm-supply-table">
                         <asp:GridView CssClass="upgradDataGrid" border="1" CellSpacing="0" CellPadding="0" ID="gvConsumption" runat="server"
                             AutoGenerateColumns="false" AllowPaging="false" Visible="true" ShowFooter="false" GridLines="both" OnRowCommand="gvConsumption_RowCommand" OnDataBound="gvConsumption_DataBound">
                             <RowStyle CssClass="tlrowlight" />
