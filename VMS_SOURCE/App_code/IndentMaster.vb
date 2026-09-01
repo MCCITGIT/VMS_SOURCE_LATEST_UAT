@@ -1689,4 +1689,57 @@ Public Class IndentMaster
         Return ds
 
     End Function
+
+    Public Function InsertIndentDetails_HO_Bulk(ByRef indnt_dtl As DataTable, ByRef user As String, ByVal sqlConn As SqlConnection, ByVal sqlTrans As SqlTransaction) As DataSet
+
+        Dim ds As New DataSet()
+
+        Try
+            Dim sqlParams As SqlParameter() = New SqlParameter(1) {}
+            sqlParams(0) = New SqlParameter()
+            sqlParams(0).ParameterName = "@bulk_data"
+            sqlParams(0).SqlDbType = SqlDbType.Structured
+            sqlParams(0).Direction = System.Data.ParameterDirection.Input
+            sqlParams(0).Value = indnt_dtl
+
+            sqlParams(1) = New SqlParameter()
+            sqlParams(1).ParameterName = "@created_user"
+            sqlParams(1).DbType = DbType.String
+            sqlParams(1).Direction = System.Data.ParameterDirection.Input
+            sqlParams(1).Value = user
+
+            Using sqlCmd As New SqlCommand("[dbo].[usp_bulk_indent_upload]", sqlConn, sqlTrans)
+                sqlCmd.CommandType = CommandType.StoredProcedure
+                sqlCmd.Parameters.AddRange(sqlParams)
+
+                Using da As New SqlDataAdapter(sqlCmd)
+                    da.Fill(ds)
+                End Using
+            End Using
+
+        Catch ex As Exception
+            Throw
+        End Try
+
+        Return ds
+
+    End Function
+
+    Function GetBulkIndentList(ByRef indnt_dtl As DataTable) As DataSet
+
+        Dim dsSKU As System.Data.DataSet
+
+        Dim sqlParams(0) As SqlParameter
+
+        sqlParams(0) = New SqlParameter()
+        sqlParams(0).ParameterName = "@bulk_data"
+        sqlParams(0).SqlDbType = SqlDbType.Structured
+        sqlParams(0).Direction = System.Data.ParameterDirection.Input
+        sqlParams(0).Value = indnt_dtl
+
+        dsSKU = DBFactory.GetHelper().ExecuteDataSet("[dbo].[get_indent_insert_list]", Data.CommandType.StoredProcedure, sqlParams)
+
+        Return dsSKU
+
+    End Function
 End Class
