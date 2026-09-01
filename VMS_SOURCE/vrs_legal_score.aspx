@@ -53,6 +53,15 @@
         }
     </script>
 
+    <style>
+        .p-vrs-legal-table td:has(a[title="Download Document"]) {
+            display: flex;
+            width: 100% !important;
+            gap: 4px;
+            align-items: center;
+        }
+    </style>
+
     <div class="breadcrumbs">
         <div class="leftFung">
             <a href="Home.aspx" title="Home"><i class="fas fa-home"></i></a>
@@ -119,7 +128,7 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-12">
-                            <div class="table-responsive" style="max-height: 300px; overflow-y: auto;">
+                            <div class="table-responsive p-vrs-legal-table" style="max-height: 300px; overflow-y: auto;">
                                 <asp:GridView ID="gvLegalScoreList" runat="server" AutoGenerateColumns="False" EmptyDataText="No records found" AllowPaging="true" PageSize="20" BorderWidth="1" CssClass="table table-hover upgradDataGrid" OnRowDataBound="gvLegalScoreList_RowDataBound">
                                     <RowStyle CssClass="tlrowlight" />
                                     <PagerStyle CssClass="PagerGrid" HorizontalAlign="Right" />

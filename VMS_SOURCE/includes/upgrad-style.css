@@ -451,9 +451,9 @@ body {
         .upgradDataGrid tr td select.form-control,
         .upgradDataGrid tr td input.form-control {
             padding: 4px 6px;
-            height: 32px;
+            height: 28px;
             font-size: 12px;
-            line-height: 14px;
+            line-height: 9px;
             border-radius: 8px;
         }
 
