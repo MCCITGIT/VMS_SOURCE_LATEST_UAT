@@ -275,4 +275,96 @@ Public Class LoadDropAddUpdateClass
     End Function
 #End Region
 
+#Region "Bulk Load Drop Upload"
+
+    Function GetBulkLoadDropList(ByRef loadDropDtl As DataTable, ByVal processYear As String, ByVal processMonth As String) As DataSet
+        Dim ds As New DataSet()
+
+        loadDropDtl.TableName = "dbo.udt_BulkLoadDropUpload"
+
+        Dim sqlParams(2) As SqlParameter
+
+        sqlParams(0) = New SqlParameter()
+        sqlParams(0).ParameterName = "@bulk_data"
+        sqlParams(0).SqlDbType = SqlDbType.Structured
+        sqlParams(0).TypeName = "dbo.udt_BulkLoadDropUpload"
+        sqlParams(0).Direction = Data.ParameterDirection.Input
+        sqlParams(0).Value = loadDropDtl
+
+        sqlParams(1) = New SqlParameter()
+        sqlParams(1).ParameterName = "@process_year"
+        sqlParams(1).DbType = DbType.String
+        sqlParams(1).Direction = Data.ParameterDirection.Input
+        sqlParams(1).Value = processYear
+
+        sqlParams(2) = New SqlParameter()
+        sqlParams(2).ParameterName = "@process_month"
+        sqlParams(2).DbType = DbType.String
+        sqlParams(2).Direction = Data.ParameterDirection.Input
+        sqlParams(2).Value = processMonth
+
+        Using sqlConn As SqlConnection = DBFactory.GetHelper.OpenConnection()
+            Using sqlCmd As New SqlCommand("[dbo].[get_bulk_load_drop_list]", sqlConn)
+                sqlCmd.CommandType = CommandType.StoredProcedure
+                sqlCmd.Parameters.AddRange(sqlParams)
+
+                Using da As New SqlDataAdapter(sqlCmd)
+                    da.Fill(ds)
+                End Using
+            End Using
+        End Using
+
+        Return ds
+    End Function
+
+    Function InsertBulkLoadDrop(ByRef loadDropDtl As DataTable, ByVal processYear As String, ByVal processMonth As String, ByVal createdUser As String, ByVal sqlConn As SqlConnection, ByVal sqlTrans As SqlTransaction) As DataSet
+        Dim ds As New DataSet()
+
+        Try
+            loadDropDtl.TableName = "dbo.udt_BulkLoadDropUpload"
+
+            Dim sqlParams(3) As SqlParameter
+
+            sqlParams(0) = New SqlParameter()
+            sqlParams(0).ParameterName = "@bulk_data"
+            sqlParams(0).SqlDbType = SqlDbType.Structured
+            sqlParams(0).TypeName = "dbo.udt_BulkLoadDropUpload"
+            sqlParams(0).Direction = Data.ParameterDirection.Input
+            sqlParams(0).Value = loadDropDtl
+
+            sqlParams(1) = New SqlParameter()
+            sqlParams(1).ParameterName = "@process_year"
+            sqlParams(1).DbType = DbType.String
+            sqlParams(1).Direction = Data.ParameterDirection.Input
+            sqlParams(1).Value = processYear
+
+            sqlParams(2) = New SqlParameter()
+            sqlParams(2).ParameterName = "@process_month"
+            sqlParams(2).DbType = DbType.String
+            sqlParams(2).Direction = Data.ParameterDirection.Input
+            sqlParams(2).Value = processMonth
+
+            sqlParams(3) = New SqlParameter()
+            sqlParams(3).ParameterName = "@created_user"
+            sqlParams(3).DbType = DbType.String
+            sqlParams(3).Direction = Data.ParameterDirection.Input
+            sqlParams(3).Value = createdUser
+
+            Using sqlCmd As New SqlCommand("[dbo].[usp_bulk_load_drop_upload]", sqlConn, sqlTrans)
+                sqlCmd.CommandType = CommandType.StoredProcedure
+                sqlCmd.Parameters.AddRange(sqlParams)
+
+                Using da As New SqlDataAdapter(sqlCmd)
+                    da.Fill(ds)
+                End Using
+            End Using
+        Catch ex As Exception
+            Throw
+        End Try
+
+        Return ds
+    End Function
+
+#End Region
+
 End Class
