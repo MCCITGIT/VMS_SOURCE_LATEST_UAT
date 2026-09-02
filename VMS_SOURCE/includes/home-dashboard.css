@@ -1,0 +1,730 @@
+/* Home.aspx — visual only, scoped to .vms-home. Matches the light dashboard reference. */
+
+.vms-home {
+    --home-surface: #fcfcfd;
+    --home-ink: #10243a;
+    --home-muted: #6b7b8f;
+    --home-line: #e7eef5;
+    --home-soft: #f4f7fb;
+    --home-shadow: 0 1px 2px rgba(16, 56, 90, 0.04), 0 10px 24px rgba(16, 56, 90, 0.06);
+    --home-shadow-hover: 0 8px 22px rgba(16, 56, 90, 0.12);
+    --home-radius: 16px;
+    --home-primary: #1b5a8c;
+    --home-primary-deep: #10385a;
+    --home-accent: #0f8a7a;
+    --home-rose: #c0392b;
+    --home-amber: #c47a12;
+    font-size: 13px;
+    color: var(--home-ink);
+}
+
+.vms-home .row {
+    margin-left: -6px;
+    margin-right: -6px;
+}
+
+.vms-home .row > [class*="col-"] {
+    padding-left: 6px;
+    padding-right: 6px;
+}
+
+.vms-home .newCard {
+    border-radius: var(--home-radius);
+    border: 1px solid var(--home-line);
+    background: var(--home-surface);
+    box-shadow: var(--home-shadow);
+    margin: 0 0 10px 0;
+    overflow: hidden;
+}
+
+.vms-home .newCardHead {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 10px 14px 8px;
+    border-bottom: 0;
+    background: transparent;
+}
+
+.vms-home .newCardBody {
+    padding: 0 14px 12px;
+}
+
+.vms-home .newHeadTitle {
+    margin: 0;
+    color: var(--home-primary-deep);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.15px;
+    line-height: 1.2;
+}
+
+/* ---- Slim flash news banner ---- */
+.vms-home .flashComplainBTCCard {
+    display: flex;
+    align-items: stretch;
+    gap: 10px;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.vms-home .flashComplainBTCCard > .newCard {
+    flex: 1 1 auto;
+    min-width: 0;
+    margin-bottom: 0;
+    width: auto !important;
+    display: flex;
+    align-items: center;
+    min-height: 48px;
+    padding: 0 14px;
+    background: #eef4fa;
+    border-color: #d7e4f0;
+    box-shadow: none;
+}
+
+.vms-home .home-card-flash .newCardHead {
+    flex: 0 0 auto;
+    padding: 0;
+    white-space: nowrap;
+}
+
+.vms-home .home-card-flash .newCardBody {
+    flex: 1 1 auto;
+    min-width: 0;
+    padding: 0 0 0 12px;
+}
+
+.vms-home .home-card-flash .newHeadTitle {
+    font-size: 12px;
+    font-weight: 750;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    color: var(--home-primary);
+}
+
+.vms-home .noRecordFnew,
+.vms-home [id$="news_marquee_scroll"] {
+    border: 0;
+    background: transparent;
+    color: var(--home-ink);
+    font-size: 13px;
+    font-weight: 500;
+    min-height: 32px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.vms-home [id$="news_marquee_scroll"] marquee {
+    color: var(--home-rose) !important;
+    font-weight: 650;
+    width: 100%;
+}
+
+.vms-home .complainBTCCard {
+    flex: 0 0 auto;
+    width: auto;
+    text-decoration: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.vms-home .complainBTCCard .newCard {
+    height: 100%;
+    min-height: 48px;
+    min-width: 132px;
+    margin: 0;
+    padding: 0 16px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border: 0;
+    border-radius: 999px;
+    background: linear-gradient(180deg, #2270ad 0%, #10385a 100%);
+    box-shadow: 0 6px 14px rgba(16, 56, 90, 0.22);
+    transition: transform 0.12s ease, filter 0.18s ease;
+}
+
+.vms-home .complainBTCCard:hover,
+.vms-home .complainBTCCard:focus {
+    text-decoration: none;
+}
+
+.vms-home .complainBTCCard:hover .newCard,
+.vms-home .complainBTCCard:focus .newCard {
+    filter: brightness(1.06);
+}
+
+.vms-home .complainBTCCard:active .newCard {
+    transform: scale(0.97);
+}
+
+.vms-home .complainBTCCard .newCard .cbtcImg {
+    color: #fff;
+    font-size: 15px;
+    margin: 0;
+}
+
+.vms-home .complainBTCCard .newCard p {
+    margin: 0;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 650;
+    line-height: 1;
+}
+
+/* ---- Action required + Stock ---- */
+.vms-home .home-action-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: stretch;
+    min-height: 36px;
+}
+
+.vms-home .home-action-list br {
+    display: none;
+}
+
+.vms-home .home-action-list a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 36px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    border: 1px solid #f3e4c4;
+    background: #fff8eb;
+    color: var(--home-primary-deep);
+    font-size: 12px;
+    font-weight: 650;
+    text-decoration: none;
+    transition: transform 0.12s ease, box-shadow 0.18s ease;
+}
+
+.vms-home .home-action-list a:hover,
+.vms-home .home-action-list a:focus {
+    box-shadow: 0 4px 12px rgba(196, 122, 18, 0.14);
+    color: var(--home-primary-deep);
+    text-decoration: none;
+}
+
+.vms-home .home-action-list a:active {
+    transform: scale(0.98);
+}
+
+.vms-home .home-action-list:empty::after {
+    content: "No actions pending.";
+    color: var(--home-muted);
+    font-size: 12px;
+    font-weight: 600;
+    padding: 8px 0;
+}
+
+.vms-home .home-stock-chip {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    min-height: 36px;
+    padding: 6px 4px;
+}
+
+.vms-home .home-stock-chip [id$="lblLastStockUpdateDate"] {
+    color: var(--home-rose) !important;
+    font-size: 18px;
+    font-weight: 750 !important;
+    letter-spacing: 0.2px;
+    font-variant-numeric: tabular-nums;
+}
+
+.vms-home .home-card-action,
+.vms-home .home-card-stock {
+    margin-bottom: 10px;
+}
+
+.vms-home .home-card-action .newCardHead,
+.vms-home .home-card-stock .newCardHead {
+    padding-bottom: 4px;
+}
+
+/* ---- Chart (primary left card) ---- */
+.vms-home .home-card-chart .newCardHead {
+    padding: 12px 14px 4px;
+}
+
+.vms-home .home-chart-frame {
+    position: relative;
+    height: 228px;
+    background: #f8fafc;
+    border: 1px solid var(--home-line);
+    border-radius: 12px;
+    padding: 8px 8px 2px;
+}
+
+.vms-home #chart-container {
+    width: 100%;
+    max-width: 100%;
+}
+
+.vms-home .home-chart-frame canvas {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+/* ---- KPI metric cards (reference-style) ---- */
+.vms-home .dbQuikCardList {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+    margin: 0 0 10px 0;
+    align-items: stretch;
+}
+
+.vms-home .loopQuikCars {
+    width: auto;
+    height: auto;
+    min-height: 118px;
+    margin: 0;
+    padding: 12px 12px 8px;
+    border-radius: 16px;
+    border: 1px solid var(--home-line);
+    background: var(--home-surface);
+    box-shadow: var(--home-shadow);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transition: transform 0.14s ease, box-shadow 0.18s ease;
+}
+
+.vms-home .loopQuikCars:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--home-shadow-hover);
+}
+
+.vms-home .qk-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 6px;
+}
+
+.vms-home .qk-top .quikName {
+    margin: 0;
+    padding: 0;
+    font-size: 11px;
+    font-weight: 650;
+    line-height: 1.3;
+    color: var(--home-muted);
+    text-transform: none;
+}
+
+.vms-home .qk-gauge {
+    flex: 0 0 auto;
+    width: 42px;
+    height: 22px;
+    overflow: hidden;
+    position: relative;
+}
+
+.vms-home .qk-gauge::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: conic-gradient(from 180deg, var(--home-primary) 0 58%, #e4edf5 58% 100%);
+    -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 5px), #000 calc(100% - 4px));
+    mask: radial-gradient(farthest-side, transparent calc(100% - 5px), #000 calc(100% - 4px));
+}
+
+.vms-home .quikFungView {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+}
+
+.vms-home .quikImgView {
+    flex: 0 0 auto;
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+    min-height: 32px;
+    max-width: 32px;
+    max-height: 32px;
+    border-radius: 10px;
+    background: #e8f1f8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.vms-home .quikImgView .quikImg {
+    color: var(--home-primary);
+    font-size: 14px !important;
+}
+
+.vms-home .quikDtls {
+    min-width: 0;
+    margin: 0;
+}
+
+.vms-home .quikNo {
+    display: block;
+    margin: 0;
+    padding: 0;
+    font-size: 22px;
+    font-weight: 750;
+    line-height: 1.1;
+    color: var(--home-primary-deep);
+    font-variant-numeric: tabular-nums;
+}
+
+.vms-home .quikLink {
+    position: static;
+    margin: auto 0 0 auto;
+    padding: 8px 0 2px;
+    min-height: 28px;
+    width: auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 4px;
+    font-size: 11px;
+    font-weight: 650;
+    color: var(--home-primary);
+    line-height: 1;
+    text-decoration: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.vms-home .quikLink:hover,
+.vms-home .quikLink:focus {
+    color: var(--home-primary-deep);
+    text-decoration: none;
+}
+
+.vms-home .qk-pending .qk-gauge::before {
+    background: conic-gradient(from 180deg, var(--home-rose) 0 42%, #f6e4e2 42% 100%);
+}
+
+.vms-home .qk-pending .quikImgView { background: #fdecea; }
+.vms-home .qk-pending .quikImg { color: var(--home-rose); }
+
+.vms-home .qk-complaints .qk-gauge::before,
+.vms-home .qk-expired .qk-gauge::before {
+    background: conic-gradient(from 180deg, var(--home-rose) 0 50%, #f6e4e2 50% 100%);
+}
+
+.vms-home .qk-complaints .quikImgView,
+.vms-home .qk-expired .quikImgView { background: #fdecea; }
+.vms-home .qk-complaints .quikImg,
+.vms-home .qk-expired .quikImg { color: var(--home-rose); }
+
+.vms-home .qk-indent .qk-gauge::before,
+.vms-home .qk-challan .qk-gauge::before {
+    background: conic-gradient(from 180deg, var(--home-amber) 0 48%, #f6ead4 48% 100%);
+}
+
+.vms-home .qk-indent .quikImgView,
+.vms-home .qk-challan .quikImgView { background: #fff8eb; }
+.vms-home .qk-indent .quikImg,
+.vms-home .qk-challan .quikImg { color: var(--home-amber); }
+
+.vms-home .qk-legal .qk-gauge::before {
+    background: conic-gradient(from 180deg, #6941c6 0 40%, #ece7f8 40% 100%);
+}
+
+.vms-home .qk-legal .quikImgView { background: #f5f3ff; }
+.vms-home .qk-legal .quikImg { color: #6941c6; }
+
+.vms-home .qk-audit {
+    background: #fdecee;
+    border-color: #f4d4d8;
+}
+
+.vms-home .qk-audit .qk-gauge::before {
+    background: conic-gradient(from 180deg, var(--home-rose) 0 62%, #f6e4e2 62% 100%);
+}
+
+.vms-home .qk-audit .quikImgView { background: #fadde1; }
+.vms-home .qk-audit .quikImg { color: var(--home-rose); }
+
+.vms-home .qk-sample {
+    background: #eef5fb;
+    border-color: #d5e4f2;
+}
+
+.vms-home .qk-sample .qk-gauge::before {
+    background: conic-gradient(from 180deg, var(--home-primary) 0 68%, #d7e4f0 68% 100%);
+}
+
+.vms-home .qk-docs .qk-gauge::before {
+    background: conic-gradient(from 180deg, var(--home-accent) 0 55%, #d7eee6 55% 100%);
+}
+
+/* ---- Quick links as pills ---- */
+.vms-home .home-card-links .newCardBody {
+    max-height: none;
+    overflow: visible;
+}
+
+.vms-home .menu {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.vms-home .menu:empty {
+    display: flex;
+    align-items: center;
+    min-height: 36px;
+}
+
+.vms-home .menu:empty::after {
+    content: "No quick links available.";
+    color: var(--home-muted);
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.vms-home .menu-item {
+    width: auto;
+    margin: 0;
+    padding: 7px 12px;
+    min-height: 36px;
+    border: 1px solid var(--home-line);
+    border-radius: 999px;
+    background: var(--home-soft);
+    display: inline-flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    text-align: center;
+    cursor: pointer;
+    outline: 0;
+    -webkit-tap-highlight-color: transparent;
+    transition: transform 0.12s ease, box-shadow 0.18s ease, background 0.18s ease, border-color 0.18s ease;
+}
+
+.vms-home .menu-item:hover,
+.vms-home .menu-item:focus {
+    transform: translateY(-1px);
+    background: #e8f1f8;
+    border-color: #c9d8e8;
+    box-shadow: var(--home-shadow);
+}
+
+.vms-home .menu-item:active {
+    transform: scale(0.97);
+}
+
+.vms-home .menu-item .icon {
+    width: 18px;
+    height: 18px;
+    margin: 0;
+    border-radius: 6px;
+    background: transparent;
+}
+
+.vms-home .menu-item img {
+    width: 14px;
+    height: 14px;
+}
+
+.vms-home .menu-item span {
+    font-size: 12px;
+    font-weight: 650;
+    color: var(--home-primary-deep);
+    letter-spacing: 0.15px;
+    line-height: 1.2;
+    white-space: nowrap;
+}
+
+.vms-home .qukLinkNav {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+/* ---- Sidebar tables as clean lists ---- */
+.vms-home .tvlGridHt {
+    max-height: 168px;
+    overflow-y: auto;
+    border: 0;
+}
+
+.vms-home .custGvTopvendorGrid {
+    margin: 0 !important;
+    border: 0 !important;
+}
+
+.vms-home .upgradDataGrid tr th {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    color: var(--home-muted);
+    background: transparent;
+    padding: 4px 6px 8px;
+    border: 0 !important;
+}
+
+.vms-home .upgradDataGrid tr td {
+    font-size: 12px;
+    padding: 8px 6px;
+    vertical-align: middle;
+    border: 0 !important;
+    border-bottom: 1px solid #f0f4f8 !important;
+}
+
+.vms-home .upgradDataGrid tr:last-child td {
+    border-bottom: 0 !important;
+}
+
+.vms-home .upgradDataGrid tr:hover td {
+    background: #f7fafc;
+}
+
+.vms-home .home-card-vendor-ty td:nth-child(2),
+.vms-home .home-card-vendor-ly td:nth-child(2) {
+    width: 48px;
+    text-align: center;
+}
+
+.vms-home .home-card-vendor-ty tr.tlrowlight td:nth-child(2) span,
+.vms-home .home-card-vendor-ly tr.tlrowlight td:nth-child(2) span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 24px;
+    height: 24px;
+    padding: 0 4px;
+    border-radius: 50%;
+    background: #e8f1f8;
+    color: var(--home-primary);
+    font-size: 11px;
+    font-weight: 750;
+}
+
+.vms-home .home-card-vendor-lvl td:nth-child(2) {
+    font-weight: 750;
+    color: var(--home-primary-deep);
+    font-variant-numeric: tabular-nums;
+}
+
+/* ---- Modals ---- */
+.vms-home .bootstrapModal .modal-content {
+    border-radius: 16px;
+    border: 1px solid var(--home-line);
+    box-shadow: 0 18px 48px rgba(16, 56, 90, 0.22);
+    overflow: hidden;
+}
+
+.vms-home .bootstrapModal .modal-header {
+    background: linear-gradient(90deg, #10385a 0%, #1b5a8c 100%);
+    padding: 10px 14px;
+}
+
+.vms-home .bootstrapModal .modal-title {
+    font-size: 14px;
+    font-weight: 650;
+}
+
+.vms-home .bootstrapModal .modal-body {
+    padding: 12px 14px;
+    background: #f8fafc;
+}
+
+.vms-home .bootstrapModal .modal-footer {
+    padding: 8px 14px;
+    background: #fff;
+}
+
+.vms-home .bootstrapModal .modal-footer .btn {
+    min-height: 36px;
+    padding: 6px 14px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 650;
+}
+
+.vms-home .tableBtnXs {
+    min-height: 32px;
+    min-width: 56px;
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 11px;
+    font-weight: 650;
+}
+
+.vms-home .bootstrapModal .table-responsive {
+    background: #fff;
+    border: 1px solid var(--home-line);
+    border-radius: 10px;
+}
+
+.vms-home .quikLink:focus-visible,
+.vms-home .menu-item:focus-visible,
+.vms-home .complainBTCCard:focus-visible,
+.vms-home .home-action-list a:focus-visible {
+    outline: 2px solid #1b5a8c;
+    outline-offset: 2px;
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 1199px) {
+    .vms-home .dbQuikCardList {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 991px) {
+    .vms-home .flashComplainBTCCard {
+        flex-wrap: wrap;
+    }
+
+    .vms-home .complainBTCCard {
+        width: 100%;
+    }
+
+    .vms-home .complainBTCCard .newCard {
+        width: 100%;
+        border-radius: 12px;
+    }
+
+    .vms-home .menu-item span {
+        white-space: normal;
+    }
+}
+
+@media (max-width: 767px) {
+    .vms-home .dbQuikCardList {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .vms-home .home-chart-frame {
+        height: 200px;
+    }
+}
+
+@media (max-width: 520px) {
+    .vms-home .dbQuikCardList {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (hover: none) {
+    .vms-home .loopQuikCars:hover,
+    .vms-home .menu-item:hover {
+        transform: none;
+    }
+}
