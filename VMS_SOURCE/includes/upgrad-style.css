@@ -420,7 +420,9 @@ body {
 
         .upgradDataGrid tr.headerGrid:hover {
             /*background: #eff2f5;*/
-            background: transparent;
+            /*background: transparent;*/
+            color:unset;
+            background-color:unset;
         }
 
     /*.upgradDataGrid tr.headerGrid th {
@@ -1196,7 +1198,12 @@ body {
             .nameDtlsList .userDtls li span {
                 font-weight: 500;
                 margin-left: 4px;
+                color: #103759;
             }
+
+.rightDtls .userNamePic .dropdown-menu {
+    padding: 0px;
+}
 /* Sticky header */
 .navbar {
     position: fixed;

@@ -1,5 +1,5 @@
-/* Freight Details List — itinerary card layout (visual only)
-   Scoped to .fd-page so master/grid styles are not affected elsewhere. */
+/* Freight Details List — compact light itinerary cards (visual only)
+   Scoped to .fd-page. Matches VMS navy/teal light theme. */
 
 .fd-page {
     --fd-bg: #f3f6fb;
@@ -7,15 +7,59 @@
     --fd-ink: #10243a;
     --fd-muted: #5b6b7c;
     --fd-line: #e3ebf3;
-    --fd-shadow: 0 1px 2px rgba(16, 56, 90, 0.05), 0 8px 18px rgba(16, 56, 90, 0.06);
-    --fd-shadow-hover: 0 8px 20px rgba(16, 56, 90, 0.12);
-    --fd-radius: 14px;
+    --fd-soft: #f4f8fc;
+    --fd-shadow: 0 1px 2px rgba(16, 56, 90, 0.05), 0 6px 14px rgba(16, 56, 90, 0.05);
+    --fd-shadow-hover: 0 6px 16px rgba(16, 56, 90, 0.1);
+    --fd-radius: 10px;
     --fd-primary: #1b5a8c;
     --fd-primary-deep: #10385a;
     --fd-accent: #0f8a7a;
     --fd-rate: #0b6e62;
-    font-size: 12.5px;
+    font-size: 12px;
     color: var(--fd-ink);
+}
+
+.fd-page .breadcrumbs {
+    padding: 4px 10px 4px 16px !important;
+    min-height: 40px;
+    margin-bottom: 8px !important;
+    border-radius: 10px !important;
+    border-color: var(--fd-line) !important;
+    box-shadow: var(--fd-shadow) !important;
+}
+
+.fd-page .breadcrumbs::before {
+    top: 7px;
+    bottom: 7px;
+    width: 3px;
+}
+
+.fd-page .breadcrumbs .leftFung > a {
+    min-width: 28px;
+    min-height: 28px;
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+}
+
+.fd-page .breadcrumbs .fa-home {
+    font-size: 13px;
+}
+
+.fd-page .diveider {
+    margin: 0 6px;
+    font-size: 13px;
+}
+
+.fd-page .pageTitle {
+    font-size: 14px !important;
+    line-height: 17px;
+}
+
+.fd-page .pageSubTitle {
+    font-size: 11px !important;
+    line-height: 13px;
+    margin-top: 0;
 }
 
 .fd-page .fd-panel,
@@ -24,18 +68,18 @@
     border: 1px solid var(--fd-line);
     border-radius: var(--fd-radius);
     box-shadow: var(--fd-shadow);
-    margin-bottom: 10px;
+    margin-bottom: 8px;
     overflow: visible;
 }
 
 .fd-page .fd-panel-body,
 .fd-page .card.fd-panel > .card-body.fd-panel-body {
-    padding: 12px 14px;
+    padding: 8px 10px;
 }
 
 .fd-page .fd-panel-body .errormsg {
     display: block;
-    margin: 0 0 8px;
+    margin: 0 0 6px;
 }
 
 .fd-page .fd-panel-body .errormsg:empty {
@@ -46,8 +90,8 @@
 /* ---- Filter toolbar ---- */
 .fd-page .fd-filter-grid {
     display: grid;
-    grid-template-columns: minmax(180px, 1.2fr) minmax(160px, 1fr) auto minmax(200px, 1.1fr) auto;
-    gap: 10px 12px;
+    grid-template-columns: minmax(160px, 1.2fr) minmax(140px, 1fr) auto minmax(180px, 1.1fr) auto;
+    gap: 8px 10px;
     align-items: end;
 }
 
@@ -60,17 +104,18 @@
     color: var(--fd-muted);
     font-size: 10px;
     font-weight: 700;
-    letter-spacing: 0.4px;
+    letter-spacing: 0.35px;
     text-transform: uppercase;
-    margin-bottom: 4px;
+    margin-bottom: 3px;
 }
 
 .fd-page .fd-field .form-control,
 .fd-page .fd-field .select2-container .select2-selection--single {
-    height: 36px;
-    min-height: 36px;
-    border-radius: 10px;
+    height: 32px;
+    min-height: 32px;
+    border-radius: 8px;
     border-color: #d3deea;
+    font-size: 12px;
 }
 
 .fd-page .fd-field .select2-container {
@@ -78,48 +123,50 @@
 }
 
 .fd-page .fd-field .select2-container--default .select2-selection--single {
-    border-radius: 10px;
+    border-radius: 8px;
     border-color: #d3deea;
+    height: 32px;
 }
 
 .fd-page .fd-field .select2-container--default .select2-selection--single .select2-selection__rendered {
-    line-height: 34px;
-    padding-left: 10px;
+    line-height: 30px;
+    padding-left: 8px;
+    font-size: 12px;
 }
 
 .fd-page .fd-field .select2-container--default .select2-selection--single .select2-selection__arrow {
-    height: 34px;
+    height: 30px;
 }
 
 .fd-page .fd-field input[type="file"].form-control {
     height: auto;
-    min-height: 36px;
-    padding: 5px 8px;
-    font-size: 12px;
+    min-height: 32px;
+    padding: 3px 8px;
+    font-size: 11.5px;
     line-height: 1.3;
-    background: #f8fbfd;
+    background: var(--fd-soft);
 }
 
 .fd-page .fd-actions .form-group {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
+    gap: 6px;
     align-items: center;
 }
 
 .fd-page .fd-actions .btn,
 .fd-page .fd-submit-bar .btn {
-    min-height: 36px;
+    min-height: 32px;
     min-width: 44px;
-    padding: 6px 14px !important;
-    border-radius: 10px !important;
-    font-size: 12.5px;
+    padding: 4px 12px !important;
+    border-radius: 8px !important;
+    font-size: 12px;
     font-weight: 650;
     letter-spacing: 0.2px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 3px 8px rgba(16, 56, 90, 0.12);
+    box-shadow: 0 2px 6px rgba(16, 56, 90, 0.1);
     transition: transform 0.12s ease, box-shadow 0.18s ease, filter 0.18s ease;
     -webkit-tap-highlight-color: transparent;
 }
@@ -146,7 +193,7 @@
 .fd-page .fd-submit-bar .btn:hover,
 .fd-page .fd-submit-bar .btn:focus {
     filter: brightness(1.05);
-    box-shadow: 0 6px 14px rgba(16, 56, 90, 0.18);
+    box-shadow: 0 4px 10px rgba(16, 56, 90, 0.16);
     text-decoration: none;
 }
 
@@ -162,11 +209,11 @@
     outline-offset: 2px;
 }
 
-/* ---- GridView → itinerary card grid ---- */
+/* ---- GridView → compact card grid ---- */
 .fd-page .fd-card-list {
     overflow-y: auto;
-    max-height: calc(100vh - 290px);
-    padding: 2px 2px 6px;
+    max-height: calc(100vh - 260px);
+    padding: 1px 1px 4px;
     -webkit-overflow-scrolling: touch;
 }
 
@@ -183,8 +230,8 @@
 
 .fd-page table.gv-cards > tbody {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(min(100%, 292px), 1fr));
-    gap: 10px;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr));
+    gap: 6px;
     width: 100%;
 }
 
@@ -222,38 +269,50 @@
 
 .fd-page table.gv-cards > tbody > tr td[colspan] {
     text-align: center;
-    padding: 22px 14px !important;
+    padding: 14px 10px !important;
     color: var(--fd-muted);
     background: #f8fafc !important;
     border: 1px dashed #d5e0ea !important;
-    border-radius: 12px;
-    font-weight: 600;
+    border-radius: 8px;
+    font-weight: 650;
 }
 
-/* ---- Route ticket card (portrait itinerary, not a table row) ---- */
+/* ---- Compact light route card ---- */
 .fd-card {
     height: 100%;
     display: grid;
-    grid-template-columns: 54px 1fr;
+    grid-template-columns: 40px 1fr;
     grid-template-rows: 1fr auto;
     background: var(--fd-surface);
     border: 1px solid var(--fd-line);
-    border-radius: 14px;
+    border-radius: 8px;
     box-shadow: var(--fd-shadow);
     overflow: hidden;
     position: relative;
     transition: transform 0.16s ease, box-shadow 0.16s ease, border-color 0.16s ease;
 }
 
+.fd-card::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: linear-gradient(180deg, var(--fd-primary) 0%, var(--fd-accent) 100%);
+    pointer-events: none;
+    z-index: 1;
+}
+
 .fd-card:hover {
-    transform: translateY(-2px);
+    transform: translateY(-1px);
     box-shadow: var(--fd-shadow-hover);
     border-color: #c9d8e8;
 }
 
 .fd-card:focus-within {
-    border-color: #9ec3e0;
-    box-shadow: 0 0 0 3px rgba(27, 90, 140, 0.12), var(--fd-shadow-hover);
+    border-color: #9bbcd6;
+    box-shadow: 0 0 0 2px rgba(27, 90, 140, 0.12), var(--fd-shadow-hover);
 }
 
 .fd-card-srl {
@@ -263,28 +322,30 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 4px;
-    padding: 10px 6px;
-    background: linear-gradient(180deg, #1b5a8c 0%, #0f8a7a 100%);
-    color: #fff;
+    gap: 2px;
+    padding: 8px 4px 8px 7px;
+    background: linear-gradient(180deg, #f4f8fc 0%, #eaf3f9 100%);
+    border-right: 1px solid var(--fd-line);
+    color: var(--fd-primary-deep);
     text-align: center;
 }
 
 .fd-srl-label {
-    font-size: 8px;
+    font-size: 7px;
     font-weight: 750;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.35px;
     text-transform: uppercase;
-    opacity: 0.82;
+    color: #7d8d9e;
     line-height: 1.1;
 }
 
 .fd-srl-value {
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 800;
-    letter-spacing: 0.2px;
+    letter-spacing: -0.2px;
     line-height: 1;
     font-variant-numeric: tabular-nums;
+    color: var(--fd-primary-deep);
 }
 
 .fd-srl-value span {
@@ -298,8 +359,8 @@
     display: flex;
     flex-direction: column;
     min-width: 0;
-    padding: 10px 12px 6px;
-    background: linear-gradient(180deg, #f7fafc 0%, #ffffff 55%);
+    padding: 7px 10px 5px;
+    background: #fff;
 }
 
 .fd-route {
@@ -312,21 +373,21 @@
 .fd-stop {
     display: flex;
     align-items: flex-start;
-    gap: 8px;
+    gap: 6px;
     min-width: 0;
 }
 
 .fd-stop-icon {
     flex: 0 0 auto;
-    width: 26px;
-    height: 26px;
-    border-radius: 8px;
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     background: #e8f1f8;
     color: var(--fd-primary);
-    font-size: 11px;
+    font-size: 10px;
     margin-top: 1px;
 }
 
@@ -342,21 +403,21 @@
 
 .fd-kicker {
     display: block;
-    font-size: 9px;
+    font-size: 8px;
     font-weight: 750;
-    letter-spacing: 0.45px;
+    letter-spacing: 0.35px;
     text-transform: uppercase;
     color: #8a9aab;
-    line-height: 1.2;
-    margin-bottom: 1px;
+    line-height: 1.15;
+    margin-bottom: 0;
 }
 
 .fd-stop-name {
     display: block;
-    font-size: 13px;
-    font-weight: 700;
+    font-size: 12px;
+    font-weight: 750;
     color: var(--fd-primary-deep);
-    line-height: 1.25;
+    line-height: 1.2;
     word-break: break-word;
 }
 
@@ -367,13 +428,13 @@
 
 .fd-route-connector {
     width: 2px;
-    height: 12px;
-    margin: 3px 0 3px 12px;
+    height: 8px;
+    margin: 2px 0 2px 10px;
     border-radius: 2px;
     background: repeating-linear-gradient(
         180deg,
-        #b7c9d8 0 3px,
-        transparent 3px 6px
+        #b7c9d8 0 2px,
+        transparent 2px 4px
     );
 }
 
@@ -382,38 +443,39 @@
     grid-row: 2;
     display: flex;
     flex-direction: column;
-    gap: 4px;
-    padding: 8px 12px 10px;
-    background: linear-gradient(180deg, #f3fbf8 0%, #eef8f5 100%);
-    border-top: 1px solid #dceee8;
+    gap: 2px;
+    padding: 5px 8px 6px;
+    background: linear-gradient(180deg, #f7fbfc 0%, #f3f8f6 100%);
+    border-top: 1px dashed #d7e6e2;
 }
 
 .fd-rate > .fd-kicker {
-    color: #3d7a72;
+    color: #5d7083;
 }
 
 .fd-rate .form-control {
-    height: 36px;
-    min-height: 36px;
-    border-radius: 10px;
-    border-color: #c5ddd7;
+    height: 30px;
+    min-height: 30px;
+    border-radius: 6px;
+    border-color: #c9dce8;
     background: #fff;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 700;
     color: var(--fd-rate);
     text-align: right;
     font-variant-numeric: tabular-nums;
-    padding: 4px 10px;
+    padding: 2px 8px;
+    box-shadow: none;
     transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 .fd-rate .form-control:hover {
-    border-color: #9ec9bf;
+    border-color: #9bbcd6;
 }
 
 .fd-rate .form-control:focus {
     border-color: var(--fd-accent);
-    box-shadow: 0 0 0 3px rgba(15, 138, 122, 0.16);
+    box-shadow: 0 0 0 2px rgba(15, 138, 122, 0.16);
     outline: none;
 }
 
@@ -421,16 +483,16 @@
     display: inline-flex;
     align-items: center;
     justify-content: flex-end;
-    min-height: 36px;
-    padding: 4px 12px;
-    border-radius: 10px;
+    min-height: 30px;
+    padding: 2px 8px;
+    border-radius: 6px;
     background: #fff;
-    border: 1px solid #c5ddd7;
-    font-size: 16px;
+    border: 1px solid #c9dce8;
+    font-size: 13px;
     font-weight: 800;
     color: var(--fd-rate);
     font-variant-numeric: tabular-nums;
-    letter-spacing: 0.2px;
+    letter-spacing: 0.1px;
 }
 
 .fd-rate-value span {
@@ -448,36 +510,26 @@
     grid-column: 1;
 }
 
-.fd-card.is-preview::before {
-    content: "";
-    position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    width: 4px;
-    background: linear-gradient(180deg, var(--fd-primary) 0%, var(--fd-accent) 100%);
-}
-
 .fd-card.is-preview .fd-card-main {
-    padding-left: 16px;
+    padding-left: 12px;
 }
 
 .fd-card.is-preview .fd-rate {
-    padding-left: 16px;
+    padding-left: 12px;
 }
 
 .fd-submit-bar {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 8px;
-    margin-top: 12px;
-    padding-top: 10px;
+    gap: 6px;
+    margin-top: 8px;
+    padding-top: 8px;
     border-top: 1px solid var(--fd-line);
 }
 
 .fd-submit-bar .btn {
-    min-width: 120px;
+    min-width: 100px;
 }
 
 /* ---- Responsive ---- */
@@ -495,12 +547,12 @@
 @media (max-width: 767px) {
     .fd-page .fd-panel-body,
     .fd-page .card.fd-panel > .card-body.fd-panel-body {
-        padding: 10px;
+        padding: 8px;
     }
 
     .fd-page .fd-filter-grid {
         grid-template-columns: 1fr;
-        gap: 8px;
+        gap: 6px;
     }
 
     .fd-page .fd-actions .form-group,
@@ -511,12 +563,12 @@
     .fd-page .fd-actions .btn,
     .fd-page .fd-upload-btn .btn {
         flex: 1 1 auto;
-        min-height: 40px;
+        min-height: 36px;
     }
 
     .fd-page table.gv-cards > tbody {
         grid-template-columns: 1fr;
-        gap: 8px;
+        gap: 6px;
     }
 
     .fd-page .fd-card-list {
@@ -525,24 +577,24 @@
     }
 
     .fd-card {
-        grid-template-columns: 46px 1fr;
-        border-radius: 12px;
+        grid-template-columns: 36px 1fr;
+        border-radius: 8px;
     }
 
     .fd-stop-name {
-        font-size: 13.5px;
+        font-size: 12.5px;
     }
 
     .fd-rate .form-control,
     .fd-rate-value {
-        min-height: 40px;
-        height: 40px;
-        font-size: 16px;
+        min-height: 36px;
+        height: 36px;
+        font-size: 14px;
     }
 
     .fd-submit-bar .btn {
         flex: 1 1 140px;
-        min-height: 42px;
+        min-height: 40px;
     }
 }
 
