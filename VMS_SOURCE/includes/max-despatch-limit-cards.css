@@ -218,7 +218,7 @@
 .mdl-page .mdl-unit-name,
 .mdl-page .mdl-unit-name span {
     display: block;
-    font-size: 12.5px;
+    font-size: 12px;
     font-weight: 750;
     color: var(--mdl-primary-deep);
     line-height: 1.2;

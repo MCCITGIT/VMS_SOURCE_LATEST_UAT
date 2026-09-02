@@ -165,7 +165,7 @@
 
 .qcm-serial-label {
     flex: 0 0 auto;
-    font-size: 9px;
+    font-size: 10px;
     font-weight: 700;
     letter-spacing: 0.08em;
     text-transform: uppercase;
@@ -261,7 +261,7 @@
     align-items: stretch;
     justify-content: stretch;
     padding: 0 10px 10px !important;
-    background: var(--qcm-soft) !important;
+    /*background: var(--qcm-soft) !important;*/
 }
 
 .qcm-card-action {
@@ -281,7 +281,7 @@
     min-height: 32px;
     padding: 4px 12px !important;
     border-radius: 999px !important;
-    font-size: 12px;
+    font-size: 14px;
     font-weight: 600;
     letter-spacing: 0.2px;
     text-transform: none;
