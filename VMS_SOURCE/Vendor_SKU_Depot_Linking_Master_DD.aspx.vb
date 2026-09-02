@@ -176,12 +176,11 @@ Partial Class Vendor_SKU_Depot_Linking_Master_DD
 
 
 #Region "Search Button Click event handling"
-    Protected Sub imgbtnSearch_Click(ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles imgbtnSearch.Click
+    Protected Sub imgbtnSearch_Click(sender As Object, e As EventArgs) Handles imgbtnSearch.Click
         SaveSearchCriteria()
         gvVendorSKUList.EditIndex = -1
         gvVendorSKUList.PageIndex = 0
         VendorSKUListLoad()
-
     End Sub
 
 #End Region
@@ -206,15 +205,22 @@ Partial Class Vendor_SKU_Depot_Linking_Master_DD
 
         Dim VendorSKUGet As New VendorSKUDepotLinkingDDClass
         Dim VendorSKUList As DataSet
+        Dim skuCode As String = hdnskucode1.Value.Trim()
 
-        VendorSKUList = VendorSKUGet.GetVendorSKUDetailsList(ddlVendor.SelectedValue, hdnskucode1.Value)
-        If (Not (VendorSKUList Is Nothing) AndAlso VendorSKUList.Tables.Count > 0) Then
-            If (Not (VendorSKUList.Tables(0) Is Nothing) AndAlso VendorSKUList.Tables(0).Rows.Count > 0) Then
-                gvVendorSKUList.DataSource = VendorSKUList
-                gvVendorSKUList.DataBind()
-            Else
-                EmptyGridLoad()
-            End If
+        If skuCode = String.Empty Then
+            skuCode = txtSkuCode.Text.Trim()
+        End If
+
+        VendorSKUList = VendorSKUGet.GetVendorSKUDetailsList(ddlVendor.SelectedValue, skuCode)
+
+        gvVendorSKUList.DataSource = Nothing
+        gvVendorSKUList.DataBind()
+
+        If (Not (VendorSKUList Is Nothing) AndAlso VendorSKUList.Tables.Count > 0 AndAlso Not (VendorSKUList.Tables(0) Is Nothing) AndAlso VendorSKUList.Tables(0).Rows.Count > 0) Then
+            gvVendorSKUList.DataSource = VendorSKUList.Tables(0)
+            gvVendorSKUList.DataBind()
+        Else
+            EmptyGridLoad()
         End If
 
     End Sub
@@ -280,21 +286,6 @@ Partial Class Vendor_SKU_Depot_Linking_Master_DD
         dtColumn.DataType = System.Type.[GetType]("System.String")
         dtColumn.ColumnName = "active"
         EmptyTable.Columns.Add(dtColumn)
-
-        Dim dr As DataRow = EmptyTable.NewRow()
-        'dr("depot_name") = String.Empty
-        'dr("v_depot") = String.Empty
-        dr("vendor_name") = String.Empty
-        dr("v_vendor_unit") = String.Empty
-        dr("SkuDescription") = String.Empty
-        dr("v_sku_code") = String.Empty
-        'dr("v_tsl_factor") = String.Empty
-        'dr("v_primary_secondary") = String.Empty
-        dr("active") = String.Empty
-
-        EmptyTable.Rows.Add(dr)
-
-
 
         gvVendorSKUList.DataSource = EmptyTable
         gvVendorSKUList.DataBind()
@@ -506,7 +497,7 @@ Partial Class Vendor_SKU_Depot_Linking_Master_DD
             If Not (btnChange Is Nothing) Then
                 '   Dim ddleditVendor As DropDownList = e.Row.FindControl("ddleditVendor")
                 Dim ddlVendor As DropDownList = e.Row.FindControl("ddlVendor")
-                Dim hdnskucode1 As HiddenField = e.Row.FindControl("hdnskucode1")
+                Dim hdnRowSkuCode As HiddenField = e.Row.FindControl("hdnRowSkuCode")
                 'Dim hdnDepotname As HiddenField = e.Row.FindControl("hdnDepotname")
                 Dim hdnCurrentvendorname As HiddenField = e.Row.FindControl("hdnvendorname")
 
@@ -514,35 +505,48 @@ Partial Class Vendor_SKU_Depot_Linking_Master_DD
 
                 Dim hdnvendor As HiddenField = e.Row.FindControl("hdnvendor")
                 '  Dim ddlActive As DropDownList = e.Row.FindControl("ddlActive")
-                Dim hdnactive As HiddenField = e.Row.FindControl("hdnactive")
-                If Not (hdnvendor.Value = String.Empty) Then
+                If Not (hdnvendor Is Nothing) AndAlso hdnvendor.Value <> String.Empty Then
                     populatVendorUnit(ddlVendor)
-                    ddlVendor.SelectedValue = hdnvendor.Value
+                    Dim vendorItem As ListItem = ddlVendor.Items.FindByValue(hdnvendor.Value)
+                    If vendorItem IsNot Nothing Then
+                        ddlVendor.SelectedValue = hdnvendor.Value
+                    End If
                     btnChange.Visible = True
                     ddlVendor.Visible = True
                 Else
                     btnChange.Visible = False
-                    ddlVendor.Visible = False
+                    If ddlVendor IsNot Nothing Then
+                        ddlVendor.Visible = False
+                    End If
                 End If
 
                 '  ddlActive.SelectedValue = hdnactive.Value
-                If ddlVendor.SelectedItem IsNot Nothing Then
+                If ddlVendor IsNot Nothing AndAlso ddlVendor.SelectedItem IsNot Nothing Then
                     hdnNewVendorName.Value = ddlVendor.SelectedItem.Text
                 Else
                     hdnNewVendorName.Value = ""
                 End If
 
                 ' btnUpdate.Attributes.Add("onclick", "return ValidateUpdate('" + ddleditVendor.ClientID + "','" + lblErrorMessage.ClientID + "','" + btnUpdate.ClientID + "');")
-                btnChange.Attributes.Add("onclick", "return ValidateUpdate('" + ddlVendor.ClientID + "','" + hdnskucode1.ClientID + "','" + hdnCurrentvendorname.ClientID + "','" + hdnNewVendorName.ClientID + "','" + lblErrorMessage.ClientID + "','" + btnChange.ClientID + "');")
+                If hdnRowSkuCode IsNot Nothing Then
+                    btnChange.Attributes.Add("onclick", "return ValidateUpdate('" + ddlVendor.ClientID + "','" + hdnRowSkuCode.ClientID + "','" + hdnCurrentvendorname.ClientID + "','" + hdnNewVendorName.ClientID + "','" + lblErrorMessage.ClientID + "','" + btnChange.ClientID + "');")
+                End If
 
             End If
             Dim ddl As DropDownList = CType(e.Row.FindControl("ddlActive"), DropDownList)
-            If Not String.IsNullOrEmpty(activeValue) Then
-                ddl.Items.Add(New ListItem("Yes", "Y"))
-                ddl.Items.Add(New ListItem("No", "N"))
-                ddl.SelectedValue = activeValue
-            Else
-                ddl.Visible = False
+            If ddl IsNot Nothing Then
+                If Not String.IsNullOrEmpty(activeValue) Then
+                    If ddl.Items.Count = 0 Then
+                        ddl.Items.Add(New ListItem("Yes", "Y"))
+                        ddl.Items.Add(New ListItem("No", "N"))
+                    End If
+                    Dim activeItem As ListItem = ddl.Items.FindByValue(activeValue)
+                    If activeItem IsNot Nothing Then
+                        ddl.SelectedValue = activeValue
+                    End If
+                Else
+                    ddl.Visible = False
+                End If
             End If
         End If
 
