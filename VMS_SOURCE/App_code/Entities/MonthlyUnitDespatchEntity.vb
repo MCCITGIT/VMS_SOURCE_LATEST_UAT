@@ -6,6 +6,8 @@ Public Class MonthlyUnitDespatchEntity
     Private MonthlyUnitDespatchEntity_Unit As String
     Private MonthlyUnitDespatchEntity_ProcessYr As String
     Private MonthlyUnitDespatchEntity_ProcessMnth As String
+    Private MonthlyUnitDespatchEntity_FromDate As String
+    Private MonthlyUnitDespatchEntity_ToDate As String
     Private Report_Format As String
 
     Public Sub New()
@@ -14,6 +16,8 @@ Public Class MonthlyUnitDespatchEntity
         MonthlyUnitDespatchEntity_Unit = String.Empty
         MonthlyUnitDespatchEntity_ProcessYr = String.Empty
         MonthlyUnitDespatchEntity_ProcessMnth = String.Empty
+        MonthlyUnitDespatchEntity_FromDate = String.Empty
+        MonthlyUnitDespatchEntity_ToDate = String.Empty
         Report_Format = String.Empty
     End Sub
 
@@ -59,6 +63,24 @@ Public Class MonthlyUnitDespatchEntity
         End Get
         Set(ByVal value As String)
             MonthlyUnitDespatchEntity_ProcessMnth = value
+        End Set
+    End Property
+
+    Public Property FromDate() As String
+        Get
+            Return MonthlyUnitDespatchEntity_FromDate
+        End Get
+        Set(ByVal value As String)
+            MonthlyUnitDespatchEntity_FromDate = value
+        End Set
+    End Property
+
+    Public Property ToDate() As String
+        Get
+            Return MonthlyUnitDespatchEntity_ToDate
+        End Get
+        Set(ByVal value As String)
+            MonthlyUnitDespatchEntity_ToDate = value
         End Set
     End Property
 
