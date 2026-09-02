@@ -25,6 +25,15 @@
             background-color:white !important;
             border: 1px solid #000000;
         }
+        .p-popup-table table tr td span {
+            font-size: 10px;
+        }
+        .p-vendor-dispatch-table table tr td {
+            padding: 5px;    
+        }
+        .popupvendor {
+            height: 450px;
+        }
     </style>
 
     <div class="breadcrumbs">
@@ -91,6 +100,7 @@
                                     <asp:ListItem>2023</asp:ListItem>
                                     <asp:ListItem>2024</asp:ListItem>
                                     <asp:ListItem>2025</asp:ListItem>
+                                    <asp:ListItem>2026</asp:ListItem>
                                 </asp:DropDownList>
                             </div>
                         </div>
@@ -303,14 +313,14 @@
                 <div style="background-color: #336699; height: 30px; text-align: center; padding: 2px; font-family: Verdana; display: flex; align-items: center; justify-content: center;">
                     <asp:Label ID="Label1" runat="server" ForeColor="White" Font-Bold="true" Text="Vendor Despatch"></asp:Label>
                 </div>
-                <asp:UpdatePanel ID="UpdatePanel2" runat="server">
+                <asp:UpdatePanel ID="UpdatePanel2" runat="server" class="p-vendor-dispatch-table" style="padding: 15px;">
                     <ContentTemplate>
                         <table style="font-family: Verdana; font-size: 8pt; font-weight: bold;">
                             <tr>
                                 <td colspan="4">
                                     <asp:UpdatePanel ID="UpdatePanel4" runat="server">
                                         <ContentTemplate>
-                                            <div class="table-responsive">
+                                            <div class="table-responsive p-popup-table">
                                                 <asp:GridView ID="gvDispatchAssignDtls" runat="server" AutoGenerateColumns="False"
                                                     BorderWidth="1" CssClass="table table-hover upgradDataGrid" EmptyDataText="No record(s) found."
                                                     AllowPaging="false" ShowFooter="false">
