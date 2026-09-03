@@ -15,6 +15,7 @@ Partial Class UnitDespatchPlanListVr1
         If Not IsPostBack Then
             btnAprove.Enabled = False
             CheckLogin()
+            PopulateProcessYears()
             GetScreenDetails()
             PopulateRegion()
             PopulateDepotName()
@@ -247,6 +248,18 @@ Partial Class UnitDespatchPlanListVr1
             Response.Redirect("~/Login.aspx")
         End If
     End Sub
+    'Modified-by MUKESH BHAGAT on 02-09-2026 : the Process Year list was hardcoded 2010-2025 in
+    'the markup; when standard_parameter.process_year rolls past the last item, the
+    'SelectedValue assignment in GetScreenDetails throws and the page stops opening.
+    'Generated 2010 up to the current year instead (no future years).
+    Private Sub PopulateProcessYears()
+        'Modified-by MUKESH BHAGAT on 02-09-2026 : now database-driven - years come from
+        'dbo.fin_year through the shared Common.BindProcessYearDropdown, so a new process
+        'year is one master-data insert for the whole application.
+        Dim commonObj As New Common
+        commonObj.BindProcessYearDropdown(ddlYear, Constant.Common.Company, Constant.Common.ActiveStatus)
+    End Sub
+
     Private Sub GetScreenDetails()
         Dim ScreenDS As DataSet
         Dim StockObj As New UnitDespatchClass

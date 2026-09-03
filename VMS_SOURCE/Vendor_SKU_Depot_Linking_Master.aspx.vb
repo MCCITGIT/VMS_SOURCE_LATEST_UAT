@@ -318,6 +318,11 @@ Partial Class Vendor_SKU_Depot_Linking_Master
         EmptyTable.Columns.Add(dtColumn)
 
         dtColumn = New DataColumn()
+        dtColumn.DataType = System.Type.GetType("System.String")
+        dtColumn.ColumnName = "depot_regn"
+        EmptyTable.Columns.Add(dtColumn)
+
+        dtColumn = New DataColumn()
         dtColumn.DataType = System.Type.[GetType]("System.String")
         dtColumn.ColumnName = "active"
         EmptyTable.Columns.Add(dtColumn)
@@ -331,6 +336,7 @@ Partial Class Vendor_SKU_Depot_Linking_Master
         dr("v_sku_code") = String.Empty
         dr("v_tsl_factor") = String.Empty
         dr("v_primary_secondary") = String.Empty
+        dr("depot_regn") = String.Empty
         dr("active") = String.Empty
 
         EmptyTable.Rows.Add(dr)
