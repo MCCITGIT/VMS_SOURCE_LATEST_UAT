@@ -20,14 +20,18 @@
     </script>
 
     <script type="text/javascript">
+        // Modified-by MUKESH BHAGAT on 02-09-2026 : this pair drives the FOOTER (grid add-row)
+        // SKU search spinner. Both spinner images carried id="loading", so getElementById
+        // always found the header one first and the footer search flashed the header's
+        // spinner instead of its own. The footer image is now id="loadingFooter".
         function HideLoading() {
-            var loading_icon = document.getElementById("loading");
+            var loading_icon = document.getElementById("loadingFooter");
             loading_icon.style.visibility = 'hidden';
             //loading_icon.style.visibility = (loading_icon.style.visibility == 'visible') ? 'hidden' : 'visible';
         }
 
         function ShowLoading() {
-            var loading_icon = document.getElementById("loading");
+            var loading_icon = document.getElementById("loadingFooter");
             loading_icon.style.visibility = 'visible';
             //loading_icon.style.visibility = (loading_icon.style.visibility == 'visible') ? 'hidden' : 'visible';
         }
@@ -85,6 +89,23 @@
             Sys.WebForms.PageRequestManager.getInstance().add_endRequest(function () {
                 setTimeout(initVendorSkuGridSelect2, 0);
             });
+        }
+
+        // Modified-by MUKESH BHAGAT on 03-09-2026 : the shared validator paints required-field
+        // errors yellow on the NATIVE control (FunctionValidator.js -> SetErrorColor). The
+        // vendor dropdowns here are select2, whose native <select> is hidden - so the yellow
+        // was applied but invisible. This wrapper also paints the visible select2 box, giving
+        // dropdowns the same yellow highlight the SKU textbox already shows.
+        if (typeof SetErrorColor === 'function') {
+            var vmsBaseSetErrorColor = SetErrorColor;
+            SetErrorColor = function (controlID, isCss) {
+                vmsBaseSetErrorColor(controlID, isCss);
+                var el = document.getElementById(controlID);
+                if (el && window.jQuery && jQuery(el).data('select2')) {
+                    jQuery(el).next('.select2-container').find('.select2-selection')
+                        .css('background-color', isCss ? '' : 'yellow');
+                }
+            };
         }
     </script>
 
@@ -269,7 +290,7 @@
                                                                                 behavior._height = target.offsetHeight - 2;
                                                                                 target.style.height = '0px';
                                                                             }" />
-                                
+
                                                                         <Parallel Duration=".4">
                                                                             <FadeIn />
                                                                             <Length PropertyKey="height" StartValue="0" EndValueScript="$find('AutoCompleteEx')._height" />
@@ -277,7 +298,7 @@
                                                                     </Sequence>
                                                                 </OnShow>
                                                                 <OnHide>
-                            
+
                                                                     <Parallel Duration=".4">
                                                                         <FadeOut />
                                                                         <Length PropertyKey="height" StartValueScript="$find('AutoCompleteEx')._height" EndValue="0" />
@@ -286,7 +307,9 @@
                                             </Animations>
                                         </asp:AutoCompleteExtender>
 
-                                        <img alt="Loading..." src="images/progress.gif" id="loading" class="inputLoading" />
+                                        <%-- Modified-by MUKESH BHAGAT on 02-09-2026 : unique id - was "loading",
+                                             duplicating the header spinner's id, so this one never showed. --%>
+                                        <img alt="Loading..." src="images/progress.gif" id="loadingFooter" class="inputLoading" />
                                         <asp:Panel ID="Panel1" runat="server" ScrollBars="Vertical" Height="150" Width="400"
                                             Style="overflow-y: scroll; position: absolute; left: 0; top: 0; text-align: left;">
                                         </asp:Panel>
