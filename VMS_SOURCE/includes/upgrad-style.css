@@ -3772,3 +3772,91 @@ body {
 .select2-container {
     width: 100% !important;
 }
+
+.rm-grid-scroll {
+    max-height: 260px;
+    overflow-y: auto;
+}
+
+
+/* Pagination wrapper */
+.custom-pagination {
+    display: flex;
+    align-items: center;
+    padding: 12px 5px;
+    justify-content: flex-end;
+}
+
+
+/* Page label */
+.page-label {
+    font-size: 14px;
+    color: #374151;
+    font-weight: 500;
+}
+
+
+/* Dropdown container */
+.page-dropdown + .bootstrap-select {
+    width: 70px !important;
+    margin: 0 8px;
+}
+
+
+/* Main dropdown button */
+.bootstrap-select .dropdown-toggle {
+    height: 38px !important;
+    border-radius: 8px !important;
+    border: 1px solid #d1d5db !important;
+    background: #ffffff !important;
+    padding: 0 12px !important;
+    color: #374151 !important;
+    font-size: 14px !important;
+    box-shadow: none !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+}
+
+
+    /* Remove bootstrap default focus */
+    .bootstrap-select .dropdown-toggle:focus {
+        outline: none !important;
+        border-color: #2563eb !important;
+        box-shadow: 0 0 0 2px rgba(37,99,235,.15) !important;
+    }
+
+
+/* Selected text */
+.bootstrap-select .filter-option {
+    padding-top: 1px;
+}
+
+
+/* Arrow */
+.bootstrap-select .dropdown-toggle::after {
+    margin-left: 8px;
+    vertical-align: middle;
+}
+
+
+/* Dropdown menu */
+.bootstrap-select .dropdown-menu {
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 8px 20px rgba(0,0,0,.08);
+}
+
+
+    /* Dropdown items */
+    .bootstrap-select .dropdown-menu li a {
+        font-size: 14px;
+        padding: 8px 12px;
+    }
+
+
+        /* Hover */
+        .bootstrap-select .dropdown-menu li a:hover {
+            background: #eff6ff;
+            color: #2563eb;
+        }
