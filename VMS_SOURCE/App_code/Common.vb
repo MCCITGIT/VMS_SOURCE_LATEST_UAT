@@ -259,6 +259,35 @@ Namespace VMS.Web
 
         End Function
 
+        'Modified-by MUKESH BHAGAT on 02-09-2026 : single shared binder for Process Year
+        'dropdowns. Years come from dbo.fin_year (SP [FinYr_Details_Get]) so a new process
+        'year is enabled by one master-data insert instead of editing screens. Values are
+        'the plain year (fin_year), matching how despatch screens store/filter it.
+        'Defensive fallback: if the master returns nothing the list is generated up to the
+        'current year, so a screen can never come up with an empty year list.
+        Public Sub BindProcessYearDropdown(ByVal ddl As System.Web.UI.WebControls.DropDownList, ByVal Company As String, ByVal active As String)
+            ddl.Items.Clear()
+
+            Dim ds As DataSet = Nothing
+            Try
+                ds = GetFinYrDetails(Company, active)
+            Catch
+                ds = Nothing
+            End Try
+
+            If ds IsNot Nothing AndAlso ds.Tables.Count > 0 AndAlso ds.Tables(0) IsNot Nothing Then
+                For Each yearRow As DataRow In ds.Tables(0).Rows
+                    ddl.Items.Add(Convert.ToString(yearRow("fin_year")))
+                Next
+            End If
+
+            If ddl.Items.Count = 0 Then
+                For y As Integer = 2010 To DateTime.Now.Year
+                    ddl.Items.Insert(0, y.ToString())   ' newest first, like the SP's ordering
+                Next
+            End If
+        End Sub
+
 #End Region
 
 #Region "Serial No details get from company, finyear, doctype, branch"
