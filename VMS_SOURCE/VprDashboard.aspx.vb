@@ -32,23 +32,85 @@ Partial Class VprDashboard
         Try
             Dim vendorName As String = txtVendorName.Text.Trim()
 
-            Dim fromDate As DateTime = "2025-01-01"
-            Dim toDate As DateTime = "2025-01-01"
+            'Dim fromDate As String = "2026-01-01"
+            'Dim toDate As String = "2026-12-31"
+            Dim fromDate As String = FormatDate(txtFromDate.Text)
+            Dim toDate As String = FormatDate(txtToDate.Text)
+
+            Dim pageNo = gvFgVendorlist.PageIndex + 1
+            Dim pageSize = gvFgVendorlist.PageSize
 
             Dim obj As POLinkingRequestClass = New POLinkingRequestClass()
-            Dim ds As DataSet = obj.GetVendorPaymentDashboardDetails(vendorName, fromDate, toDate, userInfo.userIDEntity)
+            Dim ds As DataSet = obj.GetVendorPaymentDashboardDetails(vendorName, fromDate, toDate, pageNo, pageSize, userInfo.userIDEntity)
             Dim table As DataTable = RmGridHelper.GetTable(ds)
             'RmGridHelper.BindPaged(gvRmPendingList, table)
             If table IsNot Nothing AndAlso table.Rows.Count > 0 Then
                 gvFgVendorlist.Visible = True
-                RmGridHelper.BindPaged(gvFgVendorlist, table)
+                gvFgVendorlist.DataSource = table
+                gvFgVendorlist.DataBind()
+                TotalRecords = Convert.ToInt32(table.Rows(0)("total_records"))
+                BindPager()
             End If
         Catch ex As Exception
             Throw
         End Try
     End Sub
 
+    Public Function FormatDate(ByVal stringdate As String) As SqlDateTime
+
+        If (stringdate.Equals(String.Empty)) Then
+            Return SqlDateTime.MinValue
+        End If
+
+        If Not (stringdate = String.Empty) Then
+            Dim ddate As String() = stringdate.Split("-")
+            Dim arrlist As New ArrayList
+            Dim index As Integer = 0
+
+            While index <= ddate.Length - 1
+                arrlist.Add(ddate(index))
+                System.Math.Min(System.Threading.Interlocked.Increment(index), index - 1)
+            End While
+            Dim dd As Integer = System.Convert.ToInt32(arrlist.Item(0))
+            Dim mm As Integer = System.Convert.ToInt32(arrlist.Item(1))
+            Dim yyyy As Integer = System.Convert.ToInt32(arrlist.Item(2))
+
+            Dim dt As DateTime = New DateTime(yyyy, mm, dd)
+            dt = FormatDateTime(dt, DateFormat.LongDate)
+            Return dt
+        End If
+
+    End Function
+
+    Private Property TotalRecords As Integer
+        Get
+            Return If(ViewState("TotalRecords") Is Nothing, 0, Convert.ToInt32(ViewState("TotalRecords")))
+        End Get
+        Set(value As Integer)
+            ViewState("TotalRecords") = value
+        End Set
+    End Property
+
+    Private Sub BindPager()
+        Dim totalPages As Integer = CInt(Math.Ceiling(TotalRecords / gvFgVendorlist.PageSize))
+        ddlPageNumber.Items.Clear()
+        For i As Integer = 1 To totalPages
+            ddlPageNumber.Items.Add(
+                New ListItem(i.ToString(), i.ToString())
+            )
+        Next
+        ddlPageNumber.SelectedValue = (gvFgVendorlist.PageIndex + 1).ToString()
+        lblTotalPages.Text = totalPages.ToString()
+    End Sub
+
+    Protected Sub Page_Click(sender As Object, e As EventArgs)
+        Dim btn As LinkButton = CType(sender, LinkButton)
+        gvFgVendorlist.PageIndex = Convert.ToInt32(btn.CommandArgument) - 1
+        BindGrid()
+    End Sub
+
     Protected Sub btnSubmit_Click(sender As Object, e As EventArgs)
+        gvFgVendorlist.PageIndex = 0
         BindGrid()
     End Sub
     Protected Sub btnReset_Click(sender As Object, e As EventArgs)
@@ -57,9 +119,124 @@ Partial Class VprDashboard
         txtToDate.Text = String.Empty
     End Sub
 
-    Protected Sub gvFgVendorlist_PageIndexChanging(sender As Object, e As GridViewPageEventArgs)
-        gvFgVendorlist.PageIndex = e.NewPageIndex
+    'Protected Sub gvFgVendorlist_PageIndexChanging(sender As Object, e As GridViewPageEventArgs)
+    '    gvFgVendorlist.PageIndex = e.NewPageIndex
 
+    '    BindGrid()
+    'End Sub
+
+    Protected Sub gvFgVendorlist_RowCommand(sender As Object, e As GridViewCommandEventArgs)
+        Try
+            'If e.CommandName = "Details" Then
+            '    Dim row As GridViewRow = CType(CType(e.CommandSource, LinkButton).NamingContainer, GridViewRow)
+            '    Dim lblVendorName As Label = CType(row.FindControl("lblbrandname"), Label)
+            '    Dim hdnVendorCode As HiddenField = CType(row.FindControl("hdnBrandId"), HiddenField)
+
+            '    Dim vendorName As String = lblVendorName.Text.Trim()
+            '    Dim vendorCode As String = hdnVendorCode.Value.Trim()
+            '    Dim fromDate As String = txtFromDate.Text.Trim()
+            '    Dim toDate As String = txtToDate.Text.Trim()
+
+            '    Response.Redirect(
+            '    "VendorReleaseReconciliation.aspx" &
+            '    "?vendorName=" & Server.UrlEncode(vendorName) &
+            '    "&vendorCode=" & Server.UrlEncode(vendorCode) &
+            '    "&fromDate=" & Server.UrlEncode(fromDate) &
+            '    "&toDate=" & Server.UrlEncode(toDate)
+            '    )
+            'End If
+            Dim row As GridViewRow = CType(CType(e.CommandSource, LinkButton).NamingContainer, GridViewRow)
+            Dim hdnBrandId As HiddenField = CType(row.FindControl("hdnBrandId"), HiddenField)
+            Dim unitCode As String = hdnBrandId.Value
+            Dim lblVendorName As Label = CType(row.FindControl("lblbrandname"), Label)
+            Dim vendorName As String = lblVendorName.Text.Trim()
+            Dim fromDate As String = txtFromDate.Text
+            Dim toDate As String = txtToDate.Text
+            Dim flag As String = e.CommandName.ToUpper()
+
+            Response.Redirect(
+                "VendorReleaseReconciliation.aspx" &
+                "?vendorName=" & Server.UrlEncode(vendorName) &
+                "&vendorCode=" & Server.UrlEncode(unitCode) &
+                "&fromDate=" & Server.UrlEncode(fromDate) &
+                "&toDate=" & Server.UrlEncode(toDate) &
+                "&flag=" & Server.UrlEncode(flag)
+            )
+            'If (e.CommandName = "Dispatched") Then
+            '    Response.Redirect(
+            '        "VendorReleaseReconciliation.aspx" &
+            '        "?vendorName=" & Server.UrlEncode(vendorName) &
+            '        "&vendorCode=" & Server.UrlEncode(unitCode) &
+            '        "&fromDate=" & Server.UrlEncode(fromDate) &
+            '        "&toDate=" & Server.UrlEncode(toDate) &
+            '        "&flag=DISPATCHED"
+            '    )
+            'ElseIf (e.CommandName = "Delivered") Then
+            '    Response.Redirect(
+            '        "VendorReleaseReconciliation.aspx" &
+            '        "?vendorName=" & Server.UrlEncode(vendorName) &
+            '        "&vendorCode=" & Server.UrlEncode(unitCode) &
+            '        "&fromDate=" & Server.UrlEncode(fromDate) &
+            '        "&toDate=" & Server.UrlEncode(toDate) &
+            '        "&flag=DISPATCHED"
+            '    )
+            'ElseIf (e.CommandName = "GrnNotDone") Then
+            '    Response.Redirect(
+            '        "VendorReleaseReconciliation.aspx" &
+            '        "?vendorName=" & Server.UrlEncode(vendorName) &
+            '        "&vendorCode=" & Server.UrlEncode(unitCode) &
+            '        "&fromDate=" & Server.UrlEncode(fromDate) &
+            '        "&toDate=" & Server.UrlEncode(toDate) &
+            '        "&flag=DISPATCHED"
+            '    )
+            'ElseIf (e.CommandName = "ManualGrn") Then
+            '    Response.Redirect(
+            '        "VendorReleaseReconciliation.aspx" &
+            '        "?vendorName=" & Server.UrlEncode(vendorName) &
+            '        "&vendorCode=" & Server.UrlEncode(unitCode) &
+            '        "&fromDate=" & Server.UrlEncode(fromDate) &
+            '        "&toDate=" & Server.UrlEncode(toDate) &
+            '        "&flag=DISPATCHED"
+            '    )
+            'ElseIf (e.CommandName = "Paid") Then
+            '    Response.Redirect(
+            '        "VendorReleaseReconciliation.aspx" &
+            '        "?vendorName=" & Server.UrlEncode(vendorName) &
+            '        "&vendorCode=" & Server.UrlEncode(unitCode) &
+            '        "&fromDate=" & Server.UrlEncode(fromDate) &
+            '        "&toDate=" & Server.UrlEncode(toDate) &
+            '        "&flag=DISPATCHED"
+            '    )
+            'End If
+        Catch ex As Exception
+            Throw
+        End Try
+    End Sub
+
+    Protected Sub lnkPrev_Click(sender As Object, e As EventArgs)
+        If gvFgVendorlist.PageIndex > 0 Then
+            gvFgVendorlist.PageIndex -= 1
+            BindGrid()
+        End If
+    End Sub
+
+    Protected Sub lnkNext_Click(sender As Object, e As EventArgs)
+        Dim totalPages As Integer = Convert.ToInt32(ViewState("TotalPages"))
+
+        If gvFgVendorlist.PageIndex < totalPages - 1 Then
+            gvFgVendorlist.PageIndex += 1
+            BindGrid()
+        End If
+    End Sub
+
+    Protected Sub lnkPage_Click(sender As Object, e As EventArgs)
+        Dim btn As LinkButton = CType(sender, LinkButton)
+        gvFgVendorlist.PageIndex = Convert.ToInt32(btn.CommandArgument) - 1
+        BindGrid()
+    End Sub
+
+    Protected Sub ddlPageNumber_SelectedIndexChanged(sender As Object, e As EventArgs)
+        gvFgVendorlist.PageIndex = Convert.ToInt32(ddlPageNumber.SelectedValue) - 1
         BindGrid()
     End Sub
 End Class
