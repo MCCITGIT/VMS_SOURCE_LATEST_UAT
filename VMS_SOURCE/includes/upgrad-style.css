@@ -421,8 +421,8 @@ body {
         .upgradDataGrid tr.headerGrid:hover {
             /*background: #eff2f5;*/
             /*background: transparent;*/
-            color:unset;
-            background-color:unset;
+            color: unset;
+            background-color: unset;
         }
 
     /*.upgradDataGrid tr.headerGrid th {
@@ -3160,6 +3160,10 @@ body {
 
 .table-responsive table {
     margin-bottom: 0;
+}
+
+.modalBackground {
+    background: #00000070;
 }
 
 /* Responsive */

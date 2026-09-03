@@ -22,8 +22,20 @@
     <style>
         .no-record-card table tr td {
             border-radius: 10px;
-            background-color:white !important;
+            background-color: white !important;
             border: 1px solid #000000;
+        }
+
+        .p-popup-table table tr td span {
+            font-size: 10px;
+        }
+
+        .p-vendor-dispatch-table table tr td {
+            padding: 5px;
+        }
+
+        .popupvendor {
+            height: 450px !important;
         }
     </style>
 
@@ -284,182 +296,183 @@
             </div>
 
             <asp:Panel ID="pnlAddPartners" runat="server" CssClass="popupvendor" Width="60%" Style="overflow: auto;" Height="400px" BackColor="#f5f5f5">
-                <div style="background-color: #336699; height: 30px; text-align: center; padding: 2px; font-family: Verdana; display: flex; align-items: center; justify-content: center;">
+                <div class="modal-header" style="padding: 12px">
                     <asp:Label ID="Label1" runat="server" ForeColor="White" Font-Bold="true" Text="Vendor Despatch"></asp:Label>
                 </div>
-                <asp:UpdatePanel ID="UpdatePanel2" runat="server">
-                    <ContentTemplate>
-                        <table style="font-family: Verdana; font-size: 8pt; font-weight: bold;">
-                            <tr>
-                                <td colspan="4">
-                                    <asp:UpdatePanel ID="UpdatePanel4" runat="server">
-                                        <ContentTemplate>
-                                            <div class="table-responsive">
-                                                <asp:GridView ID="gvDispatchAssignDtls" runat="server" AutoGenerateColumns="False"
-                                                    BorderWidth="1" CssClass="table table-hover upgradDataGrid" EmptyDataText="No record(s) found."
-                                                    AllowPaging="false" ShowFooter="false">
-                                                    <RowStyle CssClass="tlrowlight" />
-                                                    <PagerStyle CssClass="PagerGrid" HorizontalAlign="Right" />
-                                                    <HeaderStyle CssClass="headerGrid" />
-                                                    <FooterStyle CssClass="footerGrid" />
-                                                    <Columns>
-                                                        <asp:TemplateField HeaderText="#" HeaderStyle-HorizontalAlign="center">
-                                                            <ItemTemplate>
-                                                                <asp:Label ID="lblSrl" runat="server" Text='<%# Container.DataItemIndex + 1 %>'></asp:Label>
-                                                            </ItemTemplate>
-                                                            <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="5%" />
-                                                            <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="5%" />
-                                                        </asp:TemplateField>
-                                                        <asp:TemplateField HeaderText="SKU Code" HeaderStyle-HorizontalAlign="center">
-                                                            <ItemTemplate>
-                                                                <asp:Label ID="lblSKUCode" runat="server" Text='<%# Bind("ddrd_sku_code") %>'></asp:Label>
-                                                            </ItemTemplate>
-                                                            <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="20%" />
-                                                            <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="20%" />
-                                                        </asp:TemplateField>
-                                                        <asp:TemplateField HeaderText="SKU Name" HeaderStyle-HorizontalAlign="center">
-                                                            <ItemTemplate>
-                                                                <asp:Label ID="lblSkuName" runat="server" Text='<%# Bind("sku_desc") %>'></asp:Label>
-                                                            </ItemTemplate>
-                                                            <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="30%" />
-                                                            <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="30%" />
-                                                        </asp:TemplateField>
+                <div class="modal-body">
+                    <asp:UpdatePanel ID="UpdatePanel2" runat="server" class="p-vendor-dispatch-table">
+                        <ContentTemplate>
+                            <table style="font-family: Verdana; font-size: 8pt; font-weight: bold;">
+                                <tr>
+                                    <td colspan="4">
+                                        <asp:UpdatePanel ID="UpdatePanel4" runat="server">
+                                            <ContentTemplate>
+                                                <div class="table-responsive p-popup-table">
+                                                    <asp:GridView ID="gvDispatchAssignDtls" runat="server" AutoGenerateColumns="False"
+                                                        BorderWidth="1" CssClass="table table-hover upgradDataGrid" EmptyDataText="No record(s) found."
+                                                        AllowPaging="false" ShowFooter="false">
+                                                        <RowStyle CssClass="tlrowlight" />
+                                                        <PagerStyle CssClass="PagerGrid" HorizontalAlign="Right" />
+                                                        <HeaderStyle CssClass="headerGrid" />
+                                                        <FooterStyle CssClass="footerGrid" />
+                                                        <Columns>
+                                                            <asp:TemplateField HeaderText="#" HeaderStyle-HorizontalAlign="center">
+                                                                <ItemTemplate>
+                                                                    <asp:Label ID="lblSrl" runat="server" Text='<%# Container.DataItemIndex + 1 %>'></asp:Label>
+                                                                </ItemTemplate>
+                                                                <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="5%" />
+                                                                <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="5%" />
+                                                            </asp:TemplateField>
+                                                            <asp:TemplateField HeaderText="SKU Code" HeaderStyle-HorizontalAlign="center">
+                                                                <ItemTemplate>
+                                                                    <asp:Label ID="lblSKUCode" runat="server" Text='<%# Bind("ddrd_sku_code") %>'></asp:Label>
+                                                                </ItemTemplate>
+                                                                <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="20%" />
+                                                                <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="20%" />
+                                                            </asp:TemplateField>
+                                                            <asp:TemplateField HeaderText="SKU Name" HeaderStyle-HorizontalAlign="center">
+                                                                <ItemTemplate>
+                                                                    <asp:Label ID="lblSkuName" runat="server" Text='<%# Bind("sku_desc") %>'></asp:Label>
+                                                                </ItemTemplate>
+                                                                <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="30%" />
+                                                                <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="30%" />
+                                                            </asp:TemplateField>
 
-                                                        <asp:TemplateField HeaderText="Pack Size" HeaderStyle-HorizontalAlign="center">
-                                                            <ItemTemplate>
-                                                                <asp:Label ID="lblPackSize" runat="server" Text='<%# Bind("ddrd_sku_pack") %>'></asp:Label>
-                                                            </ItemTemplate>
-                                                            <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="5%" />
-                                                            <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="5%" />
-                                                        </asp:TemplateField>
+                                                            <asp:TemplateField HeaderText="Pack Size" HeaderStyle-HorizontalAlign="center">
+                                                                <ItemTemplate>
+                                                                    <asp:Label ID="lblPackSize" runat="server" Text='<%# Bind("ddrd_sku_pack") %>'></asp:Label>
+                                                                </ItemTemplate>
+                                                                <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="5%" />
+                                                                <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="5%" />
+                                                            </asp:TemplateField>
 
-                                                        <asp:TemplateField HeaderText="Qty" HeaderStyle-HorizontalAlign="Center">
-                                                            <ItemTemplate>
-                                                                <asp:Label ID="lblSumofQty" runat="server" Text='<%# Bind("sum_of_qty") %>'></asp:Label>
-                                                            </ItemTemplate>
-                                                            <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="5%" />
-                                                            <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="5%" />
-                                                        </asp:TemplateField>
+                                                            <asp:TemplateField HeaderText="Qty" HeaderStyle-HorizontalAlign="Center">
+                                                                <ItemTemplate>
+                                                                    <asp:Label ID="lblSumofQty" runat="server" Text='<%# Bind("sum_of_qty") %>'></asp:Label>
+                                                                </ItemTemplate>
+                                                                <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="5%" />
+                                                                <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="5%" />
+                                                            </asp:TemplateField>
 
 
-                                                        <asp:TemplateField HeaderText="Uom" HeaderStyle-HorizontalAlign="Center" Visible="false">
-                                                            <ItemTemplate>
-                                                                <asp:Label ID="lblUom" runat="server" Text='<%# Bind("sku_uom") %>'></asp:Label>
-                                                            </ItemTemplate>
-                                                            <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="10%" />
-                                                            <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="10%" />
-                                                        </asp:TemplateField>
+                                                            <asp:TemplateField HeaderText="Uom" HeaderStyle-HorizontalAlign="Center" Visible="false">
+                                                                <ItemTemplate>
+                                                                    <asp:Label ID="lblUom" runat="server" Text='<%# Bind("sku_uom") %>'></asp:Label>
+                                                                </ItemTemplate>
+                                                                <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="10%" />
+                                                                <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="10%" />
+                                                            </asp:TemplateField>
 
-                                                        <asp:TemplateField HeaderText="Volume" HeaderStyle-HorizontalAlign="Center">
-                                                            <ItemTemplate>
-                                                                <asp:Label ID="lblSumofVolume" runat="server" Text='<%# Bind("sum_of_volume") %>'></asp:Label>
-                                                            </ItemTemplate>
-                                                            <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="10%" />
-                                                            <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="10%" />
-                                                        </asp:TemplateField>
+                                                            <asp:TemplateField HeaderText="Volume" HeaderStyle-HorizontalAlign="Center">
+                                                                <ItemTemplate>
+                                                                    <asp:Label ID="lblSumofVolume" runat="server" Text='<%# Bind("sum_of_volume") %>'></asp:Label>
+                                                                </ItemTemplate>
+                                                                <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="10%" />
+                                                                <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="10%" />
+                                                            </asp:TemplateField>
 
-                                                        <asp:TemplateField HeaderText="Rate" HeaderStyle-HorizontalAlign="Center">
-                                                            <ItemTemplate>
-                                                                <asp:Label ID="lblrate" runat="server" Text='<%# Bind("SkuRate") %>'></asp:Label>
-                                                            </ItemTemplate>
-                                                            <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="10%" />
-                                                            <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="10%" />
-                                                        </asp:TemplateField>
+                                                            <asp:TemplateField HeaderText="Rate" HeaderStyle-HorizontalAlign="Center">
+                                                                <ItemTemplate>
+                                                                    <asp:Label ID="lblrate" runat="server" Text='<%# Bind("SkuRate") %>'></asp:Label>
+                                                                </ItemTemplate>
+                                                                <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="10%" />
+                                                                <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="10%" />
+                                                            </asp:TemplateField>
 
-                                                        <asp:TemplateField HeaderText="Total Rate (Inc. GST)" HeaderStyle-HorizontalAlign="Center">
-                                                            <ItemTemplate>
-                                                                <asp:Label ID="lblTotalRate" runat="server" Text=""></asp:Label>
-                                                                <asp:HiddenField ID="hdnSkuRate" runat="server" Value='<%# Bind("SkuRate") %>' />
-                                                                <asp:HiddenField ID="hdnSkuGST" runat="server" Value='<%# Bind("SkuGST") %>' />
-                                                                <asp:HiddenField ID="hdnUom" runat="server" Value='<%# Bind("sku_uom")%>' />
-                                                                <asp:HiddenField ID="hdnqty" runat="server" Value='<%# Bind("sum_of_qty") %>' />
-                                                            </ItemTemplate>
-                                                            <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="10%" />
-                                                            <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="10%" />
-                                                        </asp:TemplateField>
-                                                    </Columns>
-                                                </asp:GridView>
+                                                            <asp:TemplateField HeaderText="Total Rate (Inc. GST)" HeaderStyle-HorizontalAlign="Center">
+                                                                <ItemTemplate>
+                                                                    <asp:Label ID="lblTotalRate" runat="server" Text=""></asp:Label>
+                                                                    <asp:HiddenField ID="hdnSkuRate" runat="server" Value='<%# Bind("SkuRate") %>' />
+                                                                    <asp:HiddenField ID="hdnSkuGST" runat="server" Value='<%# Bind("SkuGST") %>' />
+                                                                    <asp:HiddenField ID="hdnUom" runat="server" Value='<%# Bind("sku_uom")%>' />
+                                                                    <asp:HiddenField ID="hdnqty" runat="server" Value='<%# Bind("sum_of_qty") %>' />
+                                                                </ItemTemplate>
+                                                                <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="10%" />
+                                                                <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="10%" />
+                                                            </asp:TemplateField>
+                                                        </Columns>
+                                                    </asp:GridView>
+                                                </div>
+                                            </ContentTemplate>
+                                        </asp:UpdatePanel>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="4">
+                                        <div style="display: flex; justify-content: flex-end">
+                                            <div style="width: 115px; text-align: center">
+                                                <label>Total : </label>
                                             </div>
-                                        </ContentTemplate>
-                                    </asp:UpdatePanel>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colspan="4">
-                                    <div style="display: flex; justify-content: flex-end">
-                                        <div style="width: 115px; text-align: center">
-                                            <label>Total : </label>
+                                            <div style="width: 115px; text-align: center">
+                                                <asp:Label ID="lbltotalrateincgst" runat="server" Text=""></asp:Label>
+                                            </div>
                                         </div>
-                                        <div style="width: 115px; text-align: center">
-                                            <asp:Label ID="lbltotalrateincgst" runat="server" Text=""></asp:Label>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Invoice No. <span style="color: red;">*</span>
-                                </td>
-                                <td>
-                                    <asp:TextBox ID="txtInvoiceNo" runat="server" CssClass="form-control" MaxLength="24" onkeypress="return regex(event);" AutoComplete="off" onpaste="return false"></asp:TextBox>
-                                    <asp:HiddenField ID="hdn_dispatchAssignHdr" runat="server"></asp:HiddenField>
-                                </td>
-                                <td>Invoice Date <span style="color: red;">*</span>
-                                </td>
-                                <td class="customCalender">
-                                    <asp:TextBox ID="txtInvoiceDate" runat="server" CssClass="form-control"></asp:TextBox>
-                                    <asp:CalendarExtender ID="CalendarExtender" CssClass="OpenCalender" runat="server" TargetControlID="txtInvoiceDate" Format="dd/MM/yyyy" />
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Transporter Name <span style="color: red;">*</span>
-                                </td>
-                                <td>
-                                    <asp:TextBox ID="txtTransporterName" ReadOnly="true" runat="server" CssClass="form-control"></asp:TextBox>
-                                </td>
-                                <td>Vehicle No. <%--<span style="color: red;">*</span>--%>
-                                </td>
-                                <td>
-                                    <asp:TextBox ID="txtLorryNo" runat="server" CssClass="form-control"></asp:TextBox>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>E-Way Bill No. 
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Invoice No. <span style="color: red;">*</span>
+                                    </td>
+                                    <td>
+                                        <asp:TextBox ID="txtInvoiceNo" runat="server" CssClass="form-control" MaxLength="24" onkeypress="return regex(event);" AutoComplete="off" onpaste="return false"></asp:TextBox>
+                                        <asp:HiddenField ID="hdn_dispatchAssignHdr" runat="server"></asp:HiddenField>
+                                    </td>
+                                    <td>Invoice Date <span style="color: red;">*</span>
+                                    </td>
+                                    <td class="customCalender">
+                                        <asp:TextBox ID="txtInvoiceDate" runat="server" CssClass="form-control"></asp:TextBox>
+                                        <asp:CalendarExtender ID="CalendarExtender" CssClass="OpenCalender" runat="server" TargetControlID="txtInvoiceDate" Format="dd/MM/yyyy" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Transporter Name <span style="color: red;">*</span>
+                                    </td>
+                                    <td>
+                                        <asp:TextBox ID="txtTransporterName" ReadOnly="true" runat="server" CssClass="form-control"></asp:TextBox>
+                                    </td>
+                                    <td>Vehicle No. <%--<span style="color: red;">*</span>--%>
+                                    </td>
+                                    <td>
+                                        <asp:TextBox ID="txtLorryNo" runat="server" CssClass="form-control"></asp:TextBox>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>E-Way Bill No. 
                                <%-- <span style="color: red;">*</span>--%>
-                                </td>
-                                <td>
-                                    <asp:TextBox ID="txtWayBill" runat="server" CssClass="form-control"></asp:TextBox>
-                                </td>
-                                <td>E-Way Bill Date 
+                                    </td>
+                                    <td>
+                                        <asp:TextBox ID="txtWayBill" runat="server" CssClass="form-control"></asp:TextBox>
+                                    </td>
+                                    <td>E-Way Bill Date 
                                 <%--<span style="color: red;">*</span>--%>
-                                </td>
-                                <td class="customCalender">
-                                    <asp:TextBox ID="txtewaybilldate" runat="server" CssClass="form-control"></asp:TextBox>
-                                    <asp:CalendarExtender ID="CalendarExtender2" CssClass="OpenCalender" runat="server" TargetControlID="txtewaybilldate" Format="dd/MM/yyyy" />
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Valid Up to 
+                                    </td>
+                                    <td class="customCalender">
+                                        <asp:TextBox ID="txtewaybilldate" runat="server" CssClass="form-control"></asp:TextBox>
+                                        <asp:CalendarExtender ID="CalendarExtender2" CssClass="OpenCalender" runat="server" TargetControlID="txtewaybilldate" Format="dd/MM/yyyy" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Valid Up to 
                                 <%--<span style="color: red;">*</span>--%>
-                                </td>
-                                <td class="customCalender">
-                                    <asp:TextBox ID="txtvalidupto" runat="server" CssClass="form-control"></asp:TextBox>
-                                    <asp:CalendarExtender ID="CalendarExtender1" CssClass="OpenCalender" runat="server" TargetControlID="txtvalidupto" Format="dd/MM/yyyy" />
-                                </td>
-                                <td>Final Invoice Value (After Tax) <span style="color: red;">*</span>
-                                </td>
-                                <td>
-                                    <asp:TextBox ID="txtfinalinvoicevalue" runat="server" CssClass="form-control"></asp:TextBox>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>PO Number 
-                                </td>
-                                <td>
-                                    <asp:TextBox ID="txtpono" runat="server" CssClass="form-control" ReadOnly="true"></asp:TextBox>
-                                </td>
-                                <%--<td>Upload Actual Invoice Copy. <span style="color: red;">*</span>
+                                    </td>
+                                    <td class="customCalender">
+                                        <asp:TextBox ID="txtvalidupto" runat="server" CssClass="form-control"></asp:TextBox>
+                                        <asp:CalendarExtender ID="CalendarExtender1" CssClass="OpenCalender" runat="server" TargetControlID="txtvalidupto" Format="dd/MM/yyyy" />
+                                    </td>
+                                    <td>Final Invoice Value (After Tax) <span style="color: red;">*</span>
+                                    </td>
+                                    <td>
+                                        <asp:TextBox ID="txtfinalinvoicevalue" runat="server" CssClass="form-control"></asp:TextBox>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>PO Number 
+                                    </td>
+                                    <td>
+                                        <asp:TextBox ID="txtpono" runat="server" CssClass="form-control" ReadOnly="true"></asp:TextBox>
+                                    </td>
+                                    <%--<td>Upload Actual Invoice Copy. <span style="color: red;">*</span>
                             </td>--%>
-                                <%--<td>
+                                    <%--<td>
                                 <asp:UpdatePanel ID="UpdatePanel12" runat="server">
                                     <ContentTemplate>
                                         <asp:FileUpload ID="sch_fld1" runat="server" />
@@ -470,28 +483,22 @@
                                 </asp:UpdatePanel>
 
                             </td>--%>
-                            </tr>
-                            <tr>
-                                <td>&nbsp;</td>
-                            </tr>
-                            <tr>
-                                <td style="text-align: center;" colspan="4">
-
-                                    <asp:Button ID="btnSave" Text="Save" runat="server" Font-Bold="true" BackColor="Green" ForeColor="White" Visible="false" />
-                                    <asp:Button ID="btnCancelPartner" runat="server" Font-Bold="true" BackColor="Maroon" ForeColor="White"
-                                        Text="Cancel" Width="75px" />
-                                </td>
-                            </tr>
-                            <%--<tr align="left">
+                                </tr>
+                                <%--<tr align="left">
                             <td style="height: 19px">
                                 <asp:Label ID="Label2" CssClass="errormsg" Visible="true" runat="server"></asp:Label><div
                                     id="lblErrorMessage">
                                 </div>
                             </td>
                         </tr>--%>
-                        </table>
-                    </ContentTemplate>
-                </asp:UpdatePanel>
+                            </table>
+                        </ContentTemplate>
+                    </asp:UpdatePanel>
+                </div>
+                <div class="modal-footer">
+                    <asp:Button ID="btnSave" Text="Save" runat="server" Visible="false" CssClass="btn btn-primary" />
+                    <asp:Button ID="btnCancelPartner" runat="server" Font-Bold="true" Text="Cancel" value="Cancel" class="btn btn-secondary" />
+                </div>
             </asp:Panel>
         </ContentTemplate>
     </asp:UpdatePanel>

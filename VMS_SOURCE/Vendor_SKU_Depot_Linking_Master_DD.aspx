@@ -109,35 +109,6 @@
         }
     </script>
 
-    <style type="text/css">
-        .vendor-sku-dd-grid {
-            table-layout: fixed;
-            width: 100%;
-        }
-
-        .vendor-sku-dd-grid .vendor-sku-new-vendor-cell {
-            overflow: hidden;
-        }
-
-        .vendor-sku-dd-grid .vendor-sku-new-vendor-cell select.form-control,
-        .vendor-sku-dd-grid .vendor-sku-new-vendor-cell .select2-container {
-            display: block;
-            width: 100% !important;
-            max-width: 100%;
-            box-sizing: border-box;
-        }
-
-        .vendor-sku-dd-grid .vendor-sku-new-vendor-cell .select2-container .select2-selection--single {
-            overflow: hidden;
-        }
-
-        .vendor-sku-dd-grid .vendor-sku-new-vendor-cell .select2-selection__rendered {
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-    </style>
-
     <div class="breadcrumbs">
         <div class="leftFung">
             <a href="Home.aspx" title="Home"><i class="fas fa-home"></i></a>
@@ -150,7 +121,7 @@
         <div class="rightFung"></div>
     </div>
 
-    <asp:UpdatePanel ID="UpdatePanel1" runat="server" UpdateMode="Conditional">
+    <asp:UpdatePanel ID="UpdatePanel3" runat="server">
         <ContentTemplate>
             <div class="card">
                 <div class="card-body">
@@ -224,6 +195,8 @@
                     </div>
                 </div>
             </div>
+        </ContentTemplate>
+    </asp:UpdatePanel>
 
     <div class="card">
         <div class="card-body">
@@ -236,13 +209,13 @@
                 </div>
             </div>
             <div class="table-responsive">
+                <asp:UpdatePanel ID="UpdatePanel1" runat="server">
+                    <ContentTemplate>
                         <asp:HiddenField ID="hdnSKUCode" runat="server" />
                         <asp:HiddenField ID="hdnNewVendorName" runat="server" />
                         <asp:GridView ID="gvVendorSKUList" runat="server" AutoGenerateColumns="false" AllowPaging="true"
-                            Visible="true" BorderWidth="1" CssClass="table table-hover upgradDataGrid vendor-sku-dd-grid" ShowFooter="true" EmptyDataText="There are No Data..."
-                            OnRowCancelingEdit="gvVendorSKUList_RowCancelingEdit" OnRowEditing="gvVendorSKUList_RowEditing"
-                            OnRowDataBound="gvVendorSKUList_RowDataBound" OnPageIndexChanging="gvVendorSKUList_PageIndexChanging"
-                            OnRowCommand="gvVendorSKUList_RowCommand" OnRowUpdating="gvVendorSKUList_RowUpdating">
+                            Visible="true" BorderWidth="1" CssClass="table table-hover upgradDataGrid" ShowFooter="true" EmptyDataText="There are No Data..."
+                            OnRowCancelingEdit="gvVendorSKUList_RowCancelingEdit" OnRowEditing="gvVendorSKUList_RowEditing">
                             <RowStyle CssClass="tlrowlight" />
                             <PagerStyle CssClass="PagerGrid" HorizontalAlign="Right" />
                             <HeaderStyle CssClass="headerGrid" />
@@ -321,7 +294,7 @@
                                 <asp:TemplateField HeaderText="SKU" HeaderStyle-HorizontalAlign="Center">
                                     <ItemTemplate>
                                         <asp:Label ID="lblSKU" runat="server" Text='<%# Bind("v_sku_code") %>'></asp:Label>
-                                        <asp:HiddenField ID="hdnRowSkuCode" runat="server" Value='<%# Bind("v_sku_code") %>' />
+                                        <asp:HiddenField ID="hdnskucode1" runat="server" Value='<%# Bind("v_sku_code") %>' />
                                     </ItemTemplate>
                                     <EditItemTemplate>
                                         <asp:Label ID="lbleditSKU" runat="server" Text='<%# Bind("v_sku_code") %>'></asp:Label>
@@ -353,21 +326,21 @@
                                 </asp:TemplateField>
                                 <asp:TemplateField HeaderText="New Vendor" HeaderStyle-HorizontalAlign="Center">
                                     <ItemTemplate>
-                                        <asp:DropDownList ID="ddlVendor" CssClass="form-control select2-grid-vendor w100" TabIndex="4" Visible="true" OnSelectedIndexChanged="ddlNewVendor_SelectedIndexChanged" AutoPostBack="true"
+                                        <asp:DropDownList ID="ddlVendor" CssClass="form-control select2" TabIndex="4" Visible="true" OnSelectedIndexChanged="ddlNewVendor_SelectedIndexChanged" AutoPostBack="true"
                                             runat="server">
                                         </asp:DropDownList>
                                     </ItemTemplate>
                                     <EditItemTemplate>
-                                        <asp:DropDownList ID="ddleditVendor" CssClass="form-control select2-grid-vendor w100" TabIndex="4" Visible="true" runat="server">
+                                        <asp:DropDownList ID="ddleditVendor" CssClass="form-control select2" TabIndex="4" Visible="true" runat="server">
                                         </asp:DropDownList>
                                     </EditItemTemplate>
                                     <FooterTemplate>
-                                        <asp:DropDownList ID="ddlftrVendor" CssClass="form-control select2-grid-vendor w100" TabIndex="1" runat="server">
+                                        <asp:DropDownList ID="ddlftrVendor" CssClass="form-control select2" TabIndex="1" runat="server">
                                         </asp:DropDownList>
                                     </FooterTemplate>
                                     <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="18%" />
-                                    <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="18%" CssClass="vendor-sku-new-vendor-cell" />
-                                    <FooterStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="18%" CssClass="vendor-sku-new-vendor-cell" />
+                                    <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="18%" />
+                                    <FooterStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="18%" />
                                 </asp:TemplateField>
 
                                 <asp:TemplateField HeaderText="Active" HeaderStyle-HorizontalAlign="Center">
@@ -380,14 +353,14 @@
                                         <asp:DropDownList ID="ddlActive" runat="server" CssClass="form-control select2" Width="80px" />
                                     </ItemTemplate>
                                     <EditItemTemplate>
-                                        <asp:DropDownList ID="ddlActive" runat="server" CssClass="form-control" Width="80px">
+                                        <asp:DropDownList ID="ddlActive" runat="server" CssClass="form-control select2" Width="80px">
                                             <asp:ListItem Text="Yes" Value="Y"></asp:ListItem>
                                             <asp:ListItem Text="No" Value="N"></asp:ListItem>
                                         </asp:DropDownList>
                                         <asp:HiddenField ID="hdnactive" runat="server" Value='<%# Bind("active") %>' />
                                     </EditItemTemplate>
                                     <FooterTemplate>
-                                        <asp:DropDownList ID="ddlActive" runat="server" CssClass="form-control select2" Width="80px">
+                                        <asp:DropDownList ID="ddlActive" runat="server" CssClass="form-control" Width="80px">
                                             <asp:ListItem Text="Yes" Value="Y"></asp:ListItem>
                                             <asp:ListItem Text="No" Value="N"></asp:ListItem>
                                         </asp:DropDownList>
@@ -421,14 +394,15 @@
                             </Columns>
                         </asp:GridView>
                         <asp:Label ID="lblErrorMessage" CssClass="errormsg" runat="server" Font-Size="10px" Font-Bold="true"></asp:Label>
+                    </ContentTemplate>
+                    <Triggers>
+                        <asp:AsyncPostBackTrigger
+                            ControlID="imgbtnSearch" EventName="Click" />
+                        <asp:AsyncPostBackTrigger ControlID="ddlPageSize"
+                            EventName="SelectedIndexChanged" />
+                    </Triggers>
+                </asp:UpdatePanel>
             </div>
         </div>
     </div>
-        </ContentTemplate>
-        <Triggers>
-            <asp:AsyncPostBackTrigger ControlID="imgbtnSearch" EventName="Click" />
-            <asp:AsyncPostBackTrigger ControlID="ddlPageSize" EventName="SelectedIndexChanged" />
-            <asp:AsyncPostBackTrigger ControlID="ddlVendor" EventName="SelectedIndexChanged" />
-        </Triggers>
-    </asp:UpdatePanel>
 </asp:Content>
