@@ -3769,3 +3769,6 @@ body {
 .p-upgradDataGrid {
     margin-bottom: 0;
 }
+.select2-container {
+    width: 100% !important;
+}

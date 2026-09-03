@@ -81,33 +81,11 @@
         <div class="rightFung"></div>
     </div>
 
-    <%-- Modified-by MUKESH BHAGAT on 01-09-2026 : searchable New Vendor dropdowns in the grid,
-         same select2 treatment as Vendor_SKU_Depot_Linking_Master_DD.aspx. select2 appends its
-         dropdown to <body>, so it also cannot be clipped by the .table-responsive scroll area. --%>
+    <%-- Modified-by MUKESH BHAGAT on 03-09-2026 : grid vendor dropdowns now use the plain
+         "select2" class handled by MasterPage's global $('.select2').select2() - the same
+         convention the team applied to Vendor_SKU_Depot_Linking_Master_DD.aspx. The earlier
+         page-local select2 init + containment CSS caused the horizontal drag and is removed. --%>
     <script type="text/javascript">
-        function initVendorSkuGridSelect2() {
-            $('.vendor-sku-dd-grid select.select2-grid-vendor:visible').each(function () {
-                var $el = $(this);
-                if ($el.data('select2')) {
-                    $el.select2('destroy');
-                }
-                $el.select2({
-                    width: '100%',
-                    dropdownAutoWidth: false
-                });
-            });
-        }
-
-        $(document).ready(function () {
-            setTimeout(initVendorSkuGridSelect2, 0);
-        });
-
-        if (typeof Sys !== 'undefined' && Sys.WebForms && Sys.WebForms.PageRequestManager) {
-            Sys.WebForms.PageRequestManager.getInstance().add_endRequest(function () {
-                setTimeout(initVendorSkuGridSelect2, 0);
-            });
-        }
-
         // Modified-by MUKESH BHAGAT on 03-09-2026 : the shared validator paints required-field
         // errors yellow on the NATIVE control (FunctionValidator.js -> SetErrorColor). The
         // vendor dropdowns here are select2, whose native <select> is hidden - so the yellow
@@ -125,39 +103,6 @@
             };
         }
     </script>
-
-    <style type="text/css">
-        /* Modified-by MUKESH BHAGAT on 01-09-2026 : unlike the DD page, this grid keeps its
-           natural (auto) table layout - forcing table-layout:fixed here made the wider column
-           set overflow and pushed the grid off-screen to the left. Only the cell-containment
-           rules below are needed for select2.
-           Modified-by MUKESH BHAGAT on 02-09-2026 : removed the min-width on the vendor cells -
-           on narrower laptop screens it pushed the table wider than its card and made the grid
-           horizontally draggable. The select2 boxes must shrink with their column instead
-           (min-width: 0 allows that; long names already ellipsise). */
-        .vendor-sku-dd-grid .vendor-sku-new-vendor-cell {
-            overflow: hidden;
-        }
-
-        .vendor-sku-dd-grid .vendor-sku-new-vendor-cell select.form-control,
-        .vendor-sku-dd-grid .vendor-sku-new-vendor-cell .select2-container {
-            display: block;
-            width: 100% !important;
-            max-width: 100%;
-            min-width: 0;
-            box-sizing: border-box;
-        }
-
-        .vendor-sku-dd-grid .vendor-sku-new-vendor-cell .select2-container .select2-selection--single {
-            overflow: hidden;
-        }
-
-        .vendor-sku-dd-grid .vendor-sku-new-vendor-cell .select2-selection__rendered {
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-    </style>
 
     <asp:UpdatePanel ID="UpdatePanel1" runat="server">
         <ContentTemplate>
@@ -267,7 +212,7 @@
                     </div>
                     <div class="table-responsive">
                         <asp:GridView ID="gvVendorSKUList" runat="server" AutoGenerateColumns="false" AllowPaging="true"
-                            Visible="true" ShowFooter="true" BorderWidth="1" CssClass="table table-hover upgradDataGrid vendor-sku-dd-grid" EmptyDataText="There are No Data..."
+                            Visible="true" ShowFooter="true" BorderWidth="1" CssClass="table table-hover upgradDataGrid" EmptyDataText="There are No Data..."
                             OnRowCancelingEdit="gvVendorSKUList_RowCancelingEdit" OnRowEditing="gvVendorSKUList_RowEditing">
                             <RowStyle CssClass="tlrowlight" />
                             <PagerStyle CssClass="PagerGrid" HorizontalAlign="Right" />
@@ -422,25 +367,25 @@
                                 <asp:TemplateField HeaderText="New Vendor" HeaderStyle-HorizontalAlign="Center">
                                     <ItemTemplate>
                                         <%--   <asp:Label ID="lblNewVendor1" runat="server" Text='<%# Bind("vendor_name") %>'></asp:Label>--%>
-                                        <%-- Modified-by MUKESH BHAGAT on 01-09-2026 : select2-grid-vendor makes these
-                                             searchable, same as Vendor_SKU_Depot_Linking_Master_DD.aspx --%>
-                                        <asp:DropDownList ID="ddlVendor" CssClass="form-control select2-grid-vendor w100" TabIndex="4" Visible="true" OnSelectedIndexChanged="ddlNewVendor_SelectedIndexChanged" AutoPostBack="true"
+                                        <%-- Modified-by MUKESH BHAGAT on 03-09-2026 : plain "select2" class, initialised by
+                                             the MasterPage global init - same convention as the DD page --%>
+                                        <asp:DropDownList ID="ddlVendor" CssClass="form-control select2" TabIndex="4" Visible="true" OnSelectedIndexChanged="ddlNewVendor_SelectedIndexChanged" AutoPostBack="true"
                                             runat="server">
                                         </asp:DropDownList>
                                     </ItemTemplate>
                                     <EditItemTemplate>
-                                        <asp:DropDownList ID="ddleditVendor" CssClass="form-control select2-grid-vendor w100" TabIndex="4" Visible="true"
+                                        <asp:DropDownList ID="ddleditVendor" CssClass="form-control select2" TabIndex="4" Visible="true"
                                             runat="server">
                                         </asp:DropDownList>
                                     </EditItemTemplate>
                                     <FooterTemplate>
-                                        <asp:DropDownList ID="ddlftrVendor" CssClass="form-control select2-grid-vendor w100" TabIndex="1"
+                                        <asp:DropDownList ID="ddlftrVendor" CssClass="form-control select2" TabIndex="1"
                                             runat="server">
                                         </asp:DropDownList>
                                     </FooterTemplate>
                                     <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="18%" />
-                                    <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="18%" CssClass="vendor-sku-new-vendor-cell" />
-                                    <FooterStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="18%" CssClass="vendor-sku-new-vendor-cell" />
+                                    <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="18%" />
+                                    <FooterStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="18%" />
                                 </asp:TemplateField>
 
                                 <asp:TemplateField HeaderText="Active" HeaderStyle-HorizontalAlign="Center" Visible="false">
