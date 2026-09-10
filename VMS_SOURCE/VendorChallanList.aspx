@@ -21,7 +21,7 @@
     </script>
     <style>
         .no-record-card table tr td {
-            border-radius: 10px;
+            /*border-radius: 10px;*/
             background-color: white !important;
             border: 1px solid #000000;
         }
