@@ -13,7 +13,7 @@
         .legend {
             display: flex;
             gap: 20px;
-            margin-bottom: 12px;
+            margin: 12px 0;
             font-size: 13px;
             color: #333;
         }
@@ -147,96 +147,105 @@
                 <asp:Literal ID="litPending" runat="server" Visible="false"></asp:Literal>
                 <asp:Literal ID="litDespatch" runat="server" Visible="false">></asp:Literal>
 
-                <div id="divSearch" runat="server">
-                    <div class="row align-items-center">
-                        <div id="divVendor" class="col-md-3" runat="server">
-                            <div class="form-group">
-                                <label class="form-control-label">Vendor:</label>
-                                <asp:DropDownList ID="ddlvendor" ClientIDMode="Static" CssClass="form-control select2" TabIndex="1" runat="server"></asp:DropDownList>
-                            </div>
-                        </div>
-                        <div class="col-md-2">
-                            <div class="form-group">
-                                <label class="form-control-label">Process Year:</label>
-                                <asp:DropDownList ID="ddlProcessYr" runat="server" CssClass="form-control select2"></asp:DropDownList>
-                            </div>
-                        </div>
-                        <div class="col-md-2">
-                            <div class="form-group">
-                                <label class="form-control-label">Process Month:</label>
-                                <asp:DropDownList ID="ddlProcessMnth" CssClass="form-control select2" runat="server">
-                                    <asp:ListItem>01</asp:ListItem>
-                                    <asp:ListItem>02</asp:ListItem>
-                                    <asp:ListItem>03</asp:ListItem>
-                                    <asp:ListItem>04</asp:ListItem>
-                                    <asp:ListItem>05</asp:ListItem>
-                                    <asp:ListItem>06</asp:ListItem>
-                                    <asp:ListItem>07</asp:ListItem>
-                                    <asp:ListItem>08</asp:ListItem>
-                                    <asp:ListItem>09</asp:ListItem>
-                                    <asp:ListItem>10</asp:ListItem>
-                                    <asp:ListItem>11</asp:ListItem>
-                                    <asp:ListItem>12</asp:ListItem>
-                                </asp:DropDownList>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <%--<asp:Button ID="btnSearch" runat="server"
+                <div class="card">
+                    <div class="card-body">
+                        <div id="divSearch" runat="server">
+                            <div class="row align-items-center">
+                                <div id="divVendor" class="col-md-3" runat="server">
+                                    <div class="form-group">
+                                        <label class="form-control-label">Vendor:</label>
+                                        <asp:DropDownList ID="ddlvendor" ClientIDMode="Static" CssClass="form-control select2" TabIndex="1" runat="server"></asp:DropDownList>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label class="form-control-label">Process Year:</label>
+                                        <asp:DropDownList ID="ddlProcessYr" runat="server" CssClass="form-control select2"></asp:DropDownList>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label class="form-control-label">Process Month:</label>
+                                        <asp:DropDownList ID="ddlProcessMnth" CssClass="form-control select2" runat="server">
+                                            <asp:ListItem>01</asp:ListItem>
+                                            <asp:ListItem>02</asp:ListItem>
+                                            <asp:ListItem>03</asp:ListItem>
+                                            <asp:ListItem>04</asp:ListItem>
+                                            <asp:ListItem>05</asp:ListItem>
+                                            <asp:ListItem>06</asp:ListItem>
+                                            <asp:ListItem>07</asp:ListItem>
+                                            <asp:ListItem>08</asp:ListItem>
+                                            <asp:ListItem>09</asp:ListItem>
+                                            <asp:ListItem>10</asp:ListItem>
+                                            <asp:ListItem>11</asp:ListItem>
+                                            <asp:ListItem>12</asp:ListItem>
+                                        </asp:DropDownList>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <%--<asp:Button ID="btnSearch" runat="server"
                                 Text="Search"
                                 CssClass="btn btn-primary btn-sm mt-2"
                                 OnClick="btnSearch_Click" />--%>
-                            <asp:LinkButton ID="btnSearch" runat="server" CssClass="btn btn-primary btn-sm rmp-btn-icon" ToolTip="Search" OnClick="btnSearch_Click"><i class="fas fa-search"></i></asp:LinkButton>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="divNewsCard" class="row" runat="server">
-                    <div class="col-md-12">
-                        <div class="flashComplainBTCCard">
-                            <div class="newCard w100 home-card-flash">
-                                <div class="newCardHead">
-                                    <h3 class="newHeadTitle">Flash News</h3>
-                                </div>
-                                <div class="newCardBody">
-                                    <div class="noRecordFnew" id="news_marquee_scroll" runat="server">No new updates at the moment.</div>
+                                    <asp:LinkButton ID="btnSearch" runat="server" CssClass="btn btn-primary btn-sm rmp-btn-icon" ToolTip="Search" OnClick="btnSearch_Click"><i class="fas fa-search"></i></asp:LinkButton>
                                 </div>
                             </div>
-                            <a class="complainBTCCard" id="tblComplainRegistrationLink" runat="server" href="https://bpilsharepoint1.bergerindia.com:97" target="_blank" title="For Product Complaint Click Here">
-                                <div class="newCard">
-                                    <i class="fas fa-comment-dots cbtcImg"></i>
-                                    <p>Complain/BTC</p>
-                                </div>
-                            </a>
                         </div>
                     </div>
                 </div>
-
+                <div class="card">
+                    <div class="card-body">
+                        <div id="divNewsCard" class="row" runat="server">
+                            <div class="col-md-12">
+                                <div class="flashComplainBTCCard">
+                                    <div class="newCard w100 home-card-flash">
+                                        <div class="newCardHead">
+                                            <h3 class="newHeadTitle">Flash News</h3>
+                                        </div>
+                                        <div class="newCardBody">
+                                            <div class="noRecordFnew" id="news_marquee_scroll" runat="server">No new updates at the moment.</div>
+                                        </div>
+                                    </div>
+                                    <a class="complainBTCCard" id="tblComplainRegistrationLink" runat="server" href="https://bpilsharepoint1.bergerindia.com:97" target="_blank" title="For Product Complaint Click Here">
+                                        <div class="newCard">
+                                            <i class="fas fa-comment-dots cbtcImg"></i>
+                                            <p>Complain/BTC</p>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <%--Modified-by MUKESH BHAGAT on 20-08-2026 : restored from old UAT source (Action Required panel and Last Stock Update Date)--%>
-                <div id="divAction" class="row" runat="server">
-                    <div class="col-md-8">
-                        <div class="newCard w100 home-card-action">
-                            <div class="newCardHead">
-                                <h3 class="newHeadTitle">Action Required</h3>
+                <div class="card">
+                    <div class="card-body">
+                        <div id="divAction" class="row" runat="server">
+                            <div class="col-md-8">
+                                <div class="newCard w100 home-card-action">
+                                    <div class="newCardHead">
+                                        <h3 class="newHeadTitle">Action Required</h3>
+                                    </div>
+                                    <div class="newCardBody">
+                                        <div id="tdActionReq" runat="server" class="home-action-list"></div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="newCardBody">
-                                <div id="tdActionReq" runat="server" class="home-action-list"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="newCard w100 home-card-stock">
-                            <div class="newCardHead">
-                                <h3 class="newHeadTitle">Stock As On</h3>
-                            </div>
-                            <div class="newCardBody">
-                                <div class="home-stock-chip">
-                                    <asp:Label ID="lblLastStockUpdateDate" runat="server" Font-Bold="True" ForeColor="Red"></asp:Label>
+                            <div class="col-md-4">
+                                <div class="newCard w100 home-card-stock">
+                                    <div class="newCardHead">
+                                        <h3 class="newHeadTitle">Stock As On</h3>
+                                    </div>
+                                    <div class="newCardBody">
+                                        <div class="home-stock-chip">
+                                            <asp:Label ID="lblLastStockUpdateDate" runat="server" Font-Bold="True" ForeColor="Red"></asp:Label>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-
                 <%--<div id="divData" runat="server">
                     <div class="mst-panel-header">
                         <div class="mst-panel-header-left">
@@ -293,89 +302,95 @@
                         </div>
                     </div>
                 </div>--%>
-                <div id="divSkuChart" class="dashboard" runat="server">
-                    <div class="mst-panel-header">
-                        <div class="mst-panel-header-left">
-                            <span class="mst-panel-icon"><i class="fas fa-list"></i></span>
-                            <div>
-                                <h5 id="ChartTitle" class="mst-panel-title">SKU List</h5>
+                <div class="card">
+                    <div class="card-body">
+                        <div id="divSkuChart" class="dashboard" runat="server">
+                            <div class="mst-panel-header">
+                                <div class="mst-panel-header-left">
+                                    <span class="mst-panel-icon"><i class="fas fa-list"></i></span>
+                                    <div>
+                                        <h5 id="ChartTitle" class="mst-panel-title">SKU List</h5>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="legend">
+                                <div><span class="dot total-load"></span>Total Load</div>
+                                <div><span class="dot total-dispatch"></span>Total Dispatch</div>
+                            </div>
+                            <div id="chartContainer" style="height: 250px; overflow-y: auto;">
+                                <asp:Literal ID="litSkuRows" runat="server"></asp:Literal>
                             </div>
                         </div>
-                    </div>
-                    <div class="legend">
-                        <div><span class="dot total-load"></span>Total Load</div>
-                        <div><span class="dot total-dispatch"></span>Total Dispatch</div>
-                    </div>
-                    <div id="chartContainer" style="height: 250px; overflow-y: auto;">
-                        <asp:Literal ID="litSkuRows" runat="server"></asp:Literal>
                     </div>
                 </div>
-                <div id="divDespatch" runat="server">
-                    <div class="mst-panel-header">
-                        <div class="mst-panel-header-left">
-                            <span class="mst-panel-icon"><i class="fas fa-list"></i></span>
-                            <div>
-                                <h5 id="DespatchTitle" class="mst-panel-title">Despatch List</h5>
-                            </div>
-                        </div>
-                    </div>
+                <div class="card">
                     <div class="card-body">
-                        <div class="table-responsive rm-grid-scroll">
-                            <asp:GridView ID="gvVendorDispatch" runat="server" AutoGenerateColumns="false" OnRowCommand="gvVendorDispatch_RowCommand"
-                                Visible="true" BorderWidth="1" CssClass="table table-hover upgradDataGrid" EmptyDataText="No Record Found">
-                                <RowStyle CssClass="tlrowlight" />
-                                <PagerStyle CssClass="PagerGrid" HorizontalAlign="Right" />
-                                <HeaderStyle CssClass="headerGrid" />
-                                <FooterStyle CssClass="footerGrid" />
-                                <Columns>
-                                    <asp:TemplateField HeaderText="Order Sl No." HeaderStyle-HorizontalAlign="Center">
-                                        <ItemTemplate>
-                                            <asp:Label ID="lblOrderId" runat="server" Text='<%# Bind("ddrh_order_sl_no") %>'></asp:Label>
-                                            <asp:Label ID="lblRequestId" Visible="false" runat="server" Text='<%# Bind("ddrh_hdr_req_id") %>'></asp:Label>
-                                        </ItemTemplate>
-                                        <HeaderStyle HorizontalAlign="Center"></HeaderStyle>
-                                        <ItemStyle HorizontalAlign="Center" Width="10%"></ItemStyle>
-                                    </asp:TemplateField>
-                                    <asp:TemplateField HeaderText="Request Date" HeaderStyle-HorizontalAlign="Center">
-                                        <ItemTemplate>
-                                            <asp:Label ID="lblRequestDate" runat="server" Text='<%# Bind("ReqDate") %>'></asp:Label>
-                                        </ItemTemplate>
-                                        <HeaderStyle HorizontalAlign="Center"></HeaderStyle>
-                                        <ItemStyle HorizontalAlign="Center" Width="10%"></ItemStyle>
-                                    </asp:TemplateField>
+                        <div id="divDespatch" runat="server">
+                            <div class="mst-panel-header">
+                                <div class="mst-panel-header-left">
+                                    <span class="mst-panel-icon"><i class="fas fa-list"></i></span>
+                                    <div>
+                                        <h5 id="DespatchTitle" class="mst-panel-title">Despatch List</h5>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive rm-grid-scroll">
+                                    <asp:GridView ID="gvVendorDispatch" runat="server" AutoGenerateColumns="false" OnRowCommand="gvVendorDispatch_RowCommand"
+                                        Visible="true" BorderWidth="1" CssClass="table table-hover upgradDataGrid" EmptyDataText="No Record Found">
+                                        <RowStyle CssClass="tlrowlight" />
+                                        <PagerStyle CssClass="PagerGrid" HorizontalAlign="Right" />
+                                        <HeaderStyle CssClass="headerGrid" />
+                                        <FooterStyle CssClass="footerGrid" />
+                                        <Columns>
+                                            <asp:TemplateField HeaderText="Order Sl No." HeaderStyle-HorizontalAlign="Center">
+                                                <ItemTemplate>
+                                                    <asp:Label ID="lblOrderId" runat="server" Text='<%# Bind("ddrh_order_sl_no") %>'></asp:Label>
+                                                    <asp:Label ID="lblRequestId" Visible="false" runat="server" Text='<%# Bind("ddrh_hdr_req_id") %>'></asp:Label>
+                                                </ItemTemplate>
+                                                <HeaderStyle HorizontalAlign="Center"></HeaderStyle>
+                                                <ItemStyle HorizontalAlign="Center" Width="10%"></ItemStyle>
+                                            </asp:TemplateField>
+                                            <asp:TemplateField HeaderText="Request Date" HeaderStyle-HorizontalAlign="Center">
+                                                <ItemTemplate>
+                                                    <asp:Label ID="lblRequestDate" runat="server" Text='<%# Bind("ReqDate") %>'></asp:Label>
+                                                </ItemTemplate>
+                                                <HeaderStyle HorizontalAlign="Center"></HeaderStyle>
+                                                <ItemStyle HorizontalAlign="Center" Width="10%"></ItemStyle>
+                                            </asp:TemplateField>
 
-                                    <asp:TemplateField HeaderText="Despatch To" HeaderStyle-HorizontalAlign="Center">
-                                        <ItemTemplate>
-                                            <asp:Label ID="Label1" runat="server" Text='<%# Bind("vom_org_name") %>'></asp:Label>
-                                        </ItemTemplate>
-                                        <HeaderStyle HorizontalAlign="Center"></HeaderStyle>
-                                        <ItemStyle HorizontalAlign="Center" Width="15%"></ItemStyle>
-                                    </asp:TemplateField>
-                                    <asp:TemplateField HeaderText="Transporter Name" HeaderStyle-HorizontalAlign="Center">
-                                        <ItemTemplate>
-                                            <asp:Label ID="lblTransporter" runat="server" Text='<%# Bind("tm_transporter_name") %>'></asp:Label>
-                                        </ItemTemplate>
-                                        <HeaderStyle HorizontalAlign="Center"></HeaderStyle>
-                                        <ItemStyle HorizontalAlign="Center" Width="15%"></ItemStyle>
-                                    </asp:TemplateField>
+                                            <asp:TemplateField HeaderText="Despatch To" HeaderStyle-HorizontalAlign="Center">
+                                                <ItemTemplate>
+                                                    <asp:Label ID="Label1" runat="server" Text='<%# Bind("vom_org_name") %>'></asp:Label>
+                                                </ItemTemplate>
+                                                <HeaderStyle HorizontalAlign="Center"></HeaderStyle>
+                                                <ItemStyle HorizontalAlign="Center" Width="15%"></ItemStyle>
+                                            </asp:TemplateField>
+                                            <asp:TemplateField HeaderText="Transporter Name" HeaderStyle-HorizontalAlign="Center">
+                                                <ItemTemplate>
+                                                    <asp:Label ID="lblTransporter" runat="server" Text='<%# Bind("tm_transporter_name") %>'></asp:Label>
+                                                </ItemTemplate>
+                                                <HeaderStyle HorizontalAlign="Center"></HeaderStyle>
+                                                <ItemStyle HorizontalAlign="Center" Width="15%"></ItemStyle>
+                                            </asp:TemplateField>
 
 
-                                    <asp:TemplateField HeaderText="Truck" HeaderStyle-HorizontalAlign="Center">
-                                        <ItemTemplate>
-                                            <asp:Label ID="lbllm_desc" runat="server" Text='<%# Bind("lm_desc") %>'></asp:Label>
-                                        </ItemTemplate>
-                                        <HeaderStyle HorizontalAlign="Center"></HeaderStyle>
-                                        <ItemStyle HorizontalAlign="Center" Width="10%"></ItemStyle>
-                                    </asp:TemplateField>
-                                    <asp:TemplateField HeaderText="Status" HeaderStyle-HorizontalAlign="Center">
-                                        <ItemTemplate>
-                                            <asp:Label ID="lblStatus" runat="server" Text='<%# Bind("Status") %>'></asp:Label>
-                                        </ItemTemplate>
-                                        <HeaderStyle HorizontalAlign="Center"></HeaderStyle>
-                                        <ItemStyle HorizontalAlign="Center" Width="10%"></ItemStyle>
-                                    </asp:TemplateField>
+                                            <asp:TemplateField HeaderText="Truck" HeaderStyle-HorizontalAlign="Center">
+                                                <ItemTemplate>
+                                                    <asp:Label ID="lbllm_desc" runat="server" Text='<%# Bind("lm_desc") %>'></asp:Label>
+                                                </ItemTemplate>
+                                                <HeaderStyle HorizontalAlign="Center"></HeaderStyle>
+                                                <ItemStyle HorizontalAlign="Center" Width="10%"></ItemStyle>
+                                            </asp:TemplateField>
+                                            <asp:TemplateField HeaderText="Status" HeaderStyle-HorizontalAlign="Center">
+                                                <ItemTemplate>
+                                                    <asp:Label ID="lblStatus" runat="server" Text='<%# Bind("Status") %>'></asp:Label>
+                                                </ItemTemplate>
+                                                <HeaderStyle HorizontalAlign="Center"></HeaderStyle>
+                                                <ItemStyle HorizontalAlign="Center" Width="10%"></ItemStyle>
+                                            </asp:TemplateField>
 
-                                    <%--<asp:TemplateField HeaderText="View" HeaderStyle-HorizontalAlign="Center">
+                                            <%--<asp:TemplateField HeaderText="View" HeaderStyle-HorizontalAlign="Center">
                                 <ItemTemplate>
                                     <asp:Button ID="btnViewDetails" CommandName="ViewDetails" CssClass="btn btn-info btn-   sm"
                                         runat="server" CommandArgument='<%# Bind("ddrh_hdr_req_id") %>' Text="View" />
@@ -383,12 +398,13 @@
                                 <HeaderStyle HorizontalAlign="Center" Width="4%" />
                                 <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="4%" />
                             </asp:TemplateField>--%>
-                                </Columns>
-                            </asp:GridView>
+                                        </Columns>
+                                    </asp:GridView>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-
 
                 <div class="row" runat="server" id="divUnit"></div>
                 <div class="row" runat="server" id="divDepot"></div>
