@@ -3075,7 +3075,7 @@ body {
     align-items: center;
     justify-content: space-between;
     gap: 12px;
-    padding: 20px 0;
+    padding: 0;
 }
 
 .mst-panel-header-left {
