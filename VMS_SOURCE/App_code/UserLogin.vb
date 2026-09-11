@@ -9,11 +9,12 @@
 'Modified By       Modified On       Version         Reason
 
 '*************************************************************
-Imports Microsoft.VisualBasic
 Imports System.Data
 Imports System.Data.SqlClient
-Imports VMS.DataAccess
 Imports System.Data.SqlTypes
+Imports Microsoft.Office.Interop.Excel
+Imports Microsoft.VisualBasic
+Imports VMS.DataAccess
 
 Namespace VMS.Web
 
@@ -413,6 +414,66 @@ Namespace VMS.Web
 
             Return DashBoardSet
 
+        End Function
+#End Region
+
+#Region "Kazi"
+        Public Function GetPendingDespatchData(ByVal unitCode As String, ByVal year As String, ByVal month As String, ByVal active As String) As DataSet
+            Dim DS As DataSet
+            Dim sqlParams(3) As SqlParameter
+
+            sqlParams(0) = New SqlParameter()
+            sqlParams(0).ParameterName = "@unit_code"
+            sqlParams(0).DbType = DbType.String
+            sqlParams(0).Direction = Data.ParameterDirection.Input
+            sqlParams(0).Value = unitCode
+
+            sqlParams(1) = New SqlParameter()
+            sqlParams(1).ParameterName = "@ProcessYr"
+            sqlParams(1).DbType = DbType.String
+            sqlParams(1).Direction = Data.ParameterDirection.Input
+            sqlParams(1).Value = year
+
+            sqlParams(2) = New SqlParameter()
+            sqlParams(2).ParameterName = "@ProcessMnth"
+            sqlParams(2).DbType = DbType.String
+            sqlParams(2).Direction = Data.ParameterDirection.Input
+            sqlParams(2).Value = month
+
+            sqlParams(3) = New SqlParameter()
+            sqlParams(3).ParameterName = "@active"
+            sqlParams(3).DbType = DbType.String
+            sqlParams(3).Direction = Data.ParameterDirection.Input
+            sqlParams(3).Value = active
+
+            DS = DBFactory.GetHelper().ExecuteDataSet("[dbo].[PendingDespatch_Source_Dashboard]", Data.CommandType.StoredProcedure, sqlParams)
+            Return DS
+        End Function
+
+        Public Function GetLoadDespatchSummary(ByVal unitCode As String, ByVal year As String, ByVal month As String) As DataSet
+            Dim DS As DataSet
+            Dim sqlParams(2) As SqlParameter
+
+            sqlParams(0) = New SqlParameter()
+            sqlParams(0).ParameterName = "@vendor_unit"
+            sqlParams(0).DbType = DbType.String
+            sqlParams(0).Direction = Data.ParameterDirection.Input
+            sqlParams(0).Value = unitCode
+
+            sqlParams(1) = New SqlParameter()
+            sqlParams(1).ParameterName = "@ProcessYr"
+            sqlParams(1).DbType = DbType.String
+            sqlParams(1).Direction = Data.ParameterDirection.Input
+            sqlParams(1).Value = year
+
+            sqlParams(2) = New SqlParameter()
+            sqlParams(2).ParameterName = "@ProcessMnth"
+            sqlParams(2).DbType = DbType.String
+            sqlParams(2).Direction = Data.ParameterDirection.Input
+            sqlParams(2).Value = month
+
+            DS = DBFactory.GetHelper().ExecuteDataSet("[dbo].[Get_Total_Load_Dispatch_Summary]", Data.CommandType.StoredProcedure, sqlParams)
+            Return DS
         End Function
 #End Region
 
