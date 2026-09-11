@@ -326,7 +326,8 @@ body {
 .form-control {
     font-size: 13px;
     line-height: 15px;
-    border: 1px solid #bfc9d3;
+    /*border: 1px solid #bfc9d3;*/
+    border: 1px solid #b0b8c1;
     border-radius: 8px;
 }
 
@@ -674,7 +675,7 @@ body {
     /*background-color: #dfe7ef;*/
     background-color: rgb(253, 254, 254);
     padding: 20px 12px;
-    opacity: 0.65;
+    opacity: 0.75;
 }
 
 .loginFullBody {
@@ -2053,7 +2054,8 @@ body {
 
 .modal-header {
     padding: 0.5rem 0.75rem;
-    background: #123B5B;
+    /*background: #123B5B;*/
+    background: #253e50;
 }
 
 .modal-title {
@@ -3073,7 +3075,7 @@ body {
     align-items: center;
     justify-content: space-between;
     gap: 12px;
-    padding: 1rem 1rem 0 1rem;
+    padding: 0;
 }
 
 .mst-panel-header-left {
