@@ -306,7 +306,7 @@
                         <div><span class="dot total-load"></span>Total Load</div>
                         <div><span class="dot total-dispatch"></span>Total Dispatch</div>
                     </div>
-                    <div id="chartContainer">
+                    <div id="chartContainer" style="height: 250px; overflow-y: auto;">
                         <asp:Literal ID="litSkuRows" runat="server"></asp:Literal>
                     </div>
                 </div>
