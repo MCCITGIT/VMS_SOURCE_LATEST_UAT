@@ -31,6 +31,9 @@ Partial Class Home
         If Not IsPostBack Then
             If (Not (Session(Constant.SessionKeys.UserInfo) Is Nothing)) Then
                 userInfo = CType(Session(Constant.SessionKeys.UserInfo), VMSUserEntity)
+                PopulateUnit()
+                PopulateProcessYr()
+                BindLoadDispatchChart()
                 PopulateDashBoard()
                 Dim srl As Integer = 0
                 PopulateActionRequiredList(srl)
@@ -41,6 +44,67 @@ Partial Class Home
             End If
         End If
     End Sub
+
+    Private Sub PopulateUnit()
+        Dim userInfo As VMSUserEntity = New VMSUserEntity()
+        If (Not (Session(Constant.SessionKeys.UserInfo) Is Nothing)) Then
+            userInfo = CType(Session(Constant.SessionKeys.UserInfo), VMSUserEntity)
+        Else
+            Response.Redirect("~/Login.aspx")
+        End If
+        Dim UnitDespatch As New PendingDespatchesClass
+        Dim UnitSet As New DataSet
+
+        UnitSet = UnitDespatch.GetUnitName(Constant.Common.ActiveStatus, String.Empty)
+        If (Not (UnitSet Is Nothing) AndAlso UnitSet.Tables.Count > 0 AndAlso Not (UnitSet.Tables(0) Is Nothing) AndAlso UnitSet.Tables(0).Rows.Count > 0) Then
+            ddlvendor.DataSource = UnitSet.Tables(0)
+            ddlvendor.DataTextField = "unit_name"
+            ddlvendor.DataValueField = "unit_code"
+            ddlvendor.DataBind()
+            ddlvendor.Items.Insert(0, New ListItem(Constant.Common.All, String.Empty, True))
+        End If
+        If (userInfo.userGroupCodeEntity = "UNIT") Then
+            ddlvendor.SelectedValue = userInfo.userBranchEntity
+            ddlvendor.Enabled = False
+        End If
+    End Sub
+
+    Private Sub PopulateProcessYr()
+        Dim userInfo As VMSUserEntity = New VMSUserEntity()
+        If (Not (Session(Constant.SessionKeys.UserInfo) Is Nothing)) Then
+            userInfo = CType(Session(Constant.SessionKeys.UserInfo), VMSUserEntity)
+        Else
+            Response.Redirect("~/Login.aspx")
+        End If
+
+        Dim ProcessYr As New Common
+        Dim StandrdParams As New MonthlyUnitDespatch
+        Dim YearSet As New DataSet
+        Dim StandardYrMnth As New DataSet
+
+        YearSet = ProcessYr.GetFinYrDetails(Constant.Common.Company, Constant.Common.ActiveStatus)
+        StandardYrMnth = StandrdParams.GetMnthsYr(Constant.Common.ActiveStatus)
+        If (Not (YearSet Is Nothing) AndAlso YearSet.Tables.Count > 0 AndAlso Not (YearSet.Tables(0) Is Nothing) AndAlso YearSet.Tables(0).Rows.Count > 0) Then
+            ddlProcessYr.DataSource = YearSet.Tables(0)
+            ddlProcessYr.DataTextField = "fin_year"
+            ddlProcessYr.DataValueField = "fin_year"
+            ddlProcessYr.DataBind()
+            'ddlProcessYr.Items.Insert(0, New ListItem(Constant.Common.Selec, String.Empty, True))
+            'ddlProcessYr.Items.Insert(0, New ListItem("2011", String.Empty, True))
+        End If
+        'If Not (userInfo.userGroupCodeEntity = Constant.UserFormAccess.SYSADMIN Or userInfo.userGroupCodeEntity = Constant.UserFormAccess.HOMARKETING Or userInfo.userGroupCodeEntity = Constant.UserFormAccess.HOACCOUNTS Or userInfo.userGroupCodeEntity = Constant.UserFormAccess.DEPOT) Then
+        '    ddlProcessYr.SelectedValue = userInfo.currentFinancialYearEntity
+        '    ddlProcessYr.Enabled = False
+        'End If
+
+
+        If (Not (StandardYrMnth Is Nothing) AndAlso StandardYrMnth.Tables.Count > 0 AndAlso Not (StandardYrMnth.Tables(0) Is Nothing) AndAlso StandardYrMnth.Tables(0).Rows.Count > 0) Then
+            ddlProcessYr.SelectedValue = StandardYrMnth.Tables(0).Rows(0)("param_char_value")
+            ddlProcessMnth.SelectedValue = StandardYrMnth.Tables(0).Rows(1)("param_char_value")
+        End If
+
+    End Sub
+
 #End Region
 
 #Region "Count Indents for Approval."
@@ -864,8 +928,15 @@ Partial Class Home
             Dim ds As DataSet = userDetailsObject.GetDashBoardInfo(userInfo.userIDEntity, userInfo.userBranchEntity)
             If userInfo.userGroupCodeEntity.Equals("HO", StringComparison.InvariantCultureIgnoreCase) Or userInfo.userGroupCodeEntity.Equals("SYSADMIN", StringComparison.InvariantCultureIgnoreCase) Then
                 divHo.Visible = True
+                divNewsCard.Visible = True
+                divAction.Visible = True
                 divUnit.Visible = False
                 divDepot.Visible = False
+                'divData.Visible = False
+                divDespatch.Visible = False
+                divSkuChart.Visible = False
+                divSearch.Visible = False
+
                 If (ds IsNot Nothing AndAlso ds.Tables.Count > 0) Then
                     If (ds.Tables(0).Rows.Count > 0) Then
                         lblTotalDespatch.Text = ds.Tables(0).Rows(0)("TotalDespatch").ToString()
@@ -909,6 +980,34 @@ Partial Class Home
                 divHo.Visible = False
                 divUnit.Visible = False
                 divDepot.Visible = False
+                divNewsCard.Visible = False
+                divAction.Visible = False
+                'divData.Visible = True
+                divDespatch.Visible = True
+                divSkuChart.Visible = True
+                divSearch.Visible = True
+
+                Dim unitCode = ddlvendor.SelectedValue
+                Dim year = ddlProcessYr.SelectedValue
+                Dim month = ddlProcessMnth.SelectedValue
+                Dim active = "Y"
+                Dim SkuDs As DataSet = userDetailsObject.GetPendingDespatchData(unitCode, year, month, active)
+                If (SkuDs IsNot Nothing AndAlso SkuDs.Tables(0).Rows.Count > 0) Then
+                    gvVendorDispatch.DataSource = SkuDs.Tables(0)
+                    gvVendorDispatch.DataBind()
+                Else
+                    gvVendorDispatch.DataSource = Nothing
+                    gvVendorDispatch.DataBind()
+                End If
+
+                'If (SkuDs IsNot Nothing AndAlso SkuDs.Tables(1).Rows.Count > 0) Then
+                '    gvVendorDispatch.DataSource = SkuDs.Tables(1)
+                '    gvVendorDispatch.DataBind()
+                'Else
+                '    gvVendorDispatch.DataSource = Nothing
+                '    gvVendorDispatch.DataBind()
+                'End If
+
             End If
         Else
             Response.Redirect("~/Login.aspx")
@@ -916,6 +1015,77 @@ Partial Class Home
 
     End Sub
 
+    Private Sub BindLoadDispatchChart()
+        Dim userInfo As VMSUserEntity = New VMSUserEntity()
+        If (Not (Session(Constant.SessionKeys.UserInfo) Is Nothing)) Then
+            userInfo = CType(Session(Constant.SessionKeys.UserInfo), VMSUserEntity)
+        Else
+            Response.Redirect("~/Login.aspx")
+        End If
+
+        Dim userDetailsObject As New UserLogin()
+        Dim ds As New DataSet()
+        Dim unitCode = ddlvendor.SelectedValue
+        Dim year = ddlProcessYr.SelectedValue
+        Dim month = ddlProcessMnth.SelectedValue
+
+        ds = userDetailsObject.GetLoadDespatchSummary(unitCode, year, month)
+        If ds Is Nothing OrElse ds.Tables.Count = 0 OrElse ds.Tables(0).Rows.Count = 0 Then
+            litSkuRows.Text = "<div class='mst-empty-state'>No data found for this selection.</div>"
+            Return
+        End If
+
+        Dim dt As DataTable = ds.Tables(0)
+        ' Find the max Total_Load_NOP across all rows so bar widths are relative,
+        ' exactly like the reference image (the biggest load = 100% width).
+        Dim maxLoad As Decimal = 0
+        For Each row As DataRow In dt.Rows
+            Dim loadVal As Decimal = Convert.ToDecimal(row("Total_Load_NOP"))
+            If loadVal > maxLoad Then maxLoad = loadVal
+        Next
+        If maxLoad = 0 Then maxLoad = 1 ' avoid divide-by-zero
+
+        Dim sb As New StringBuilder()
+
+        For Each row As DataRow In dt.Rows
+            Dim sku As String = row("SKU").ToString()
+            Dim totalLoad As Decimal = Convert.ToDecimal(row("Total_Load_NOP"))
+            Dim totalDispatch As Decimal = Convert.ToDecimal(row("Total_Despatched_NOP"))
+            Dim pct As Decimal = Convert.ToDecimal(row("Dispatch_Percentage"))
+            Dim pendingLoad As Decimal = Convert.ToDecimal(row("Pending_Load_NOP"))
+
+            ' Bar widths as % of the row with the largest load
+            Dim loadWidthPct As Decimal = Math.Round((totalLoad / maxLoad) * 100, 2)
+            Dim dispatchWidthPct As Decimal = Math.Round((totalDispatch / maxLoad) * 100, 2)
+
+            ' Badge color tiers — adjust thresholds to whatever your business considers good/bad
+            Dim badgeClass As String
+            If pct = 0 Then
+                badgeClass = "badge-danger"      ' red
+            ElseIf pct < 50 Then
+                badgeClass = "badge-warning"     ' orange
+            ElseIf pct < 80 Then
+                badgeClass = "badge-info"        ' yellow
+            Else
+                badgeClass = "badge-success"     ' green
+            End If
+
+            ' Highlight pending in red-ish text if there's a meaningful backlog
+            Dim pendingClass As String = If(pendingLoad > 0, "pending-value pending-active", "pending-value")
+
+            sb.Append("<div class='sku-row'>")
+            sb.Append("  <div class='sku-label'>" & Server.HtmlEncode(sku) & "</div>")
+            sb.Append("  <div class='sku-bars'>")
+            sb.Append("    <div class='bar-track'><div class='bar-fill total-load' style='width:" & loadWidthPct.ToString("0.##") & "%'></div></div>")
+            sb.Append("    <div class='bar-track dispatch-track'><div class='bar-fill total-dispatch' style='width:" & dispatchWidthPct.ToString("0.##") & "%'></div></div>")
+            sb.Append("  </div>")
+            sb.Append("  <div class='sku-stats'>Load: <b>" & totalLoad.ToString("N0") & "</b> | Dispatch: <b>" & totalDispatch.ToString("N0") & "</b> | Pending: <b class='" & pendingClass & "'>" & pendingLoad.ToString("N0") & "</b></div>")
+            sb.Append("  <div class='sku-badge " & badgeClass & "'>" & pct.ToString("0.0") & "%</div>")
+            sb.Append("</div>")
+        Next
+
+        litSkuRows.Text = sb.ToString()
+    End Sub
 
 #End Region
     Protected Sub lnkViewDetails_Click(ByVal sender As Object, ByVal e As EventArgs)
@@ -1086,5 +1256,16 @@ Partial Class Home
     End Sub
     Protected Sub lnkUnapprovedDespatch_Click(sender As Object, e As EventArgs)
         Response.Redirect("~/UnitDespatchPlanListVr1.aspx")
+    End Sub
+
+
+
+    Protected Sub btnSearch_Click(sender As Object, e As EventArgs)
+        BindLoadDispatchChart()
+        PopulateDashBoard()
+    End Sub
+
+    Protected Sub gvVendorDispatch_RowCommand(sender As Object, e As GridViewCommandEventArgs)
+
     End Sub
 End Class

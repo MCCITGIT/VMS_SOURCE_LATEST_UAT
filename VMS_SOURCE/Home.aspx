@@ -9,6 +9,125 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="includes/home-dashboard.css?v=<%= DateTime.Now.Ticks %>" rel="stylesheet" type="text/css" />
 
+    <style>
+        .legend {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 12px;
+            font-size: 13px;
+            color: #333;
+        }
+
+            .legend > div {
+                display: flex;
+                align-items: center;
+                gap: 6px;
+            }
+
+        .dot {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+            .dot.total-load {
+                background: #2f8fd6; /* same blue as bar-fill.total-load */
+            }
+
+            .dot.total-dispatch {
+                background: #2ecc71; /* same green as bar-fill.total-dispatch */
+            }
+
+        .sku-row {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 10px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .sku-label {
+            width: 160px;
+            font-size: 13px;
+            color: #333;
+            flex-shrink: 0;
+        }
+
+        .sku-bars {
+            flex: 0 1 45%; /* was flex: 1 — shrunk to make room for the wider stats text */
+            min-width: 120px;
+        }
+
+        .bar-track {
+            background: #e9ecef;
+            border-radius: 4px;
+            height: 10px;
+            margin-bottom: 4px;
+            overflow: hidden;
+        }
+
+        .dispatch-track {
+            height: 6px;
+        }
+
+        .bar-fill {
+            height: 100%;
+            border-radius: 4px;
+        }
+
+            .bar-fill.total-load {
+                background: #2f8fd6;
+            }
+
+            .bar-fill.total-dispatch {
+                background: #2ecc71;
+            }
+
+        .sku-stats {
+            width: 300px; /* was 220px — widened to fit the added "Pending" segment */
+            font-size: 13px;
+            color: #444;
+            flex-shrink: 0;
+            text-align: right;
+        }
+
+        .pending-value {
+            color: #444;
+        }
+
+            .pending-value.pending-active {
+                color: #e74c3c; /* flag nonzero pending in red so it stands out */
+            }
+
+        .sku-badge {
+            min-width: 52px;
+            padding: 4px 8px;
+            border-radius: 12px;
+            color: #fff;
+            font-size: 12px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .badge-danger {
+            background: #e74c3c;
+        }
+
+        .badge-warning {
+            background: #f39c12;
+        }
+
+        .badge-info {
+            background: #f1c40f;
+        }
+
+        .badge-success {
+            background: #27ae60;
+        }
+    </style>
+
     <div class="vms-home">
 
         <div class="breadcrumbs">
@@ -28,7 +147,50 @@
                 <asp:Literal ID="litPending" runat="server" Visible="false"></asp:Literal>
                 <asp:Literal ID="litDespatch" runat="server" Visible="false">></asp:Literal>
 
-                <div class="row">
+                <div id="divSearch" runat="server">
+                    <div class="row align-items-center">
+                        <div id="divVendor" class="col-md-3" runat="server">
+                            <div class="form-group">
+                                <label class="form-control-label">Vendor:</label>
+                                <asp:DropDownList ID="ddlvendor" ClientIDMode="Static" CssClass="form-control select2" TabIndex="1" runat="server"></asp:DropDownList>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label class="form-control-label">Process Year:</label>
+                                <asp:DropDownList ID="ddlProcessYr" runat="server" CssClass="form-control select2"></asp:DropDownList>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label class="form-control-label">Process Month:</label>
+                                <asp:DropDownList ID="ddlProcessMnth" CssClass="form-control select2" runat="server">
+                                    <asp:ListItem>01</asp:ListItem>
+                                    <asp:ListItem>02</asp:ListItem>
+                                    <asp:ListItem>03</asp:ListItem>
+                                    <asp:ListItem>04</asp:ListItem>
+                                    <asp:ListItem>05</asp:ListItem>
+                                    <asp:ListItem>06</asp:ListItem>
+                                    <asp:ListItem>07</asp:ListItem>
+                                    <asp:ListItem>08</asp:ListItem>
+                                    <asp:ListItem>09</asp:ListItem>
+                                    <asp:ListItem>10</asp:ListItem>
+                                    <asp:ListItem>11</asp:ListItem>
+                                    <asp:ListItem>12</asp:ListItem>
+                                </asp:DropDownList>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <%--<asp:Button ID="btnSearch" runat="server"
+                                Text="Search"
+                                CssClass="btn btn-primary btn-sm mt-2"
+                                OnClick="btnSearch_Click" />--%>
+                            <asp:LinkButton ID="btnSearch" runat="server" CssClass="btn btn-primary btn-sm rmp-btn-icon" ToolTip="Search" OnClick="btnSearch_Click"><i class="fas fa-search"></i></asp:LinkButton>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="divNewsCard" class="row" runat="server">
                     <div class="col-md-12">
                         <div class="flashComplainBTCCard">
                             <div class="newCard w100 home-card-flash">
@@ -50,7 +212,7 @@
                 </div>
 
                 <%--Modified-by MUKESH BHAGAT on 20-08-2026 : restored from old UAT source (Action Required panel and Last Stock Update Date)--%>
-                <div class="row">
+                <div id="divAction" class="row" runat="server">
                     <div class="col-md-8">
                         <div class="newCard w100 home-card-action">
                             <div class="newCardHead">
@@ -74,6 +236,159 @@
                         </div>
                     </div>
                 </div>
+
+                <%--<div id="divData" runat="server">
+                    <div class="mst-panel-header">
+                        <div class="mst-panel-header-left">
+                            <span class="mst-panel-icon"><i class="fas fa-list"></i></span>
+                            <div>
+                                <h5 id="panelTitle" class="mst-panel-title">Vendor List</h5>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive rm-grid-scroll">
+                            <asp:GridView CssClass="table table-hover upgradDataGrid" CellSpacing="0" CellPadding="0"
+                                ID="gvPendingDespatchList" runat="server" AutoGenerateColumns="false" PageSize="10" Visible="true"
+                                ShowFooter="false" PagerSettings-Mode="NumericFirstLast" PagerSettings-PageButtonCount="5"
+                                PagerSettings-FirstPageText="First" PagerSettings-LastPageText="Last">
+                                <RowStyle CssClass="tlrowlight" />
+                                <PagerStyle CssClass="PagerGrid" HorizontalAlign="Left" />
+                                <HeaderStyle CssClass="headerGrid" />
+                                <FooterStyle CssClass="footerGrid" />
+                                <Columns>
+                                    <asp:TemplateField HeaderText="Sl No">
+                                        <ItemTemplate>
+                                            <asp:Label ID="lblbrandid" runat="server" Text='<%# (gvPendingDespatchList.PageIndex * gvPendingDespatchList.PageSize) + Container.DataItemIndex + 1 %>'></asp:Label>
+                                        </ItemTemplate>
+                                        <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="8%" CssClass="text-center" />
+                                        <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="8%" CssClass="text-center" />
+                                    </asp:TemplateField>
+                                    <asp:TemplateField HeaderText="SKU Code">
+                                        <ItemTemplate>
+                                            <asp:Label ID="lblSkuCode" runat="server" Text='<%# Bind("sku_code") %>'></asp:Label>
+                                            <asp:HiddenField ID="hdnUnitCode" runat="server" Value='<%# Bind("unit_code")%>' />
+                                            <asp:HiddenField ID="hdnUnitname" runat="server" Value='<%# Bind("unit_name")%>' />
+                                        </ItemTemplate>
+                                        <HeaderStyle HorizontalAlign="Left" VerticalAlign="Middle" Width="40%" CssClass="text-left" />
+                                        <ItemStyle HorizontalAlign="Left" VerticalAlign="Middle" Width="40%" CssClass="text-left" />
+                                    </asp:TemplateField>
+                                    <asp:TemplateField HeaderText="LTR">
+                                        <ItemTemplate>
+                                            <asp:Label ID="lblLtr" runat="server" Text='<%# Bind("total_ltr") %>'></asp:Label>
+                                        </ItemTemplate>
+                                    </asp:TemplateField>
+                                    <asp:TemplateField HeaderText="KG">
+                                        <ItemTemplate>
+                                            <asp:Label ID="lblKg" runat="server" Text='<%# Bind("total_kg") %>'></asp:Label>
+                                        </ItemTemplate>
+                                    </asp:TemplateField>
+                                    <asp:TemplateField HeaderText="Pending NOP">
+                                        <ItemTemplate>
+                                            <asp:Label ID="lblKg" runat="server" Text='<%# Bind("pending_nop") %>'></asp:Label>
+                                        </ItemTemplate>
+                                    </asp:TemplateField>
+                                </Columns>
+                            </asp:GridView>
+                        </div>
+                    </div>
+                </div>--%>
+                <div id="divSkuChart" class="dashboard" runat="server">
+                    <div class="mst-panel-header">
+                        <div class="mst-panel-header-left">
+                            <span class="mst-panel-icon"><i class="fas fa-list"></i></span>
+                            <div>
+                                <h5 id="ChartTitle" class="mst-panel-title">SKU List</h5>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="legend">
+                        <div><span class="dot total-load"></span>Total Load</div>
+                        <div><span class="dot total-dispatch"></span>Total Dispatch</div>
+                    </div>
+                    <div id="chartContainer">
+                        <asp:Literal ID="litSkuRows" runat="server"></asp:Literal>
+                    </div>
+                </div>
+                <div id="divDespatch" runat="server">
+                    <div class="mst-panel-header">
+                        <div class="mst-panel-header-left">
+                            <span class="mst-panel-icon"><i class="fas fa-list"></i></span>
+                            <div>
+                                <h5 id="DespatchTitle" class="mst-panel-title">Despatch List</h5>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive rm-grid-scroll">
+                            <asp:GridView ID="gvVendorDispatch" runat="server" AutoGenerateColumns="false" OnRowCommand="gvVendorDispatch_RowCommand"
+                                Visible="true" BorderWidth="1" CssClass="table table-hover upgradDataGrid" EmptyDataText="No Record Found">
+                                <RowStyle CssClass="tlrowlight" />
+                                <PagerStyle CssClass="PagerGrid" HorizontalAlign="Right" />
+                                <HeaderStyle CssClass="headerGrid" />
+                                <FooterStyle CssClass="footerGrid" />
+                                <Columns>
+                                    <asp:TemplateField HeaderText="Order Sl No." HeaderStyle-HorizontalAlign="Center">
+                                        <ItemTemplate>
+                                            <asp:Label ID="lblOrderId" runat="server" Text='<%# Bind("ddrh_order_sl_no") %>'></asp:Label>
+                                            <asp:Label ID="lblRequestId" Visible="false" runat="server" Text='<%# Bind("ddrh_hdr_req_id") %>'></asp:Label>
+                                        </ItemTemplate>
+                                        <HeaderStyle HorizontalAlign="Center"></HeaderStyle>
+                                        <ItemStyle HorizontalAlign="Center" Width="10%"></ItemStyle>
+                                    </asp:TemplateField>
+                                    <asp:TemplateField HeaderText="Request Date" HeaderStyle-HorizontalAlign="Center">
+                                        <ItemTemplate>
+                                            <asp:Label ID="lblRequestDate" runat="server" Text='<%# Bind("ReqDate") %>'></asp:Label>
+                                        </ItemTemplate>
+                                        <HeaderStyle HorizontalAlign="Center"></HeaderStyle>
+                                        <ItemStyle HorizontalAlign="Center" Width="10%"></ItemStyle>
+                                    </asp:TemplateField>
+
+                                    <asp:TemplateField HeaderText="Despatch To" HeaderStyle-HorizontalAlign="Center">
+                                        <ItemTemplate>
+                                            <asp:Label ID="Label1" runat="server" Text='<%# Bind("vom_org_name") %>'></asp:Label>
+                                        </ItemTemplate>
+                                        <HeaderStyle HorizontalAlign="Center"></HeaderStyle>
+                                        <ItemStyle HorizontalAlign="Center" Width="15%"></ItemStyle>
+                                    </asp:TemplateField>
+                                    <asp:TemplateField HeaderText="Transporter Name" HeaderStyle-HorizontalAlign="Center">
+                                        <ItemTemplate>
+                                            <asp:Label ID="lblTransporter" runat="server" Text='<%# Bind("tm_transporter_name") %>'></asp:Label>
+                                        </ItemTemplate>
+                                        <HeaderStyle HorizontalAlign="Center"></HeaderStyle>
+                                        <ItemStyle HorizontalAlign="Center" Width="15%"></ItemStyle>
+                                    </asp:TemplateField>
+
+
+                                    <asp:TemplateField HeaderText="Truck" HeaderStyle-HorizontalAlign="Center">
+                                        <ItemTemplate>
+                                            <asp:Label ID="lbllm_desc" runat="server" Text='<%# Bind("lm_desc") %>'></asp:Label>
+                                        </ItemTemplate>
+                                        <HeaderStyle HorizontalAlign="Center"></HeaderStyle>
+                                        <ItemStyle HorizontalAlign="Center" Width="10%"></ItemStyle>
+                                    </asp:TemplateField>
+                                    <asp:TemplateField HeaderText="Status" HeaderStyle-HorizontalAlign="Center">
+                                        <ItemTemplate>
+                                            <asp:Label ID="lblStatus" runat="server" Text='<%# Bind("Status") %>'></asp:Label>
+                                        </ItemTemplate>
+                                        <HeaderStyle HorizontalAlign="Center"></HeaderStyle>
+                                        <ItemStyle HorizontalAlign="Center" Width="10%"></ItemStyle>
+                                    </asp:TemplateField>
+
+                                    <%--<asp:TemplateField HeaderText="View" HeaderStyle-HorizontalAlign="Center">
+                                <ItemTemplate>
+                                    <asp:Button ID="btnViewDetails" CommandName="ViewDetails" CssClass="btn btn-info btn-   sm"
+                                        runat="server" CommandArgument='<%# Bind("ddrh_hdr_req_id") %>' Text="View" />
+                                </ItemTemplate>
+                                <HeaderStyle HorizontalAlign="Center" Width="4%" />
+                                <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="4%" />
+                            </asp:TemplateField>--%>
+                                </Columns>
+                            </asp:GridView>
+                        </div>
+                    </div>
+                </div>
+
 
                 <div class="row" runat="server" id="divUnit"></div>
                 <div class="row" runat="server" id="divDepot"></div>
@@ -986,30 +1301,30 @@
                             data: {
                                 labels: ["Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar"],
                                 datasets: [
-                                  {
-                                      label: "Pending Loads",
-                                      data: pendingData,
-                                      borderColor: "#c0392b",
-                                      backgroundColor: "rgba(192, 57, 43, 0.10)",
-                                      tension: 0.35,
-                                      fill: true,
-                                      pointRadius: 3,
-                                      pointHoverRadius: 5,
-                                      pointBackgroundColor: "#c0392b",
-                                      borderWidth: 2
-                                  },
-                                  {
-                                      label: "Total Despatch",
-                                      data: despatchData,
-                                      borderColor: "#1b5a8c",
-                                      backgroundColor: "rgba(27, 90, 140, 0.10)",
-                                      tension: 0.35,
-                                      fill: true,
-                                      pointRadius: 3,
-                                      pointHoverRadius: 5,
-                                      pointBackgroundColor: "#1b5a8c",
-                                      borderWidth: 2
-                                  }
+                                    {
+                                        label: "Pending Loads",
+                                        data: pendingData,
+                                        borderColor: "#c0392b",
+                                        backgroundColor: "rgba(192, 57, 43, 0.10)",
+                                        tension: 0.35,
+                                        fill: true,
+                                        pointRadius: 3,
+                                        pointHoverRadius: 5,
+                                        pointBackgroundColor: "#c0392b",
+                                        borderWidth: 2
+                                    },
+                                    {
+                                        label: "Total Despatch",
+                                        data: despatchData,
+                                        borderColor: "#1b5a8c",
+                                        backgroundColor: "rgba(27, 90, 140, 0.10)",
+                                        tension: 0.35,
+                                        fill: true,
+                                        pointRadius: 3,
+                                        pointHoverRadius: 5,
+                                        pointBackgroundColor: "#1b5a8c",
+                                        borderWidth: 2
+                                    }
                                 ]
                             },
                             options: {
@@ -1074,6 +1389,9 @@
                 </script>
 
             </ContentTemplate>
+            <Triggers>
+                <asp:AsyncPostBackTrigger ControlID="btnSearch" EventName="Click" />
+            </Triggers>
         </asp:UpdatePanel>
     </div>
 </asp:Content>
