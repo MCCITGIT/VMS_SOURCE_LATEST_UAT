@@ -684,13 +684,14 @@ Partial Class Product_Formulation
     ''' <summary>Material Dept users: the FORMULATION_MATERIAL_USERS app setting (login ids) and / or FORMULATION_MATERIAL_GROUPS (group codes, e.g. HO-ADMIN).
     ''' HO groups and SYSADMIN may also SEE the internal figures; only Material Dept users enter them.</summary>
     Private Function IsMaterialUser() As Boolean
-        Dim users As String = Convert.ToString(ConfigurationManager.AppSettings("FORMULATION_MATERIAL_USERS"))
+        ' 28-10-2026: a missing appSettings key returns Nothing (NullReference on a server whose Web.config lacks the keys) -> treat as empty
+        Dim users As String = If(ConfigurationManager.AppSettings("FORMULATION_MATERIAL_USERS"), "")
         If String.IsNullOrWhiteSpace(users) Then users = "murthy"
         For Each u As String In users.Split(","c)
             If String.Equals(u.Trim(), Convert.ToString(userInfo.userIDEntity).Trim(), StringComparison.OrdinalIgnoreCase) Then Return True
         Next
-        ' 26-10-2026: whole user groups too (FORMULATION_MATERIAL_GROUPS, e.g. HO-ADMIN)
-        Dim groups As String = Convert.ToString(ConfigurationManager.AppSettings("FORMULATION_MATERIAL_GROUPS"))
+        ' 26-10-2026: whole user groups too (FORMULATION_MATERIAL_GROUPS, e.g. HO-MATERIAL)
+        Dim groups As String = If(ConfigurationManager.AppSettings("FORMULATION_MATERIAL_GROUPS"), "")
         For Each g As String In groups.Split(","c)
             If g.Trim() <> "" AndAlso String.Equals(g.Trim(), Convert.ToString(userInfo.userGroupCodeEntity).Trim(), StringComparison.OrdinalIgnoreCase) Then Return True
         Next
@@ -699,7 +700,7 @@ Partial Class Product_Formulation
 
     ''' <summary>Public link to a formulation for the mails (28-10-2026): VMS_SITE_URL from Web.config, else the request's own host.</summary>
     Private Function FormulationLink(ByVal sfId As Integer) As String
-        Dim site As String = Convert.ToString(ConfigurationManager.AppSettings("VMS_SITE_URL")).Trim()
+        Dim site As String = If(ConfigurationManager.AppSettings("VMS_SITE_URL"), "").Trim()
         If site = "" Then Return Request.Url.GetLeftPart(UriPartial.Authority) & ResolveUrl("~/Product_Formulation.aspx?id=" & sfId)
         Return site.TrimEnd("/"c) & "/Product_Formulation.aspx?id=" & sfId
     End Function
