@@ -42,7 +42,7 @@ Partial Class RawMaterialRequisitionList
         Response.Redirect("~/RawMaterialRequisitionDtls.aspx", False)
     End Sub
     Protected Sub btnReset_Click(sender As Object, e As EventArgs)
-        ddlvendor.SelectedIndex = 0
+        'ddlvendor.SelectedIndex = 0
         ddlRawMatvendor.SelectedIndex = 0
         ddlApprovalstatus.SelectedIndex = 0
         gvRequisition.PageIndex = 0
