@@ -2010,6 +2010,28 @@ Public Class OPC_VendorClass
         Return New String() {"0", "No response from server.", "", ""}
     End Function
 #End Region
+
+#Region "OPC Raw Material Creation"
+    Function GetOpcRawMaterialCreationList(ByVal unitCode As String, ByVal searchKey As String) As DataSet
+        Dim p() As SqlParameter = {ScopeParam("@unit_code", unitCode, 20), ScopeParam("@search_key", searchKey, 200)}
+        Return DBFactory.GetHelper().ExecuteDataSet("[dbo].[opc_raw_material_creation_list]", CommandType.StoredProcedure, p)
+    End Function
+
+    Function GetOpcRawMaterialCreation(ByVal rmmCode As String) As DataSet
+        Dim p() As SqlParameter = {ScopeParam("@rmm_code", rmmCode, 50)}
+        Return DBFactory.GetHelper().ExecuteDataSet("[dbo].[opc_raw_material_creation_get]", CommandType.StoredProcedure, p)
+    End Function
+
+    Function InsertOpcRawMaterialCreation(ByVal name As String, ByVal unitCode As String, ByVal userId As String) As DataSet
+        Dim p() As SqlParameter = {ScopeParam("@name", name, 200), ScopeParam("@unit_code", unitCode, 20), ScopeParam("@user_id", userId, 20)}
+        Return DBFactory.GetHelper().ExecuteDataSet("[dbo].[opc_raw_material_creation_insert]", CommandType.StoredProcedure, p)
+    End Function
+
+    Function UpdateOpcRawMaterialCreation(ByVal rmmCode As String, ByVal name As String, ByVal active As String, ByVal userId As String) As DataSet
+        Dim p() As SqlParameter = {ScopeParam("@rmm_code", rmmCode, 50), ScopeParam("@name", name, 200), ScopeParam("@active", active, 1), ScopeParam("@user_id", userId, 20)}
+        Return DBFactory.GetHelper().ExecuteDataSet("[dbo].[opc_raw_material_creation_update]", CommandType.StoredProcedure, p)
+    End Function
+#End Region
 #Region "FG Vendor Master"
     Public Function Vendor_List_Get(ByVal unitcode As String) As DataSet
         Dim VendorListSet As New DataSet
