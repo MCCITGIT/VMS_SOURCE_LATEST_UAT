@@ -315,7 +315,7 @@ Partial Class RawMaterialRequisitionList
             Else
                 UpdateSummary(Nothing)
             End If
-            If ds IsNot Nothing AndAlso ds.Tables(0).Rows.Count > 1 Then
+            If ds IsNot Nothing AndAlso ds.Tables(0).Rows.Count > 0 Then
                 btnApprove.Visible = True
             Else
                 btnApprove.Visible = False
