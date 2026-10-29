@@ -195,7 +195,8 @@ Partial Class RawMaterialRequisitionList
 
     Private Function BuildDispatchListUrl(ByVal rmVendorCode As String) As String
         Dim redirectUrl As String = "Dispatch_List.aspx?rmvendor_code=" & Server.UrlEncode(rmVendorCode)
-        Dim baseUrl As String = "https://bpilweb.bergerindia.com/vms/"
+        'Dim baseUrl As String = "https://bpilweb.bergerindia.com/vms/"
+        Dim baseUrl As String = "https://bpilmobileuat.bergerindia.com/vmsdemo/"
         'Dim baseUrl As String = "http://localhost:64930/"
         Return New Uri(New Uri(baseUrl), redirectUrl).ToString()
     End Function
@@ -314,7 +315,11 @@ Partial Class RawMaterialRequisitionList
             Else
                 UpdateSummary(Nothing)
             End If
-
+            If ds IsNot Nothing AndAlso ds.Tables(0).Rows.Count > 1 Then
+                btnApprove.Visible = True
+            Else
+                btnApprove.Visible = False
+            End If
 
         Catch ex As Exception
             Dim returnUrl As String = "~/ExceptionPage.aspx"
