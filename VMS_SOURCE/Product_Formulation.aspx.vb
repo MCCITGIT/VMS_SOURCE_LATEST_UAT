@@ -681,28 +681,25 @@ Partial Class Product_Formulation
 
 #Region "HO approval + mail"
 #Region "Material Department review (Author: MUKESH BHAGAT 22-10-2026)"
-    ''' <summary>Material Dept users: the FORMULATION_MATERIAL_USERS app setting (login ids) and / or FORMULATION_MATERIAL_GROUPS (group codes, e.g. HO-ADMIN).
-    ''' HO groups and SYSADMIN may also SEE the internal figures; only Material Dept users enter them.</summary>
+    ''' <summary>Material Dept users (Modified-by MUKESH BHAGAT 28-10-2026): whoever holds the "Material Dept Rate Review" form in
+    ''' User Form Access (UsrFrmAccssNewMod.aspx), or SYSADMIN - opc_formulation_material_access. No Web.config lists any more.
+    ''' HO groups and SYSADMIN may also SEE the internal figures; only Material Dept users enter them. Looked up once per request.</summary>
+    Private _isMaterialUser As Nullable(Of Boolean)
     Private Function IsMaterialUser() As Boolean
-        ' 28-10-2026: a missing appSettings key returns Nothing (NullReference on a server whose Web.config lacks the keys) -> treat as empty
-        Dim users As String = If(ConfigurationManager.AppSettings("FORMULATION_MATERIAL_USERS"), "")
-        If String.IsNullOrWhiteSpace(users) Then users = "murthy"
-        For Each u As String In users.Split(","c)
-            If String.Equals(u.Trim(), Convert.ToString(userInfo.userIDEntity).Trim(), StringComparison.OrdinalIgnoreCase) Then Return True
-        Next
-        ' 26-10-2026: whole user groups too (FORMULATION_MATERIAL_GROUPS, e.g. HO-MATERIAL)
-        Dim groups As String = If(ConfigurationManager.AppSettings("FORMULATION_MATERIAL_GROUPS"), "")
-        For Each g As String In groups.Split(","c)
-            If g.Trim() <> "" AndAlso String.Equals(g.Trim(), Convert.ToString(userInfo.userGroupCodeEntity).Trim(), StringComparison.OrdinalIgnoreCase) Then Return True
-        Next
-        Return False
+        If Not _isMaterialUser.HasValue Then
+            Try
+                _isMaterialUser = New OPC_VendorClass().IsFormulationMaterialUser(Convert.ToString(userInfo.userIDEntity).Trim(), Convert.ToString(userInfo.userGroupCodeEntity).Trim())
+            Catch ex As Exception
+                _isMaterialUser = False      ' lookup failure never breaks the page; the user simply gets no Material Dept entry
+            End Try
+        End If
+        Return _isMaterialUser.Value
     End Function
 
-    ''' <summary>Public link to a formulation for the mails (28-10-2026): VMS_SITE_URL from Web.config, else the request's own host.</summary>
+    ''' <summary>Link to a formulation for the mails (28-10-2026): scheme + host + application path of the request the user is
+    ''' working on, so it is the UAT address on UAT and the production address on production (no setting needed).</summary>
     Private Function FormulationLink(ByVal sfId As Integer) As String
-        Dim site As String = If(ConfigurationManager.AppSettings("VMS_SITE_URL"), "").Trim()
-        If site = "" Then Return Request.Url.GetLeftPart(UriPartial.Authority) & ResolveUrl("~/Product_Formulation.aspx?id=" & sfId)
-        Return site.TrimEnd("/"c) & "/Product_Formulation.aspx?id=" & sfId
+        Return Request.Url.GetLeftPart(UriPartial.Authority) & ResolveUrl("~/Product_Formulation.aspx?id=" & sfId)
     End Function
 
     ''' <summary>Who may see the nearest-site cost and the suggested price: HO and Material Dept. Never a vendor.</summary>
@@ -916,9 +913,7 @@ Partial Class Product_Formulation
         Dim who As String = If(toMaterial, "Material Dept", "HO")
         Dim toAddress As String = "", ccAddress As String = "", bccAddress As String = ""
         Try
-            Dim dsMail As DataSet = If(toMaterial,
-                                       New OPC_VendorClass().GetSkuFormulationMaterialEmail(Convert.ToString(ConfigurationManager.AppSettings("FORMULATION_MATERIAL_USERS")), Convert.ToString(ConfigurationManager.AppSettings("FORMULATION_MATERIAL_GROUPS"))),
-                                       New OPC_VendorClass().GetSkuFormulationHoEmail())
+            Dim dsMail As DataSet = If(toMaterial, New OPC_VendorClass().GetSkuFormulationMaterialEmail(), New OPC_VendorClass().GetSkuFormulationHoEmail())
             If dsMail IsNot Nothing AndAlso dsMail.Tables.Count > 0 AndAlso dsMail.Tables(0).Rows.Count > 0 Then
                 toAddress = Convert.ToString(dsMail.Tables(0).Rows(0)("TOAddr")).Trim()
                 ccAddress = Convert.ToString(dsMail.Tables(0).Rows(0)("CCAddr")).Trim()

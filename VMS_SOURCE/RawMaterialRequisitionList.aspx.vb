@@ -245,7 +245,7 @@ Partial Class RawMaterialRequisitionList
             mailBody.Append("<th style='border:1px solid #ccc;padding:8px;'>Request ID</th>")
             mailBody.Append("<th style='border:1px solid #ccc;padding:8px;'>Vendor Name</th>")
             'mailBody.Append("<th style='border:1px solid #ccc;padding:8px;'>RM Vendor Code</th>")
-            mailBody.Append("<th style='border:1px solid #ccc;padding:8px;'>RM Vendor Name</th>")
+            mailBody.Append("<th style='border:1px solid #ccc;padding:8px;'>Supplier Name</th>")
             mailBody.Append("<th style='border:1px solid #ccc;padding:8px;'>Raw Material List</th>")
             mailBody.Append("<th style='border:1px solid #ccc;padding:8px;'>Status</th>")
             mailBody.Append("</tr>")

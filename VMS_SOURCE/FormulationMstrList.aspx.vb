@@ -12,9 +12,28 @@ Partial Class FormulationMstrList
 
         If Not IsPostBack Then
             BindDropdown()
+            ' 28-10-2026: the "Material Dept Rate Review" menu opens this list as ?view=MATERIAL = formulations awaiting the comparison
+            If String.Equals(Request.QueryString("view"), "MATERIAL", StringComparison.OrdinalIgnoreCase) Then
+                If ddlView.Items.FindByValue(MaterialView) Is Nothing Then ddlView.Items.Insert(0, New ListItem("Awaiting Material Dept comparison", MaterialView))
+                ddlView.SelectedValue = MaterialView
+            End If
             Binddata()
         End If
     End Sub
+
+    Private Const MaterialView As String = "MATERIAL"
+
+    ''' <summary>List rows for a view mode. MATERIAL is not a mode of the SP: it is the ALL list reduced to status PENDING_MATERIAL.</summary>
+    Private Shared Function ListForView(ByVal obj As OPC_VendorClass, ByVal brand As String, ByVal vendor As String, ByVal product As String, ByVal viewMode As String) As DataTable
+        Dim material As Boolean = String.Equals(viewMode, MaterialView, StringComparison.OrdinalIgnoreCase)
+        Dim ds As DataSet = obj.ListSkuFormulation(brand, vendor, product, "N", If(material, "ALL", viewMode))
+        Dim table As DataTable = RmGridHelper.GetTable(ds)
+        If material AndAlso table IsNot Nothing AndAlso table.Columns.Contains("sf_status") Then
+            Dim rows() As DataRow = table.Select("sf_status = 'PENDING_MATERIAL'")
+            table = If(rows.Length > 0, rows.CopyToDataTable(), table.Clone())
+        End If
+        Return table
+    End Function
     Private Function IsUnitUser() As Boolean
         Return userInfo.userGroupCodeEntity = Constant.UserFormAccess.UNIT
     End Function
@@ -103,9 +122,7 @@ Partial Class FormulationMstrList
         Dim obj As New OPC_VendorClass()
         ' V2 (MUKESH BHAGAT 09-Oct-2026): versioned SKU formulation list - current versions only; columns aliased for the existing grid
         Dim vendorFilter As String = If(IsUnitUser(), Convert.ToString(userInfo.userBranchEntity).Trim(), ddlvendor.SelectedValue)   ' a vendor user is always limited to its own unit
-        ds = obj.ListSkuFormulation(ddlBrand.SelectedValue, vendorFilter, hdnProductCode.Value, "N", ddlView.SelectedValue)
-
-        Dim table As DataTable = RmGridHelper.GetTable(ds)
+        Dim table As DataTable = ListForView(obj, ddlBrand.SelectedValue, vendorFilter, hdnProductCode.Value, ddlView.SelectedValue)
         If table IsNot Nothing Then
             Dim map As New Dictionary(Of String, String) From {{"sf_id", "fh_id"}, {"brand_name", "Brand_Name"}, {"sf_brand_code", "Brand_Code"}, {"sf_vendor_code", "vendor_code"}, {"sf_product_code", "Sku_Code"}, {"product_name", "Sku_Desc"}}
             For Each kv In map
@@ -221,8 +238,7 @@ Partial Class FormulationMstrList
         End If
 
         Dim obj As New OPC_VendorClass()
-        Dim ds As DataSet = obj.ListSkuFormulation(If(brand, String.Empty), vendorFilter, If(productCode, String.Empty), "N", If(String.IsNullOrEmpty(viewMode), "ALL", viewMode))     ' 28-10-2026: default = Everything
-        Dim table As DataTable = RmGridHelper.GetTable(ds)
+        Dim table As DataTable = ListForView(obj, If(brand, String.Empty), vendorFilter, If(productCode, String.Empty), If(String.IsNullOrEmpty(viewMode), "ALL", viewMode))     ' 28-10-2026: default = Everything
         If table IsNot Nothing Then
             Dim map As New Dictionary(Of String, String) From {{"sf_id", "fh_id"}, {"brand_name", "Brand_Name"}, {"sf_brand_code", "Brand_Code"}, {"sf_vendor_code", "vendor_code"}, {"sf_product_code", "Sku_Code"}, {"product_name", "Sku_Desc"}}
             For Each kv In map
