@@ -100,8 +100,9 @@ Partial Class RawMaterialCodeLinking
     End Sub
 
     Private Sub LoadSkuProductList()
+        ' Modified-by MUKESH BHAGAT 30-10-2026: Berger Code = raw material items of RFQDB item master (po_item_category 'RM'), not SKU product codes
         Dim obj As New OPC_VendorClass()
-        Dim ds As DataSet = obj.GetOpcSkuPrdCodeList()
+        Dim ds As DataSet = obj.GetRmBergerItemList()
         If (Not (ds Is Nothing) AndAlso ds.Tables.Count > 0 AndAlso Not (ds.Tables(0) Is Nothing) AndAlso ds.Tables(0).Rows.Count > 0) Then
             skuProductTable = ds.Tables(0)
         Else
