@@ -207,6 +207,19 @@ Public Class OPC_VendorClass
     Public Function GetRmBergerItemList() As DataSet
         Return DBFactory.GetHelper().ExecuteDataSet("[dbo].[opc_rm_berger_item_list]", CommandType.StoredProcedure)
     End Function
+    ''' <summary>[opc_rm_berger_item_search] one page of RM items matching searchKey (code or description); total_rows for paging.
+    ''' Lazy-loading Berger Code dropdown of RawMaterialCodeLinking.aspx. Author: MUKESH BHAGAT 30-10-2026.</summary>
+    Public Function SearchRmBergerItems(ByVal searchKey As String, ByVal pageIndex As Integer, ByVal pageSize As Integer) As DataSet
+        Dim p() As SqlParameter = {ScopeParam("@search_key", searchKey, 100),
+                                   New SqlParameter("@page_index", SqlDbType.Int) With {.Value = pageIndex},
+                                   New SqlParameter("@page_size", SqlDbType.Int) With {.Value = pageSize}}
+        Return DBFactory.GetHelper().ExecuteDataSet("[dbo].[opc_rm_berger_item_search]", CommandType.StoredProcedure, p)
+    End Function
+    ''' <summary>[opc_rm_berger_item_search @codes] labels of the given item codes (comma separated), for the rows already linked.</summary>
+    Public Function GetRmBergerItemNames(ByVal codesCsv As String) As DataSet
+        Dim p() As SqlParameter = {New SqlParameter("@codes", SqlDbType.VarChar, -1) With {.Value = If(String.IsNullOrWhiteSpace(codesCsv), CObj(DBNull.Value), codesCsv)}}
+        Return DBFactory.GetHelper().ExecuteDataSet("[dbo].[opc_rm_berger_item_search]", CommandType.StoredProcedure, p)
+    End Function
     Function InsertUpdateRawmaterialBergerCodeLinking(ByVal userId As String, ByVal tbl As DataTable) As Integer
         Dim sqlConn As SqlConnection = Nothing
         Dim sqlTrans As SqlTransaction = Nothing
