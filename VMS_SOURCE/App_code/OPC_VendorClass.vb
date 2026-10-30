@@ -1349,12 +1349,20 @@ Public Class OPC_VendorClass
     End Function
 
     ''' <summary>[opc_sku_formulation_material_email] TOAddr/CCAddr/BCCAddr of the Material Department (26-10-2026).
-    ''' Modified-by MUKESH BHAGAT 28-10-2026: addresses come from user_profile; the two Web.config lists (users, groups) say who the Material Dept is.</summary>
-    Function GetSkuFormulationMaterialEmail(Optional ByVal users As String = "", Optional ByVal groups As String = "") As DataSet
+    ''' Modified-by MUKESH BHAGAT 28-10-2026: recipients = holders of the "Material Dept Rate Review" form in User Form Access, mail ids from user_profile.</summary>
+    Function GetSkuFormulationMaterialEmail() As DataSet
+        Return DBFactory.GetHelper().ExecuteDataSet("[dbo].[opc_sku_formulation_material_email]", Data.CommandType.StoredProcedure)
+    End Function
+
+    ''' <summary>[opc_formulation_material_access] True when the user holds the "Material Dept Rate Review" form in User Form Access
+    ''' (UsrFrmAccssNewMod.aspx) or is SYSADMIN. Author: MUKESH BHAGAT 28-10-2026 - replaces the Web.config user / group lists.</summary>
+    Function IsFormulationMaterialUser(ByVal userId As String, ByVal groupCode As String) As Boolean
         Dim sqlParams(1) As SqlParameter
-        sqlParams(0) = New SqlParameter("@users", SqlDbType.VarChar, 500) With {.Value = If(users, "")}
-        sqlParams(1) = New SqlParameter("@groups", SqlDbType.VarChar, 500) With {.Value = If(groups, "")}
-        Return DBFactory.GetHelper().ExecuteDataSet("[dbo].[opc_sku_formulation_material_email]", Data.CommandType.StoredProcedure, sqlParams)
+        sqlParams(0) = New SqlParameter("@user_id", SqlDbType.VarChar, 50) With {.Value = If(userId, "")}
+        sqlParams(1) = New SqlParameter("@group_code", SqlDbType.VarChar, 15) With {.Value = If(groupCode, "")}
+        Dim ds As DataSet = DBFactory.GetHelper().ExecuteDataSet("[dbo].[opc_formulation_material_access]", Data.CommandType.StoredProcedure, sqlParams)
+        If ds Is Nothing OrElse ds.Tables.Count = 0 OrElse ds.Tables(0).Rows.Count = 0 Then Return False
+        Return Convert.ToInt32(ds.Tables(0).Rows(0)(0)) = 1
     End Function
 
     ''' <summary>[opc_sku_formulation_approve] - HO decision: action "A" approve / "R" reject (remarks mandatory). Returns the SP message; "" on success.</summary>
