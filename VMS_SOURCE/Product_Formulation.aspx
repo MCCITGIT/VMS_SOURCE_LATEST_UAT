@@ -1063,12 +1063,18 @@
                 var h = document.getElementById('hdnVendorUnit');
                 return h ? (h.value || '') : '';
             }
-            function setRawMatContext() {       // product search (vendor scope) and raw material search (manual items) both depend on the vendor
+            function currentBrandId() { var d = document.getElementById('ddlBrand'); return d ? (d.value || '') : ''; }
+            function setRawMatContext() {       // raw material search (manual items) depends on the vendor; product search on vendor + brand ("vendor|brandId")
                 if (typeof $find !== 'function') { return; }
                 var b = $find('bhvRawMat');
                 if (b) { b.set_contextKey(currentVendorUnit()); }
                 var p = $find('bhvProduct');
-                if (p) { p.set_contextKey(currentVendorUnit()); }
+                if (p) { p.set_contextKey(currentVendorUnit() + '|' + currentBrandId()); }
+            }
+            function onBrandChanged() {         // 30-10-2026: a product picked under another brand may not belong to this one - clear it (unless the row is locked)
+                setRawMatContext();
+                var t = document.getElementById('txtProductSearch'), h = document.getElementById('<%=hdnProductCode.ClientID%>');
+                if (t && h && !t.disabled && !t.readOnly && h.value !== '') { resetProductField(); }
             }
             function openNewRawMat() {
                 if (currentVendorUnit() === '') { setFieldError('ddlvendor', 'valVendor', 'Please select Vendor first.', false); return false; }
@@ -1106,6 +1112,10 @@
                 var dv = document.getElementById('ddlvendor');
                 if (dv) {
                     if (window.jQuery) { window.jQuery(dv).on('change', setRawMatContext); } else { dv.addEventListener('change', setRawMatContext); }
+                }
+                var db = document.getElementById('ddlBrand');      // select2 fires jQuery change, not the native event
+                if (db) {
+                    if (window.jQuery) { window.jQuery(db).on('change', onBrandChanged); } else { db.addEventListener('change', onBrandChanged); }
                 }
                 if (window.Sys && Sys.Application) { Sys.Application.add_load(setRawMatContext); }
                 document.querySelectorAll('.pf-pack').forEach(function (p) { var i = p.querySelector('input.pf-proc'); if (i) { pfRecalc(i); } });
