@@ -202,6 +202,11 @@ Public Class OPC_VendorClass
         ds = DBFactory.GetHelper().ExecuteDataSet("[dbo].[opc_sku_prd_code_list]", CommandType.StoredProcedure)
         Return ds
     End Function
+    ''' <summary>[opc_rm_berger_item_list] Berger Code dropdown of RawMaterialCodeLinking.aspx: active raw material items of
+    ''' RFQDB.MSTR.item_mstr (po_item_category 'RM'), columns prd_code / prd_name. Author: MUKESH BHAGAT 30-10-2026.</summary>
+    Public Function GetRmBergerItemList() As DataSet
+        Return DBFactory.GetHelper().ExecuteDataSet("[dbo].[opc_rm_berger_item_list]", CommandType.StoredProcedure)
+    End Function
     Function InsertUpdateRawmaterialBergerCodeLinking(ByVal userId As String, ByVal tbl As DataTable) As Integer
         Dim sqlConn As SqlConnection = Nothing
         Dim sqlTrans As SqlTransaction = Nothing
@@ -1887,8 +1892,10 @@ Public Class OPC_VendorClass
     End Function
 
     ' ---- used by Product_Formulation: product / shade / pack are limited to the vendor's scope ----
-    Function GetScopeProductSearch(ByVal vendorCode As String, ByVal searchKey As String) As DataSet
-        Dim p() As SqlParameter = {ScopeParam("@vendor_code", vendorCode), ScopeParam("@search_key", searchKey)}
+    ''' <summary>Modified-by MUKESH BHAGAT 30-10-2026: brandId (0 = none) limits the products to the Brand Product Linking of that brand.</summary>
+    Function GetScopeProductSearch(ByVal vendorCode As String, ByVal searchKey As String, Optional ByVal brandId As Integer = 0) As DataSet
+        Dim p() As SqlParameter = {ScopeParam("@vendor_code", vendorCode), ScopeParam("@search_key", searchKey),
+                                   New SqlParameter("@brand_id", SqlDbType.Int) With {.Value = If(brandId > 0, CObj(brandId), DBNull.Value)}}
         Return DBFactory.GetHelper().ExecuteDataSet("[dbo].[opc_vendor_scope_product_search]", CommandType.StoredProcedure, p)
     End Function
 
