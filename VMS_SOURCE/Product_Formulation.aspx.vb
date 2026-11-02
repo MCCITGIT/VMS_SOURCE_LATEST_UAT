@@ -34,7 +34,7 @@ Partial Class Product_Formulation
         hdnSnapshot.Value = Convert.ToString(ViewState(SnapshotKey))
         ' raw material search shows the manual items of this vendor unit only (HO: the vendor selected on the page; the browser keeps it in sync when the dropdown changes)
         aceRawMaterialSearch.ContextKey = If(userInfo.userGroupCodeEntity = Constant.UserFormAccess.UNIT, Convert.ToString(userInfo.userBranchEntity).Trim(), ddlvendor.SelectedValue)
-        aceProductSearch.ContextKey = CurrentVendor()      ' product search = the products declared for this vendor on Vendor Scope
+        aceProductSearch.ContextKey = ProductSearchContext()      ' product search = vendor's scope, limited to the selected brand's links
         hdnVendorUnit.Value = CurrentVendor()              ' the browser reads the vendor from here when the Vendor dropdown is not on the page (UNIT login)
         If IsPostBack AndAlso userInfo.userGroupCodeEntity = Constant.UserFormAccess.UNIT Then HideVendorColumn()
         If Not CanSeeInternal() Then HideInternalColumns()      ' Material Dept figures are never rendered for a vendor
@@ -89,9 +89,15 @@ Partial Class Product_Formulation
         If String.IsNullOrWhiteSpace(prefixText) OrElse prefixText.Trim().Length < 3 OrElse String.IsNullOrWhiteSpace(contextKey) Then
             Return productDetails.ToArray()
         End If
+        ' contextKey = "vendor|brandId" (30-10-2026: the brand limits the list to its Brand Product Linking; a bare vendor still works)
+        Dim ctx() As String = contextKey.Split("|"c)
+        Dim vendorCode As String = ctx(0).Trim()
+        Dim brandId As Integer = 0
+        If ctx.Length > 1 Then Integer.TryParse(ctx(1).Trim(), brandId)
+        If vendorCode = "" Then Return productDetails.ToArray()
         Try
             Dim obj As New OPC_VendorClass()
-            Dim ds As DataSet = obj.GetScopeProductSearch(contextKey.Trim(), prefixText.Trim())   ' only the products declared for this vendor on Vendor Scope
+            Dim ds As DataSet = obj.GetScopeProductSearch(vendorCode, prefixText.Trim(), brandId)   ' products declared for this vendor on Vendor Scope, within the brand's links
             If Not ds Is Nothing AndAlso ds.Tables.Count > 0 AndAlso Not ds.Tables(0) Is Nothing Then
                 For Each dr As DataRow In ds.Tables(0).Rows
                     Dim productCode As String = Convert.ToString(dr("product_code")).Trim()
@@ -1583,6 +1589,11 @@ Partial Class Product_Formulation
         Return ddlvendor.SelectedValue.Trim()
     End Function
 
+    ''' <summary>Context key of the product autocomplete: "vendor|brandId". The browser rebuilds the same key when either dropdown changes (30-10-2026).</summary>
+    Private Function ProductSearchContext() As String
+        Return CurrentVendor() & "|" & ddlBrand.SelectedValue.Trim()
+    End Function
+
     ''' <summary>HO changed the vendor: product, shade and packs must be picked again from that vendor's scope.</summary>
     Protected Sub ddlvendor_SelectedIndexChanged(sender As Object, e As EventArgs)
         CapturePackInputs()
@@ -1590,7 +1601,7 @@ Partial Class Product_Formulation
         hdnProductCode.Value = ""
         hdnProductName.Value = ""
         hdnSkucode.Value = ""
-        aceProductSearch.ContextKey = CurrentVendor()
+        aceProductSearch.ContextKey = ProductSearchContext()
         aceRawMaterialSearch.ContextKey = CurrentVendor()
         BindScopeLookups()
         BindPacks()

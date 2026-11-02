@@ -245,7 +245,10 @@
                                         <ItemTemplate>
                                             <%--<asp:DropDownList ID="ddlBergerCode" runat="server" CssClass="form-control select2" onchange="clearCodeLinkGridFieldValidation(this);"></asp:DropDownList>--%>
                                             <%--<asp:DropDownList ID="ddlBergerCode" runat="server" ClientIDMode="AutoID" CssClass="form-control select2" TabIndex="2" onchange="clearCodeLinkGridFieldValidation(this);"></asp:DropDownList>--%>
-                                            <asp:DropDownList ID="ddlBergerCode" runat="server" ClientIDMode="AutoID" CssClass="form-control select2"></asp:DropDownList>
+                                            <%-- 30-10-2026 MUKESH BHAGAT: lazy-loading select2 (ajax, 30 rows a page). The chosen code travels in hdnBergerCode;
+                                                 the <select> is rendered by the code-behind with only the saved option, select2 fetches the rest on demand. --%>
+                                            <asp:HiddenField ID="hdnBergerCode" runat="server" />
+                                            <asp:Literal ID="litBergerSelect" runat="server"></asp:Literal>
                                         </ItemTemplate>
                                         <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="25%" />
                                         <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="25%" CssClass="rm-berger-code-cell" />
@@ -288,16 +291,68 @@
             if (chk.checked) {
                 ddl.value = "";
                 ddl.classList.remove("field-invalid");
+                var hdn = row.querySelector("input[id$='hdnBergerCode']");
+                if (hdn) { hdn.value = ""; }
             }
 
             ddl.disabled = chk.checked;
             if (window.jQuery && window.jQuery(ddl).data("select2")) {
                 var $ddl = window.jQuery(ddl);
                 if (chk.checked) {
-                    $ddl.val("").trigger("change");
+                    $ddl.val(null).trigger("change");
                 }
                 $ddl.prop("disabled", chk.checked);
             }
+        }
+
+        /* ---- 30-10-2026 MUKESH BHAGAT: Berger Code = lazy-loading select2 -------------------------------------
+           Nothing is loaded with the page except the saved option of each row. Typing (or scrolling the list)
+           calls the page method BergerCodeSearch, 30 rows a page. The chosen value is copied to hdnBergerCode,
+           which is what the server reads on Submit. */
+        var BERGER_PAGE_SIZE = 30;
+        function bergerSearchTransport(params, success, failure) {
+            var term = (params.data && params.data.term) || '';
+            var page = (params.data && params.data.page) || 1;
+            fetch('<%= ResolveUrl("~/RawMaterialCodeLinking.aspx") %>/BergerCodeSearch', {
+                method: 'POST', credentials: 'same-origin',
+                headers: { 'Content-Type': 'application/json; charset=utf-8' },
+                body: JSON.stringify({ term: term, page: page })
+            }).then(function (r) { return r.json(); })
+              .then(function (j) { success(j.d || { items: [], total: 0 }); })
+              .catch(function () { failure(); });
+        }
+        function initBergerCodeSelect2() {
+            if (!window.jQuery || !window.jQuery.fn.select2) { return; }
+            window.jQuery("#gvrawMatDetails select.rm-berger-ajax").each(function () {
+                var $ddl = window.jQuery(this);
+                if ($ddl.data("select2")) { return; }           // already wired (UpdatePanel re-renders the grid, so new elements arrive clean)
+                $ddl.select2({
+                    width: "100%",
+                    placeholder: "Type to search Berger code",
+                    allowClear: true,
+                    minimumInputLength: 0,
+                    dropdownParent: window.jQuery(document.body),
+                    ajax: {
+                        delay: 300,
+                        transport: bergerSearchTransport,
+                        data: function (params) { return { term: params.term || '', page: params.page || 1 }; },
+                        processResults: function (data, params) {
+                            params.page = params.page || 1;
+                            return { results: data.items || [], pagination: { more: (params.page * BERGER_PAGE_SIZE) < (data.total || 0) } };
+                        },
+                        cache: true
+                    }
+                }).on("change", function () {
+                    var row = this.closest("tr");
+                    var hdn = row ? row.querySelector("input[id$='hdnBergerCode']") : null;
+                    if (hdn) { hdn.value = this.value || ""; }
+                    if (typeof clearCodeLinkGridFieldValidation === "function") { clearCodeLinkGridFieldValidation(this); }
+                });
+            });
+        }
+        window.jQuery(document).ready(function () { setTimeout(initBergerCodeSelect2, 0); });
+        if (typeof Sys !== "undefined" && Sys.WebForms && Sys.WebForms.PageRequestManager) {
+            Sys.WebForms.PageRequestManager.getInstance().add_endRequest(function () { setTimeout(initBergerCodeSelect2, 0); });
         }
 
         // function initBergerCodeSelect2() {
