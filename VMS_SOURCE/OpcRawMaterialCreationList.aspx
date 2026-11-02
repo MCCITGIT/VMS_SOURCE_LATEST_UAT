@@ -7,8 +7,8 @@
                 <a href="Home.aspx" title="Home"><i class="fas fa-home"></i></a>
                 <div class="diveider">/</div>
                 <div class="pageTitleWrap">
-                    <h3 class="pageTitle">Raw Material Creation List</h3>
-                    <p class="pageSubTitle">Browse and manage vendor raw material entries</p>
+                    <h3 class="pageTitle">Raw Material / Packaging List</h3>
+                    <p class="pageSubTitle">Browse and manage vendor raw material and packaging entries</p>
                 </div>
             </div>
             <div class="rightFung"></div>
@@ -24,13 +24,23 @@
                             <asp:DropDownList ID="ddlVendor" ClientIDMode="Static" CssClass="form-control select2" TabIndex="1" runat="server"></asp:DropDownList>
                         </div>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-2">
                         <div class="form-group">
-                            <label class="form-control-label">Raw Material:</label>
+                            <label class="form-control-label">Type:</label>
+                            <asp:DropDownList ID="ddlItemType" ClientIDMode="Static" CssClass="form-control" runat="server">
+                                <asp:ListItem Value="" Text="All"></asp:ListItem>
+                                <asp:ListItem Value="RM" Text="Raw Material"></asp:ListItem>
+                                <asp:ListItem Value="PKG" Text="Packaging"></asp:ListItem>
+                            </asp:DropDownList>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label class="form-control-label">Name / code:</label>
                             <asp:TextBox ID="txtSearch" ClientIDMode="Static" CssClass="form-control" runat="server" AutoComplete="Off" MaxLength="200" Placeholder="Name or code"></asp:TextBox>
                         </div>
                     </div>
-                    <div class="col-md-4 form-btn-mt">
+                    <div class="col-md-3 form-btn-mt">
                         <asp:LinkButton ID="lbBtnSearch" runat="server" CssClass="btn btn-primary btn-sm" ClientIDMode="Static" ToolTip="Search" OnClick="lbBtnSearch_Click">Search</asp:LinkButton>
                         <asp:LinkButton ID="btnAdd" runat="server" CssClass="btn btn-success btn-sm" ClientIDMode="Static" OnClick="btnAdd_Click" ToolTip="Add">
                           <i class="fas fa-plus"></i> Add
@@ -45,8 +55,8 @@
                 <div class="mst-panel-header-left">
                     <span class="mst-panel-icon"><i class="fas fa-list"></i></span>
                     <div>
-                        <h5 class="mst-panel-title">Raw Material List</h5>
-                        <p class="mst-panel-subtitle">Raw materials created for vendor use</p>
+                        <h5 class="mst-panel-title">Raw Material / Packaging List</h5>
+                        <p class="mst-panel-subtitle">Raw materials and packaging items created for vendor use</p>
                     </div>
                 </div>
             </div>
@@ -57,7 +67,7 @@
                         ShowFooter="false" GridLines="both" EmptyDataText="No records found"
                         PagerSettings-Mode="NumericFirstLast" PagerSettings-PageButtonCount="5"
                         PagerSettings-FirstPageText="First" PagerSettings-LastPageText="Last"
-                        OnRowCommand="gvRmList_RowCommand">
+                        OnRowCommand="gvRmList_RowCommand" OnRowDataBound="gvRmList_RowDataBound">
                         <RowStyle CssClass="tlrowlight" />
                         <PagerStyle CssClass="PagerGrid" HorizontalAlign="Right" />
                         <HeaderStyle CssClass="headerGrid" />
@@ -71,15 +81,24 @@
                                 <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="6%" />
                             </asp:TemplateField>
 
-                            <asp:TemplateField HeaderText="Raw Material Code">
+                            <asp:TemplateField HeaderText="Type">
+                                <ItemTemplate>
+                                    <asp:Label ID="lblType" runat="server" Text='<%# If(Convert.ToString(Eval("rmm_item_type")).Trim().ToUpper() = "PKG", "Packaging", "Raw Material") %>'></asp:Label>
+                                    <asp:HiddenField ID="hdnItemType" runat="server" Value='<%# Eval("rmm_item_type") %>' />
+                                </ItemTemplate>
+                                <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" />
+                                <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="10%" />
+                            </asp:TemplateField>
+
+                            <asp:TemplateField HeaderText="Code">
                                 <ItemTemplate>
                                     <asp:Label ID="lblRmCode" runat="server" Text='<%# Bind("rmm_code") %>'></asp:Label>
                                 </ItemTemplate>
                                 <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" />
-                                <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="14%" />
+                                <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="12%" />
                             </asp:TemplateField>
 
-                            <asp:TemplateField HeaderText="Raw Material Name">
+                            <asp:TemplateField HeaderText="Name">
                                 <ItemTemplate>
                                     <asp:Label ID="lblRmName" runat="server" Text='<%# Bind("rmm_material_name") %>'></asp:Label>
                                 </ItemTemplate>
