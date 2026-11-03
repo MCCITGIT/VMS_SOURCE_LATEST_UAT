@@ -242,7 +242,11 @@ Partial Class Formulation_Rate_Revision
     End Function
 
     Private Function FormulationLink(ByVal sfId As Integer) As String
-        Return Request.Url.GetLeftPart(UriPartial.Authority) & ResolveUrl("~/Product_Formulation.aspx?id=" & sfId)
+        Dim redirectUrl As String = "Product_Formulation.aspx?id=" & sfId
+        'Dim baseUrl As String = "https://bpilweb.bergerindia.com/vms/"
+        Dim baseUrl As String = "https://bpilmobileuat.bergerindia.com/vmsdemo/"
+        'Dim baseUrl As String = "http://localhost:64930/"
+        Return New Uri(New Uri(baseUrl), redirectUrl).ToString()
     End Function
 
     Private Function SelectedRawmat() As DataTable
