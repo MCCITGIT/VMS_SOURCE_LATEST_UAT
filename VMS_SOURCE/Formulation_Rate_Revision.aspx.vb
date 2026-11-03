@@ -160,8 +160,8 @@ Partial Class Formulation_Rate_Revision
             End If
             Dim note As String = SendRateRevisionMail(sfId)
             Dim done As String = If(packs.Rows.Count > 0, "Rate revision marked for the selected raw materials and packaging.", "Rate revision marked for the selected raw materials.")
-            lblErrorMessage.CssClass = "infomsg"
-            lblErrorMessage.Text = done & If(note = "", " The vendor has been mailed.", " " & note)
+            lblErrorMessage.Text = String.Empty
+            RmActionPopup.ShowSuccess(Me, done & If(note = "", " The vendor has been mailed.", " " & note))
         Catch ex As Exception
             lblErrorMessage.Text = ex.Message
         End Try
@@ -271,6 +271,6 @@ Partial Class Formulation_Rate_Revision
     End Function
 
     Protected Sub btnBack_Click(sender As Object, e As EventArgs)
-
+        Response.Redirect("~/Formulation_Rate_Revision_List.aspx")
     End Sub
 End Class
