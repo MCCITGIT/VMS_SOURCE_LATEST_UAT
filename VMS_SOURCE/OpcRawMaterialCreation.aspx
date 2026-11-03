@@ -52,10 +52,10 @@
                 isValid = false;
             }
             if (nameValue === '') {
-                setRmFieldError('txtRmName', 'valRmName', 'Enter the raw material name.');
+                setRmFieldError('txtRmName', 'valRmName', 'Enter the name.');
                 isValid = false;
             } else if (nameValue.length < 3) {
-                setRmFieldError('txtRmName', 'valRmName', 'Raw material name must be at least 3 characters.');
+                setRmFieldError('txtRmName', 'valRmName', 'Name must be at least 3 characters.');
                 isValid = false;
             }
             return isValid;
@@ -68,8 +68,8 @@
                 <a href="Home.aspx" title="Home"><i class="fas fa-home"></i></a>
                 <div class="diveider">/</div>
                 <div class="pageTitleWrap">
-                    <h3 class="pageTitle">Raw Material Creation</h3>
-                    <p class="pageSubTitle">Create and maintain vendor raw material entries</p>
+                    <h3 class="pageTitle">Raw Material / Packaging Creation</h3>
+                    <p class="pageSubTitle">Create and maintain vendor raw material and packaging entries</p>
                 </div>
             </div>
             <div class="rightFung"></div>
@@ -80,8 +80,8 @@
                 <div class="mst-panel-header-left">
                     <span class="mst-panel-icon"><i class="fas fa-flask"></i></span>
                     <div>
-                        <h5 class="mst-panel-title">Raw Material Details</h5>
-                        <p class="mst-panel-subtitle">Enter the vendor and raw material name. The code is generated on save.</p>
+                        <h5 class="mst-panel-title">Item Details</h5>
+                        <p class="mst-panel-subtitle">Pick the type, the vendor and the name. The code is generated on save (MAN... raw material, PKG... packaging). Packaging items are created by the vendor.</p>
                     </div>
                 </div>
             </div>
@@ -90,20 +90,30 @@
                 <div class="row">
                     <asp:Panel ID="pnlRmCode" runat="server" CssClass="col-md-3" Visible="false">
                         <div class="form-group">
-                            <label class="form-control-label">Raw Material Code:</label>
+                            <label class="form-control-label">Code:</label>
                             <asp:TextBox ID="txtRmCode" runat="server" ClientIDMode="Static" CssClass="form-control" ReadOnly="true"></asp:TextBox>
                         </div>
                     </asp:Panel>
-                    <div class="col-md-4">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <%-- 02-11-2026 MUKESH BHAGAT: Type RM / PKG - packaging items share this master; only a vendor (UNIT) login can create a Packaging item --%>
+                            <label class="form-control-label">Type:<span class="mandatory">*</span></label>
+                            <asp:DropDownList ID="ddlItemType" runat="server" ClientIDMode="Static" CssClass="form-control">
+                                <asp:ListItem Value="RM" Text="Raw Material"></asp:ListItem>
+                                <asp:ListItem Value="PKG" Text="Packaging"></asp:ListItem>
+                            </asp:DropDownList>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
                         <div class="form-group">
                             <label class="form-control-label">Vendor:<span class="mandatory">*</span></label>
                             <asp:DropDownList ID="ddlVendor" runat="server" ClientIDMode="Static" CssClass="form-control select2"></asp:DropDownList>
                             <asp:Label ID="valVendor" runat="server" ClientIDMode="Static" CssClass="dispatch-field-error"></asp:Label>
                         </div>
                     </div>
-                    <div class="col-md-5">
+                    <div class="col-md-4">
                         <div class="form-group">
-                            <label class="form-control-label">Raw Material Name:<span class="mandatory">*</span></label>
+                            <label class="form-control-label">Name:<span class="mandatory">*</span></label>
                             <asp:TextBox ID="txtRmName" runat="server" ClientIDMode="Static" CssClass="form-control" AutoComplete="Off" MaxLength="200" onkeyup="clearRmCreationValidation();"></asp:TextBox>
                             <asp:Label ID="valRmName" runat="server" ClientIDMode="Static" CssClass="dispatch-field-error"></asp:Label>
                         </div>

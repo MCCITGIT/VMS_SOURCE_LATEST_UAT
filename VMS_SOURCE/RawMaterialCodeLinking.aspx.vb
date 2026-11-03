@@ -57,7 +57,10 @@ Partial Class RawMaterialCodeLinking
         Dim lit As Literal = TryCast(gridRow.FindControl("litBergerSelect"), Literal)
         If lit Is Nothing Then Exit Sub
         Dim sb As New System.Text.StringBuilder()
-        sb.Append("<select class=""form-control rm-berger-code-ddl rm-berger-ajax""").Append(If(disabled, " disabled=""disabled""", "")).Append(">")
+        ' data-type = which Berger item category the row's list searches: RM (raw material) or PKG (the vendor's packaging item) - 02-11-2026
+        Dim hdnType As HiddenField = TryCast(gridRow.FindControl("hdnItemType"), HiddenField)
+        Dim itemType As String = If(hdnType IsNot Nothing AndAlso hdnType.Value.Trim().ToUpperInvariant() = "PKG", "PKG", "RM")
+        sb.Append("<select class=""form-control rm-berger-code-ddl rm-berger-ajax"" data-type=""").Append(itemType).Append("""").Append(If(disabled, " disabled=""disabled""", "")).Append(">")
         sb.Append("<option value=""""></option>")
         code = Convert.ToString(code).Trim()
         If code <> "" Then
@@ -73,12 +76,12 @@ Partial Class RawMaterialCodeLinking
     ''' Returns { items: [{id, text}], total }. Author: MUKESH BHAGAT 30-10-2026.</summary>
     <System.Web.Script.Services.ScriptMethod(),
     System.Web.Services.WebMethod(EnableSession:=True)>
-    Public Shared Function BergerCodeSearch(ByVal term As String, ByVal page As Integer) As Object
+    Public Shared Function BergerCodeSearch(ByVal term As String, ByVal page As Integer, ByVal itemType As String) As Object
         Dim items As New List(Of Object)()
         Dim total As Integer = 0
         If HttpContext.Current.Session(Constant.SessionKeys.UserInfo) Is Nothing Then Return New With {.items = items, .total = 0}
         Try
-            Dim ds As DataSet = New OPC_VendorClass().SearchRmBergerItems(If(term, "").Trim(), Math.Max(page, 1) - 1, BergerPageSize)
+            Dim ds As DataSet = New OPC_VendorClass().SearchRmBergerItems(If(term, "").Trim(), Math.Max(page, 1) - 1, BergerPageSize, itemType)
             If ds IsNot Nothing AndAlso ds.Tables.Count > 0 Then
                 For Each r As DataRow In ds.Tables(0).Rows
                     items.Add(New With {.id = Convert.ToString(r("prd_code")).Trim(), .text = Convert.ToString(r("prd_name")).Trim()})
@@ -142,7 +145,7 @@ Partial Class RawMaterialCodeLinking
         Dim rmName As String = GetRawMaterialSearchName()
         Dim bergerCode As String = txtBergerCodeSearch.Text.Trim()
         Dim status As String = ddlStatus.SelectedValue
-        Dim ds As DataSet = obj.GetRawmaterialBergerCodeLinking(rmName, bergerCode, status)
+        Dim ds As DataSet = obj.GetRawmaterialBergerCodeLinking(rmName, bergerCode, status, ddlItemType.SelectedValue)
 
         If ds IsNot Nothing AndAlso ds.Tables.Count > 0 Then
             LoadSavedBergerNames(ds.Tables(0))
@@ -433,6 +436,7 @@ Partial Class RawMaterialCodeLinking
         lblErrorMessage.Text = String.Empty
         valSearchText.Text = String.Empty
         valGrid.Text = String.Empty
+        ddlItemType.SelectedIndex = 0
         SelectPendingStatus()
         BindData()
     End Sub

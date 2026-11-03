@@ -13,6 +13,11 @@ Partial Class OpcRawMaterialCreation
             Page.MaintainScrollPositionOnPostBack = True
 
             If Not IsPostBack Then
+                ' 02-11-2026: packaging items are created by the vendor only - HO / others can create raw materials only
+                If Not IsUnitUser() Then
+                    Dim pkg As ListItem = ddlItemType.Items.FindByValue("PKG")
+                    If pkg IsNot Nothing Then ddlItemType.Items.Remove(pkg)
+                End If
                 PopulateVendor()
 
                 Dim rmCode As String = If(Request.QueryString(RmCodeKey), String.Empty).Trim()
@@ -110,6 +115,19 @@ Partial Class OpcRawMaterialCreation
             Return
         End If
 
+        ' type of the saved item (fixed after creation); an HO login cannot open a packaging item - those belong to the vendor
+        Dim savedType As String = If(row.Table.Columns.Contains("rmm_item_type"), Convert.ToString(row("rmm_item_type")).Trim().ToUpperInvariant(), "RM")
+        If savedType = "PKG" AndAlso Not IsUnitUser() Then
+            Response.Redirect("~/OpcRawMaterialCreationList.aspx", False)
+            Context.ApplicationInstance.CompleteRequest()
+            Return
+        End If
+        If ddlItemType.Items.FindByValue(savedType) IsNot Nothing Then
+            ddlItemType.ClearSelection()
+            ddlItemType.Items.FindByValue(savedType).Selected = True
+        End If
+        ddlItemType.Enabled = False
+
         txtRmCode.Text = Convert.ToString(row("rmm_code")).Trim()
         txtRmName.Text = Convert.ToString(row("rmm_material_name")).Trim()
 
@@ -172,6 +190,10 @@ Partial Class OpcRawMaterialCreation
         pnlActive.Visible = visible
     End Sub
 
+    Private Function GetSelectedItemType() As String
+        Return If(String.Equals(Convert.ToString(ddlItemType.SelectedValue).Trim(), "PKG", StringComparison.OrdinalIgnoreCase), "PKG", "RM")
+    End Function
+
     Private Function GetSelectedActiveStatus() As String
         If Not IsEditMode Then
             Return "Y"
@@ -194,10 +216,17 @@ Partial Class OpcRawMaterialCreation
         End If
 
         If String.IsNullOrWhiteSpace(name) Then
-            SetFieldError(txtRmName, valRmName, "Enter the raw material name.")
+            SetFieldError(txtRmName, valRmName, "Enter the name.")
             isValid = False
         ElseIf name.Length < 3 Then
-            SetFieldError(txtRmName, valRmName, "Raw material name must be at least 3 characters.")
+            SetFieldError(txtRmName, valRmName, "Name must be at least 3 characters.")
+            isValid = False
+        End If
+
+        ' packaging is the vendor's entry only (the list the dropdown offers is already limited; this stops a posted value)
+        If Not IsEditMode AndAlso GetSelectedItemType() = "PKG" AndAlso Not IsUnitUser() Then
+            SetFieldError(ddlItemType, Nothing, "")
+            ShowMessage("Packaging items can be created by the vendor only.", False)
             isValid = False
         End If
 
@@ -217,7 +246,7 @@ Partial Class OpcRawMaterialCreation
             If IsEditMode Then
                 ds = obj.UpdateOpcRawMaterialCreation(EditRmCode, Convert.ToString(txtRmName.Text).Trim(), GetSelectedActiveStatus(), userInfo.userIDEntity)
             Else
-                ds = obj.InsertOpcRawMaterialCreation(Convert.ToString(txtRmName.Text).Trim(), GetSelectedUnitCode(), userInfo.userIDEntity)
+                ds = obj.InsertOpcRawMaterialCreation(Convert.ToString(txtRmName.Text).Trim(), GetSelectedUnitCode(), userInfo.userIDEntity, GetSelectedItemType())
             End If
 
             If ds IsNot Nothing AndAlso ds.Tables.Count > 0 AndAlso ds.Tables(0) IsNot Nothing AndAlso ds.Tables(0).Rows.Count > 0 Then
