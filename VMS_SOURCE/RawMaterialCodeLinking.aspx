@@ -137,7 +137,7 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="row">
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <div class="form-group mb-0">
                                     <label class="form-control-label">Search Raw Material:</label>
                                     <div class="input-group product-search-group">
@@ -162,7 +162,7 @@
                                     <asp:Label ID="valSearchText" runat="server" ClientIDMode="Static" CssClass="dispatch-field-error"></asp:Label>
                                 </div>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <div class="form-group mb-0">
                                     <label class="form-control-label">Search Berger Code:</label>
                                     <div class="input-group product-search-group">
@@ -171,6 +171,17 @@
                                             <button type="button" class="btn btn-outline-secondary product-reset-btn" onclick="resetBergerCodeSearchField(); return false;" title="Reset Berger Code"><i class="fas fa-sync-alt fa-xs"></i></button>
                                         </div>
                                     </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group mb-0">
+                                    <%-- 02-11-2026 MUKESH BHAGAT: raw materials and the vendors' packaging items share this page; the Berger code list follows each row's type --%>
+                                    <label class="form-control-label">Type:</label>
+                                    <asp:DropDownList ID="ddlItemType" runat="server" ClientIDMode="AutoID" CssClass="form-control">
+                                        <asp:ListItem Value="" Text="All"></asp:ListItem>
+                                        <asp:ListItem Value="RM" Text="Raw Material"></asp:ListItem>
+                                        <asp:ListItem Value="PKG" Text="Packaging"></asp:ListItem>
+                                    </asp:DropDownList>
                                 </div>
                             </div>
                             <div class="col-md-2">
@@ -225,16 +236,24 @@
                                         <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="5%" />
                                         <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="5%" />
                                     </asp:TemplateField>
-                                    <asp:TemplateField HeaderText="Raw Material Code" HeaderStyle-HorizontalAlign="Center">
+                                    <asp:TemplateField HeaderText="Type" HeaderStyle-HorizontalAlign="Center">
+                                        <ItemTemplate>
+                                            <asp:Label ID="lblItemType" runat="server" Text='<%# If(Convert.ToString(Eval("item_type")).Trim().ToUpper() = "PKG", "Packaging", "Raw Material") %>'></asp:Label>
+                                            <asp:HiddenField ID="hdnItemType" runat="server" Value='<%# Eval("item_type") %>' />
+                                        </ItemTemplate>
+                                        <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="9%" />
+                                        <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="9%" />
+                                    </asp:TemplateField>
+                                    <asp:TemplateField HeaderText="Code" HeaderStyle-HorizontalAlign="Center">
                                         <ItemTemplate>
                                             <asp:Label ID="lblrawmatcode" runat="server" Text='<%# Bind("Raw_Mat_Code") %>'></asp:Label>
                                             <asp:HiddenField ID="hdnrawmatcode" runat="server" Value='<%# Bind("Raw_Mat_Code") %>' />
                                             <asp:HiddenField ID="hdnId" runat="server" />
                                         </ItemTemplate>
-                                        <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="20%" />
-                                        <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="20%" />
+                                        <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="14%" />
+                                        <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="14%" />
                                     </asp:TemplateField>
-                                    <asp:TemplateField HeaderText="Raw Material Name" HeaderStyle-HorizontalAlign="Center">
+                                    <asp:TemplateField HeaderText="Name" HeaderStyle-HorizontalAlign="Center">
                                         <ItemTemplate>
                                             <asp:Label ID="lblrawmatname" runat="server" Text='<%# Bind("Raw_Mat_Name") %>'></asp:Label>
                                         </ItemTemplate>
@@ -313,13 +332,23 @@
         function bergerSearchTransport(params, success, failure) {
             var term = (params.data && params.data.term) || '';
             var page = (params.data && params.data.page) || 1;
+            // select2 keeps what the transport returns and reads .status / calls .abort() on it - so always hand back an object
+            var ctrl = (typeof AbortController === "function") ? new AbortController() : null;
+            var req = { status: 200, abort: function () { req.status = 0; if (ctrl) { ctrl.abort(); } } };
             fetch('<%= ResolveUrl("~/RawMaterialCodeLinking.aspx") %>/BergerCodeSearch', {
-                method: 'POST', credentials: 'same-origin',
+                method: 'POST', credentials: 'same-origin', signal: ctrl ? ctrl.signal : undefined,
                 headers: { 'Content-Type': 'application/json; charset=utf-8' },
-                body: JSON.stringify({ term: term, page: page })
-            }).then(function (r) { return r.json(); })
-              .then(function (j) { success(j.d || { items: [], total: 0 }); })
-              .catch(function () { failure(); });
+                body: JSON.stringify({ term: term, page: page, itemType: (params.data && params.data.type) || 'RM' })       // 02-11-2026: RM or PKG items of the Berger item master, by the row's type
+            }).then(function (r) {
+                req.status = r.status;
+                if (!r.ok) { return r.text().then(function (t) { throw new Error('HTTP ' + r.status + ' ' + t.substring(0, 300)); }); }
+                return r.json();
+            }).then(function (j) { success(j.d || { items: [], total: 0 }); })
+              .catch(function (err) {
+                  if (req.status !== 0 && window.console) { console.error('Berger code search failed:', err); }
+                  try { failure(); } catch (e) { }
+              });
+            return req;
         }
         function initBergerCodeSelect2() {
             if (!window.jQuery || !window.jQuery.fn.select2) { return; }
@@ -335,7 +364,7 @@
                     ajax: {
                         delay: 300,
                         transport: bergerSearchTransport,
-                        data: function (params) { return { term: params.term || '', page: params.page || 1 }; },
+                        data: function (params) { return { term: params.term || '', page: params.page || 1, type: $ddl.attr('data-type') || 'RM' }; },
                         processResults: function (data, params) {
                             params.page = params.page || 1;
                             return { results: data.items || [], pagination: { more: (params.page * BERGER_PAGE_SIZE) < (data.total || 0) } };

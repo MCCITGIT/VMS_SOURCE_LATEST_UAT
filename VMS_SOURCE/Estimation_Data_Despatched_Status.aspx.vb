@@ -257,10 +257,10 @@ Partial Class Estimation_Data_Despatched_Status
 
 #Region "gvDsptchdStat_RowDataBound"
 
-    Protected Sub gvDsptchdStat_PageIndexChanging(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.GridViewPageEventArgs) Handles gvDsptchdStat.PageIndexChanging
-        gvDsptchdStat.PageIndex = e.NewPageIndex
-        BindGrid()
-    End Sub
+    'Protected Sub gvDsptchdStat_PageIndexChanging(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.GridViewPageEventArgs) Handles gvDsptchdStat.PageIndexChanging
+    '    gvDsptchdStat.PageIndex = e.NewPageIndex
+    '    BindGrid()
+    'End Sub
     Protected Sub gvDsptchdStat_RowDataBound(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.GridViewRowEventArgs) Handles gvDsptchdStat.RowDataBound
         If (e.Row.RowType = DataControlRowType.DataRow) Then
             'e.Row.Cells(0).Text = e.Row.RowIndex + 1

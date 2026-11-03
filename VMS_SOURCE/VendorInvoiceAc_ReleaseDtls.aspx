@@ -104,7 +104,7 @@
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                <asp:GridView ID="gvVendorInvoiceDtls" runat="server" AutoGenerateColumns="false" AllowPaging="True" OnRowDataBound="gvVendorInvoiceDtls_RowDataBound" CssClass="table table-hover upgradDataGrid" EmptyDataText="No Record Found">
+                <asp:GridView ID="gvVendorInvoiceDtls" runat="server" AutoGenerateColumns="false" AllowPaging="False" OnRowDataBound="gvVendorInvoiceDtls_RowDataBound" CssClass="table table-hover upgradDataGrid" EmptyDataText="No Record Found">
                     <RowStyle CssClass="tlrowlight" />
                     <PagerStyle CssClass="PagerGrid" HorizontalAlign="Right" />
                     <HeaderStyle CssClass="headerGrid" />
@@ -121,12 +121,12 @@
                             <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="10%" />
                             <FooterStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="10%" />
                         </asp:BoundField>
-                        <asp:BoundField HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center"
+                        <%--<asp:BoundField HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center"
                             HeaderText="Vendor Name" DataField="vendor_unit_name">
                             <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="10%" />
                             <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="10%" CssClass="vendor-name-column" />
                             <FooterStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="10%" />
-                        </asp:BoundField>
+                        </asp:BoundField>--%>
                         <asp:BoundField HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center"
                             HeaderText="Depot" DataField="depot_name">
                             <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="5%" />

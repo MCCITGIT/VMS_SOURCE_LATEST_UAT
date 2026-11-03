@@ -34,7 +34,7 @@ Partial Class OpcRawMaterialCreationList
         Try
             Dim obj As New OPC_VendorClass()
             Dim unitCode As String = If(IsUnitUser(), OwnUnitCode(), ddlVendor.SelectedValue)
-            Dim ds As DataSet = obj.GetOpcRawMaterialCreationList(unitCode, txtSearch.Text)
+            Dim ds As DataSet = obj.GetOpcRawMaterialCreationList(unitCode, txtSearch.Text, ddlItemType.SelectedValue)
             RmGridHelper.BindPaged(gvRmList, ds)
         Catch ex As Exception
             Session(Constant.SessionKeys.ErrMessage) = ex.ToString()
@@ -86,6 +86,14 @@ Partial Class OpcRawMaterialCreationList
 
         Response.Redirect("~/OpcRawMaterialCreation.aspx?RmCode=" & Server.UrlEncode(rmCode), False)
         Context.ApplicationInstance.CompleteRequest()
+    End Sub
+
+    ''' <summary>Packaging items belong to the vendor (02-11-2026): an HO login sees them but gets no edit link.</summary>
+    Protected Sub gvRmList_RowDataBound(ByVal sender As Object, ByVal e As GridViewRowEventArgs)
+        If e.Row.RowType <> DataControlRowType.DataRow Then Return
+        Dim hdn As HiddenField = TryCast(e.Row.FindControl("hdnItemType"), HiddenField)
+        Dim edit As LinkButton = TryCast(e.Row.FindControl("btnEdit"), LinkButton)
+        If hdn IsNot Nothing AndAlso edit IsNot Nothing AndAlso hdn.Value.Trim().ToUpperInvariant() = "PKG" AndAlso Not IsUnitUser() Then edit.Visible = False
     End Sub
 
     Protected Sub gvRmList_PageIndexChanging(ByVal sender As Object, ByVal e As GridViewPageEventArgs) Handles gvRmList.PageIndexChanging
