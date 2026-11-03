@@ -1059,6 +1059,139 @@ Public Class OPC_VendorClass
         Return PrjectList
 
     End Function
+
+    Public Function GetFormulationList(ByVal fh_unit As String) As DataSet
+        Dim PrjectList As DataSet
+
+        Dim sqlParams(0) As SqlParameter
+
+        sqlParams(0) = New SqlParameter()
+        sqlParams(0).ParameterName = "@vendor_code"
+        sqlParams(0).DbType = DbType.String
+        sqlParams(0).Direction = Data.ParameterDirection.Input
+        sqlParams(0).Value = fh_unit
+
+        PrjectList = DBFactory.GetHelper().ExecuteDataSet("[dbo].[opc_sku_formulation_sku_list]", Data.CommandType.StoredProcedure, sqlParams)
+        Return PrjectList
+
+    End Function
+
+    Public Function GetFormulationRawmatList(ByVal sf_id As Integer) As DataSet
+        Dim PrjectList As DataSet
+
+        Dim sqlParams(0) As SqlParameter
+
+        sqlParams(0) = New SqlParameter()
+        sqlParams(0).ParameterName = "@sf_id"
+        sqlParams(0).DbType = DbType.Int32
+        sqlParams(0).Direction = Data.ParameterDirection.Input
+        sqlParams(0).Value = sf_id
+
+        PrjectList = DBFactory.GetHelper().ExecuteDataSet("[dbo].[opc_sku_formulation_rawmat_list]", Data.CommandType.StoredProcedure, sqlParams)
+        Return PrjectList
+
+    End Function
+
+    Public Function GetFormulationPackagingList(ByVal sf_id As Integer) As DataSet
+        Dim PrjectList As DataSet
+
+        Dim sqlParams(0) As SqlParameter
+
+        sqlParams(0) = New SqlParameter()
+        sqlParams(0).ParameterName = "@sf_id"
+        sqlParams(0).DbType = DbType.Int32
+        sqlParams(0).Direction = Data.ParameterDirection.Input
+        sqlParams(0).Value = sf_id
+
+        PrjectList = DBFactory.GetHelper().ExecuteDataSet("[dbo].[opc_sku_formulation_packaging_list]", Data.CommandType.StoredProcedure, sqlParams)
+        Return PrjectList
+
+    End Function
+
+    Function ApproveFormulationRawmatRevision(ByVal sf_id As Integer, ByVal rawmat As DataTable) As Integer
+        Dim sqlConn As SqlConnection = Nothing
+        Dim outputCode As Integer = 0
+        Dim sqlParams(1) As SqlParameter
+
+        Try
+            If rawmat Is Nothing OrElse rawmat.Rows.Count = 0 Then
+                Return 0
+            End If
+
+            sqlConn = DBFactory.GetHelper.OpenConnection()
+
+            sqlParams(0) = New SqlParameter()
+            sqlParams(0).ParameterName = "@sf_id"
+            sqlParams(0).SqlDbType = SqlDbType.Int
+            sqlParams(0).Direction = Data.ParameterDirection.Input
+            sqlParams(0).Value = sf_id
+
+            sqlParams(1) = New SqlParameter()
+            sqlParams(1).ParameterName = "@rawmat"
+            sqlParams(1).SqlDbType = SqlDbType.Structured
+            sqlParams(1).Direction = Data.ParameterDirection.Input
+            sqlParams(1).TypeName = "dbo.tbl_opc_rate_revision_rawmat"
+            sqlParams(1).Value = rawmat
+
+            Dim sqlCmd As New SqlCommand()
+            sqlCmd.Connection = sqlConn
+            sqlCmd.CommandType = CommandType.StoredProcedure
+            sqlCmd.CommandText = "[dbo].[opc_sku_formulation_rawmat_rate_revision]"
+            sqlCmd.Parameters.AddRange(sqlParams)
+            outputCode = sqlCmd.ExecuteNonQuery()
+        Catch ex As Exception
+            Throw ex
+        Finally
+            If (sqlConn IsNot Nothing) Then
+                sqlConn.Close()
+            End If
+        End Try
+
+        Return outputCode
+    End Function
+
+    Function ApproveFormulationPackagingRevision(ByVal sf_id As Integer, ByVal packs As DataTable) As Integer
+        Dim sqlConn As SqlConnection = Nothing
+        Dim outputCode As Integer = 0
+        Dim sqlParams(1) As SqlParameter
+
+        Try
+            If packs Is Nothing OrElse packs.Rows.Count = 0 Then
+                Return 0
+            End If
+
+            sqlConn = DBFactory.GetHelper.OpenConnection()
+
+            sqlParams(0) = New SqlParameter()
+            sqlParams(0).ParameterName = "@sf_id"
+            sqlParams(0).SqlDbType = SqlDbType.Int
+            sqlParams(0).Direction = Data.ParameterDirection.Input
+            sqlParams(0).Value = sf_id
+
+            sqlParams(1) = New SqlParameter()
+            sqlParams(1).ParameterName = "@packs"
+            sqlParams(1).SqlDbType = SqlDbType.Structured
+            sqlParams(1).Direction = Data.ParameterDirection.Input
+            sqlParams(1).TypeName = "dbo.tbl_opc_rate_revision_pack"
+            sqlParams(1).Value = packs
+
+            Dim sqlCmd As New SqlCommand()
+            sqlCmd.Connection = sqlConn
+            sqlCmd.CommandType = CommandType.StoredProcedure
+            sqlCmd.CommandText = "[dbo].[opc_sku_formulation_packaging_rate_revision]"
+            sqlCmd.Parameters.AddRange(sqlParams)
+            outputCode = sqlCmd.ExecuteNonQuery()
+        Catch ex As Exception
+            Throw ex
+        Finally
+            If (sqlConn IsNot Nothing) Then
+                sqlConn.Close()
+            End If
+        End Try
+
+        Return outputCode
+    End Function
+
     'Function GetRawMaterial_Requesteditt(ByVal vendor_id As String, ByVal rawmat_vendorcode As String) As DataSet
     '    Dim DS As System.Data.DataSet
     '    Dim sqlParams(1) As SqlParameter
