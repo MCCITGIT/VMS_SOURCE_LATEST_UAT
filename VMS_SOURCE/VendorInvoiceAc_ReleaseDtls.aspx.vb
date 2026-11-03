@@ -147,10 +147,10 @@ Partial Class VendorInvoiceAc_ReleaseDtls
         BindGrid()
     End Sub
 
-    Private Sub gvVendorInvoiceDtls_PageIndexChanging(sender As Object, e As GridViewPageEventArgs) Handles gvVendorInvoiceDtls.PageIndexChanging
-        gvVendorInvoiceDtls.PageIndex = e.NewPageIndex
-        BindGrid()
-    End Sub
+    'Private Sub gvVendorInvoiceDtls_PageIndexChanging(sender As Object, e As GridViewPageEventArgs) Handles gvVendorInvoiceDtls.PageIndexChanging
+    '    gvVendorInvoiceDtls.PageIndex = e.NewPageIndex
+    '    BindGrid()
+    'End Sub
 
 #Region "Date Format"
     Public Function FormatDate(ByVal stringdate As String) As SqlDateTime
