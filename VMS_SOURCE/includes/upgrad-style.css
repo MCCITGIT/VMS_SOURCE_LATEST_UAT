@@ -614,7 +614,7 @@ body {
         border-bottom: 0 !important;
     }
 
-    .upgradDataGrid .grid-skel-bar {
+.grid-skel-bar {
         display: inline-block;
         height: 12px;
         max-width: 100%;
