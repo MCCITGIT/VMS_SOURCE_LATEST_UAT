@@ -961,10 +961,14 @@ Partial Class Product_Formulation
         Return _isMaterialUser.Value
     End Function
 
-    ''' <summary>Link to a formulation for the mails (28-10-2026): scheme + host + application path of the request the user is
-    ''' working on, so it is the UAT address on UAT and the production address on production (no setting needed).</summary>
+    ''' <summary>Link to a formulation for the mails. Always the published VMS address, same as the requisition dispatch mail,
+    ''' so a local browse does not put localhost in the message.</summary>
     Private Function FormulationLink(ByVal sfId As Integer) As String
-        Return Request.Url.GetLeftPart(UriPartial.Authority) & ResolveUrl("~/Product_Formulation.aspx?id=" & sfId)
+        Dim redirectUrl As String = "Product_Formulation.aspx?id=" & sfId
+        'Dim baseUrl As String = "https://bpilweb.bergerindia.com/vms/"
+        Dim baseUrl As String = "https://bpilmobileuat.bergerindia.com/vmsdemo/"
+        'Dim baseUrl As String = "http://localhost:64930/"
+        Return New Uri(New Uri(baseUrl), redirectUrl).ToString()
     End Function
 
     ''' <summary>Who may see the nearest-site cost and the suggested price: HO and Material Dept. Never a vendor.</summary>
