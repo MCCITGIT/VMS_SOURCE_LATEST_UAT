@@ -186,7 +186,7 @@
                         </div>
                     </div>
                     <div class="table-responsive no-record-card">
-                        <asp:GridView ID="gvChallanDetails" runat="server" AutoGenerateColumns="false" AllowPaging="True"
+                        <asp:GridView ID="gvChallanDetails" runat="server" AutoGenerateColumns="false" AllowPaging="False"
                             Visible="true" BorderWidth="1" CssClass="table table-hover upgradDataGrid" EmptyDataText="No Record Found">
                             <RowStyle CssClass="tlrowlight" />
                             <PagerStyle CssClass="PagerGrid" HorizontalAlign="Right" />
