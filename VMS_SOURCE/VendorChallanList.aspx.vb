@@ -410,10 +410,10 @@ Partial Class VendorChallanList
         BindGrid()
     End Sub
 
-    Protected Sub gvChallanDetails_IndexChanging(ByVal sender As Object, ByVal e As GridViewPageEventArgs) Handles gvChallanDetails.PageIndexChanging
-        gvChallanDetails.PageIndex = e.NewPageIndex
-        BindGrid()
-    End Sub
+    'Protected Sub gvChallanDetails_IndexChanging(ByVal sender As Object, ByVal e As GridViewPageEventArgs) Handles gvChallanDetails.PageIndexChanging
+    '    gvChallanDetails.PageIndex = e.NewPageIndex
+    '    BindGrid()
+    'End Sub
 
     Protected Sub gvChallanDetails_SelectedIndexChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles gvChallanDetails.SelectedIndexChanged
 

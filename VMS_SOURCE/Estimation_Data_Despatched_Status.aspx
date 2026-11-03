@@ -107,7 +107,7 @@
                         </div>
                     </div>
                     <div class="table-responsive">
-                        <asp:GridView ID="gvDsptchdStat" runat="server" AutoGenerateColumns="false" AllowPaging="true"
+                        <asp:GridView ID="gvDsptchdStat" runat="server" AutoGenerateColumns="false" AllowPaging="false"
                             Visible="true" BorderWidth="1" CssClass="table table-hover upgradDataGrid">
                             <RowStyle CssClass="tlrowlight" />
                             <PagerStyle CssClass="PagerGrid" HorizontalAlign="Right" />
