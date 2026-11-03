@@ -1108,6 +1108,22 @@ Public Class OPC_VendorClass
 
     End Function
 
+    Public Function GetFormulationRateRevisionList(ByVal vendor_code As String) As DataSet
+        Dim PrjectList As DataSet
+
+        Dim sqlParams(0) As SqlParameter
+
+        sqlParams(0) = New SqlParameter()
+        sqlParams(0).ParameterName = "@vendor_code"
+        sqlParams(0).DbType = DbType.String
+        sqlParams(0).Direction = Data.ParameterDirection.Input
+        sqlParams(0).Value = If(Not String.IsNullOrWhiteSpace(vendor_code), CObj(vendor_code.Trim()), DBNull.Value)
+
+        PrjectList = DBFactory.GetHelper().ExecuteDataSet("[dbo].[opc_sku_formulation_rate_revision_list]", Data.CommandType.StoredProcedure, sqlParams)
+        Return PrjectList
+
+    End Function
+
     Function ApproveFormulationRawmatRevision(ByVal sf_id As Integer, ByVal rawmat As DataTable) As Integer
         Dim sqlConn As SqlConnection = Nothing
         Dim outputCode As Integer = 0
