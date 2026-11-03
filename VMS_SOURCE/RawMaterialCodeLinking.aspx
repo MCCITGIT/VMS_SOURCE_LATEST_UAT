@@ -3,7 +3,7 @@
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
-    <link href="includes/rm-procurement.css?v=<%= DateTime.Now.Ticks %>" rel="stylesheet" type="text/css" />
+    <%--<link href="includes/rm-procurement.css?v=<%= DateTime.Now.Ticks %>" rel="stylesheet" type="text/css" />--%>
     <style type="text/css">
         .form-control.field-invalid {
             border-color: #dc3545 !important;
@@ -11,12 +11,12 @@
         }
 
         .dispatch-field-error {
-    display: block;
-    color: #dc3545;
-    font-size: 11px;
-    font-weight: 500;
-    margin-top: 0px;
-    line-height: 1;
+            display: block;
+            color: #dc3545;
+            font-size: 11px;
+            font-weight: 500;
+            margin-top: 0px;
+            line-height: 1;
         }
 
             .dispatch-field-error:empty {
@@ -59,67 +59,69 @@
             text-align: left;
         }
     </style>
+
+    <script type="text/javascript">
+        document.onkeydown = checkValue;
+        function checkValue() {
+            if (event.keyCode == 118) {
+                var submitBtn = document.getElementById('btnSubmit');
+                if (!submitBtn || submitBtn.disabled === true) {
+                    return false;
+                }
+                validateRawMaterialCodeLinkingSubmit();
+            }
+            else if (event.keyCode == 119) {
+                __doPostBack(document.getElementById('btnReset').name, '');
+            }
+        }
+
+        function onRawMaterialSelected(sender, e) {
+            var value = e.get_value();
+            var text = e.get_text();
+            document.getElementById('<%=txtrawmatid.ClientID%>').value = value;
+            document.getElementById('<%=txtSearchText.ClientID%>').value = text;
+            sender.get_element().value = text;
+            if (typeof clearRawMatValidation === 'function') {
+                clearRawMatValidation();
+            }
+        }
+
+        function clearRawMaterialSelection() {
+            document.getElementById('<%=txtrawmatid.ClientID%>').value = '';
+            if (typeof clearRawMatValidation === 'function') {
+                clearRawMatValidation();
+            }
+        }
+
+        function resetProductField() {
+            var rawMatText = document.getElementById('<%=txtSearchText.ClientID%>');
+            var rawMatCode = document.getElementById('<%=txtrawmatid.ClientID%>');
+
+            if (rawMatText) {
+                rawMatText.value = '';
+            }
+            if (rawMatCode) {
+                rawMatCode.value = '';
+            }
+
+            if (typeof clearRawMatValidation === 'function') {
+                clearRawMatValidation();
+            }
+
+            return false;
+        }
+
+        function resetBergerCodeSearchField() {
+            var bergerSearch = document.getElementById('<%=txtBergerCodeSearch.ClientID%>');
+            if (bergerSearch) {
+                bergerSearch.value = '';
+            }
+            return false;
+        }
+    </script>
+    <script type="text/javascript" src="Scripts/ValidateRawMaterialCodeLinking.js?time=<%= DateTime.Now.ToString("yyyy.MM.dd-HH.mm.ss.fff") %>"></script>
+
     <div class="rm-module rm-compact rm-rawmat-code-link">
-        <script type="text/javascript">
-            document.onkeydown = checkValue;
-            function checkValue() {
-                if (event.keyCode == 118) {
-                    var submitBtn = document.getElementById('btnSubmit');
-                    if (!submitBtn || submitBtn.disabled === true) {
-                        return false;
-                    }
-                    validateRawMaterialCodeLinkingSubmit();
-                }
-                else if (event.keyCode == 119) {
-                    __doPostBack(document.getElementById('btnReset').name, '');
-                }
-            }
-
-            function onRawMaterialSelected(sender, e) {
-                var value = e.get_value();
-                var text = e.get_text();
-                document.getElementById('<%=txtrawmatid.ClientID%>').value = value;
-                document.getElementById('<%=txtSearchText.ClientID%>').value = text;
-                sender.get_element().value = text;
-                if (typeof clearRawMatValidation === 'function') {
-                    clearRawMatValidation();
-                }
-            }
-
-            function clearRawMaterialSelection() {
-                document.getElementById('<%=txtrawmatid.ClientID%>').value = '';
-                if (typeof clearRawMatValidation === 'function') {
-                    clearRawMatValidation();
-                }
-            }
-
-            function resetProductField() {
-                var rawMatText = document.getElementById('<%=txtSearchText.ClientID%>');
-                var rawMatCode = document.getElementById('<%=txtrawmatid.ClientID%>');
-
-                if (rawMatText) {
-                    rawMatText.value = '';
-                }
-                if (rawMatCode) {
-                    rawMatCode.value = '';
-                }
-
-                if (typeof clearRawMatValidation === 'function') {
-                    clearRawMatValidation();
-                }
-
-                return false;
-            }
-
-            function resetBergerCodeSearchField() {
-                var bergerSearch = document.getElementById('<%=txtBergerCodeSearch.ClientID%>');
-                if (bergerSearch) {
-                    bergerSearch.value = '';
-                }
-                return false;
-            }
-        </script>
-        <script type="text/javascript" src="Scripts/ValidateRawMaterialCodeLinking.js?time=<%= DateTime.Now.ToString("yyyy.MM.dd-HH.mm.ss.fff") %>"></script>
         <div class="breadcrumbs">
             <div class="leftFung">
                 <a href="Home.aspx" title="Home"><i class="fas fa-home"></i></a>
@@ -138,7 +140,7 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-3">
-                                <div class="form-group mb-0">
+                                <div class="form-group">
                                     <label class="form-control-label">Search Raw Material:</label>
                                     <div class="input-group product-search-group">
                                         <asp:TextBox ID="txtSearchText" ClientIDMode="Static" CssClass="form-control" runat="server" AutoComplete="Off" onkeyup="clearRawMaterialSelection();" Placeholder="Enter Here"></asp:TextBox>
@@ -163,7 +165,7 @@
                                 </div>
                             </div>
                             <div class="col-md-3">
-                                <div class="form-group mb-0">
+                                <div class="form-group">
                                     <label class="form-control-label">Search Berger Code:</label>
                                     <div class="input-group product-search-group">
                                         <asp:TextBox ID="txtBergerCodeSearch" ClientIDMode="Static" CssClass="form-control" runat="server" AutoComplete="Off" Placeholder="Enter Berger Code"></asp:TextBox>
@@ -174,7 +176,7 @@
                                 </div>
                             </div>
                             <div class="col-md-2">
-                                <div class="form-group mb-0">
+                                <div class="form-group">
                                     <%-- 02-11-2026 MUKESH BHAGAT: raw materials and the vendors' packaging items share this page; the Berger code list follows each row's type --%>
                                     <label class="form-control-label">Type:</label>
                                     <asp:DropDownList ID="ddlItemType" runat="server" ClientIDMode="AutoID" CssClass="form-control">
@@ -185,7 +187,7 @@
                                 </div>
                             </div>
                             <div class="col-md-2">
-                                <div class="form-group mb-0">
+                                <div class="form-group">
                                     <label class="form-control-label">Status:</label>
                                     <div class="input-group product-search-group">
                                         <asp:DropDownList ID="ddlStatus" runat="server" ClientIDMode="AutoID" CssClass="form-control select2">
@@ -196,14 +198,9 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-2">
-                                <div class="form-group mb-0">
-                                    <label class="form-control-label">&nbsp;</label>
-                                    <div class="rm-code-link-search-actions">
-                                        <asp:LinkButton CssClass="btn btn-primary btn-sm rm-btn-icon" ID="imgbtnSearch" runat="server" ClientIDMode="Static" OnClick="imgbtnSearch_Click" OnClientClick="return searchCodeLinkWithLoader();" ToolTip="Search">Search</asp:LinkButton>
-                                        <asp:Button ID="btnReset" runat="server" Text="Reset" CssClass="btn btn-outline-danger btn-sm" OnClick="btnReset_Click" CausesValidation="false" />
-                                    </div>
-                                </div>
+                            <div class="col-md-2 form-btn-mt">
+                                <asp:LinkButton CssClass="btn btn-primary rm-btn-icon" ID="imgbtnSearch" runat="server" ClientIDMode="Static" OnClick="imgbtnSearch_Click" OnClientClick="return searchCodeLinkWithLoader();" ToolTip="Search"><i class="fa fa-search" aria-hidden="true"></i></asp:LinkButton>
+                                <asp:Button ID="btnReset" runat="server" Text="Reset" CssClass="btn btn-outline-danger btn-sm" OnClick="btnReset_Click" CausesValidation="false" />
                             </div>
                         </div>
                         <asp:Label ID="lblErrorMessage" ClientIDMode="Static" CssClass="errormsg" Visible="true" runat="server" Style="text-align: left; font-size: 10px; font-weight: bold; color: red;" Text=""></asp:Label>
