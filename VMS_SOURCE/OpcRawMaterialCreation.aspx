@@ -118,7 +118,7 @@
                             <asp:TextBox ID="txtScope" runat="server" CssClass="form-control" ReadOnly="true" Text="All vendors"></asp:TextBox>
                         </div>
                     </asp:Panel>
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <div class="form-group">
                             <label class="form-control-label">Name:<span class="mandatory">*</span></label>
                             <asp:TextBox ID="txtRmName" runat="server" ClientIDMode="Static" CssClass="form-control" AutoComplete="Off" MaxLength="200" onkeyup="clearRmCreationValidation();"></asp:TextBox>
@@ -128,12 +128,21 @@
                     <%-- HO only, raw material: link the Berger code here, or tick "Berger doesn't buy this product" (same columns as Raw Material Code Linking).
                          Both can be left empty and linked later on Raw Material Code Linking. --%>
                     <asp:Panel ID="pnlBerger" runat="server" Visible="false" CssClass="col-md-6">
-                        <div class="form-group">
-                            <label class="form-control-label">Berger Code:</label>
-                            <asp:HiddenField ID="hdnBergerCode" runat="server" ClientIDMode="Static" />
-                            <asp:Literal ID="litBergerSelect" runat="server"></asp:Literal>
-                            <div class="checkRadioGroup mt-1">
-                                <asp:CheckBox ID="chkBergerNotBuy" runat="server" ClientIDMode="Static" Text="&nbsp;Berger doesn't buy this product" />
+                        <div class="row">
+                            <div class="col-md-7">
+                                <div class="form-group">
+                                    <label class="form-control-label">Berger Code:</label>
+                                    <asp:HiddenField ID="hdnBergerCode" runat="server" ClientIDMode="Static" />
+                                    <asp:Literal ID="litBergerSelect" runat="server"></asp:Literal>
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <label class="form-control-label">&nbsp;</label>
+                                    <div class="checkRadioGroup" style="padding-top: 6px;">
+                                        <asp:CheckBox ID="chkBergerNotBuy" runat="server" ClientIDMode="Static" Text="&nbsp;Berger doesn't buy this product" />
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </asp:Panel>
