@@ -64,7 +64,37 @@ Partial Class Formulation_Rate_Revision
             cblFormulation.DataTextField = "sku_description"
             cblFormulation.DataValueField = "sf_id"
             cblFormulation.DataBind()
+            MarkApprovedFormulations()
         End If
+    End Sub
+
+    Private Sub MarkApprovedFormulations()
+        Dim ds As DataSet = New OPC_VendorClass().GetFormulationRateRevisionFlagged(ddlVendor.SelectedValue)
+        If ds Is Nothing Then
+            Return
+        End If
+
+        Dim approved As New List(Of String)()
+        For Each tbl As DataTable In ds.Tables
+            If Not tbl.Columns.Contains("sf_id") Then
+                Continue For
+            End If
+            For Each row As DataRow In tbl.Rows
+                Dim sfId As String = Convert.ToString(row("sf_id")).Trim()
+                If sfId <> "" AndAlso Not approved.Contains(sfId) Then
+                    approved.Add(sfId)
+                End If
+            Next
+        Next
+
+        Dim checkedCount As Integer = 0
+        For Each item As ListItem In cblFormulation.Items
+            If approved.Contains(item.Value.Trim()) Then
+                item.Selected = True
+                checkedCount += 1
+            End If
+        Next
+        chkSelectAll.Checked = (cblFormulation.Items.Count > 0 AndAlso checkedCount = cblFormulation.Items.Count)
     End Sub
 
     Protected Sub ddlVendor_SelectedIndexChanged(sender As Object, e As EventArgs)
@@ -93,6 +123,7 @@ Partial Class Formulation_Rate_Revision
             Dim obj As New OPC_VendorClass()
             obj.ApproveFormulationRateRevision(SelectedFormulationIds(selected), userInfo.userIDEntity)
             Dim note As String = SendRateRevisionMail(selected)
+            PopulateFormulation()
             lblErrorMessage.Text = String.Empty
             RmActionPopup.ShowSuccess(Me, "Permission given: the vendor can now change the rates of all raw materials and packaging for the selected formulation(s)." & If(note = "", " The vendor has been mailed.", " " & note))
         Catch ex As Exception
