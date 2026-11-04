@@ -45,7 +45,7 @@
                         </div>
                     </div>
                     <div class="col-md-3 form-btn-mt">
-                        <asp:LinkButton ID="btnApprove" runat="server" CssClass="btn btn-success btn-sm" ClientIDMode="Static" OnClick="btnApprove_Click"> Approve
+                        <asp:LinkButton ID="btnApprove" runat="server" CssClass="btn btn-success btn-sm" ClientIDMode="Static" OnClick="btnApprove_Click" ToolTip="Let the vendor change the rates of the selected items"> Give permission
                         </asp:LinkButton>
                         <asp:LinkButton ID="btnBack" runat="server" CssClass="btn btn-danger btn-sm" ClientIDMode="Static" ToolTip="Back" OnClick="btnBack_Click">Back
                         </asp:LinkButton>

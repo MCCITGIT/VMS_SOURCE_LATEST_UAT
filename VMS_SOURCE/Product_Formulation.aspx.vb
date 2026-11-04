@@ -109,9 +109,11 @@ Partial Class Product_Formulation
                     Exit Sub
                 End Try
             Else
+                Dim stdRow As DataRow = ApplyStandardFromQuery()      ' ?std= (from the "Standard formulations" list): brand + product preselected
                 BindPacks()
                 BindScopeLookups()
-                ReloadStandardRows()      ' empty grid + the "pick Brand, Product and Shade" note (HO standard entry or vendor)
+                If stdRow IsNot Nothing AndAlso ddlShade.Items.FindByValue(Convert.ToString(stdRow("ssf_shade_code")).Trim()) IsNot Nothing Then ddlShade.SelectedValue = Convert.ToString(stdRow("ssf_shade_code")).Trim()
+                ReloadStandardRows()      ' the standard's lines (vendor: locked, price empty; HO: editable), or the "pick Brand, Product and Shade" note
             End If
         End If
     End Sub
@@ -269,6 +271,7 @@ Partial Class Product_Formulation
         dt.Columns.Add(New DataColumn("unit", GetType(String)))
         dt.Columns.Add(New DataColumn("rate", GetType(String)))
         dt.Columns.Add(New DataColumn("matrix_id", GetType(String)))
+        dt.Columns.Add(New DataColumn("rev_flag", GetType(String)))      ' 04-11-2026: "Y" = HO opened this raw material's rate for revision
         ViewState(GridTableKey) = dt
     End Sub
 
@@ -551,6 +554,28 @@ Partial Class Product_Formulation
     End Sub
 
 #Region "standard formulation (HO) - Author: MUKESH BHAGAT 02-Nov-2026"
+    ''' <summary>?std=&lt;ssf_id&gt; (opened from the "Standard formulations" view of the list): preselects Brand and Product of that standard; the shade follows once the
+    ''' shade list is built. HO may open any standard (to edit it); a vendor only one inside its Vendor Scope - otherwise nothing is selected and the page says so.
+    ''' Returns the standard's row, or Nothing.</summary>
+    Private Function ApplyStandardFromQuery() As DataRow
+        Dim stdId As Integer = ParseInteger(Convert.ToString(Request.QueryString("std")))
+        If stdId <= 0 Then Return Nothing
+        Dim vendor As String = If(IsHoUser(), "", CurrentVendor())
+        Dim ds As DataSet = New OPC_VendorClass().GetStdFormulationHeader(stdId, vendor)
+        If ds Is Nothing OrElse ds.Tables.Count = 0 OrElse ds.Tables(0).Rows.Count = 0 Then
+            valGrid.Text = "This standard formulation is not available for you (it is not in your Vendor Scope)."
+            Return Nothing
+        End If
+        Dim r As DataRow = ds.Tables(0).Rows(0)
+        Dim brand As String = Convert.ToString(r("ssf_brand_code")).Trim()
+        If ddlBrand.Items.FindByValue(brand) IsNot Nothing Then ddlBrand.SelectedValue = brand
+        hdnProductCode.Value = Convert.ToString(r("ssf_product_code")).Trim()
+        hdnProductName.Value = Convert.ToString(r("product_name")).Trim()
+        txtProductSearch.Text = hdnProductName.Value
+        txtProductSearch.Attributes("readonly") = "readonly"          ' the picked product stays; the reset button clears it
+        Return r
+    End Function
+
     ''' <summary>The shade the standard / the new formulation is for: "" when the product has no shades.</summary>
     Private Function CurrentShade() As String
         Return If(ShadeRequired(), ddlShade.SelectedValue.Trim(), "")
@@ -840,7 +865,12 @@ Partial Class Product_Formulation
         Dim activeId As Integer = If(h.Table.Columns.Contains("active_sf_id"), ParseInteger(Convert.ToString(h("active_sf_id"))), 0)
         Dim latestId As Integer = If(h.Table.Columns.Contains("latest_sf_id"), ParseInteger(Convert.ToString(h("latest_sf_id"))), 0)
         If releaseNo > 0 Then
-            lblVersionInfo.Text = "Release " & releaseNo & If(status = "APPROVED", " - ACTIVE since " & Convert.ToString(h("sf_valid_from")), " - INACTIVE (valid " & Convert.ToString(h("sf_valid_from")) & " to " & Convert.ToString(h("sf_valid_to")) & ")") &
+            ' 04-11-2026: release dates decide what is in force - SCHEDULED = approved, starts on its effective date; an approved release with an end date is replaced on that date
+            Dim validFromTxt As String = If(IsDBNull(h("sf_valid_from")), "", Convert.ToDateTime(h("sf_valid_from")).ToString("dd/MM/yyyy"))
+            Dim validToTxt As String = If(IsDBNull(h("sf_valid_to")), "", Convert.ToDateTime(h("sf_valid_to")).ToString("dd/MM/yyyy"))
+            lblVersionInfo.Text = "Release " & releaseNo & If(status = "SCHEDULED", " - SCHEDULED: effective from " & validFromTxt & " (the previous release stays in force until then)",
+                                  If(status = "APPROVED", " - ACTIVE since " & validFromTxt & If(validToTxt <> "", ", until " & validToTxt & " (the revised rates start then)", ""),
+                                  " - INACTIVE (valid " & validFromTxt & " to " & validToTxt & ")")) &
                 If(approvedBy <> "", ", approved by " & approvedBy, "")
         Else
             lblVersionInfo.Text = "Cycle " & cycleNo & " / Revision " & revision & " - " & StatusText(status, approvedBy)
@@ -863,6 +893,7 @@ Partial Class Product_Formulation
                 dr("unit") = Convert.ToString(src("sfd_uom"))
                 dr("rate") = ParseDecimal(Convert.ToString(src("sfd_price"))).ToString("0.00", CultureInfo.InvariantCulture)
                 dr("matrix_id") = "0"
+                dr("rev_flag") = If(src.Table.Columns.Contains("sfd_rate_revision_yn"), Convert.ToString(src("sfd_rate_revision_yn")).Trim(), "")
                 dtGrid.Rows.Add(dr)
             Next
         End If
@@ -891,9 +922,13 @@ Partial Class Product_Formulation
                 If Not keyByPchId.ContainsKey(pchId) Then Continue For
                 dtl.Rows.Add(NextKey(dtl, "line_key"), keyByPchId(pchId), ParseInteger(Convert.ToString(r("pcd_id"))), Convert.ToString(r("pcd_cost_name")).Trim(),
                              ParseDecimal(Convert.ToString(r("pcd_amount"))).ToString("0.00", CultureInfo.InvariantCulture), ParseInteger(Convert.ToString(r("pcd_srl"))), "",
-                             If(r.Table.Columns.Contains("pcd_item_code"), Convert.ToString(r("pcd_item_code")).Trim(), ""))
+                             If(r.Table.Columns.Contains("pcd_item_code"), Convert.ToString(r("pcd_item_code")).Trim(), ""),
+                             If(r.Table.Columns.Contains("pcd_rate_revision_yn"), Convert.ToString(r("pcd_rate_revision_yn")).Trim(), ""))
             Next
         End If
+        ' 04-11-2026 RATE REVISION: HO opened some rates of this formulation - then only those can change (everything else is locked, also checked in the save procedure)
+        ViewState("RevMode") = If(dtGrid.Select("rev_flag = 'Y'").Length > 0 OrElse dtl.Select("rev_flag = 'Y'").Length > 0, "Y", Nothing)
+        ViewState("RevisionVersion") = If(h.Table.Columns.Contains("sf_rate_revision_yn") AndAlso Convert.ToString(h("sf_rate_revision_yn")).Trim() = "Y", "Y", Nothing)
         If CanSeeInternal() Then LoadMaterialPackReview(sfId, hdr, dtl)
         ViewState(PackHdrKey) = hdr
         ViewState(PackDtlKey) = dtl
@@ -1269,6 +1304,7 @@ Partial Class Product_Formulation
     Private Shared Function StatusText(ByVal status As String, ByVal approvedBy As String) As String
         Select Case status
             Case "APPROVED" : Return "APPROVED" & If(approvedBy <> "", " by " & approvedBy, "")
+            Case "SCHEDULED" : Return "APPROVED - SCHEDULED (the previous rates stay in force until the effective date)"
             Case "REJECTED" : Return "REJECTED" & If(approvedBy <> "", " by " & approvedBy, "")
             Case "PENDING_VENDOR" : Return "WAITING FOR VENDOR (HO revised the rate)"
             Case "PENDING_MATERIAL" : Return "UNDER REVIEW AT HO (with Material Dept)"
@@ -1283,6 +1319,16 @@ Partial Class Product_Formulation
     ''' vendor edits only the newest revision (PENDING / REJECTED) or proposes a change on the active release;
     ''' old releases / superseded revisions are read-only with links to the active release and the latest revision;
     ''' HO (other than SYSADMIN) never edits.</summary>
+    ''' <summary>True when HO has opened some rates of this formulation for revision (04-11-2026). Then ONLY those raw material prices / packaging amounts can change.</summary>
+    Private Function RevMode() As Boolean
+        Return Convert.ToString(ViewState("RevMode")) = "Y"
+    End Function
+
+    ''' <summary>True when this version belongs to a rate revision: HO's approval then needs an effective date.</summary>
+    Private Function RevisionVersion() As Boolean
+        Return Convert.ToString(ViewState("RevisionVersion")) = "Y"
+    End Function
+
     Private Sub ApplyApprovalState(ByVal status As String, ByVal hoRemarks As String, ByVal releaseNo As Integer, ByVal isLatest As Boolean, ByVal sfId As Integer, ByVal activeId As Integer, ByVal latestId As Integer)
         pnlHoRemarks.Visible = hoRemarks <> ""
         If hoRemarks <> "" Then
@@ -1302,6 +1348,8 @@ Partial Class Product_Formulation
         ShowMaterialInfo(status)
         btnRevise.Visible = pnlApproval.Visible AndAlso Not reviseMode
         btnApprove.Visible = pnlApproval.Visible AndAlso Not reviseMode
+        divEffective.Visible = btnApprove.Visible AndAlso RevisionVersion()          ' 04-11-2026: HO gives the effective date when approving revised rates
+        If divEffective.Visible Then txtEffectiveFrom.Attributes("min") = Date.Today.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)
         btnReject.Visible = pnlApproval.Visible AndAlso Not reviseMode
         lblReviseNote.Text = If(reviseMode, "Revise the ratios / prices / packaging above, write the reason in the remarks, then press 'Send revised rate to vendor'.", "")
         pnlVendorAccept.Visible = status = "PENDING_VENDOR" AndAlso isLatest AndAlso Not hoOnly
@@ -1321,7 +1369,7 @@ Partial Class Product_Formulation
             ' active release: read-only until the vendor presses "Propose change" (then a new negotiation cycle starts on submit)
             Dim proposeMode As Boolean = Convert.ToString(ViewState("ProposeMode")) = "Y"
             editable = isLatest AndAlso proposeMode
-            btnPropose.Visible = isLatest AndAlso Not proposeMode AndAlso Not hoOnly
+            btnPropose.Visible = isLatest AndAlso Not proposeMode AndAlso Not hoOnly AndAlso RevMode()      ' 04-11-2026: only through HO's permission (rates opened for revision)
             btnSubmit.Text = "Submit change for HO approval"
         ElseIf status = "PENDING" Then
             ' vendor may still replace their own proposal; HO edits only after "Revise rate"
@@ -1346,37 +1394,46 @@ Partial Class Product_Formulation
         If Not editable Then
             lblReadOnlyNote.Text = If(status = "INACTIVE" OrElse status = "SUPERSEDED", "This is a historical record and cannot be changed.",
                                    If(Not isLatest, "A newer revision exists - open it to make changes.",
-                                   If(btnPropose.Visible, "Approved and in force. Press 'Propose change' to start a new negotiation.",
+                                   If(btnPropose.Visible, "Approved and in force. HO has opened some rates for revision - press 'Propose change' and change only those rates (highlighted).",
+                                   If(status = "SCHEDULED", "Approved: the revised rates start on their effective date. Until then the previous release stays in force.",
+                                   If(status = "APPROVED" AndAlso Not RevMode() AndAlso Not hoOnly, "Approved and in force. A rate can be changed only after HO opens it for a rate revision.",
                                    If(status = "PENDING_VENDOR", "Waiting for the vendor to accept or counter the revised rate.",
                                    If(status = "PENDING_MATERIAL", If(CanSeeInternal(), "With the Material Department for rate comparison.", "Under review at HO."),
-                                   If(status = "PENDING_HO", If(CanSeeInternal(), "Material Department has replied - HO to decide (approve, reject or revise the rate).", "Under review at HO."), "Read-only view."))))))
+                                   If(status = "PENDING_HO", If(CanSeeInternal(), "Material Department has replied - HO to decide (approve, reject or revise the rate).", "Under review at HO."), "Read-only view."))))))))
         Else
             lblReadOnlyNote.Text = ""
         End If
     End Sub
 
     Private Sub SetEditable(ByVal editable As Boolean)
+        ' 04-11-2026 RATE REVISION: when HO opened some rates, only those can change; supplier, loss %, common charges, packs and lines are locked
+        Dim rev As Boolean = RevMode()
         btnSubmit.Visible = editable AndAlso GetGridTable().Rows.Count > 0
         btnAdd.Visible = editable
-        btnAddPack.Visible = editable
-        txtPackSize.Visible = editable
+        btnAddPack.Visible = editable AndAlso Not rev
+        txtPackSize.Visible = editable AndAlso Not rev
         txtSearchText.Enabled = editable : txtRatio.Enabled = editable : txtRate.Enabled = editable
         If gvVendorRawMat.FooterRow IsNot Nothing Then
             Dim txtLoss As TextBox = TryCast(gvVendorRawMat.FooterRow.FindControl("txtLossPct"), TextBox)
-            If txtLoss IsNot Nothing Then txtLoss.ReadOnly = Not editable
+            If txtLoss IsNot Nothing Then txtLoss.ReadOnly = Not editable OrElse rev
         End If
         btnNewRawMat.Visible = False
         txtRemarks.Enabled = editable
+        If rev Then ddlSupplier.Enabled = False : ddlShade.Enabled = False
         ' common charges (02-11-2026): HO / vendor edit them with the formulation; the Material Dept suggestion boxes only while it answers
-        txtComProc.ReadOnly = Not editable : txtComMargin.ReadOnly = Not editable : txtComFreight.ReadOnly = Not editable
+        txtComProc.ReadOnly = Not editable OrElse rev : txtComMargin.ReadOnly = Not editable OrElse rev : txtComFreight.ReadOnly = Not editable OrElse rev
         txtMdComProc.ReadOnly = Not MaterialMode() : txtMdComMargin.ReadOnly = Not MaterialMode()
         ' row delete buttons and pack inputs
+        Dim gridTbl As DataTable = GetGridTable()
         For Each row As GridViewRow In gvVendorRawMat.Rows
             Dim b As LinkButton = TryCast(row.FindControl("btnDeleteRow"), LinkButton)
             If b IsNot Nothing Then b.Visible = editable AndAlso IsStdMode()
             For Each id As String In New String() {"txtRowRate"}      ' 02-11-2026: txtRowRatio stays read only - the percentage belongs to HO's standard
                 Dim t As TextBox = TryCast(row.FindControl(id), TextBox)
-                If t IsNot Nothing Then t.ReadOnly = Not editable
+                If t Is Nothing Then Continue For
+                Dim opened As Boolean = Not rev OrElse (row.RowIndex < gridTbl.Rows.Count AndAlso Convert.ToString(gridTbl.Rows(row.RowIndex)("rev_flag")) = "Y")
+                t.ReadOnly = Not editable OrElse Not opened
+                If rev AndAlso opened AndAlso editable AndAlso Not t.CssClass.Contains("pf-open") Then t.CssClass &= " pf-open"      ' highlighted: HO opened this rate
             Next
             For Each id As String In New String() {"txtSiteCost", "txtMatPrice"}
                 Dim t As TextBox = TryCast(row.FindControl(id), TextBox)
@@ -1386,15 +1443,20 @@ Partial Class Product_Formulation
         For Each item As RepeaterItem In rptPack.Items
             For Each id As String In New String() {"btnRemovePack", "btnAddLine", "txtNewCostName", "txtNewAmount"}
                 Dim c As Control = item.FindControl(id)
-                If c IsNot Nothing Then c.Visible = editable
+                If c IsNot Nothing Then c.Visible = editable AndAlso Not rev
             Next
             Dim rptLines As Repeater = CType(item.FindControl("rptLines"), Repeater)
             For Each li As RepeaterItem In rptLines.Items
                 Dim r As Control = li.FindControl("btnRemoveLine")
-                If r IsNot Nothing Then r.Visible = editable
+                If r IsNot Nothing Then r.Visible = editable AndAlso Not rev
                 For Each id As String In New String() {"txtAmount"}      ' txtCostName stays read-only: the name is picked from the scope items
                     Dim t As TextBox = TryCast(li.FindControl(id), TextBox)
-                    If t IsNot Nothing Then t.ReadOnly = Not editable
+                    If t Is Nothing Then Continue For
+                    Dim lineKey As Integer = ParseInteger(CType(li.FindControl("hdnLineKey"), HiddenField).Value)
+                    Dim lr() As DataRow = PackDtl().Select("line_key = " & lineKey)
+                    Dim opened As Boolean = Not rev OrElse (lr.Length > 0 AndAlso Convert.ToString(lr(0)("rev_flag")) = "Y")
+                    t.ReadOnly = Not editable OrElse Not opened
+                    If rev AndAlso opened AndAlso editable AndAlso Not t.CssClass.Contains("pf-open") Then t.CssClass &= " pf-open"
                 Next
                 Dim mdA As TextBox = TryCast(li.FindControl("txtMdAmount"), TextBox)
                 If mdA IsNot Nothing Then mdA.ReadOnly = Not MaterialMode()
@@ -1439,15 +1501,36 @@ Partial Class Product_Formulation
             valHoRemarks.Text = "Please enter the remarks / negotiated price before rejecting."
             Exit Sub
         End If
+        ' 04-11-2026: approving a RATE REVISION needs HO's effective date (today or later); the previous release stays in force until then
+        Dim effective As Nullable(Of Date) = Nothing
+        If role = "HO" AndAlso action = "A" AndAlso RevisionVersion() Then
+            Dim d As Date
+            If Not Date.TryParseExact(txtEffectiveFrom.Text.Trim(), "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, d) Then
+                CapturePackInputs() : BindPacks()
+                pnlApproval.Visible = True : divEffective.Visible = True
+                valEffective.Text = "Enter the effective date of the revised rates."
+                Exit Sub
+            End If
+            If d < Date.Today Then
+                CapturePackInputs() : BindPacks()
+                pnlApproval.Visible = True : divEffective.Visible = True
+                valEffective.Text = "The effective date cannot be in the past."
+                Exit Sub
+            End If
+            effective = d
+        End If
         Dim obj As New OPC_VendorClass()
-        Dim err As String = obj.ApproveSkuFormulation(sfId, action, If(role = "HO", txtHoRemarks.Text, txtRemarks.Text), userInfo.userIDEntity, role)
+        Dim okMessage As String = ""
+        Dim err As String = obj.ApproveSkuFormulation(sfId, action, If(role = "HO", txtHoRemarks.Text, txtRemarks.Text), userInfo.userIDEntity, role, effective, okMessage)
         If err <> "" Then
             CapturePackInputs() : BindPacks()
             If role = "HO" Then pnlApproval.Visible = True : valHoRemarks.Text = err Else valPack.Text = err
             Exit Sub
         End If
         Dim msg As String
-        If role = "VENDOR" Then
+        If RevisionVersion() AndAlso okMessage <> "" Then
+            msg = okMessage                       ' rate revision: the procedure says what happened (effective date / back to HO)
+        ElseIf role = "VENDOR" Then
             msg = "Revised rate accepted - the formulation is approved and now in force."
         ElseIf action = "A" Then
             msg = "Formulation approved."
@@ -1571,6 +1654,7 @@ Partial Class Product_Formulation
         dtl.Columns.Add("srl", GetType(Integer))
         dtl.Columns.Add("md_amount", GetType(String))         ' Material Dept suggested amount of the cost line (internal)
         dtl.Columns.Add("item_code", GetType(String))         ' 02-11-2026: the vendor's packaging item (opc_raw_material_mstr, type PKG); "" = an old line saved by name only
+        dtl.Columns.Add("rev_flag", GetType(String))          ' 04-11-2026: "Y" = HO opened this packaging cost line's amount for revision
         ViewState(PackDtlKey) = dtl
     End Sub
 
@@ -1685,7 +1769,7 @@ Partial Class Product_Formulation
 
     Private Sub AddLine(ByVal packKey As Integer, Optional ByVal costName As String = "", Optional ByVal amount As String = "", Optional ByVal itemCode As String = "")
         Dim dtl As DataTable = PackDtl()
-        dtl.Rows.Add(NextKey(dtl, "line_key"), packKey, 0, costName, amount, dtl.Select("pack_key = " & packKey).Length + 1, "", itemCode)
+        dtl.Rows.Add(NextKey(dtl, "line_key"), packKey, 0, costName, amount, dtl.Select("pack_key = " & packKey).Length + 1, "", itemCode, "")
         ViewState(PackDtlKey) = dtl
     End Sub
 

@@ -1124,10 +1124,11 @@ Public Class OPC_VendorClass
 
     End Function
 
-    Function ApproveFormulationRawmatRevision(ByVal sf_id As Integer, ByVal rawmat As DataTable) As Integer
+    Function ApproveFormulationRawmatRevision(ByVal sf_id As Integer, ByVal rawmat As DataTable, Optional ByVal userId As String = "") As Integer
         Dim sqlConn As SqlConnection = Nothing
         Dim outputCode As Integer = 0
-        Dim sqlParams(1) As SqlParameter
+        Dim sqlParams(2) As SqlParameter
+        sqlParams(2) = New SqlParameter("@user_id", SqlDbType.VarChar, 50) With {.Value = If(String.IsNullOrWhiteSpace(userId), CObj(DBNull.Value), userId.Trim())}      ' who opened the rates (04-Nov-2026)
 
         Try
             If rawmat Is Nothing OrElse rawmat.Rows.Count = 0 Then
@@ -1166,10 +1167,12 @@ Public Class OPC_VendorClass
         Return outputCode
     End Function
 
-    Function ApproveFormulationPackagingRevision(ByVal sf_id As Integer, ByVal packs As DataTable) As Integer
+    ''' <summary>04-Nov-2026: packs = packaging cost LINES (column pcd_id), one specific packaging material each - type dbo.tbl_opc_rate_revision_pcd.</summary>
+    Function ApproveFormulationPackagingRevision(ByVal sf_id As Integer, ByVal packs As DataTable, Optional ByVal userId As String = "") As Integer
         Dim sqlConn As SqlConnection = Nothing
         Dim outputCode As Integer = 0
-        Dim sqlParams(1) As SqlParameter
+        Dim sqlParams(2) As SqlParameter
+        sqlParams(2) = New SqlParameter("@user_id", SqlDbType.VarChar, 50) With {.Value = If(String.IsNullOrWhiteSpace(userId), CObj(DBNull.Value), userId.Trim())}
 
         Try
             If packs Is Nothing OrElse packs.Rows.Count = 0 Then
@@ -1188,7 +1191,7 @@ Public Class OPC_VendorClass
             sqlParams(1).ParameterName = "@packs"
             sqlParams(1).SqlDbType = SqlDbType.Structured
             sqlParams(1).Direction = Data.ParameterDirection.Input
-            sqlParams(1).TypeName = "dbo.tbl_opc_rate_revision_pack"
+            sqlParams(1).TypeName = "dbo.tbl_opc_rate_revision_pcd"
             sqlParams(1).Value = packs
 
             Dim sqlCmd As New SqlCommand()
@@ -1547,6 +1550,18 @@ Public Class OPC_VendorClass
         Return ds IsNot Nothing AndAlso ds.Tables.Count > 0 AndAlso ds.Tables(0).Rows.Count > 0 AndAlso Convert.ToString(ds.Tables(0).Rows(0)("freight_allowed")).Trim() = "Y"
     End Function
 
+    ''' <summary>[opc_sku_std_formulation_list] the "Standard formulations" view of the Product Formulation list. vendorCode (vendor login) limits it to its Vendor Scope.</summary>
+    Function ListStdFormulations(ByVal brandCode As String, ByVal productCode As String, ByVal vendorCode As String) As DataSet
+        Dim p() As SqlParameter = {ScopeParam("@brand_code", brandCode), ScopeParam("@product_code", productCode), ScopeParam("@vendor_code", vendorCode)}
+        Return DBFactory.GetHelper().ExecuteDataSet("[dbo].[opc_sku_std_formulation_list]", CommandType.StoredProcedure, p)
+    End Function
+
+    ''' <summary>[opc_sku_std_formulation_header] key + names of one standard; for a vendor only when inside its Vendor Scope (no row otherwise).</summary>
+    Function GetStdFormulationHeader(ByVal ssfId As Integer, ByVal vendorCode As String) As DataSet
+        Dim p() As SqlParameter = {New SqlParameter("@ssf_id", SqlDbType.Int) With {.Value = ssfId}, ScopeParam("@vendor_code", vendorCode)}
+        Return DBFactory.GetHelper().ExecuteDataSet("[dbo].[opc_sku_std_formulation_header]", CommandType.StoredProcedure, p)
+    End Function
+
     ''' <summary>[opc_std_product_search] product autocomplete of the HO standard entry (no vendor); brandId 0 = no brand limit.</summary>
     Function GetStdProductSearch(ByVal searchKey As String, Optional ByVal brandId As Integer = 0) As DataSet
         Dim p() As SqlParameter = {ScopeParam("@search_key", searchKey), New SqlParameter("@brand_id", SqlDbType.Int) With {.Value = If(brandId > 0, CObj(brandId), DBNull.Value)}}
@@ -1614,15 +1629,25 @@ Public Class OPC_VendorClass
 
     ''' <summary>[opc_sku_formulation_approve] - HO decision: action "A" approve / "R" reject (remarks mandatory). Returns the SP message; "" on success.</summary>
     Function ApproveSkuFormulation(ByVal sfId As Integer, ByVal action As String, ByVal remarks As String, ByVal userId As String, Optional ByVal role As String = "HO") As String
-        Dim sqlParams(4) As SqlParameter
+        Dim okMessage As String = ""
+        Return ApproveSkuFormulation(sfId, action, remarks, userId, role, Nothing, okMessage)
+    End Function
+
+    ''' <summary>Same as above plus HO's EFFECTIVE DATE of a rate revision (04-Nov-2026) and the procedure's success message (returned in okMessage).
+    ''' Returns "" on success, otherwise the reason.</summary>
+    Function ApproveSkuFormulation(ByVal sfId As Integer, ByVal action As String, ByVal remarks As String, ByVal userId As String, ByVal role As String,
+                                   ByVal effectiveFrom As Nullable(Of Date), ByRef okMessage As String) As String
+        Dim sqlParams(5) As SqlParameter
         sqlParams(0) = New SqlParameter("@sf_id", SqlDbType.Int) With {.Value = sfId}
         sqlParams(1) = New SqlParameter("@action", SqlDbType.Char, 1) With {.Value = action}
         sqlParams(2) = New SqlParameter("@remarks", SqlDbType.VarChar, 1000) With {.Value = If(String.IsNullOrWhiteSpace(remarks), CObj(DBNull.Value), remarks.Trim())}
         sqlParams(3) = New SqlParameter("@user_id", SqlDbType.VarChar, 50) With {.Value = userId}
         sqlParams(4) = New SqlParameter("@role", SqlDbType.VarChar, 10) With {.Value = If(role = "VENDOR", "VENDOR", "HO")}
+        sqlParams(5) = New SqlParameter("@effective_from", SqlDbType.Date) With {.Value = If(effectiveFrom.HasValue, CObj(effectiveFrom.Value.Date), DBNull.Value)}
         Dim ds As DataSet = DBFactory.GetHelper().ExecuteDataSet("[dbo].[opc_sku_formulation_approve]", Data.CommandType.StoredProcedure, sqlParams)
         If ds Is Nothing OrElse ds.Tables.Count = 0 OrElse ds.Tables(0).Rows.Count = 0 Then Return "No response from the approval procedure."
         Dim r As DataRow = ds.Tables(0).Rows(0)
+        okMessage = Convert.ToString(r("Message"))
         Return If(Convert.ToInt32(r("Status")) = 1, "", Convert.ToString(r("Message")))
     End Function
 
