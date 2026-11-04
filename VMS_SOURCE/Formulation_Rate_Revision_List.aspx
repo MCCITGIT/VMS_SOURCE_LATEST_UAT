@@ -61,20 +61,12 @@
                                 <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="6%" />
                             </asp:TemplateField>
 
-                            <asp:TemplateField HeaderText="Type">
-                                <ItemTemplate>
-                                    <asp:Label ID="lblType" runat="server" Text='<%# Bind("line_type") %>'></asp:Label>
-                                </ItemTemplate>
-                                <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" />
-                                <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="12%" />
-                            </asp:TemplateField>
-
                             <asp:TemplateField HeaderText="Vendor">
                                 <ItemTemplate>
                                     <asp:Label ID="lblVendorName" runat="server" Text='<%# Bind("vendor_name") %>'></asp:Label>
                                 </ItemTemplate>
                                 <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" />
-                                <ItemStyle HorizontalAlign="Left" VerticalAlign="Middle" Width="12%" />
+                                <ItemStyle HorizontalAlign="Left" VerticalAlign="Middle" Width="16%" />
                             </asp:TemplateField>
 
                             <asp:TemplateField HeaderText="Formulation">
@@ -83,22 +75,6 @@
                                 </ItemTemplate>
                                 <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" />
                                 <ItemStyle HorizontalAlign="Left" VerticalAlign="Middle" />
-                            </asp:TemplateField>
-
-                            <asp:TemplateField HeaderText="Code">
-                                <ItemTemplate>
-                                    <asp:Label ID="lblRmCode" runat="server" Text='<%# Bind("item_code") %>'></asp:Label>
-                                </ItemTemplate>
-                                <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" />
-                                <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="12%" />
-                            </asp:TemplateField>
-
-                            <asp:TemplateField HeaderText="Name">
-                                <ItemTemplate>
-                                    <asp:Label ID="lblItemName" runat="server" Text='<%# Bind("item_name") %>'></asp:Label>
-                                </ItemTemplate>
-                                <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" />
-                                <ItemStyle HorizontalAlign="Left" VerticalAlign="Middle" Width="18%" />
                             </asp:TemplateField>
 
                             <%-- 04-11-2026 MUKESH BHAGAT: the negotiation behind the permission --%>
