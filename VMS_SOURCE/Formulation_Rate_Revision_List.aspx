@@ -66,7 +66,7 @@
                                     <asp:Label ID="lblVendorName" runat="server" Text='<%# Bind("vendor_name") %>'></asp:Label>
                                 </ItemTemplate>
                                 <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" />
-                                <ItemStyle HorizontalAlign="Left" VerticalAlign="Middle" Width="12%" />
+                                <ItemStyle HorizontalAlign="Left" VerticalAlign="Middle" Width="16%" />
                             </asp:TemplateField>
 
                             <asp:TemplateField HeaderText="Formulation">
