@@ -2296,13 +2296,18 @@ Public Class OPC_VendorClass
         Return DBFactory.GetHelper().ExecuteDataSet("[dbo].[opc_raw_material_creation_get]", CommandType.StoredProcedure, p)
     End Function
 
-    Function InsertOpcRawMaterialCreation(ByVal name As String, ByVal unitCode As String, ByVal userId As String, Optional ByVal itemType As String = "RM") As DataSet
-        Dim p() As SqlParameter = {ScopeParam("@name", name, 200), ScopeParam("@unit_code", unitCode, 20), ScopeParam("@user_id", userId, 20), New SqlParameter("@item_type", SqlDbType.VarChar, 3) With {.Value = If(String.Equals(itemType, "PKG", StringComparison.OrdinalIgnoreCase), "PKG", "RM")}}
+    'Modified-by MUKESH BHAGAT on 04-11-2026 : unitCode "ALL" = raw material entered by HO for every vendor; bergerCode / bergerNotBuy link the Berger code
+    '(or "Berger doesn't buy this product") at creation - same columns as the Raw Material Code Linking page.
+    Function InsertOpcRawMaterialCreation(ByVal name As String, ByVal unitCode As String, ByVal userId As String, Optional ByVal itemType As String = "RM", Optional ByVal bergerCode As String = "", Optional ByVal bergerNotBuy As Boolean = False) As DataSet
+        Dim p() As SqlParameter = {ScopeParam("@name", name, 200), ScopeParam("@unit_code", unitCode, 20), ScopeParam("@user_id", userId, 20), New SqlParameter("@item_type", SqlDbType.VarChar, 3) With {.Value = If(String.Equals(itemType, "PKG", StringComparison.OrdinalIgnoreCase), "PKG", "RM")},
+                                   ScopeParam("@berger_code", bergerCode, 50), New SqlParameter("@berger_not_buy", SqlDbType.Char, 1) With {.Value = If(bergerNotBuy, "Y", "N")}}
         Return DBFactory.GetHelper().ExecuteDataSet("[dbo].[opc_raw_material_creation_insert]", CommandType.StoredProcedure, p)
     End Function
 
-    Function UpdateOpcRawMaterialCreation(ByVal rmmCode As String, ByVal name As String, ByVal active As String, ByVal userId As String) As DataSet
-        Dim p() As SqlParameter = {ScopeParam("@rmm_code", rmmCode, 50), ScopeParam("@name", name, 200), ScopeParam("@active", active, 1), ScopeParam("@user_id", userId, 20)}
+    'setBerger = True (HO edit of a raw material) also saves the Berger code / "doesn't buy".
+    Function UpdateOpcRawMaterialCreation(ByVal rmmCode As String, ByVal name As String, ByVal active As String, ByVal userId As String, Optional ByVal setBerger As Boolean = False, Optional ByVal bergerCode As String = "", Optional ByVal bergerNotBuy As Boolean = False) As DataSet
+        Dim p() As SqlParameter = {ScopeParam("@rmm_code", rmmCode, 50), ScopeParam("@name", name, 200), ScopeParam("@active", active, 1), ScopeParam("@user_id", userId, 20),
+                                   New SqlParameter("@set_berger", SqlDbType.Bit) With {.Value = setBerger}, ScopeParam("@berger_code", bergerCode, 50), New SqlParameter("@berger_not_buy", SqlDbType.Char, 1) With {.Value = If(bergerNotBuy, "Y", "N")}}
         Return DBFactory.GetHelper().ExecuteDataSet("[dbo].[opc_raw_material_creation_update]", CommandType.StoredProcedure, p)
     End Function
 #End Region

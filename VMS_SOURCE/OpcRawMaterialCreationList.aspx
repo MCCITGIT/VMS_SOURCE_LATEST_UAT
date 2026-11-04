@@ -114,6 +114,15 @@
                                 <ItemStyle HorizontalAlign="Left" VerticalAlign="Middle" Width="22%" />
                             </asp:TemplateField>
 
+                            <asp:TemplateField HeaderText="Berger Code">
+                                <ItemTemplate>
+                                    <%-- 04-11-2026: the linked Berger code, or a note when Berger does not buy the product (flag 'N') --%>
+                                    <asp:Label ID="lblBerger" runat="server" Text='<%# If(Convert.ToString(Eval("berger_not_sale_flag")).Trim().ToUpper() = "N", "Berger does not buy", Convert.ToString(Eval("berger_code")).Trim()) %>'></asp:Label>
+                                </ItemTemplate>
+                                <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" />
+                                <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="14%" />
+                            </asp:TemplateField>
+
                             <asp:TemplateField HeaderText="Status">
                                 <ItemTemplate>
                                     <asp:Label ID="lblStatus" runat="server" Text='<%# Bind("rmm_status") %>'></asp:Label>
