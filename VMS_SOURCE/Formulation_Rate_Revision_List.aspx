@@ -74,7 +74,7 @@
                                     <asp:Label ID="lblVendorName" runat="server" Text='<%# Bind("vendor_name") %>'></asp:Label>
                                 </ItemTemplate>
                                 <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" />
-                                <ItemStyle HorizontalAlign="Left" VerticalAlign="Middle" Width="18%" />
+                                <ItemStyle HorizontalAlign="Left" VerticalAlign="Middle" Width="12%" />
                             </asp:TemplateField>
 
                             <asp:TemplateField HeaderText="Formulation">
@@ -98,7 +98,57 @@
                                     <asp:Label ID="lblItemName" runat="server" Text='<%# Bind("item_name") %>'></asp:Label>
                                 </ItemTemplate>
                                 <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" />
-                                <ItemStyle HorizontalAlign="Left" VerticalAlign="Middle" Width="22%" />
+                                <ItemStyle HorizontalAlign="Left" VerticalAlign="Middle" Width="18%" />
+                            </asp:TemplateField>
+
+                            <%-- 04-11-2026 MUKESH BHAGAT: the negotiation behind the permission --%>
+                            <asp:TemplateField HeaderText="Current rate">
+                                <ItemTemplate>
+                                    <asp:Label ID="lblOldRate" runat="server" Text='<%# Eval("old_rate", "{0:0.00}") %>'></asp:Label>
+                                </ItemTemplate>
+                                <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" />
+                                <ItemStyle HorizontalAlign="Right" VerticalAlign="Middle" Width="8%" />
+                            </asp:TemplateField>
+
+                            <asp:TemplateField HeaderText="Proposed rate">
+                                <ItemTemplate>
+                                    <asp:Label ID="lblNewRate" runat="server" Text='<%# Eval("new_rate", "{0:0.00}") %>'></asp:Label>
+                                </ItemTemplate>
+                                <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" />
+                                <ItemStyle HorizontalAlign="Right" VerticalAlign="Middle" Width="8%" />
+                            </asp:TemplateField>
+
+                            <asp:TemplateField HeaderText="Status">
+                                <ItemTemplate>
+                                    <asp:Label ID="lblRevStatus" runat="server" Text='<%# Eval("rev_status") %>'></asp:Label>
+                                </ItemTemplate>
+                                <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" />
+                                <ItemStyle HorizontalAlign="Left" VerticalAlign="Middle" Width="14%" />
+                            </asp:TemplateField>
+
+                            <asp:TemplateField HeaderText="Effective from">
+                                <ItemTemplate>
+                                    <asp:Label ID="lblEffective" runat="server" Text='<%# Eval("effective_from", "{0:dd/MM/yyyy}") %>'></asp:Label>
+                                </ItemTemplate>
+                                <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" />
+                                <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="9%" />
+                            </asp:TemplateField>
+
+                            <asp:TemplateField HeaderText="Permission by">
+                                <ItemTemplate>
+                                    <asp:Label ID="lblPermBy" runat="server" Text='<%# Eval("permitted_by") %>'></asp:Label>
+                                    <br /><span class="text-muted" style="font-size: 11px;"><%# Eval("permitted_on", "{0:dd/MM/yyyy}") %></span>
+                                </ItemTemplate>
+                                <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" />
+                                <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="9%" />
+                            </asp:TemplateField>
+
+                            <asp:TemplateField HeaderText="Open">
+                                <ItemTemplate>
+                                    <a href='Product_Formulation.aspx?id=<%# Eval("latest_sf_id") %>' title="Open the formulation / negotiation"><i class="fa fa-eye"></i></a>
+                                </ItemTemplate>
+                                <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" />
+                                <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="5%" />
                             </asp:TemplateField>
                         </Columns>
                     </asp:GridView>
