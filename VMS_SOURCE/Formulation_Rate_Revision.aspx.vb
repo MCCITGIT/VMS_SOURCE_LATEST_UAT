@@ -92,9 +92,15 @@ Partial Class Formulation_Rate_Revision
             Dim obj As New OPC_VendorClass()
             Dim ds As DataSet = obj.GetFormulationPackagingList(sfId)
             If (Not (ds Is Nothing) AndAlso ds.Tables.Count > 0 AndAlso Not (ds.Tables(0) Is Nothing) AndAlso ds.Tables(0).Rows.Count > 0) Then
-                ddlPkgList.DataSource = ds.Tables(0)
-                ddlPkgList.DataTextField = "pcd_cost_name"
-                ddlPkgList.DataValueField = "pch_id"
+                ' 04-11-2026 MUKESH BHAGAT: one entry per packaging cost LINE ("50 K - 50 Kg bag ..."), value = pcd_id, so HO opens one specific packaging material
+                Dim t As DataTable = ds.Tables(0).Copy()
+                t.Columns.Add("pkg_text", GetType(String))
+                For Each r As DataRow In t.Rows
+                    r("pkg_text") = Convert.ToString(r("pch_pack_size")).Trim() & "  -  " & Convert.ToString(r("pcd_cost_name")).Trim()
+                Next
+                ddlPkgList.DataSource = t
+                ddlPkgList.DataTextField = "pkg_text"
+                ddlPkgList.DataValueField = "pcd_id"
                 ddlPkgList.DataBind()
                 RemoveBlankItems(ddlPkgList)
             End If
@@ -154,12 +160,12 @@ Partial Class Formulation_Rate_Revision
 
         Try
             Dim obj As New OPC_VendorClass()
-            obj.ApproveFormulationRawmatRevision(sfId, rawmat)
+            obj.ApproveFormulationRawmatRevision(sfId, rawmat, userInfo.userIDEntity)
             If packs.Rows.Count > 0 Then
-                obj.ApproveFormulationPackagingRevision(sfId, packs)
+                obj.ApproveFormulationPackagingRevision(sfId, packs, userInfo.userIDEntity)
             End If
             Dim note As String = SendRateRevisionMail(sfId)
-            Dim done As String = If(packs.Rows.Count > 0, "Rate revision marked for the selected raw materials and packaging.", "Rate revision marked for the selected raw materials.")
+            Dim done As String = If(packs.Rows.Count > 0, "Permission given: the vendor can now change the rates of the selected raw materials and packaging.", "Permission given: the vendor can now change the rates of the selected raw materials.")
             lblErrorMessage.Text = String.Empty
             RmActionPopup.ShowSuccess(Me, done & If(note = "", " The vendor has been mailed.", " " & note))
         Catch ex As Exception
@@ -190,7 +196,7 @@ Partial Class Formulation_Rate_Revision
             Dim vendorName As String = If(ddlVendor.SelectedItem Is Nothing, ddlVendor.SelectedValue, ddlVendor.SelectedItem.Text)
             Dim formulationName As String = If(ddlFormulation.SelectedItem Is Nothing, Convert.ToString(sfId), ddlFormulation.SelectedItem.Text)
             Dim sb As New StringBuilder()
-            sb.Append("<p>Dear Vendor,</p><p>A rate revision has been marked on your SKU formulation for the items listed below. Please open the formulation in VMS and update the rate.</p>")
+            sb.Append("<p>Dear Vendor,</p><p>HO has opened your approved SKU formulation for a rate revision. Please open it in VMS, press <b>Propose change</b> and change <b>only the rates of the items listed below</b>. Everything else is locked. HO will approve the new rates and tell you from which date they apply; until then the current rates stay in force.</p>")
             sb.Append("<table style='border-collapse:collapse;font-family:Segoe UI,Arial;font-size:13px;'>")
             sb.Append("<tr><td " & td & "><b>Vendor</b></td><td " & td & ">" & Server.HtmlEncode(vendorName) & "</td></tr>")
             sb.Append("<tr><td " & td & "><b>Formulation</b></td><td " & td & ">" & Server.HtmlEncode(formulationName) & "</td></tr>")
@@ -242,11 +248,8 @@ Partial Class Formulation_Rate_Revision
     End Function
 
     Private Function FormulationLink(ByVal sfId As Integer) As String
-        Dim redirectUrl As String = "Product_Formulation.aspx?id=" & sfId
-        'Dim baseUrl As String = "https://bpilweb.bergerindia.com/vms/"
-        Dim baseUrl As String = "https://bpilmobileuat.bergerindia.com/vmsdemo/"
-        'Dim baseUrl As String = "http://localhost:64930/"
-        Return New Uri(New Uri(baseUrl), redirectUrl).ToString()
+        ' 04-11-2026: scheme + host + application path of the request the user is working on (UAT on UAT, production on production) - no hard-coded address
+        Return Request.Url.GetLeftPart(UriPartial.Authority) & ResolveUrl("~/Product_Formulation.aspx?id=" & sfId)
     End Function
 
     Private Function SelectedRawmat() As DataTable
@@ -262,13 +265,13 @@ Partial Class Formulation_Rate_Revision
 
     Private Function SelectedPacks() As DataTable
         Dim packs As New DataTable()
-        packs.Columns.Add("pch_id", GetType(Integer))
+        packs.Columns.Add("pcd_id", GetType(Integer))          ' 04-11-2026: packaging cost lines (dbo.tbl_opc_rate_revision_pcd)
         Dim seen As New List(Of Integer)()
         For Each item As ListItem In ddlPkgList.Items
-            Dim pchId As Integer
-            If item.Selected AndAlso Integer.TryParse(item.Value, pchId) AndAlso pchId > 0 AndAlso Not seen.Contains(pchId) Then
-                seen.Add(pchId)
-                packs.Rows.Add(pchId)
+            Dim pcdId As Integer
+            If item.Selected AndAlso Integer.TryParse(item.Value, pcdId) AndAlso pcdId > 0 AndAlso Not seen.Contains(pcdId) Then
+                seen.Add(pcdId)
+                packs.Rows.Add(pcdId)
             End If
         Next
         Return packs

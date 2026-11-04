@@ -714,6 +714,13 @@
             margin-top: 8px;
         }
 
+        /* 04-11-2026: a rate HO opened for revision (the only editable ones in a rate revision) */
+        .pf .pf-open {
+            background: #e6f4ea !important;
+            border-color: #28a745 !important;
+            box-shadow: 0 0 0 2px rgba(40, 167, 69, .18) !important;
+        }
+
         /* SKU price breakup under the Price column: RM cost + loss = SKU price */
         .pf-breakup {
             min-width: 132px;
@@ -922,6 +929,19 @@
                 if (value === "") { return; }
                 var numValue = parseFloat(value);
                 control.value = isNaN(numValue) ? "" : numValue.toFixed(2);
+            }
+
+            /* 04-11-2026: approving a rate revision needs the effective date (today or later) */
+            function pfCheckEffective() {
+                var t = document.getElementById('txtEffectiveFrom');
+                if (!t) { return true; }                                   // not a rate revision: no date field on the page
+                var v = document.getElementById('valEffective'), val = (t.value || '').trim();
+                var today = new Date(); today.setHours(0, 0, 0, 0);
+                var picked = val ? new Date(val + 'T00:00:00') : null;
+                if (!picked) { t.classList.add('field-invalid'); if (v) { v.innerHTML = 'Enter the effective date of the revised rates.'; } t.focus(); return false; }
+                if (picked < today) { t.classList.add('field-invalid'); if (v) { v.innerHTML = 'The effective date cannot be in the past.'; } t.focus(); return false; }
+                t.classList.remove('field-invalid'); if (v) { v.innerHTML = ''; }
+                return true;
             }
 
             /* 02-11-2026: HO standard formulation mode (HO, new page): raw materials + percentage only, no vendor / supplier / price */
@@ -1514,8 +1534,14 @@
                         <label class="pf-label">HO approval - remarks (mandatory to reject or to send a revised rate; e.g. the negotiated price)</label>
                         <asp:TextBox ID="txtHoRemarks" runat="server" TextMode="MultiLine" Rows="2" MaxLength="1000" Style="width: 100%;"></asp:TextBox>
                         <asp:Label ID="valHoRemarks" runat="server" CssClass="dispatch-field-error"></asp:Label>
+                        <%-- 04-11-2026 MUKESH BHAGAT: a RATE REVISION is approved with an effective date; until then the previous release stays in force --%>
+                        <div id="divEffective" runat="server" visible="false" style="margin-top: 8px;">
+                            <label class="pf-label">Effective date of the revised rates <span class="mandatory">*</span> <span class="pf-muted">- the current rates stay in force until this date</span></label>
+                            <asp:TextBox ID="txtEffectiveFrom" runat="server" ClientIDMode="Static" TextMode="Date" Style="width: 180px;" onchange="var v=document.getElementById('valEffective'); if(v){v.innerHTML='';}"></asp:TextBox>
+                            <asp:Label ID="valEffective" runat="server" ClientIDMode="Static" CssClass="dispatch-field-error"></asp:Label>
+                        </div>
                         <div class="pf-actions" style="margin-top: 6px;">
-                            <asp:Button ID="btnApprove" runat="server" Text="Approve" CssClass="pf-btn pf-btn-save" ClientIDMode="Static" OnClick="btnApprove_Click" OnClientClick="return rmConfirmPostback('btnApprove', 'approve');" />
+                            <asp:Button ID="btnApprove" runat="server" Text="Approve" CssClass="pf-btn pf-btn-save" ClientIDMode="Static" OnClick="btnApprove_Click" OnClientClick="return pfCheckEffective() && rmConfirmPostback('btnApprove', 'approve');" />
                             <asp:Button ID="btnReject" runat="server" Text="Reject" CssClass="pf-btn" Style="background: #dc3545; border-color: #dc3545; color: #fff; font-weight: 600;" ClientIDMode="Static" OnClick="btnReject_Click" OnClientClick="return rmConfirmPostback('btnReject', 'submit');" />
                             <asp:Button ID="btnRevise" runat="server" Text="Revise rate &amp; send to vendor" CssClass="pf-btn pf-btn-primary" ClientIDMode="Static" OnClick="btnRevise_Click" />
                             <asp:Button ID="btnForward" runat="server" Text="Send to Material Dept" CssClass="pf-btn" Style="background: #8a6d1f; border-color: #8a6d1f; color: #fff; font-weight: 600;" ClientIDMode="Static" OnClick="btnForward_Click" OnClientClick="return confirm('Send this revision to the Material Department for rate comparison?');" />
@@ -1545,7 +1571,7 @@
 
                     <%-- vendor side of a HO counter-offer --%>
                     <asp:Panel ID="pnlVendorAccept" runat="server" Visible="false" Style="margin-top: 10px; padding: 10px; border: 1px solid #17a2b8; background: #e8f7fa; border-radius: 6px;">
-                        <b>HO has revised the rate.</b> Accept it as-is to approve the formulation now, or change the figures above and submit a counter-proposal to HO.
+                        <b>HO has revised the rate.</b> Accept it as-is (for a rate revision HO then gives the final approval and the effective date), or change the opened rates above and submit a counter-proposal to HO.
                         <div class="pf-actions" style="margin-top: 6px;">
                             <asp:Button ID="btnAccept" runat="server" Text="Accept revised rate" CssClass="pf-btn pf-btn-save" ClientIDMode="Static" OnClick="btnAccept_Click" OnClientClick="return rmConfirmPostback('btnAccept', 'approve');" />
                         </div>
