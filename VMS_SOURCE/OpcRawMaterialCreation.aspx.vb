@@ -21,6 +21,25 @@ Partial Class OpcRawMaterialCreation
                 pnlVendor.Visible = IsUnitUser()          ' HO does not pick a vendor
                 pnlScope.Visible = Not IsUnitUser()       ' "Applies to: All vendors"
                 pnlBerger.Visible = Not IsUnitUser()      ' Berger code + "Berger doesn't buy" - HO raw material only
+                pnlBergerTick.Visible = Not IsUnitUser()
+
+                ' 05-11-2026: say what is being entered - a vendor enters PACKAGING, HO enters RAW MATERIAL
+                If IsUnitUser() Then
+                    lblPageTitle.Text = "Packaging Creation"
+                    lblPageSub.Text = "Create your packaging items (for example 1 KG bag, 20 KG bucket)"
+                    lblPanelTitle.Text = "Packaging Item Details"
+                    lblPanelSub.Text = "You are entering a PACKAGING item. Enter the packaging name; the code (PKG...) is generated on save. HO links its Berger code."
+                    lblNameCaption.Text = "Packaging Name:"
+                    pnlType.Visible = True                ' read-only Type box: Packaging
+                    txtName_Placeholder()
+                Else
+                    lblPageTitle.Text = "Raw Material Creation"
+                    lblPageSub.Text = "Create raw materials for all vendors"
+                    lblPanelTitle.Text = "Raw Material Details"
+                    lblPanelSub.Text = "You are entering a RAW MATERIAL for all vendors. Enter the name and link its Berger code (or tick that Berger doesn't buy it). The code (MAN...) is generated on save."
+                    lblNameCaption.Text = "Raw Material Name:"
+                    txtRmName.Attributes("placeholder") = "e.g. CEMENT 43 GRADE"
+                End If
 
                 Dim rmCode As String = If(Request.QueryString(RmCodeKey), String.Empty).Trim()
                 If Not String.IsNullOrWhiteSpace(rmCode) Then
@@ -40,6 +59,10 @@ Partial Class OpcRawMaterialCreation
             Session(Constant.SessionKeys.ErrMessage) = ex.ToString()
             Response.Redirect("~/ExceptionPage.aspx")
         End Try
+    End Sub
+
+    Private Sub txtName_Placeholder()
+        txtRmName.Attributes("placeholder") = "e.g. 1 KG BAG"
     End Sub
 
     Private ReadOnly Property IsEditMode As Boolean

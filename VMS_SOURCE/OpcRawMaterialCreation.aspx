@@ -68,8 +68,9 @@
                 <a href="Home.aspx" title="Home"><i class="fas fa-home"></i></a>
                 <div class="diveider">/</div>
                 <div class="pageTitleWrap">
-                    <h3 class="pageTitle">Raw Material / Packaging Creation</h3>
-                    <p class="pageSubTitle">HO creates raw materials for all vendors; vendors create their packaging items</p>
+                    <%-- 05-11-2026: the captions follow the login - vendor = Packaging, HO = Raw Material (set in Page_Load) --%>
+                    <h3 class="pageTitle"><asp:Label ID="lblPageTitle" runat="server" Text="Raw Material / Packaging Creation"></asp:Label></h3>
+                    <p class="pageSubTitle"><asp:Label ID="lblPageSub" runat="server" Text="HO creates raw materials for all vendors; vendors create their packaging items"></asp:Label></p>
                 </div>
             </div>
             <div class="rightFung"></div>
@@ -80,8 +81,8 @@
                 <div class="mst-panel-header-left">
                     <span class="mst-panel-icon"><i class="fas fa-flask"></i></span>
                     <div>
-                        <h5 class="mst-panel-title">Item Details</h5>
-                        <p class="mst-panel-subtitle">HO: enter the raw material name once for all vendors and link its Berger code (or tick that Berger doesn't buy it). Vendor: enter your packaging items; HO links their Berger code on Raw Material Code Linking. The code is generated on save (MAN... raw material, PKG... packaging).</p>
+                        <h5 class="mst-panel-title"><asp:Label ID="lblPanelTitle" runat="server" Text="Item Details"></asp:Label></h5>
+                        <p class="mst-panel-subtitle"><asp:Label ID="lblPanelSub" runat="server" Text="Enter the item name. The code is generated on save."></asp:Label></p>
                     </div>
                 </div>
             </div>
@@ -120,30 +121,27 @@
                     </asp:Panel>
                     <div class="col-md-3">
                         <div class="form-group">
-                            <label class="form-control-label">Name:<span class="mandatory">*</span></label>
+                            <label class="form-control-label"><asp:Label ID="lblNameCaption" runat="server" Text="Name:"></asp:Label><span class="mandatory">*</span></label>
                             <asp:TextBox ID="txtRmName" runat="server" ClientIDMode="Static" CssClass="form-control" AutoComplete="Off" MaxLength="200" onkeyup="clearRmCreationValidation();"></asp:TextBox>
                             <asp:Label ID="valRmName" runat="server" ClientIDMode="Static" CssClass="dispatch-field-error"></asp:Label>
                         </div>
                     </div>
                     <%-- HO only, raw material: link the Berger code here, or tick "Berger doesn't buy this product" (same columns as Raw Material Code Linking).
                          Both can be left empty and linked later on Raw Material Code Linking. --%>
-                    <asp:Panel ID="pnlBerger" runat="server" Visible="false" CssClass="col-md-6">
-                        <div class="row">
-                            <div class="col-md-7">
-                                <div class="form-group">
-                                    <label class="form-control-label">Berger Code:</label>
-                                    <asp:HiddenField ID="hdnBergerCode" runat="server" ClientIDMode="Static" />
-                                    <asp:Literal ID="litBergerSelect" runat="server"></asp:Literal>
-                                </div>
+                    <%-- 05-11-2026: order = Name, then the tick box, then the Berger Code (the tick box switches the dropdown off) --%>
+                    <asp:Panel ID="pnlBergerTick" runat="server" Visible="false" CssClass="col-md-3">
+                        <div class="form-group">
+                            <label class="form-control-label">&nbsp;</label>
+                            <div class="checkRadioGroup" style="padding-top: 6px;">
+                                <asp:CheckBox ID="chkBergerNotBuy" runat="server" ClientIDMode="Static" Text="&nbsp;Berger doesn't buy this product" />
                             </div>
-                            <div class="col-md-5">
-                                <div class="form-group">
-                                    <label class="form-control-label">&nbsp;</label>
-                                    <div class="checkRadioGroup" style="padding-top: 6px;">
-                                        <asp:CheckBox ID="chkBergerNotBuy" runat="server" ClientIDMode="Static" Text="&nbsp;Berger doesn't buy this product" />
-                                    </div>
-                                </div>
-                            </div>
+                        </div>
+                    </asp:Panel>
+                    <asp:Panel ID="pnlBerger" runat="server" Visible="false" CssClass="col-md-3">
+                        <div class="form-group">
+                            <label class="form-control-label">Berger Code:</label>
+                            <asp:HiddenField ID="hdnBergerCode" runat="server" ClientIDMode="Static" />
+                            <asp:Literal ID="litBergerSelect" runat="server"></asp:Literal>
                         </div>
                     </asp:Panel>
                     <asp:Panel ID="pnlActive" runat="server" CssClass="col-md-3" Visible="false">
