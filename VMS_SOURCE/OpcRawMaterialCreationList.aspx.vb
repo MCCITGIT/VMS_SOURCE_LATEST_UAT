@@ -54,6 +54,7 @@ Partial Class OpcRawMaterialCreationList
             ddlVendor.DataBind()
         End If
         ddlVendor.Items.Insert(0, New ListItem(Constant.Common.Selec, String.Empty, True))
+        ddlVendor.Items.Insert(1, New ListItem("All vendors (common raw materials)", "ALL", True))      ' 04-11-2026: raw materials HO entered for every vendor
 
         If IsUnitUser() Then
             Dim own As String = OwnUnitCode()
@@ -93,7 +94,12 @@ Partial Class OpcRawMaterialCreationList
         If e.Row.RowType <> DataControlRowType.DataRow Then Return
         Dim hdn As HiddenField = TryCast(e.Row.FindControl("hdnItemType"), HiddenField)
         Dim edit As LinkButton = TryCast(e.Row.FindControl("btnEdit"), LinkButton)
-        If hdn IsNot Nothing AndAlso edit IsNot Nothing AndAlso hdn.Value.Trim().ToUpperInvariant() = "PKG" AndAlso Not IsUnitUser() Then edit.Visible = False
+        'Modified-by MUKESH BHAGAT 04-11-2026: raw materials are entered by HO, packaging by the vendor - the edit link follows that
+        '(a vendor login gets no edit link on a raw material; an HO login none on a packaging item)
+        If hdn IsNot Nothing AndAlso edit IsNot Nothing Then
+            Dim isPkg As Boolean = hdn.Value.Trim().ToUpperInvariant() = "PKG"
+            If (isPkg AndAlso Not IsUnitUser()) OrElse (Not isPkg AndAlso IsUnitUser()) Then edit.Visible = False
+        End If
     End Sub
 
     Protected Sub gvRmList_PageIndexChanging(ByVal sender As Object, ByVal e As GridViewPageEventArgs) Handles gvRmList.PageIndexChanging
