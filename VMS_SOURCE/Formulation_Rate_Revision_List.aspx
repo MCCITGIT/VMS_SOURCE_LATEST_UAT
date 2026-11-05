@@ -77,8 +77,9 @@
                                 <ItemStyle HorizontalAlign="Left" VerticalAlign="Middle" />
                             </asp:TemplateField>
 
-                            <%-- 04-11-2026 MUKESH BHAGAT: the negotiation behind the permission --%>
-                            <asp:TemplateField HeaderText="Current rate">
+                            <%-- 04-11-2026 MUKESH BHAGAT: the permission is per FORMULATION now (all raw material and packaging rates), so one row per formulation;
+                                 the prices are the SKU price of the permitted release and of the newest proposal --%>
+                            <asp:TemplateField HeaderText="Current SKU price">
                                 <ItemTemplate>
                                     <asp:Label ID="lblOldRate" runat="server" Text='<%# Eval("old_rate", "{0:0.00}") %>'></asp:Label>
                                 </ItemTemplate>
@@ -86,7 +87,7 @@
                                 <ItemStyle HorizontalAlign="Right" VerticalAlign="Middle" Width="8%" />
                             </asp:TemplateField>
 
-                            <asp:TemplateField HeaderText="Proposed rate">
+                            <asp:TemplateField HeaderText="Proposed SKU price">
                                 <ItemTemplate>
                                     <asp:Label ID="lblNewRate" runat="server" Text='<%# Eval("new_rate", "{0:0.00}") %>'></asp:Label>
                                 </ItemTemplate>
